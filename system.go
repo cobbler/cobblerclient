@@ -271,6 +271,11 @@ func (s *System) CreateInterface(name string, iface Interface) error {
 		return err
 	}
 
+	// Save the final system
+	if _, err := s.Client.Call("save_system", systemId, s.Client.Token); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -319,6 +324,11 @@ func (s *System) DeleteInterface(name string) error {
 	}
 
 	if _, err := s.Client.Call("modify_system", systemId, "delete_interface", name, s.Client.Token); err != nil {
+		return err
+	}
+
+	// Save the final system
+	if _, err := s.Client.Call("save_system", systemId, s.Client.Token); err != nil {
 		return err
 	}
 
