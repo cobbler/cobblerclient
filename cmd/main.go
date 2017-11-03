@@ -22,6 +22,38 @@ func main() {
 
 	fmt.Printf("Token: %s\n", c.Token)
 
+	fmt.Println("Creating a repo")
+	r := cobbler.Repo{
+		Name:          "myrepo",
+		Arch:          "x86_64",
+		Breed:         "yum",
+		MirrorLocally: false,
+		Mirror:        "http://repo/homeawayel7/",
+	}
+
+	newRepo, err := c.CreateRepo(r)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Printf("%+v\n", newRepo)
+
+	fmt.Println("Listing all repos")
+	repos, err := c.GetRepos()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for _, repo := range repos {
+		fmt.Printf("%+v\n", repo)
+	}
+
+	fmt.Println("Deleting a repo")
+	err = c.DeleteRepo("myrepo")
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	d := cobbler.Distro{
 		Name:      "Test",
 		Breed:     "Ubuntu",

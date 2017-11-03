@@ -17,29 +17,29 @@ limitations under the License.
 package cobblerclient
 
 import (
-  "testing"
+	"testing"
 
-  "github.com/ContainerSolutions/go-utils"
+	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestGetRepos(t *testing.T) {
-  c := createStubHTTPClient(t, "get-repos-req.xml", "get-repos-res.xml")
-  repos, err := c.GetRepos()
-  utils.FailOnError(t, err)
+	c := createStubHTTPClient(t, "get-repos-req.xml", "get-repos-res.xml")
+	repos, err := c.GetRepos()
+	utils.FailOnError(t, err)
 
-  if len(repos) != 1 {
-    t.Errorf("Wrong number of repos returned.")
-  }
+	if len(repos) != 1 {
+		t.Errorf("Wrong number of repos returned.")
+	}
 }
 
 func TestGetRepo(t *testing.T) {
-  c := createStubHTTPClient(t, "get-repo-req.xml", "get-repo-res.xml")
-  repo, err := c.GetRepo("rhel-7-x86_64")
-  utils.FailOnError(t, err)
+	c := createStubHTTPClient(t, "get-repo-req.xml", "get-repo-res.xml")
+	repo, err := c.GetRepo("rhel-7-x86_64")
+	utils.FailOnError(t, err)
 
-  if repo.Name != "rhel-7-x86_64" {
-    t.Errorf("Wrong repo returned.")
-  }
+	if repo.Name != "rhel-7-x86_64" {
+		t.Errorf("Wrong repo returned.")
+	}
 }
 
 /*
