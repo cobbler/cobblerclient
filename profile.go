@@ -53,7 +53,7 @@ type Profile struct {
 	Repos                    string   `mapstructure:"repos"`
 	Server                   string   `mapstructure:"server"`
 	TemplateFiles            string   `mapstructure:"template_files"`
-	TemplateRemoteKickstarts int      `mapstructure:"template_remote_kickstarts"`
+	TemplateRemoteKickstarts int      `mapstructure:"template_remote_templates"`
 	VirtAutoBoot             string   `mapstructure:"virt_auto_boot"`
 	VirtBridge               string   `mapstructure:"virt_bridge"`
 	VirtCPUs                 string   `mapstructure:"virt_cpus"`

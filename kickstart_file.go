@@ -16,30 +16,30 @@ limitations under the License.
 
 package cobblerclient
 
-type KickstartFile struct {
-	Name string // The name the kickstart file will be saved in Cobbler
-	Body string // The contents of the kickstart file
+type TemplateFile struct {
+	Name string // The name the template file will be saved in Cobbler
+	Body string // The contents of the template file
 }
 
-// Creates a kickstart file in Cobbler.
-// Takes a KickstartFile struct as input.
+// Creates a template file in Cobbler.
+// Takes a TemplateFile struct as input.
 // Returns true/false and error if creation failed.
-func (c *Client) CreateKickstartFile(f KickstartFile) error {
-	_, err := c.Call("read_or_write_kickstart_template", f.Name, false, f.Body, c.Token)
+func (c *Client) CreateTemplateFile(f TemplateFile) error {
+	_, err := c.Call("write_autoinstall_template(", f.Name, false, f.Body, c.Token)
 	return err
 }
 
-// Gets a kickstart file in Cobbler.
-// Takes a kickstart file name as input.
-// Returns *KickstartFile and error if read failed.
-func (c *Client) GetKickstartFile(ksName string) (*KickstartFile, error) {
-	result, err := c.Call("read_or_write_kickstart_template", ksName, true, "", c.Token)
+// Gets a template file in Cobbler.
+// Takes a template file name as input.
+// Returns *TemplateFile and error if read failed.
+func (c *Client) GetTemplateFile(ksName string) (*TemplateFile, error) {
+	result, err := c.Call("read_autoinstall_template", ksName, true, "", c.Token)
 
 	if err != nil {
 		return nil, err
 	}
 
-	ks := KickstartFile{
+	ks := TemplateFile{
 		Name: ksName,
 		Body: result.(string),
 	}
@@ -47,10 +47,10 @@ func (c *Client) GetKickstartFile(ksName string) (*KickstartFile, error) {
 	return &ks, nil
 }
 
-// Deletes a kickstart file in Cobbler.
-// Takes a kickstart file name as input.
+// Deletes a template file in Cobbler.
+// Takes a template file name as input.
 // Returns error if delete failed.
-func (c *Client) DeleteKickstartFile(name string) error {
-	_, err := c.Call("read_or_write_kickstart_template", name, false, -1, c.Token)
+func (c *Client) DeleteTemplateFile(name string) error {
+	_, err := c.Call("remove_autoinstall_template", name, false, -1, c.Token)
 	return err
 }

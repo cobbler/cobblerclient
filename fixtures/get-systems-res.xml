@@ -314,7 +314,7 @@
                   </value>
                 </member>
                 <member>
-                  <name>template_remote_kickstarts</name>
+                  <name>template_remote_templates</name>
                   <value>
                     <int>0</int>
                   </value>

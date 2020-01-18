@@ -27,56 +27,56 @@ import (
 // System is a created system.
 type System struct {
 	// These are internal fields and cannot be modified.
-	Ctime                 float64 `mapstructure:"ctime"                  cobbler:"noupdate"` // TODO: convert to time
-	Depth                 int     `mapstructure:"depth"                  cobbler:"noupdate"`
-	ID                    string  `mapstructure:"uid"                    cobbler:"noupdate"`
+	Ctime                 float64 `mapstructure:"ctime"                 cobbler:"noupdate"` // TODO: convert to time
+	Depth                 int     `mapstructure:"depth"                 cobbler:"noupdate"`
+	ID                    string  `mapstructure:"uid"                   cobbler:"noupdate"`
 	IPv6Autoconfiguration bool    `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate"`
-	Mtime                 float64 `mapstructure:"mtime"                  cobbler:"noupdate"` // TODO: convert to time
+	Mtime                 float64 `mapstructure:"mtime"                 cobbler:"noupdate"` // TODO: convert to time
 	ReposEnabled          bool    `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	BootFiles                string                 `mapstructure:"boot_files"`
-	Comment                  string                 `mapstructure:"comment"`
-	EnableGPXE               bool                   `mapstructure:"enable_gpxe"`
-	FetchableFiles           string                 `mapstructure:"fetchable_files"`
-	Gateway                  string                 `mapstructure:"gateway"`
-	Hostname                 string                 `mapstructure:"hostname"`
-	Image                    string                 `mapstructure:"image"`
-	Interfaces               map[string]interface{} `mapstructure:"interfaces" cobbler:"noupdate"`
-	IPv6DefaultDevice        string                 `mapstructure:"ipv6_default_device"`
-	KernelOptions            string                 `mapstructure:"kernel_options"`
-	KernelOptionsPost        string                 `mapstructure:"kernel_options_post"`
-	Kickstart                string                 `mapstructure:"kickstart"`
-	KSMeta                   string                 `mapstructure:"ks_meta"`
-	LDAPEnabled              bool                   `mapstructure:"ldap_enabled"`
-	LDAPType                 string                 `mapstructure:"ldap_type"`
-	MGMTClasses              []string               `mapstructure:"mgmt_classes"`
-	MGMTParameters           string                 `mapstructure:"mgmt_parameters"`
-	MonitEnabled             bool                   `mapstructure:"monit_enabled"`
-	Name                     string                 `mapstructure:"name"`
-	NameServersSearch        []string               `mapstructure:"name_servers_search"`
-	NameServers              []string               `mapstructure:"name_servers"`
-	NetbootEnabled           bool                   `mapstructure:"netboot_enabled"`
-	Owners                   []string               `mapstructure:"owners"`
-	PowerAddress             string                 `mapstructure:"power_address"`
-	PowerID                  string                 `mapstructure:"power_id"`
-	PowerPass                string                 `mapstructure:"power_pass"`
-	PowerType                string                 `mapstructure:"power_type"`
-	PowerUser                string                 `mapstructure:"power_user"`
-	Profile                  string                 `mapstructure:"profile"`
-	Proxy                    string                 `mapstructure:"proxy"`
-	RedHatManagementKey      string                 `mapstructure:"redhat_management_key"`
-	RedHatManagementServer   string                 `mapstructure:"redhat_management_server"`
-	Status                   string                 `mapstructure:"status"`
-	TemplateFiles            string                 `mapstructure:"template_files"`
-	TemplateRemoteKickstarts int                    `mapstructure:"template_remote_kickstarts"`
-	VirtAutoBoot             string                 `mapstructure:"virt_auto_boot"`
-	VirtCPUs                 string                 `mapstructure:"virt_cpus"`
-	VirtDiskDriver           string                 `mapstructure:"virt_disk_driver"`
-	VirtFileSize             string                 `mapstructure:"virt_file_size"`
-	VirtPath                 string                 `mapstructure:"virt_path"`
-	VirtPXEBoot              int                    `mapstructure:"virt_pxe_boot"`
-	VirtRam                  string                 `mapstructure:"virt_ram"`
-	VirtType                 string                 `mapstructure:"virt_type"`
+	BootFiles               string                 `mapstructure:"boot_files"`
+	Comment                 string                 `mapstructure:"comment"`
+	EnableGPXE              bool                   `mapstructure:"enable_gpxe"`
+	FetchableFiles          string                 `mapstructure:"fetchable_files"`
+	Gateway                 string                 `mapstructure:"gateway"`
+	Hostname                string                 `mapstructure:"hostname"`
+	Image                   string                 `mapstructure:"image"`
+	Interfaces              map[string]interface{} `mapstructure:"interfaces" cobbler:"noupdate"`
+	IPv6DefaultDevice       string                 `mapstructure:"ipv6_default_device"`
+	KernelOptions           string                 `mapstructure:"kernel_options"`
+	KernelOptionsPost       string                 `mapstructure:"kernel_options_post"`
+	Template                string                 `mapstructure:"template"`
+	KSMeta                  string                 `mapstructure:"ks_meta"`
+	LDAPEnabled             bool                   `mapstructure:"ldap_enabled"`
+	LDAPType                string                 `mapstructure:"ldap_type"`
+	MGMTClasses             []string               `mapstructure:"mgmt_classes"`
+	MGMTParameters          string                 `mapstructure:"mgmt_parameters"`
+	MonitEnabled            bool                   `mapstructure:"monit_enabled"`
+	Name                    string                 `mapstructure:"name"`
+	NameServersSearch       []string               `mapstructure:"name_servers_search"`
+	NameServers             []string               `mapstructure:"name_servers"`
+	NetbootEnabled          bool                   `mapstructure:"netboot_enabled"`
+	Owners                  []string               `mapstructure:"owners"`
+	PowerAddress            string                 `mapstructure:"power_address"`
+	PowerID                 string                 `mapstructure:"power_id"`
+	PowerPass               string                 `mapstructure:"power_pass"`
+	PowerType               string                 `mapstructure:"power_type"`
+	PowerUser               string                 `mapstructure:"power_user"`
+	Profile                 string                 `mapstructure:"profile"`
+	Proxy                   string                 `mapstructure:"proxy"`
+	RedHatManagementKey     string                 `mapstructure:"redhat_management_key"`
+	RedHatManagementServer  string                 `mapstructure:"redhat_management_server"`
+	Status                  string                 `mapstructure:"status"`
+	TemplateFiles           string                 `mapstructure:"template_files"`
+	TemplateRemoteTemplates int                    `mapstructure:"template_remote_templates"`
+	VirtAutoBoot            string                 `mapstructure:"virt_auto_boot"`
+	VirtCPUs                string                 `mapstructure:"virt_cpus"`
+	VirtDiskDriver          string                 `mapstructure:"virt_disk_driver"`
+	VirtFileSize            string                 `mapstructure:"virt_file_size"`
+	VirtPath                string                 `mapstructure:"virt_path"`
+	VirtPXEBoot             int                    `mapstructure:"virt_pxe_boot"`
+	VirtRam                 string                 `mapstructure:"virt_ram"`
+	VirtType                string                 `mapstructure:"virt_type"`
 
 	Client
 }

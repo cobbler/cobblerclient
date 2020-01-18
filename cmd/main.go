@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	cobbler "github.com/jtopjian/cobblerclient"
+	cobbler "github.com/wearespindle/cobblerclient"
 )
 
 var config = cobbler.ClientConfig{
@@ -59,8 +59,8 @@ func main() {
 		Breed:     "Ubuntu",
 		OSVersion: "trusty",
 		Arch:      "x86_64",
-		Kernel:    "/var/www/cobbler/ks_mirror/Ubuntu-14.04/install/netboot/ubuntu-installer/amd64/linux",
-		Initrd:    "/var/www/cobbler/ks_mirror/Ubuntu-14.04/install/netboot/ubuntu-installer/amd64/initrd.gz",
+		Kernel:    "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux",
+		Initrd:    "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz",
 	}
 
 	fmt.Println("Creating a Distro")
@@ -218,7 +218,7 @@ func main() {
 
 	fmt.Println("Creating a Kickstart")
 	ks := cobbler.KickstartFile{
-		Name: "/var/lib/cobbler/kickstarts/foo.ks",
+		Name: "/var/lib/cobbler/templates/foo.ks",
 		Body: "sample content",
 	}
 
@@ -228,7 +228,7 @@ func main() {
 	}
 
 	fmt.Println("Deleting a Kickstart")
-	if err := c.DeleteKickstartFile("/var/lib/cobbler/kickstarts/foo.ks"); err != nil {
+	if err := c.DeleteKickstartFile("/var/lib/cobbler/templates/foo.ks"); err != nil {
 		fmt.Println(err)
 	}
 
