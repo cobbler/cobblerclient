@@ -31,18 +31,21 @@ import (
 
 const bodyTypeXML = "text/xml"
 
+// HTTPClient is ...
 type HTTPClient interface {
 	Post(string, string, io.Reader) (*http.Response, error)
 }
 
+// Client is ...
 type Client struct {
 	httpClient HTTPClient
 	config     ClientConfig
 	Token      string
 }
 
+// ClientConfig is ...
 type ClientConfig struct {
-	Url      string
+	URL      string
 	Username string
 	Password string
 }
@@ -63,7 +66,7 @@ func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 	}
 
 	r := fmt.Sprintf("%s\n", string(reqBody))
-	res, err := c.httpClient.Post(c.config.Url, bodyTypeXML, bytes.NewReader([]byte(r)))
+	res, err := c.httpClient.Post(c.config.URL, bodyTypeXML, bytes.NewReader([]byte(r)))
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +89,7 @@ func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 	return result, nil
 }
 
-// Performs a login request to Cobbler using the credentials provided
+// Login ... Performs a login request to Cobbler using the credentials provided
 // in the configuration in the initializer.
 func (c *Client) Login() (bool, error) {
 	result, err := c.Call("login", c.config.Username, c.config.Password)
