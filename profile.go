@@ -30,38 +30,38 @@ type Profile struct {
 	Mtime        float64 `mapstructure:"mtime"                  cobbler:"noupdate"` // TODO: convert to time
 	ReposEnabled bool    `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	BootFiles                string   `mapstructure:"boot_files"`
-	Comment                  string   `mapstructure:"comment"`
-	Distro                   string   `mapstructure:"distro"`
-	EnableGPXE               bool     `mapstructure:"enable_gpxe"`
-	EnableMenu               bool     `mapstructure:"enable_menu"`
-	FetchableFiles           string   `mapstructure:"fetchable_files"`
-	KernelOptions            string   `mapstructure:"kernel_options"`
-	KernelOptionsPost        string   `mapstructure:"kernel_options_post"`
-	Kickstart                string   `mapstructure:"kickstart"`
-	KSMeta                   string   `mapstructure:"ks_meta"`
-	MGMTClasses              []string `mapstructure:"mgmt_classes"`
-	MGMTParameters           string   `mapstructure:"mgmt_parameters"`
-	Name                     string   `mapstructure:"name"`
-	NameServersSearch        []string `mapstructure:"name_servers_search"`
-	NameServers              []string `mapstructure:"name_servers"`
-	Owners                   []string `mapstructure:"owners"`
-	Parent                   string   `mapstructure:"parent"`
-	Proxy                    string   `mapstructure:"proxy"`
-	RedHatManagementKey      string   `mapstructure:"redhat_management_key"`
-	RedHatManagementServer   string   `mapstructure:"redhat_management_server"`
-	Repos                    string   `mapstructure:"repos"`
-	Server                   string   `mapstructure:"server"`
-	TemplateFiles            string   `mapstructure:"template_files"`
-	TemplateRemoteKickstarts int      `mapstructure:"template_remote_templates"`
-	VirtAutoBoot             string   `mapstructure:"virt_auto_boot"`
-	VirtBridge               string   `mapstructure:"virt_bridge"`
-	VirtCPUs                 string   `mapstructure:"virt_cpus"`
-	VirtDiskDriver           string   `mapstructure:"virt_disk_driver"`
-	VirtFileSize             string   `mapstructure:"virt_file_size"`
-	VirtPath                 string   `mapstructure:"virt_path"`
-	VirtRam                  string   `mapstructure:"virt_ram"`
-	VirtType                 string   `mapstructure:"virt_type"`
+	BootFiles               string   `mapstructure:"boot_files"`
+	Comment                 string   `mapstructure:"comment"`
+	Distro                  string   `mapstructure:"distro"`
+	EnableGPXE              bool     `mapstructure:"enable_gpxe"`
+	EnableMenu              bool     `mapstructure:"enable_menu"`
+	FetchableFiles          string   `mapstructure:"fetchable_files"`
+	KernelOptions           string   `mapstructure:"kernel_options"`
+	KernelOptionsPost       string   `mapstructure:"kernel_options_post"`
+	KSMeta                  string   `mapstructure:"ks_meta"`
+	MGMTClasses             []string `mapstructure:"mgmt_classes"`
+	MGMTParameters          string   `mapstructure:"mgmt_parameters"`
+	Name                    string   `mapstructure:"name"`
+	NameServersSearch       []string `mapstructure:"name_servers_search"`
+	NameServers             []string `mapstructure:"name_servers"`
+	Owners                  []string `mapstructure:"owners"`
+	Parent                  string   `mapstructure:"parent"`
+	Proxy                   string   `mapstructure:"proxy"`
+	RedHatManagementKey     string   `mapstructure:"redhat_management_key"`
+	RedHatManagementServer  string   `mapstructure:"redhat_management_server"`
+	Repos                   string   `mapstructure:"repos"`
+	Server                  string   `mapstructure:"server"`
+	Template                string   `mapstructure:"template"`
+	TemplateFiles           string   `mapstructure:"template_files"`
+	TemplateRemoteTemplates int      `mapstructure:"template_remote_templates"`
+	VirtAutoBoot            string   `mapstructure:"virt_auto_boot"`
+	VirtBridge              string   `mapstructure:"virt_bridge"`
+	VirtCPUs                string   `mapstructure:"virt_cpus"`
+	VirtDiskDriver          string   `mapstructure:"virt_disk_driver"`
+	VirtFileSize            string   `mapstructure:"virt_file_size"`
+	VirtPath                string   `mapstructure:"virt_path"`
+	VirtRam                 string   `mapstructure:"virt_ram"`
+	VirtType                string   `mapstructure:"virt_type"`
 
 	Client
 }
@@ -186,16 +186,16 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	if err != nil {
 		return nil, err
 	}
-	newId := result.(string)
+	newID := result.(string)
 
 	// Set the value of all fields
 	item := reflect.ValueOf(&profile).Elem()
-	if err := c.updateCobblerFields("profile", item, newId); err != nil {
+	if err := c.updateCobblerFields("profile", item, newID); err != nil {
 		return nil, err
 	}
 
 	// Save the final profile
-	if _, err := c.Call("save_profile", newId, c.Token); err != nil {
+	if _, err := c.Call("save_profile", newID, c.Token); err != nil {
 		return nil, err
 	}
 

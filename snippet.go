@@ -16,12 +16,13 @@ limitations under the License.
 
 package cobblerclient
 
+// Snippet is a snippet file
 type Snippet struct {
 	Name string // The name the snippet file will be saved in Cobbler
 	Body string // The contents of the kickstart file
 }
 
-// Creates a snippet in Cobbler.
+// CreateSnippet creates a snippet in Cobbler.
 // Takes a Snippet struct as input
 // Returns true/false and error if creation failed.
 func (c *Client) CreateSnippet(s Snippet) error {
@@ -29,7 +30,7 @@ func (c *Client) CreateSnippet(s Snippet) error {
 	return err
 }
 
-// Gets a snippet file in Cobbler.
+// GetSnippet gets a snippet file in Cobbler.
 // Takes a snippet file name as input.
 // Returns *Snippet and error if read failed.
 func (c *Client) GetSnippet(name string) (*Snippet, error) {
@@ -47,7 +48,7 @@ func (c *Client) GetSnippet(name string) (*Snippet, error) {
 	return &snippet, nil
 }
 
-// Gets a snippet file in Cobbler.
+// DeleteSnippet deletes a snippet file in Cobbler.
 // Takes a snippet file name as input.
 // Returns error if delete failed.
 func (c *Client) DeleteSnippet(name string) error {

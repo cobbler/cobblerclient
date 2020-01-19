@@ -221,16 +221,16 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	if err != nil {
 		return nil, err
 	}
-	newId := result.(string)
+	newID := result.(string)
 
 	// Set the value of all fields
 	item := reflect.ValueOf(&system).Elem()
-	if err := c.updateCobblerFields("system", item, newId); err != nil {
+	if err := c.updateCobblerFields("system", item, newID); err != nil {
 		return nil, err
 	}
 
 	// Save the final system
-	if _, err := c.Call("save_system", newId, c.Token); err != nil {
+	if _, err := c.Call("save_system", newID, c.Token); err != nil {
 		return nil, err
 	}
 

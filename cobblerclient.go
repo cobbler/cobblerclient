@@ -43,13 +43,14 @@ type Client struct {
 	Token      string
 }
 
-// ClientConfig is ...
+// ClientConfig is the URL of Cobbler plus login credentials.
 type ClientConfig struct {
 	URL      string
 	Username string
 	Password string
 }
 
+// NewClient is ...
 func NewClient(httpClient HTTPClient, c ClientConfig) Client {
 	return Client{
 		httpClient: httpClient,
@@ -57,6 +58,7 @@ func NewClient(httpClient HTTPClient, c ClientConfig) Client {
 	}
 }
 
+// Call is ...
 func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 	var result interface{}
 
@@ -89,7 +91,7 @@ func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 	return result, nil
 }
 
-// Login ... Performs a login request to Cobbler using the credentials provided
+// Login will perform a login request to Cobbler using the credentials provided
 // in the configuration in the initializer.
 func (c *Client) Login() (bool, error) {
 	result, err := c.Call("login", c.config.Username, c.config.Password)

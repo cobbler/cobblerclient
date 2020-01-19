@@ -31,3 +31,6 @@ Directories renamed:
 
 - `/var/www/cobbler/ks_mirror` to `/var/www/cobbler/distro_mirror`
 - `/var/lib/cobbler/kickstarts` to `/var/lib/cobbler/templates`
+
+Template names used are now short names without a path.
+So `foo.ks` instead of `/var/lib/cobbler/kickstarts/foo.ks`.
