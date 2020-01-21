@@ -24,7 +24,7 @@ import (
 )
 
 var config = ClientConfig{
-	Url:      "http://example.org:1234",
+	URL:      "http://example.org:1234",
 	Username: "john",
 	Password: "doe",
 }

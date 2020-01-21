@@ -8,7 +8,7 @@ import (
 )
 
 var config = cobbler.ClientConfig{
-	Url:      "http://localhost:25151",
+	URL:      "http://localhost:25151",
 	Username: "cobbler",
 	Password: "password",
 }
