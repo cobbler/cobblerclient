@@ -16,24 +16,25 @@ limitations under the License.
 
 package cobblerclient
 
+// Snippet is a snippet file
 type Snippet struct {
 	Name string // The name the snippet file will be saved in Cobbler
 	Body string // The contents of the kickstart file
 }
 
-// Creates a snippet in Cobbler.
+// CreateSnippet creates a snippet in Cobbler.
 // Takes a Snippet struct as input
 // Returns true/false and error if creation failed.
 func (c *Client) CreateSnippet(s Snippet) error {
-	_, err := c.Call("read_or_write_snippet", s.Name, false, s.Body, c.Token)
+	_, err := c.Call("write_autoinstall_snippet", s.Name, false, s.Body, c.Token)
 	return err
 }
 
-// Gets a snippet file in Cobbler.
+// GetSnippet gets a snippet file in Cobbler.
 // Takes a snippet file name as input.
 // Returns *Snippet and error if read failed.
 func (c *Client) GetSnippet(name string) (*Snippet, error) {
-	result, err := c.Call("read_or_write_snippet", name, true, "", c.Token)
+	result, err := c.Call("read_autoinstall_snippet", name, true, "", c.Token)
 
 	if err != nil {
 		return nil, err
@@ -47,10 +48,10 @@ func (c *Client) GetSnippet(name string) (*Snippet, error) {
 	return &snippet, nil
 }
 
-// Gets a snippet file in Cobbler.
+// DeleteSnippet deletes a snippet file in Cobbler.
 // Takes a snippet file name as input.
 // Returns error if delete failed.
 func (c *Client) DeleteSnippet(name string) error {
-	_, err := c.Call("read_or_write_snippet", name, false, -1, c.Token)
+	_, err := c.Call("remove_autoinstall_snippet", name, false, -1, c.Token)
 	return err
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-  <methodName>read_or_write_snippet</methodName>
+  <methodName>read_autoinstall_snippet</methodName>
   <params>
     <param>
       <value>

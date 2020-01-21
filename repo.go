@@ -101,14 +101,14 @@ func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 	if err != nil {
 		return nil, err
 	}
-	newId := result.(string)
+	newID := result.(string)
 
 	item := reflect.ValueOf(&repo).Elem()
-	if err := c.updateCobblerFields("repo", item, newId); err != nil {
+	if err := c.updateCobblerFields("repo", item, newID); err != nil {
 		return nil, err
 	}
 
-	if _, err := c.Call("save_repo", newId, c.Token); err != nil {
+	if _, err := c.Call("save_repo", newID, c.Token); err != nil {
 		return nil, err
 	}
 

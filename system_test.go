@@ -46,14 +46,14 @@ func TestNewSystem(t *testing.T) {
 	c := createStubHTTPClient(t, "new-system-req.xml", "new-system-res.xml")
 	result, err := c.Call("new_system", c.Token)
 	utils.FailOnError(t, err)
-	newId := result.(string)
+	newID := result.(string)
 
-	if newId != "___NEW___system::abc123==" {
+	if newID != "___NEW___system::abc123==" {
 		t.Errorf("Wrong ID returned.")
 	}
 
 	c = createStubHTTPClient(t, "set-system-hostname-req.xml", "set-system-hostname-res.xml")
-	result, err = c.Call("modify_system", newId, "hostname", "blahhost", c.Token)
+	result, err = c.Call("modify_system", newID, "hostname", "blahhost", c.Token)
 	utils.FailOnError(t, err)
 
 	if !result.(bool) {
@@ -61,7 +61,7 @@ func TestNewSystem(t *testing.T) {
 	}
 
 	c = createStubHTTPClient(t, "set-system-name-req.xml", "set-system-name-res.xml")
-	result, err = c.Call("modify_system", newId, "name", "mytestsystem", c.Token)
+	result, err = c.Call("modify_system", newID, "name", "mytestsystem", c.Token)
 	utils.FailOnError(t, err)
 
 	if !result.(bool) {
@@ -69,7 +69,7 @@ func TestNewSystem(t *testing.T) {
 	}
 
 	c = createStubHTTPClient(t, "set-system-nameservers-req.xml", "set-system-nameservers-res.xml")
-	result, err = c.Call("modify_system", newId, "name_servers", "8.8.8.8 8.8.4.4", c.Token)
+	result, err = c.Call("modify_system", newID, "name_servers", "8.8.8.8 8.8.4.4", c.Token)
 	utils.FailOnError(t, err)
 
 	if !result.(bool) {
@@ -77,7 +77,7 @@ func TestNewSystem(t *testing.T) {
 	}
 
 	c = createStubHTTPClient(t, "set-system-profile-req.xml", "set-system-profile-res.xml")
-	result, err = c.Call("modify_system", newId, "profile", "centos7-x86_64", c.Token)
+	result, err = c.Call("modify_system", newID, "profile", "centos7-x86_64", c.Token)
 	utils.FailOnError(t, err)
 
 	if !result.(bool) {
@@ -94,7 +94,7 @@ func TestNewSystem(t *testing.T) {
 	}
 
 	c = createStubHTTPClient(t, "set-system-network-req.xml", "set-system-network-res.xml")
-	result, err = c.Call("modify_system", newId, "modify_interface", nicInfo, c.Token)
+	result, err = c.Call("modify_system", newID, "modify_interface", nicInfo, c.Token)
 	utils.FailOnError(t, err)
 
 	if !result.(bool) {
@@ -103,7 +103,7 @@ func TestNewSystem(t *testing.T) {
 	*/
 
 	c = createStubHTTPClient(t, "save-system-req.xml", "save-system-res.xml")
-	result, err = c.Call("save_system", newId, c.Token)
+	result, err = c.Call("save_system", newID, c.Token)
 	utils.FailOnError(t, err)
 
 	if !result.(bool) {

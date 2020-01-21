@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-  <methodName>read_or_write_kickstart_template</methodName>
+  <methodName>write_autoinstall_template</methodName>
   <params>
     <param>
       <value>
-        <string>/var/lib/cobbler/kickstarts/foo.ks</string>
+        <string>/var/lib/cobbler/templates/foo.ks</string>
       </value>
     </param>
     <param>

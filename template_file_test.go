@@ -22,29 +22,29 @@ import (
 	"github.com/ContainerSolutions/go-utils"
 )
 
-func TestCreateKickstartFile(t *testing.T) {
-	c := createStubHTTPClient(t, "create-kickstart-file-req.xml", "create-kickstart-file-res.xml")
+func TestCreateTemplateFile(t *testing.T) {
+	c := createStubHTTPClient(t, "create-template-file-req.xml", "create-template-file-res.xml")
 
-	ks := KickstartFile{
-		Name: "/var/lib/cobbler/kickstarts/foo.ks",
+	ks := TemplateFile{
+		Name: "/var/lib/cobbler/templates/foo.ks",
 		Body: "sample content",
 	}
 
-	err := c.CreateKickstartFile(ks)
+	err := c.CreateTemplateFile(ks)
 	utils.FailOnError(t, err)
 }
 
-func TestGetKickstartFile(t *testing.T) {
-	ksName := "/var/lib/cobbler/kickstarts/foo.ks"
+func TestGetTemplateFile(t *testing.T) {
+	ksName := "/var/lib/cobbler/templates/foo.ks"
 
-	c := createStubHTTPClient(t, "get-kickstart-file-req.xml", "get-kickstart-file-res.xml")
+	c := createStubHTTPClient(t, "get-template-file-req.xml", "get-template-file-res.xml")
 
-	expectedKS := KickstartFile{
+	expectedKS := TemplateFile{
 		Name: ksName,
 		Body: "sample content",
 	}
 
-	returnedKS, err := c.GetKickstartFile(ksName)
+	returnedKS, err := c.GetTemplateFile(ksName)
 	utils.FailOnError(t, err)
 
 	if returnedKS.Body != expectedKS.Body {

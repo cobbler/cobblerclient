@@ -105,14 +105,14 @@ func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 	if err != nil {
 		return nil, err
 	}
-	newId := result.(string)
+	newID := result.(string)
 
 	item := reflect.ValueOf(&distro).Elem()
-	if err := c.updateCobblerFields("distro", item, newId); err != nil {
+	if err := c.updateCobblerFields("distro", item, newID); err != nil {
 		return nil, err
 	}
 
-	if _, err := c.Call("save_distro", newId, c.Token); err != nil {
+	if _, err := c.Call("save_distro", newID, c.Token); err != nil {
 		return nil, err
 	}
 
