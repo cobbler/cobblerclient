@@ -16,7 +16,7 @@ limitations under the License.
 
 package cobblerclient
 
-// TemplateFile is the former KickstartFile
+// TemplateFile is the former TemplateFile
 type TemplateFile struct {
 	Name string // The name the template file will be saved in Cobbler
 	Body string // The contents of the template file

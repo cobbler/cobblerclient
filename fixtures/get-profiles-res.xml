@@ -14,7 +14,7 @@
                   </value>
                 </member>
                 <member>
-                  <name>kickstart</name>
+                  <name>template</name>
                   <value>
                     <string>/var/lib/cobbler/templates/sample.seed</string>
                   </value>

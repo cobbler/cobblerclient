@@ -245,10 +245,10 @@ curl -XPOST -d '
   </params>
 </methodResponse>
 
--- create a kickstart file:
+-- create a template file:
 curl -XPOST -d '
 <methodCall>
-  <methodName>read_or_write_kickstart_template</methodName>
+  <methodName>write_autoinstall_template</methodName>
   <params>
     <param>
       <value>
@@ -262,7 +262,7 @@ curl -XPOST -d '
     </param>
     <param>
       <value>
-        <string># test content for the kickstart file</string>
+        <string># test content for the template file</string>
       </value>
     </param>
     <param>
@@ -273,10 +273,10 @@ curl -XPOST -d '
   </params>
 </methodCall>' http://localhost:25151/
 
--- get a kickstart file:
+-- get a template file:
 curl -XPOST -d '
 <methodCall>
-  <methodName>read_or_write_kickstart_template</methodName>
+  <methodName>read_autoinstall_template</methodName>
   <params>
     <param>
       <value>
@@ -304,11 +304,11 @@ curl -XPOST -d '
 -- create a snippet:
 curl -XPOST -d '
 <methodCall>
-  <methodName>read_or_write_snippet</methodName>
+  <methodName>write_autoinstall_snippet</methodName>
   <params>
     <param>
       <value>
-        <string>/var/lib/cobbler/snippets/foo</string>
+        <string>/var/lib/cobbler/snippets/some-snippet</string>
       </value>
     </param>
     <param>
@@ -332,7 +332,7 @@ curl -XPOST -d '
 -- get a snippet:
 curl -XPOST -d '
 <methodCall>
-  <methodName>read_or_write_snippet</methodName>
+  <methodName>read_autoinstall_snippet</methodName>
   <params>
     <param>
       <value>
@@ -768,7 +768,7 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>kickstart</name>
+                  <name>template</name>
                   <value>
                     <string>/var/lib/cobbler/templates/sample.seed</string>
                   </value>
@@ -1048,7 +1048,7 @@ curl -XPOST -d '<methodCall>
             </value>
           </member>
           <member>
-            <name>kickstart</name>
+            <name>template</name>
             <value>
               <string>/var/lib/cobbler/templates/sample.seed</string>
             </value>
@@ -1321,11 +1321,11 @@ curl -XPOST -d '<methodCall>
                 <member>
                   <name>profile</name>
                   <value>
-                    <string>Ubuntu-14.04-x86_64</string>
+                    <string>Ubuntu-18.04-x86_64</string>
                   </value>
                 </member>
                 <member>
-                  <name>kickstart</name>
+                  <name>template</name>
                   <value>
                     <string>&lt;&lt;inherit&gt;&gt;</string>
                   </value>
@@ -1676,11 +1676,11 @@ curl -XPOST -d '<methodCall>
           <member>
             <name>profile</name>
             <value>
-              <string>Ubuntu-14.04-x86_64</string>
+              <string>Ubuntu-18.04-x86_64</string>
             </value>
           </member>
           <member>
-            <name>kickstart</name>
+            <name>template</name>
             <value>
               <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>

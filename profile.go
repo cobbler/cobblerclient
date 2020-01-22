@@ -60,7 +60,7 @@ type Profile struct {
 	VirtDiskDriver          string   `mapstructure:"virt_disk_driver"`
 	VirtFileSize            string   `mapstructure:"virt_file_size"`
 	VirtPath                string   `mapstructure:"virt_path"`
-	VirtRam                 string   `mapstructure:"virt_ram"`
+	VirtRAM                 string   `mapstructure:"virt_ram"`
 	VirtType                string   `mapstructure:"virt_type"`
 
 	Client
@@ -145,8 +145,8 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		profile.VirtAutoBoot = "0"
 	}
 
-	if profile.VirtRam == "" {
-		profile.VirtRam = "<<inherit>>"
+	if profile.VirtRAM == "" {
+		profile.VirtRAM = "<<inherit>>"
 	}
 
 	if profile.VirtType == "" {

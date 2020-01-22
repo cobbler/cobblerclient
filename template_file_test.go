@@ -48,6 +48,6 @@ func TestGetTemplateFile(t *testing.T) {
 	utils.FailOnError(t, err)
 
 	if returnedKS.Body != expectedKS.Body {
-		t.Errorf("Kickstart Body did not match.")
+		t.Errorf("Template Body did not match.")
 	}
 }
