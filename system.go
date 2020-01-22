@@ -75,7 +75,7 @@ type System struct {
 	VirtFileSize            string                 `mapstructure:"virt_file_size"`
 	VirtPath                string                 `mapstructure:"virt_path"`
 	VirtPXEBoot             int                    `mapstructure:"virt_pxe_boot"`
-	VirtRam                 string                 `mapstructure:"virt_ram"`
+	VirtRAM                 string                 `mapstructure:"virt_ram"`
 	VirtType                string                 `mapstructure:"virt_type"`
 
 	Client
@@ -208,8 +208,8 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 		system.VirtPath = "<<inherit>>"
 	}
 
-	if system.VirtRam == "" {
-		system.VirtRam = "<<inherit>>"
+	if system.VirtRAM == "" {
+		system.VirtRAM = "<<inherit>>"
 	}
 
 	if system.VirtType == "" {
@@ -254,6 +254,7 @@ func (c *Client) DeleteSystem(name string) error {
 	return err
 }
 
+// CreateInterface controls network interfaces in Cobbler
 func (s *System) CreateInterface(name string, iface Interface) error {
 	i := structs.Map(iface)
 	nic := make(map[string]interface{})
@@ -262,17 +263,17 @@ func (s *System) CreateInterface(name string, iface Interface) error {
 		nic[attrName] = value
 	}
 
-	systemId, err := s.Client.GetItemHandle("system", s.Name)
+	systemID, err := s.Client.GetItemHandle("system", s.Name)
 	if err != nil {
 		return err
 	}
 
-	if _, err := s.Client.Call("modify_system", systemId, "modify_interface", nic, s.Client.Token); err != nil {
+	if _, err := s.Client.Call("modify_system", systemID, "modify_interface", nic, s.Client.Token); err != nil {
 		return err
 	}
 
 	// Save the final system
-	if _, err := s.Client.Call("save_system", systemId, s.Client.Token); err != nil {
+	if _, err := s.Client.Call("save_system", systemID, s.Client.Token); err != nil {
 		return err
 	}
 
@@ -318,17 +319,17 @@ func (s *System) DeleteInterface(name string) error {
 		return err
 	}
 
-	systemId, err := s.Client.GetItemHandle("system", s.Name)
+	systemID, err := s.Client.GetItemHandle("system", s.Name)
 	if err != nil {
 		return err
 	}
 
-	if _, err := s.Client.Call("modify_system", systemId, "delete_interface", name, s.Client.Token); err != nil {
+	if _, err := s.Client.Call("modify_system", systemID, "delete_interface", name, s.Client.Token); err != nil {
 		return err
 	}
 
 	// Save the final system
-	if _, err := s.Client.Call("save_system", systemId, s.Client.Token); err != nil {
+	if _, err := s.Client.Call("save_system", systemID, s.Client.Token); err != nil {
 		return err
 	}
 

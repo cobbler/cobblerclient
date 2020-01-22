@@ -216,19 +216,19 @@ func main() {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Creating a Kickstart")
-	ks := cobbler.KickstartFile{
+	fmt.Println("Creating a Template")
+	ks := cobbler.TemplateFile{
 		Name: "/var/lib/cobbler/templates/foo.ks",
 		Body: "sample content",
 	}
 
-	err = c.CreateKickstartFile(ks)
+	err = c.CreateTemplateFile(ks)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Println("Deleting a Kickstart")
-	if err := c.DeleteKickstartFile("/var/lib/cobbler/templates/foo.ks"); err != nil {
+	fmt.Println("Deleting a Template")
+	if err := c.DeleteTemplateFile("/var/lib/cobbler/templates/foo.ks"); err != nil {
 		fmt.Println(err)
 	}
 

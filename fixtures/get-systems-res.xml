@@ -20,7 +20,7 @@
                   </value>
                 </member>
                 <member>
-                  <name>kickstart</name>
+                  <name>template</name>
                   <value>
                     <string>&lt;&lt;inherit&gt;&gt;</string>
                   </value>
