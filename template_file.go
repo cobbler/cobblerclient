@@ -27,7 +27,7 @@ type TemplateFile struct {
 // Requires 3 arguments: file, data and token
 // Returns true/false and error if creation failed.
 func (c *Client) CreateTemplateFile(f TemplateFile) error {
-	_, err := c.Call("write_autoinstall_template(", f.Name, f.Body, c.Token) // TODO: check name
+	_, err := c.Call("write_autoinstall_template", f.Name, f.Body, c.Token) // TODO: check name
 	return err
 }
 
