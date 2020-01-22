@@ -79,13 +79,13 @@ func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	resp := xmlrpc.NewResponse(body)
+	resp := xmlrpc.Response(body)
 	if err := resp.Unmarshal(&result); err != nil {
 		return nil, err
 	}
 
-	if resp.Failed() {
-		return nil, resp.Err()
+	if err := resp.Err(); err != nil {
+		return nil, err
 	}
 
 	return result, nil
