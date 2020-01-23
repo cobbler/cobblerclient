@@ -34,3 +34,5 @@ Directories renamed:
 
 Template names used are now short names without a path.
 So `foo.ks` instead of `/var/lib/cobbler/kickstarts/foo.ks`.
+
+`ks_meta` was renamed to `autoinstall_meta`.

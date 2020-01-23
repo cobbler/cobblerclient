@@ -448,7 +448,7 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>ks_meta</name>
+                  <name>autoinstall_meta</name>
                   <value>
                     <struct>
                       <member>
@@ -640,7 +640,7 @@ curl -XPOST -d '<methodCall>
             </value>
           </member>
           <member>
-            <name>ks_meta</name>
+            <name>autoinstall_meta</name>
             <value>
               <string>tree=http://@@http_server@@/cblr/links/Ubuntu-18.04-x86_64 </string>
             </value>
@@ -783,7 +783,7 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>ks_meta</name>
+                  <name>autoinstall_meta</name>
                   <value>
                     <struct>
 </struct>
@@ -1063,7 +1063,7 @@ curl -XPOST -d '<methodCall>
             </value>
           </member>
           <member>
-            <name>ks_meta</name>
+            <name>autoinstall_meta</name>
             <value>
               <string/>
             </value>
@@ -1340,7 +1340,7 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>ks_meta</name>
+                  <name>autoinstall_meta</name>
                   <value>
                     <struct>
 </struct>
@@ -1695,7 +1695,7 @@ curl -XPOST -d '<methodCall>
             </value>
           </member>
           <member>
-            <name>ks_meta</name>
+            <name>autoinstall_meta</name>
             <value>
               <string/>
             </value>

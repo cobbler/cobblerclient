@@ -71,7 +71,7 @@
                   </value>
                 </member>
                 <member>
-                  <name>ks_meta</name>
+                  <name>autoinstall_meta</name>
                   <value>
                     <struct>
                       <member>

@@ -45,7 +45,7 @@ type Distro struct {
 	Owners            []string `mapstructure:"owners"`
 	TemplateFiles     string   `mapstructure:"template_files"`
 
-	//KSMeta                 string   `mapstructure:"ks_meta"`
+	//AutoinstallMeta        string   `mapstructure:"autoinstall_meta"`
 	//RedHatManagementKey    string   `mapstructure:"redhat_management_key"`
 	//RedHatManagementServer string   `mapstructure:"redhat_management_server"`
 	//SourceRepos            []string `mapstructure:"source_repos"`
