@@ -34,7 +34,7 @@ func (c *Client) CreateSnippet(s Snippet) error {
 // Takes a snippet file name as input.
 // Returns *Snippet and error if read failed.
 func (c *Client) GetSnippet(name string) (*Snippet, error) {
-	result, err := c.Call("read_autoinstall_snippet", name, "", c.Token)
+	result, err := c.Call("read_autoinstall_snippet", name, c.Token)
 
 	if err != nil {
 		return nil, err
@@ -52,6 +52,6 @@ func (c *Client) GetSnippet(name string) (*Snippet, error) {
 // Takes a snippet file name as input.
 // Returns error if delete failed.
 func (c *Client) DeleteSnippet(name string) error {
-	_, err := c.Call("remove_autoinstall_snippet", name, -1, c.Token)
+	_, err := c.Call("remove_autoinstall_snippet", name, c.Token)
 	return err
 }

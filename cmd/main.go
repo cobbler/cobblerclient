@@ -57,7 +57,7 @@ func main() {
 	d := cobbler.Distro{
 		Name:      "Test",
 		Breed:     "Ubuntu",
-		OSVersion: "trusty",
+		OSVersion: "bionic",
 		Arch:      "x86_64",
 		Kernel:    "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux",
 		Initrd:    "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz",

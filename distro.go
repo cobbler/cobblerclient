@@ -30,24 +30,24 @@ type Distro struct {
 	Mtime         float64 `mapstructure:"mtime"          cobbler:"noupdate"` // TODO: convert to time
 	TreeBuildTime string  `mapstructure:tree_build_time" cobbler:"noupdate"`
 
-	Arch                   string   `mapstructure:"arch"`
-	Breed                  string   `mapstructure:"breed"`
-	BootFiles              string   `mapstructure:"boot_files"`
-	Comment                string   `mapstructure:"comment"`
-	FetchableFiles         string   `mapstructure:"fetchable_files"`
-	Kernel                 string   `mapstructure:"kernel"`
-	KernelOptions          string   `mapstructure:"kernel_options"`
-	KernelOptionsPost      string   `mapstructure:"kernel_options_post"`
-	Initrd                 string   `mapstructure:"initrd"`
-	MGMTClasses            []string `mapstructure:"mgmt_classes"`
-	Name                   string   `mapstructure:"name"`
-	OSVersion              string   `mapstructure:"os_version"`
-	Owners                 []string `mapstructure:"owners"`
-	RedHatManagementKey    string   `mapstructure:"redhat_management_key"`
-	RedHatManagementServer string   `mapstructure:"redhat_management_server"`
-	TemplateFiles          string   `mapstructure:"template_files"`
+	Arch              string   `mapstructure:"arch"`
+	Breed             string   `mapstructure:"breed"`
+	BootFiles         string   `mapstructure:"boot_files"`
+	Comment           string   `mapstructure:"comment"`
+	FetchableFiles    string   `mapstructure:"fetchable_files"`
+	Kernel            string   `mapstructure:"kernel"`
+	KernelOptions     string   `mapstructure:"kernel_options"`
+	KernelOptionsPost string   `mapstructure:"kernel_options_post"`
+	Initrd            string   `mapstructure:"initrd"`
+	MGMTClasses       []string `mapstructure:"mgmt_classes"`
+	Name              string   `mapstructure:"name"`
+	OSVersion         string   `mapstructure:"os_version"`
+	Owners            []string `mapstructure:"owners"`
+	TemplateFiles     string   `mapstructure:"template_files"`
 
 	//KSMeta                 string   `mapstructure:"ks_meta"`
+	//RedHatManagementKey    string   `mapstructure:"redhat_management_key"`
+	//RedHatManagementServer string   `mapstructure:"redhat_management_server"`
 	//SourceRepos            []string `mapstructure:"source_repos"`
 }
 
