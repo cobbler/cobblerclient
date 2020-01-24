@@ -8,7 +8,7 @@ import (
 )
 
 var config = cobbler.ClientConfig{
-	URL:      "http://localhost:25151",
+	URL:      "http://example.com/cobbler_api",
 	Username: "cobbler",
 	Password: "password",
 }
@@ -83,8 +83,10 @@ func main() {
 
 	fmt.Println("Creating a Profile")
 	p := cobbler.Profile{
-		Name:   "Testy",
-		Distro: "Test",
+		Name:           "Testy",
+		Distro:         "Test",
+		Autoinstall:    "sample.seed",
+		VirtDiskDriver: "<<inherit>>", // For some reason the virt_disk_driver must be set in Cobbler 3...
 	}
 
 	newProfile, err := c.CreateProfile(p)

@@ -34,6 +34,7 @@ type System struct {
 	Mtime                 float64 `mapstructure:"mtime"                 cobbler:"noupdate"` // TODO: convert to time
 	ReposEnabled          bool    `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
+	Autoinstall       string                 `mapstructure:"autoinstall"`
 	AutoinstallMeta   string                 `mapstructure:"autoinstall_meta"`
 	BootFiles         string                 `mapstructure:"boot_files"`
 	Comment           string                 `mapstructure:"comment"`
@@ -52,9 +53,10 @@ type System struct {
 	MGMTParameters string   `mapstructure:"mgmt_parameters"`
 	//MonitEnabled     bool                   `mapstructure:"monit_enabled"` // Removed in Cobbler 3 system
 	Name              string   `mapstructure:"name"`
-	NameServersSearch []string `mapstructure:"name_servers_search"`
 	NameServers       []string `mapstructure:"name_servers"`
+	NameServersSearch []string `mapstructure:"name_servers_search"`
 	NetbootEnabled    bool     `mapstructure:"netboot_enabled"`
+	NextServer        string   `mapstructure:"next_server"`
 	Owners            []string `mapstructure:"owners"`
 	PowerAddress      string   `mapstructure:"power_address"`
 	PowerID           string   `mapstructure:"power_id"`
@@ -65,10 +67,8 @@ type System struct {
 	Proxy             string   `mapstructure:"proxy"`
 	//RedHatManagementKey     string   `mapstructure:"redhat_management_key"`    // Removed in Cobbler 3 system
 	//RedHatManagementServer  string   `mapstructure:"redhat_management_server"` // Removed in Cobbler 3 system
-	Status string `mapstructure:"status"`
-	//Template                string `mapstructure:"template"`
-	TemplateFiles string `mapstructure:"template_files"`
-	//TemplateRemoteTemplates int    `mapstructure:"template_remote_templates"`
+	Status         string `mapstructure:"status"`
+	TemplateFiles  string `mapstructure:"template_files"`
 	VirtAutoBoot   string `mapstructure:"virt_auto_boot"`
 	VirtCPUs       string `mapstructure:"virt_cpus"`
 	VirtDiskDriver string `mapstructure:"virt_disk_driver"`

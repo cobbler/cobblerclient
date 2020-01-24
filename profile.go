@@ -30,9 +30,11 @@ type Profile struct {
 	Mtime        float64 `mapstructure:"mtime"                  cobbler:"noupdate"` // TODO: convert to time
 	ReposEnabled bool    `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
+	Autoinstall       string   `mapstructure:"autoinstall"`
 	AutoinstallMeta   string   `mapstructure:"autoinstall_meta"`
 	BootFiles         string   `mapstructure:"boot_files"`
 	Comment           string   `mapstructure:"comment"`
+	DHCPTag           string   `mapstructure:"dhcp_tag"`
 	Distro            string   `mapstructure:"distro"`
 	EnableGPXE        bool     `mapstructure:"enable_gpxe"`
 	EnableMenu        bool     `mapstructure:"enable_menu"`
@@ -42,18 +44,16 @@ type Profile struct {
 	MGMTClasses       []string `mapstructure:"mgmt_classes"`
 	MGMTParameters    string   `mapstructure:"mgmt_parameters"`
 	Name              string   `mapstructure:"name"`
-	NameServersSearch []string `mapstructure:"name_servers_search"`
 	NameServers       []string `mapstructure:"name_servers"`
+	NameServersSearch []string `mapstructure:"name_servers_search"`
+	NextServer        string   `mapstructure:"next_server"`
 	Owners            []string `mapstructure:"owners"`
-	Parent            string   `mapstructure:"parent"`
 	Proxy             string   `mapstructure:"proxy"`
 	//RedHatManagementKey     string   `mapstructure:"redhat_management_key"`    // Removed in Cobbler 3 profile
 	//RedHatManagementServer  string   `mapstructure:"redhat_management_server"` // Removed in Cobbler 3 profile
-	Repos  string `mapstructure:"repos"`
-	Server string `mapstructure:"server"`
-	//Template      string `mapstructure:"template"`
-	TemplateFiles string `mapstructure:"template_files"`
-	//TemplateRemoteTemplates int    `mapstructure:"template_remote_templates"`
+	Repos          string `mapstructure:"repos"`
+	Server         string `mapstructure:"server"`
+	TemplateFiles  string `mapstructure:"template_files"`
 	VirtAutoBoot   string `mapstructure:"virt_auto_boot"`
 	VirtBridge     string `mapstructure:"virt_bridge"`
 	VirtCPUs       string `mapstructure:"virt_cpus"`
