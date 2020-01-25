@@ -70,7 +70,7 @@ func TestLogin(t *testing.T) {
 
 func TestLoginWithError(t *testing.T) {
 	c := createStubHTTPClient(t, "login-req.xml", "login-res-err.xml")
-	expected := `error: "<class 'cobbler.cexceptions.CX'>:'login failed (cobbler)'" code: 1`
+	expected := `Fault(1): <class 'cobbler.cexceptions.CX'>:'login failed (cobbler)'`
 
 	ok, err := c.Login()
 	if ok {
