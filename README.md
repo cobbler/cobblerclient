@@ -51,7 +51,7 @@ These directories have been renamed:
 
 Support for these attributes was dropped in Cobbler 3:
 
-- `ldap_enabled"`
+- `ldap_enabled`
 - `ldap_type`
 - `monit_enabled`
 - `redhat_management_key`
