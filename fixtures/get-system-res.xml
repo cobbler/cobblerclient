@@ -13,7 +13,7 @@
           <member>
             <name>profile</name>
             <value>
-              <string>Ubuntu-14.04-x86_64</string>
+              <string>Ubuntu-18.04-x86_64</string>
             </value>
           </member>
           <member>
@@ -31,7 +31,7 @@
             </value>
           </member>
           <member>
-            <name>ks_meta</name>
+            <name>autoinstall_meta</name>
             <value>
               <string/>
             </value>

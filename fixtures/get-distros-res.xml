@@ -16,7 +16,7 @@
                 <member>
                   <name>kernel</name>
                   <value>
-                    <string>/var/www/cobbler/ks_mirror/Ubuntu-14.04/install/netboot/ubuntu-installer/amd64/linux</string>
+                    <string>/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux</string>
                   </value>
                 </member>
                 <member>
@@ -54,7 +54,7 @@
                 <member>
                   <name>initrd</name>
                   <value>
-                    <string>/var/www/cobbler/ks_mirror/Ubuntu-14.04/install/netboot/ubuntu-installer/amd64/initrd.gz</string>
+                    <string>/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz</string>
                   </value>
                 </member>
                 <member>
@@ -71,13 +71,13 @@
                   </value>
                 </member>
                 <member>
-                  <name>ks_meta</name>
+                  <name>autoinstall_meta</name>
                   <value>
                     <struct>
                       <member>
                         <name>tree</name>
                         <value>
-                          <string>http://@@http_server@@/cblr/links/Ubuntu-14.04-x86_64</string>
+                          <string>http://@@http_server@@/cblr/links/Ubuntu-18.04-x86_64</string>
                         </value>
                       </member>
                     </struct>
@@ -99,7 +99,7 @@
                 <member>
                   <name>os_version</name>
                   <value>
-                    <string>trusty</string>
+                    <string>bionic</string>
                   </value>
                 </member>
                 <member>
@@ -133,7 +133,7 @@
                 <member>
                   <name>name</name>
                   <value>
-                    <string>Ubuntu-14.04-x86_64</string>
+                    <string>Ubuntu-18.04-x86_64</string>
                   </value>
                 </member>
                 <member>
