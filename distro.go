@@ -33,6 +33,7 @@ type Distro struct {
 	Arch              string   `mapstructure:"arch"`
 	Breed             string   `mapstructure:"breed"`
 	BootFiles         string   `mapstructure:"boot_files"`
+	BootLoader        string   `mapstructure:"boot_loader"`
 	Comment           string   `mapstructure:"comment"`
 	FetchableFiles    string   `mapstructure:"fetchable_files"`
 	Kernel            string   `mapstructure:"kernel"`
