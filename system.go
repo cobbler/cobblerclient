@@ -37,6 +37,7 @@ type System struct {
 	Autoinstall       string                 `mapstructure:"autoinstall"`
 	AutoinstallMeta   string                 `mapstructure:"autoinstall_meta"`
 	BootFiles         string                 `mapstructure:"boot_files"`
+	BootLoader        string                 `mapstructure:"boot_loader"`
 	Comment           string                 `mapstructure:"comment"`
 	EnableGPXE        bool                   `mapstructure:"enable_gpxe"`
 	FetchableFiles    string                 `mapstructure:"fetchable_files"`
