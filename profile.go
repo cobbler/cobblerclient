@@ -153,6 +153,9 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		profile.VirtType = "<<inherit>>"
 	}
 
+	if profile.VirtDiskDriver == "" {
+		profile.VirtDiskDriver = "<<inherit>>"
+	}
 	/*
 
 		if system.PowerType == "" {

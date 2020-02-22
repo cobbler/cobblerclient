@@ -16,7 +16,7 @@
                         <member>
                            <name>environment</name>
                            <value>
-                              <struct />
+                              <string />
                            </value>
                         </member>
                         <member>
