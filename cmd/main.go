@@ -10,7 +10,7 @@ import (
 var config = cobbler.ClientConfig{
 	URL:      "http://example.com/cobbler_api",
 	Username: "cobbler",
-	Password: "password",
+	Password: "cobbler",
 }
 
 func main() {
@@ -55,12 +55,13 @@ func main() {
 	}
 
 	d := cobbler.Distro{
-		Name:      "Test",
-		Breed:     "Ubuntu",
-		OSVersion: "bionic",
-		Arch:      "x86_64",
-		Kernel:    "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux",
-		Initrd:    "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz",
+		Name:       "Test",
+		Breed:      "Ubuntu",
+		OSVersion:  "bionic",
+		Arch:       "x86_64",
+		BootLoader: "grub",
+		Kernel:     "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux",
+		Initrd:     "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz",
 	}
 
 	fmt.Println("Creating a Distro")
@@ -113,6 +114,7 @@ func main() {
 		Comment:     "WTF",
 		Name:        "Foobar",
 		Profile:     "Testy",
+		BootLoader:  "grub",
 		NameServers: []string{"8.8.8.8", "1.1.1.1"},
 		PowerID:     "foo",
 	}
@@ -204,7 +206,7 @@ func main() {
 
 	fmt.Println("Creating a Snippet")
 	snippet := cobbler.Snippet{
-		Name: "/var/lib/cobbler/snippets/some-snippet",
+		Name: "some-snippet",
 		Body: "sample content",
 	}
 
@@ -214,13 +216,13 @@ func main() {
 	}
 
 	fmt.Println("Deleting a Snippet")
-	if err := c.DeleteSnippet("/var/lib/cobbler/snippets/some-snippet"); err != nil {
+	if err := c.DeleteSnippet("some-snippet"); err != nil {
 		fmt.Println(err)
 	}
 
 	fmt.Println("Creating a Template")
 	ks := cobbler.TemplateFile{
-		Name: "/var/lib/cobbler/templates/foo.ks",
+		Name: "foo.ks",
 		Body: "sample content",
 	}
 
@@ -230,7 +232,7 @@ func main() {
 	}
 
 	fmt.Println("Deleting a Template")
-	if err := c.DeleteTemplateFile("/var/lib/cobbler/templates/foo.ks"); err != nil {
+	if err := c.DeleteTemplateFile("foo.ks"); err != nil {
 		fmt.Println(err)
 	}
 
