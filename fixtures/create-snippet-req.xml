@@ -9,11 +9,6 @@
     </param>
     <param>
       <value>
-        <boolean>0</boolean>
-      </value>
-    </param>
-    <param>
-      <value>
         <string>sample content</string>
       </value>
     </param>
