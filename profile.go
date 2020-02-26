@@ -30,26 +30,26 @@ type Profile struct {
 	Mtime        float64 `mapstructure:"mtime"                  cobbler:"noupdate"` // TODO: convert to time
 	ReposEnabled bool    `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	Autoinstall       string   `mapstructure:"autoinstall"`
-	AutoinstallMeta   string   `mapstructure:"autoinstall_meta"`
-	BootFiles         string   `mapstructure:"boot_files"`
-	Comment           string   `mapstructure:"comment"`
-	DHCPTag           string   `mapstructure:"dhcp_tag"`
-	Distro            string   `mapstructure:"distro"`
-	EnableGPXE        bool     `mapstructure:"enable_gpxe"`
-	EnableMenu        bool     `mapstructure:"enable_menu"`
-	FetchableFiles    string   `mapstructure:"fetchable_files"`
-	KernelOptions     string   `mapstructure:"kernel_options"`
-	KernelOptionsPost string   `mapstructure:"kernel_options_post"`
-	MGMTClasses       []string `mapstructure:"mgmt_classes"`
-	MGMTParameters    string   `mapstructure:"mgmt_parameters"`
-	Name              string   `mapstructure:"name"`
-	NameServers       []string `mapstructure:"name_servers"`
-	NameServersSearch []string `mapstructure:"name_servers_search"`
-	NextServer        string   `mapstructure:"next_server"`
-	Owners            []string `mapstructure:"owners"`
-	Proxy             string   `mapstructure:"proxy"`
-	//RedHatManagementKey     string   `mapstructure:"redhat_management_key"`    // Removed in Cobbler 3 profile
+	Autoinstall         string   `mapstructure:"autoinstall"`
+	AutoinstallMeta     string   `mapstructure:"autoinstall_meta"`
+	BootFiles           string   `mapstructure:"boot_files"`
+	Comment             string   `mapstructure:"comment"`
+	DHCPTag             string   `mapstructure:"dhcp_tag"`
+	Distro              string   `mapstructure:"distro"`
+	EnableGPXE          bool     `mapstructure:"enable_gpxe"`
+	EnableMenu          bool     `mapstructure:"enable_menu"`
+	FetchableFiles      string   `mapstructure:"fetchable_files"`
+	KernelOptions       string   `mapstructure:"kernel_options"`
+	KernelOptionsPost   string   `mapstructure:"kernel_options_post"`
+	MGMTClasses         []string `mapstructure:"mgmt_classes"`
+	MGMTParameters      string   `mapstructure:"mgmt_parameters"`
+	Name                string   `mapstructure:"name"`
+	NameServers         []string `mapstructure:"name_servers"`
+	NameServersSearch   []string `mapstructure:"name_servers_search"`
+	NextServer          string   `mapstructure:"next_server"`
+	Owners              []string `mapstructure:"owners"`
+	Proxy               string   `mapstructure:"proxy"`
+	RedHatManagementKey string   `mapstructure:"redhat_management_key"`
 	//RedHatManagementServer  string   `mapstructure:"redhat_management_server"` // Removed in Cobbler 3 profile
 	Repos          string `mapstructure:"repos"`
 	Server         string `mapstructure:"server"`

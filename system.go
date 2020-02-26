@@ -53,20 +53,20 @@ type System struct {
 	MGMTClasses    []string `mapstructure:"mgmt_classes"`
 	MGMTParameters string   `mapstructure:"mgmt_parameters"`
 	//MonitEnabled     bool                   `mapstructure:"monit_enabled"` // Removed in Cobbler 3 system
-	Name              string   `mapstructure:"name"`
-	NameServers       []string `mapstructure:"name_servers"`
-	NameServersSearch []string `mapstructure:"name_servers_search"`
-	NetbootEnabled    bool     `mapstructure:"netboot_enabled"`
-	NextServer        string   `mapstructure:"next_server"`
-	Owners            []string `mapstructure:"owners"`
-	PowerAddress      string   `mapstructure:"power_address"`
-	PowerID           string   `mapstructure:"power_id"`
-	PowerPass         string   `mapstructure:"power_pass"`
-	PowerType         string   `mapstructure:"power_type"`
-	PowerUser         string   `mapstructure:"power_user"`
-	Profile           string   `mapstructure:"profile"`
-	Proxy             string   `mapstructure:"proxy"`
-	//RedHatManagementKey     string   `mapstructure:"redhat_management_key"`    // Removed in Cobbler 3 system
+	Name                string   `mapstructure:"name"`
+	NameServers         []string `mapstructure:"name_servers"`
+	NameServersSearch   []string `mapstructure:"name_servers_search"`
+	NetbootEnabled      bool     `mapstructure:"netboot_enabled"`
+	NextServer          string   `mapstructure:"next_server"`
+	Owners              []string `mapstructure:"owners"`
+	PowerAddress        string   `mapstructure:"power_address"`
+	PowerID             string   `mapstructure:"power_id"`
+	PowerPass           string   `mapstructure:"power_pass"`
+	PowerType           string   `mapstructure:"power_type"`
+	PowerUser           string   `mapstructure:"power_user"`
+	Profile             string   `mapstructure:"profile"`
+	Proxy               string   `mapstructure:"proxy"`
+	RedHatManagementKey string   `mapstructure:"redhat_management_key"`
 	//RedHatManagementServer  string   `mapstructure:"redhat_management_server"` // Removed in Cobbler 3 system
 	Status         string `mapstructure:"status"`
 	TemplateFiles  string `mapstructure:"template_files"`
@@ -171,6 +171,10 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	// Set default values. I guess these aren't taken care of by Cobbler?
 	if system.BootFiles == "" {
 		system.BootFiles = "<<inherit>>"
+	}
+
+	if system.BootLoader == "" {
+		system.BootLoader = "<<inherit>>"
 	}
 
 	if system.FetchableFiles == "" {
