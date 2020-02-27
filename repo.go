@@ -38,15 +38,14 @@ type Repo struct {
 	Breed           string   `mapstructure:"breed"`
 	Comment         string   `mapstructure:"comment"`
 	CreateRepoFlags string   `mapstructure:"createrepo_flags"`
-	//Environment     string   `mapstructure:"environment"`
-	//Environment   map[string]interface{} `mapstructure:"environment"`
-	KeepUpdated   bool     `mapstructure:"keep_updated"`
-	Mirror        string   `mapstructure:"mirror"`
-	MirrorLocally bool     `mapstructure:"mirror_locally"`
-	Name          string   `mapstructure:"name"`
-	Owners        []string `mapstructure:"owners"`
-	Proxy         string   `mapstructure:"proxy" cobbler:"newfield"`
-	RpmList       []string `mapstructure:"rpm_list"`
+	Environment     string   `mapstructure:"environment"`
+	KeepUpdated     bool     `mapstructure:"keep_updated"`
+	Mirror          string   `mapstructure:"mirror"`
+	MirrorLocally   bool     `mapstructure:"mirror_locally"`
+	Name            string   `mapstructure:"name"`
+	Owners          []string `mapstructure:"owners"`
+	Proxy           string   `mapstructure:"proxy" cobbler:"newfield"`
+	RpmList         []string `mapstructure:"rpm_list"`
 	//YumOpts                map[string]interface{} `mapstructure:"yumopts"`
 }
 

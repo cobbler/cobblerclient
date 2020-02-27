@@ -33,7 +33,6 @@ type Distro struct {
 	UID           string   `mapstructure:"uid"            cobbler:"noupdate"`
 
 	Arch                string   `mapstructure:"arch"`
-	AutoinstallMeta     string   `mapstructure:"autoinstall_meta"`
 	BootFiles           string   `mapstructure:"boot_files"`
 	BootLoader          string   `mapstructure:"boot_loader"`
 	Breed               string   `mapstructure:"breed"`
@@ -50,6 +49,7 @@ type Distro struct {
 	RedHatManagementKey string   `mapstructure:"redhat_management_key"`
 	TemplateFiles       string   `mapstructure:"template_files"`
 
+	//AutoinstallMeta     string `mapstructure:"autoinstall_meta"`  // Also commented before as KSMeta
 	//RedHatManagementServer string   `mapstructure:"redhat_management_server"`
 }
 
