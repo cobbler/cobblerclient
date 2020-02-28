@@ -1,6 +1,6 @@
 module github.com/wearespindle/cobblerclient
 
-go 1.13
+go 1.14
 
 require (
 	github.com/ContainerSolutions/go-utils v0.1.0
