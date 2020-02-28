@@ -3,7 +3,7 @@
 
 ## Distro
 
- Field| Type |  Other |
+ Field| Type |  Remarks |
 ------|------|--------|
 arch |  string |
 autoinstall_meta | dict |
@@ -19,11 +19,11 @@ mgmt_classes | list |
 name | string |
 os_version | string |
 owners | list |
-template_files | list | ??
+template_files | list | ⚠️ Conflicts with profile & system
 
 ## Profile
 
- Field| Type |  Other |
+ Field| Type |  Remarks |
 ------|------|--------|
 autoinstall | string |
 autoinstall_meta | dict |
@@ -46,19 +46,19 @@ owners | list |
 proxy | string |
 repos | list |
 server | string |
-template_files | dict | ??
+template_files | dict | ⚠️ Conflicts with distro
 virt_auto_boot | bool |
 virt_bridge | string |
 virt_cpus | int |
 virt_disk_driver | string |
-virt_file_size | int | ??
+virt_file_size | int | ⚠️ Conflicts with system
 virt_path | string |
 virt_ram | int |
 virt_type | string |
 
 ## System
 
- Field| Type |  Other |
+ Field| Type |  Remarks |
 ------|------|--------|
 autoinstall | string |
 autoinstall_meta | dict |
@@ -88,11 +88,11 @@ power_user | string |
 profile | string |
 proxy | string |
 status | string |
-template_files | dict | ??
+template_files | dict | ⚠️ Conflicts with distro
 virt_auto_boot | bool |
 virt_cpus | int |
 virt_disk_driver | string |
-virt_file_size | float | ??
+virt_file_size | float | ⚠️ Conflicts with profile
 virt_path | string |
 virt_pxe_boot | bool |
 virt_ram | int |
@@ -100,7 +100,7 @@ virt_type | string |
 
 ## Repo
 
- Field| Type |  Other |
+ Field| Type |  Remarks |
 ------|------|--------|
 apt_components | list |
 apt_dists | list |

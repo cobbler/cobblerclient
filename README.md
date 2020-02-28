@@ -7,13 +7,13 @@ Original authors:
 - [Container Solutions](https://www.container-solutions.com/) (2015)
 - [Joe Topjian](https://github.com/jtopjian) (2017)
 
-Adapted by [hbokh](https://github.com/hbokh) (for [Devhouse Spindle](https://wearespindle.com/), 2020) to support Cobbler 3 XMLRPC API calls.
+Adapted by [hbokh](https://github.com/hbokh) (for [Devhouse Spindle](https://wearespindle.com/), 2020) to support Cobbler 3.x.
 
 ## Cobbler 3 support
 
 [Cobbler](https://github.com/cobbler/cobbler) (up to version 2.8.x) was written in Python2.
 However, Python2 is EOL since January 2020.\
-So, Cobbler 3 was adapted to use Python3 and lots of code changed. Sadly this also broke
+Cobbler 3 has been adapted to use Python3 and so lots of code changed. Sadly this also broke
 backward compatability with the original `cobblerclient`. Hence this fork.
 
 ### XMLRPC API changes
@@ -47,6 +47,12 @@ These directories have been renamed:
 - `/var/www/cobbler/ks_mirror` to `/var/www/cobbler/distro_mirror`
 - `/var/lib/cobbler/kickstarts` to `/var/lib/cobbler/templates`
 
+#### Added
+
+These fields have been added:
+
+- `boot_loader` - must be either `grub` or `pxelinux`
+
 #### Removed
 
 Support for these attributes was dropped in Cobbler 3:
@@ -54,11 +60,10 @@ Support for these attributes was dropped in Cobbler 3:
 - `ldap_enabled`
 - `ldap_type`
 - `monit_enabled`
-- `redhat_management_key`
 - `redhat_management_server`
 
 ## Todo
 
 - [x] Make `terraform apply` & `terrafrom destroy` at least work for the Spindle setup ("add systems").
-- [ ] Fix outdated go tests (`go test -v .`, also broken in origin repo).
+- [x] Fix outdated go tests (`go test -v .`, also broken in origin repo).
 - [ ] Dive deeper into changed types for some fields (see [COBBLER_FIELDS](./COBBLER_FIELDS.md)).
