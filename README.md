@@ -47,6 +47,10 @@ These directories have been renamed:
 - `/var/www/cobbler/ks_mirror` to `/var/www/cobbler/distro_mirror`
 - `/var/lib/cobbler/kickstarts` to `/var/lib/cobbler/templates`
 
+The storage locations for the json files changed from `/var/lib/cobbler/config/{distros,profiles,systems,etc...}.d` to `/var/lib/cobbler/collections/{distros,profiles,systems,etc...}`.
+
+There is being worked on a script to migrate these: `scripts/migrate-data-v2-to-v3.py`.
+
 #### Added
 
 These fields have been added:
