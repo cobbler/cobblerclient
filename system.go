@@ -18,6 +18,7 @@ package cobblerclient
 
 import (
 	"fmt"
+	// "log"
 	"reflect"
 
 	"github.com/fatih/structs"
@@ -97,7 +98,7 @@ type Interface struct {
 	IPv6Secondaries    []string `mapstructure:"ipv6_secondaries" structs:"ipv6_secondaries"`
 	IPv6MTU            string   `mapstructure:"ipv6_mtu" structs:"ipv6_mtu"`
 	IPv6StaticRoutes   []string `mapstructure:"ipv6_static_routes" structs:"ipv6_static_routes"`
-	IPv6DefaultGateway string   `mapstructure:"ipv6_default_gateway structs:"ipv6_default_gateway"`
+        IPv6DefaultGateway string   `mapstructure:"ipv6_default_gateway" structs:"ipv6_default_gateway"`
 	MACAddress         string   `mapstructure:"mac_address" structs:"mac_address"`
 	Management         bool     `mapstructure:"management" structs:"management"`
 	Netmask            string   `mapstructure:"netmask" structs:"netmask"`
@@ -265,6 +266,7 @@ func (s *System) CreateInterface(name string, iface Interface) error {
 	nic := make(map[string]interface{})
 	for key, value := range i {
 		attrName := fmt.Sprintf("%s-%s", key, name)
+		// log.Printf("[DEBUG] Cobblerclient: setting interface attr %s to %s", attrName, value)
 		nic[attrName] = value
 	}
 
