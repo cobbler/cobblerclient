@@ -98,7 +98,7 @@ type Interface struct {
 	IPv6Secondaries    []string `mapstructure:"ipv6_secondaries" structs:"ipv6_secondaries"`
 	IPv6MTU            string   `mapstructure:"ipv6_mtu" structs:"ipv6_mtu"`
 	IPv6StaticRoutes   []string `mapstructure:"ipv6_static_routes" structs:"ipv6_static_routes"`
-        IPv6DefaultGateway string   `mapstructure:"ipv6_default_gateway" structs:"ipv6_default_gateway"`
+	IPv6DefaultGateway string   `mapstructure:"ipv6_default_gateway" structs:"ipv6_default_gateway"`
 	MACAddress         string   `mapstructure:"mac_address" structs:"mac_address"`
 	Management         bool     `mapstructure:"management" structs:"management"`
 	Netmask            string   `mapstructure:"netmask" structs:"netmask"`
