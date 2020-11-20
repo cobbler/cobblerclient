@@ -1,4 +1,4 @@
-module github.com/wearespindle/cobblerclient
+module github.com/cobbler/cobblerclient
 
 go 1.14
 
