@@ -8,7 +8,7 @@ import (
 )
 
 var config = cobbler.ClientConfig{
-	URL:      "http://example.com/cobbler_api",
+	URL:      "http://localhost:8081/cobbler_api",
 	Username: "cobbler",
 	Password: "cobbler",
 }
@@ -55,15 +55,20 @@ func main() {
 	}
 
 	d := cobbler.Distro{
-		Name:       "Test",
-		Breed:      "Ubuntu",
-		OSVersion:  "bionic",
-		Arch:       "x86_64",
-		BootLoader: "grub",
-		Kernel:     "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux",
-		Initrd:     "/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz",
+		Name:      "testdistro",
+		Breed:     "Ubuntu",
+		OSVersion: "focal",
+		Arch:      "x86_64",
+		Kernel:    "/srv/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/linux",
+		Initrd:    "/srv/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/initrd.gz",
 	}
 
+	fmt.Println("Listing all distros")
+	distros, err := c.GetDistros()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("Distros: %s\n", distros)
 	fmt.Println("Creating a Distro")
 	newDistro, err := c.CreateDistro(d)
 	if err != nil {
@@ -82,12 +87,19 @@ func main() {
 		fmt.Printf("Error creating distro: %s\n", err)
 	}
 
+	fmt.Println("Listing all profiles")
+	profiles, err := c.GetProfiles()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("Profiles: %s\n", profiles)
 	fmt.Println("Creating a Profile")
 	p := cobbler.Profile{
-		Name:           "Testy",
-		Distro:         "Test",
+		Name:           "testprofile",
+		Distro:         "Ubuntu-20.04-x86_64",
+		Parent:         "Ubuntu-20.04-x86_64",
 		Autoinstall:    "sample.seed",
-		VirtDiskDriver: "<<inherit>>", // For some reason the virt_disk_driver must be set in Cobbler 3...
+		VirtDiskDriver: "raw", // For some reason the virt_disk_driver must be set in Cobbler 3...
 	}
 
 	newProfile, err := c.CreateProfile(p)
@@ -98,23 +110,10 @@ func main() {
 	fmt.Printf("New Profile: %+v\n", newProfile)
 
 	fmt.Println("Creating a System")
-	eth0 := cobbler.Interface{
-		MACAddress:    "aa:bb:cc:dd:ee:ff",
-		Static:        true,
-		InterfaceType: "bridge",
-	}
-
-	eth1 := cobbler.Interface{
-		MACAddress: "aa:bb:cc:dd:ee:fa",
-		Static:     true,
-		Management: true,
-	}
-
 	s := cobbler.System{
-		Comment:     "WTF",
-		Name:        "Foobar",
-		Profile:     "Testy",
-		BootLoader:  "grub",
+		Comment:     "I'd like to teach the world to sing",
+		Name:        "testsystem",
+		Profile:     "testprofile",
 		NameServers: []string{"8.8.8.8", "1.1.1.1"},
 		PowerID:     "foo",
 	}
@@ -126,15 +125,28 @@ func main() {
 
 	fmt.Printf("New System: %+v\n", newSystem)
 
-	fmt.Println("Adding NIC to System")
-	if err := newSystem.CreateInterface("eth0", eth0); err != nil {
-		fmt.Println(err)
-	}
+	// Skipping the interface creation until Cobbler issue #2846 is fixed
+	//	eth0 := cobbler.Interface{
+	//		MACAddress:    "aa:bb:cc:dd:ee:ff",
+	//		Static:        true,
+	//		InterfaceType: "bridge",
+	//	}
 
-	fmt.Println("Adding second NIC to System")
-	if err := newSystem.CreateInterface("eth1", eth1); err != nil {
-		fmt.Println(err)
-	}
+	//	eth1 := cobbler.Interface{
+	//		MACAddress: "aa:bb:cc:dd:ee:fa",
+	//		Static:     true,
+	//		Management: true,
+	//	}
+
+	//		fmt.Println("Adding NIC to System")
+	//		if err := newSystem.CreateInterface("eth0", eth0); err != nil {
+	//			fmt.Println(err)
+	//		}
+	//
+	//		fmt.Println("Adding second NIC to System")
+	//		if err := newSystem.CreateInterface("eth1", eth1); err != nil {
+	//			fmt.Println(err)
+	//		}
 
 	fmt.Println("Syncing the cobbler server")
 	if err := c.Sync(); err != nil {
@@ -142,71 +154,72 @@ func main() {
 	}
 
 	fmt.Println("Getting system")
-	s2, err := c.GetSystem("Foobar")
+	s2, err := c.GetSystem("testsystem")
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println("s2: %s\n", s2)
 
-	fmt.Println("Verifying NIC data")
-	interfaces, err := s2.GetInterfaces()
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("%+v\n\n", interfaces)
+	//	fmt.Println("Verifying NIC data")
+	//	interfaces, err := s2.GetInterfaces()
+	//	if err != nil {
+	//		fmt.Println(err)
+	//	}
+	//	fmt.Printf("%+v\n\n", interfaces)
 
-	iface, err := s2.GetInterface("eth0")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("eth0:\n%+v\n\n", iface)
+	//	iface, err := s2.GetInterface("eth0")
+	//	if err != nil {
+	//		fmt.Println(err)
+	//	}
+	//	fmt.Printf("eth0:\n%+v\n\n", iface)
 
-	iface, err = s2.GetInterface("eth1")
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("eth1:\n%+v\n\n", iface)
+	//iface, err = s2.GetInterface("eth1")
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//fmt.Printf("eth1:\n%+v\n\n", iface)
 
-	fmt.Println("Deleting Interface")
-	err = s2.DeleteInterface("eth0")
-	if err != nil {
-		fmt.Println(err)
-	}
+	//fmt.Println("Deleting Interface")
+	//err = s2.DeleteInterface("eth0")
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
 
-	s2, err = c.GetSystem("Foobar")
-	if err != nil {
-		fmt.Println(err)
-	}
+	//interfaces, err = s2.GetInterfaces()
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//if len(interfaces) != 1 {
+	//	fmt.Println("Error deleting interface eth1")
+	//	fmt.Printf("%+v\n", interfaces)
+	//}
 
-	interfaces, err = s2.GetInterfaces()
+	_, err = c.GetSystem("testsystem")
 	if err != nil {
 		fmt.Println(err)
-	}
-	if len(interfaces) != 1 {
-		fmt.Println("Error deleting interface eth1")
-		fmt.Printf("%+v\n", interfaces)
 	}
 
 	fmt.Println("Deleting System")
-	err = c.DeleteSystem("Foobar")
+	err = c.DeleteSystem("testsystem")
 	if err != nil {
 		fmt.Printf("Error deleting system: %s\n", err)
 	}
 
 	fmt.Println("Deleting Profile")
-	err = c.DeleteProfile("Testy")
+	err = c.DeleteProfile("testprofile")
 	if err != nil {
 		fmt.Printf("Error deleting profile: %s\n", err)
 	}
-
+	//
 	fmt.Println("Deleting Distro")
-	err = c.DeleteDistro("Test")
+	err = c.DeleteDistro("testdistro")
 	if err != nil {
 		fmt.Printf("Error deleting distro: %s\n", err)
 	}
 
 	fmt.Println("Creating a Snippet")
 	snippet := cobbler.Snippet{
-		Name: "some-snippet",
+		Name: "testsnippet",
 		Body: "sample content",
 	}
 
@@ -216,13 +229,13 @@ func main() {
 	}
 
 	fmt.Println("Deleting a Snippet")
-	if err := c.DeleteSnippet("some-snippet"); err != nil {
+	if err := c.DeleteSnippet("testsnippet"); err != nil {
 		fmt.Println(err)
 	}
 
 	fmt.Println("Creating a Template")
 	ks := cobbler.TemplateFile{
-		Name: "foo.ks",
+		Name: "testtemplate.ks",
 		Body: "sample content",
 	}
 
@@ -232,7 +245,7 @@ func main() {
 	}
 
 	fmt.Println("Deleting a Template")
-	if err := c.DeleteTemplateFile("foo.ks"); err != nil {
+	if err := c.DeleteTemplateFile("testtemplate.ks"); err != nil {
 		fmt.Println(err)
 	}
 

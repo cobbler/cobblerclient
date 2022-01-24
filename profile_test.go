@@ -17,9 +17,8 @@ limitations under the License.
 package cobblerclient
 
 import (
-	"testing"
-
 	"github.com/ContainerSolutions/go-utils"
+	"testing"
 )
 
 func TestGetProfiles(t *testing.T) {
@@ -34,10 +33,10 @@ func TestGetProfiles(t *testing.T) {
 
 func TestGetProfile(t *testing.T) {
 	c := createStubHTTPClient(t, "get-profile-req.xml", "get-profile-res.xml")
-	profile, err := c.GetProfile("Ubuntu-18.04-x86_64")
+	profile, err := c.GetProfile("Ubuntu-20.04-x86_64")
 	utils.FailOnError(t, err)
 
-	if profile.Name != "Ubuntu-18.04-x86_64" {
+	if profile.Name != "Ubuntu-20.04-x86_64" {
 		t.Errorf("Wrong profile returned.")
 	}
 }

@@ -17,9 +17,8 @@ limitations under the License.
 package cobblerclient
 
 import (
-	"testing"
-
 	"github.com/ContainerSolutions/go-utils"
+	"testing"
 )
 
 func TestGetDistros(t *testing.T) {
@@ -34,10 +33,10 @@ func TestGetDistros(t *testing.T) {
 
 func TestGetDistro(t *testing.T) {
 	c := createStubHTTPClient(t, "get-distro-req.xml", "get-distro-res.xml")
-	distro, err := c.GetDistro("Ubuntu-18.04-x86_64")
+	distro, err := c.GetDistro("Ubuntu-20.04-x86_64")
 	utils.FailOnError(t, err)
 
-	if distro.Name != "Ubuntu-18.04-x86_64" {
+	if distro.Name != "Ubuntu-20.04-x86_64" {
 		t.Errorf("Wrong distro returned.")
 	}
 }

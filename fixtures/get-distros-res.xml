@@ -16,7 +16,7 @@
                 <member>
                   <name>kernel</name>
                   <value>
-                    <string>/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux</string>
+                    <string>/var/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/linux</string>
                   </value>
                 </member>
                 <member>
@@ -33,12 +33,6 @@
                   </value>
                 </member>
                 <member>
-                  <name>redhat_management_key</name>
-                  <value>
-                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                  </value>
-                </member>
-                <member>
                   <name>kernel_options</name>
                   <value>
                     <string>
@@ -46,15 +40,9 @@
                   </value>
                 </member>
                 <member>
-                  <name>redhat_management_server</name>
-                  <value>
-                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                  </value>
-                </member>
-                <member>
                   <name>initrd</name>
                   <value>
-                    <string>/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz</string>
+                    <string>/var/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/initrd.gz</string>
                   </value>
                 </member>
                 <member>
@@ -77,7 +65,7 @@
                       <member>
                         <name>tree</name>
                         <value>
-                          <string>http://@@http_server@@/cblr/links/Ubuntu-18.04-x86_64</string>
+                          <string>http://@@http_server@@/cblr/links/Ubuntu-20.04-x86_64</string>
                         </value>
                       </member>
                     </struct>
@@ -99,7 +87,7 @@
                 <member>
                   <name>os_version</name>
                   <value>
-                    <string>bionic</string>
+                    <string>focal</string>
                   </value>
                 </member>
                 <member>
@@ -133,7 +121,7 @@
                 <member>
                   <name>name</name>
                   <value>
-                    <string>Ubuntu-18.04-x86_64</string>
+                    <string>Ubuntu-20.04-x86_64</string>
                   </value>
                 </member>
                 <member>

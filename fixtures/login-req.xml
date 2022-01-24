@@ -4,12 +4,12 @@
   <params>
     <param>
       <value>
-        <string>john</string>
+        <string>cobbler</string>
       </value>
     </param>
     <param>
       <value>
-        <string>doe</string>
+        <string>cobbler</string>
       </value>
     </param>
   </params>

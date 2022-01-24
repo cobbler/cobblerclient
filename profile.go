@@ -30,38 +30,38 @@ type Profile struct {
 	Mtime        float64 `mapstructure:"mtime"                  cobbler:"noupdate"` // TODO: convert to time
 	ReposEnabled bool    `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	Autoinstall         string   `mapstructure:"autoinstall"`
-	AutoinstallMeta     string   `mapstructure:"autoinstall_meta"`
-	BootFiles           string   `mapstructure:"boot_files"`
-	Comment             string   `mapstructure:"comment"`
-	DHCPTag             string   `mapstructure:"dhcp_tag"`
-	Distro              string   `mapstructure:"distro"`
-	EnableGPXE          bool     `mapstructure:"enable_gpxe"`
-	EnableMenu          bool     `mapstructure:"enable_menu"`
-	FetchableFiles      string   `mapstructure:"fetchable_files"`
-	KernelOptions       string   `mapstructure:"kernel_options"`
-	KernelOptionsPost   string   `mapstructure:"kernel_options_post"`
-	MGMTClasses         []string `mapstructure:"mgmt_classes"`
-	MGMTParameters      string   `mapstructure:"mgmt_parameters"`
-	Name                string   `mapstructure:"name"`
-	NameServers         []string `mapstructure:"name_servers"`
-	NameServersSearch   []string `mapstructure:"name_servers_search"`
-	NextServer          string   `mapstructure:"next_server"`
-	Owners              []string `mapstructure:"owners"`
-	Proxy               string   `mapstructure:"proxy"`
-	RedHatManagementKey string   `mapstructure:"redhat_management_key"`
-	//RedHatManagementServer  string   `mapstructure:"redhat_management_server"` // Removed in Cobbler 3 profile
-	Repos          string `mapstructure:"repos"`
-	Server         string `mapstructure:"server"`
-	TemplateFiles  string `mapstructure:"template_files"`
-	VirtAutoBoot   string `mapstructure:"virt_auto_boot"`
-	VirtBridge     string `mapstructure:"virt_bridge"`
-	VirtCPUs       string `mapstructure:"virt_cpus"`
-	VirtDiskDriver string `mapstructure:"virt_disk_driver"`
-	VirtFileSize   string `mapstructure:"virt_file_size"`
-	VirtPath       string `mapstructure:"virt_path"`
-	VirtRAM        string `mapstructure:"virt_ram"`
-	VirtType       string `mapstructure:"virt_type"`
+	Autoinstall       string   `mapstructure:"autoinstall"`
+	AutoinstallMeta   []string `mapstructure:"autoinstall_meta"`
+	BootFiles         []string `mapstructure:"boot_files"`
+	Comment           string   `mapstructure:"comment"`
+	DHCPTag           string   `mapstructure:"dhcp_tag"`
+	Distro            string   `mapstructure:"distro"`
+	EnableGPXE        bool     `mapstructure:"enable_gpxe"`
+	EnableMenu        bool     `mapstructure:"enable_menu"`
+	FetchableFiles    []string `mapstructure:"fetchable_files"`
+	KernelOptions     []string `mapstructure:"kernel_options"`
+	KernelOptionsPost []string `mapstructure:"kernel_options_post"`
+	MGMTClasses       []string `mapstructure:"mgmt_classes"`
+	MGMTParameters    string   `mapstructure:"mgmt_parameters"`
+	Name              string   `mapstructure:"name"`
+	NameServers       []string `mapstructure:"name_servers"`
+	NameServersSearch []string `mapstructure:"name_servers_search"`
+	NextServerv4      string   `mapstructure:"next_server_v4"`
+	NextServerv6      string   `mapstructure:"next_server_v6"`
+	Owners            []string `mapstructure:"owners"`
+	Parent            string   `mapstructure:"parent"`
+	Proxy             string   `mapstructure:"proxy"`
+	Repos             []string `mapstructure:"repos"`
+	Server            string   `mapstructure:"server"`
+	TemplateFiles     []string `mapstructure:"template_files"`
+	VirtAutoBoot      string   `mapstructure:"virt_auto_boot"`
+	VirtBridge        string   `mapstructure:"virt_bridge"`
+	VirtCPUs          string   `mapstructure:"virt_cpus"`
+	VirtDiskDriver    string   `mapstructure:"virt_disk_driver"`
+	VirtFileSize      string   `mapstructure:"virt_file_size"`
+	VirtPath          string   `mapstructure:"virt_path"`
+	VirtRAM           string   `mapstructure:"virt_ram"`
+	VirtType          string   `mapstructure:"virt_type"`
 
 	Client
 }
@@ -113,7 +113,7 @@ func (c *Client) GetProfile(name string) (*Profile, error) {
 	return s, nil
 }
 
-// CreateProfile creates a system.
+// CreateProfile creates a profile.
 // It ensures that a Distro is set and then sets other default values.
 func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	// Check if a profile with the same name already exists
@@ -125,64 +125,15 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		return nil, fmt.Errorf("A profile must have a distro set.")
 	}
 
-	/*
-		// Set default values. I guess these aren't taken care of by Cobbler?
-		if system.BootFiles == "" {
-			system.BootFiles = "<<inherit>>"
-		}
-
-		if system.FetchableFiles == "" {
-			system.FetchableFiles = "<<inherit>>"
-		}
-
-	*/
-
 	if profile.MGMTParameters == "" {
 		profile.MGMTParameters = "<<inherit>>"
 	}
-
-	if profile.VirtAutoBoot == "" {
-		profile.VirtAutoBoot = "0"
-	}
-
-	if profile.VirtRAM == "" {
-		profile.VirtRAM = "<<inherit>>"
-	}
-
 	if profile.VirtType == "" {
 		profile.VirtType = "<<inherit>>"
 	}
-
 	if profile.VirtDiskDriver == "" {
 		profile.VirtDiskDriver = "<<inherit>>"
 	}
-	/*
-
-		if system.PowerType == "" {
-			system.PowerType = "ipmilan"
-		}
-
-		if system.Status == "" {
-			system.Status = "production"
-		}
-
-		if system.VirtCPUs == "" {
-			system.VirtCPUs = "<<inherit>>"
-		}
-
-		if system.VirtDiskDriver == "" {
-			system.VirtDiskDriver = "<<inherit>>"
-		}
-
-		if system.VirtFileSize == "" {
-			system.VirtFileSize = "<<inherit>>"
-		}
-
-		if system.VirtPath == "" {
-			system.VirtPath = "<<inherit>>"
-		}
-
-	*/
 
 	// To create a profile via the Cobbler API, first call new_profile to obtain an ID
 	result, err := c.Call("new_profile", c.Token)
@@ -190,7 +141,6 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		return nil, err
 	}
 	newID := result.(string)
-
 	// Set the value of all fields
 	item := reflect.ValueOf(&profile).Elem()
 	if err := c.updateCobblerFields("profile", item, newID); err != nil {
@@ -198,7 +148,8 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	}
 
 	// Save the final profile
-	if _, err := c.Call("save_profile", newID, c.Token); err != nil {
+	result, err = c.Call("save_profile", newID, c.Token)
+	if err != nil {
 		return nil, err
 	}
 

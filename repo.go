@@ -38,7 +38,7 @@ type Repo struct {
 	Breed           string   `mapstructure:"breed"`
 	Comment         string   `mapstructure:"comment"`
 	CreateRepoFlags string   `mapstructure:"createrepo_flags"`
-	Environment     string   `mapstructure:"environment"`
+	Environment     []string `mapstructure:"environment"`
 	KeepUpdated     bool     `mapstructure:"keep_updated"`
 	Mirror          string   `mapstructure:"mirror"`
 	MirrorLocally   bool     `mapstructure:"mirror_locally"`
