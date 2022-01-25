@@ -17,8 +17,9 @@ limitations under the License.
 package cobblerclient
 
 import (
-	"github.com/ContainerSolutions/go-utils"
 	"testing"
+
+	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestGetDistros(t *testing.T) {

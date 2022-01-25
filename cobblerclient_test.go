@@ -17,9 +17,10 @@ limitations under the License.
 package cobblerclient
 
 import (
-	"github.com/ContainerSolutions/go-utils"
 	"regexp"
 	"testing"
+
+	"github.com/ContainerSolutions/go-utils"
 )
 
 var config = ClientConfig{

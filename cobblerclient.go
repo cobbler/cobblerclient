@@ -19,13 +19,14 @@ package cobblerclient
 import (
 	"bytes"
 	"fmt"
-	"github.com/kolo/xmlrpc"
-	"github.com/mitchellh/mapstructure"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"reflect"
 	"strings"
+
+	"github.com/kolo/xmlrpc"
+	"github.com/mitchellh/mapstructure"
 )
 
 const bodyTypeXML = "text/xml"
