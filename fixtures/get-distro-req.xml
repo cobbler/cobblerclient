@@ -4,7 +4,7 @@
   <params>
     <param>
       <value>
-        <string>Ubuntu-18.04-x86_64</string>
+        <string>Ubuntu-20.04-x86_64</string>
       </value>
     </param>
     <param>

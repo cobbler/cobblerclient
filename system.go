@@ -18,7 +18,7 @@ package cobblerclient
 
 import (
 	"fmt"
-	// "log"
+	"log"
 	"reflect"
 
 	"github.com/fatih/structs"
@@ -35,10 +35,10 @@ type System struct {
 	Mtime                 float64 `mapstructure:"mtime"                 cobbler:"noupdate"` // TODO: convert to time
 	ReposEnabled          bool    `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	Autoinstall       string                 `mapstructure:"autoinstall"`
-	AutoinstallMeta   string                 `mapstructure:"autoinstall_meta"`
-	BootFiles         string                 `mapstructure:"boot_files"`
-	BootLoader        string                 `mapstructure:"boot_loader"`
+	Autoinstall     string `mapstructure:"autoinstall"`
+	AutoinstallMeta string `mapstructure:"autoinstall_meta"`
+	BootFiles       string `mapstructure:"boot_files"`
+	//BootLoader        string                 `mapstructure:"boot_loader"`
 	Comment           string                 `mapstructure:"comment"`
 	EnableGPXE        bool                   `mapstructure:"enable_gpxe"`
 	FetchableFiles    string                 `mapstructure:"fetchable_files"`
@@ -54,31 +54,30 @@ type System struct {
 	MGMTClasses    []string `mapstructure:"mgmt_classes"`
 	MGMTParameters string   `mapstructure:"mgmt_parameters"`
 	//MonitEnabled     bool                   `mapstructure:"monit_enabled"` // Removed in Cobbler 3 system
-	Name                string   `mapstructure:"name"`
-	NameServers         []string `mapstructure:"name_servers"`
-	NameServersSearch   []string `mapstructure:"name_servers_search"`
-	NetbootEnabled      bool     `mapstructure:"netboot_enabled"`
-	NextServer          string   `mapstructure:"next_server"`
-	Owners              []string `mapstructure:"owners"`
-	PowerAddress        string   `mapstructure:"power_address"`
-	PowerID             string   `mapstructure:"power_id"`
-	PowerPass           string   `mapstructure:"power_pass"`
-	PowerType           string   `mapstructure:"power_type"`
-	PowerUser           string   `mapstructure:"power_user"`
-	Profile             string   `mapstructure:"profile"`
-	Proxy               string   `mapstructure:"proxy"`
-	RedHatManagementKey string   `mapstructure:"redhat_management_key"`
-	//RedHatManagementServer  string   `mapstructure:"redhat_management_server"` // Removed in Cobbler 3 system
-	Status         string `mapstructure:"status"`
-	TemplateFiles  string `mapstructure:"template_files"`
-	VirtAutoBoot   string `mapstructure:"virt_auto_boot"`
-	VirtCPUs       string `mapstructure:"virt_cpus"`
-	VirtDiskDriver string `mapstructure:"virt_disk_driver"`
-	VirtFileSize   string `mapstructure:"virt_file_size"`
-	VirtPath       string `mapstructure:"virt_path"`
-	VirtPXEBoot    int    `mapstructure:"virt_pxe_boot"`
-	VirtRAM        string `mapstructure:"virt_ram"`
-	VirtType       string `mapstructure:"virt_type"`
+	Name              string   `mapstructure:"name"`
+	NameServers       []string `mapstructure:"name_servers"`
+	NameServersSearch []string `mapstructure:"name_servers_search"`
+	NetbootEnabled    bool     `mapstructure:"netboot_enabled"`
+	NextServerv4      string   `mapstructure:"next_server_v4"`
+	NextServerv6      string   `mapstructure:"next_server_v6"`
+	Owners            []string `mapstructure:"owners"`
+	PowerAddress      string   `mapstructure:"power_address"`
+	PowerID           string   `mapstructure:"power_id"`
+	PowerPass         string   `mapstructure:"power_pass"`
+	PowerType         string   `mapstructure:"power_type"`
+	PowerUser         string   `mapstructure:"power_user"`
+	Profile           string   `mapstructure:"profile"`
+	Proxy             string   `mapstructure:"proxy"`
+	Status            string   `mapstructure:"status"`
+	TemplateFiles     string   `mapstructure:"template_files"`
+	VirtAutoBoot      string   `mapstructure:"virt_auto_boot"`
+	VirtCPUs          string   `mapstructure:"virt_cpus"`
+	VirtDiskDriver    string   `mapstructure:"virt_disk_driver"`
+	VirtFileSize      string   `mapstructure:"virt_file_size"`
+	VirtPath          string   `mapstructure:"virt_path"`
+	VirtPXEBoot       int      `mapstructure:"virt_pxe_boot"`
+	VirtRAM           string   `mapstructure:"virt_ram"`
+	VirtType          string   `mapstructure:"virt_type"`
 
 	Client
 }
@@ -174,9 +173,9 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 		system.BootFiles = "<<inherit>>"
 	}
 
-	if system.BootLoader == "" {
-		system.BootLoader = "<<inherit>>"
-	}
+	//	if system.BootLoader == "" {
+	//		system.BootLoader = "<<inherit>>"
+	//	}
 
 	if system.FetchableFiles == "" {
 		system.FetchableFiles = "<<inherit>>"
@@ -266,7 +265,7 @@ func (s *System) CreateInterface(name string, iface Interface) error {
 	nic := make(map[string]interface{})
 	for key, value := range i {
 		attrName := fmt.Sprintf("%s-%s", key, name)
-		// log.Printf("[DEBUG] Cobblerclient: setting interface attr %s to %s", attrName, value)
+		log.Printf("[DEBUG] Cobblerclient: setting interface attr %s to %s", attrName, value)
 		nic[attrName] = value
 	}
 
@@ -274,15 +273,25 @@ func (s *System) CreateInterface(name string, iface Interface) error {
 	if err != nil {
 		return err
 	}
+	log.Printf("[INFO] systemID is: %s", systemID)
+	log.Printf("[INFO] nic is: %s", nic)
 
-	if _, err := s.Client.Call("modify_system", systemID, "modify_interface", nic, s.Client.Token); err != nil {
+	modify_sys_result, err := s.Client.Call("modify_system", systemID, "modify_interface", nic, s.Client.Token)
+	if err != nil {
 		return err
 	}
+	log.Printf("[INFO] modify_sys_result is: %s", modify_sys_result)
+
+	//	err != nil{
+	//		return err
+	//	}
 
 	// Save the final system
-	if _, err := s.Client.Call("save_system", systemID, s.Client.Token); err != nil {
+	save_sys_result, err := s.Client.Call("save_system", systemID, s.Client.Token)
+	if err != nil {
 		return err
 	}
+	log.Printf("[INFO] save_sys_result is: %s", save_sys_result)
 
 	return nil
 }

@@ -393,7 +393,7 @@ curl -XPOST -d '<methodCall>
                 <member>
                   <name>kernel</name>
                   <value>
-                    <string>/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux</string>
+                    <string>/var/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/linux</string>
                   </value>
                 </member>
                 <member>
@@ -410,12 +410,6 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>redhat_management_key</name>
-                  <value>
-                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                  </value>
-                </member>
-                <member>
                   <name>kernel_options</name>
                   <value>
                     <struct>
@@ -423,15 +417,9 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>redhat_management_server</name>
-                  <value>
-                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                  </value>
-                </member>
-                <member>
                   <name>initrd</name>
                   <value>
-                    <string>/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz</string>
+                    <string>/var/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/initrd.gz</string>
                   </value>
                 </member>
                 <member>
@@ -454,7 +442,7 @@ curl -XPOST -d '<methodCall>
                       <member>
                         <name>tree</name>
                         <value>
-                          <string>http://@@http_server@@/cblr/links/Ubuntu-18.04-x86_64</string>
+                          <string>http://@@http_server@@/cblr/links/Ubuntu-20.04-x86_64</string>
                         </value>
                       </member>
                     </struct>
@@ -476,7 +464,7 @@ curl -XPOST -d '<methodCall>
                 <member>
                   <name>os_version</name>
                   <value>
-                    <string>bionic</string>
+                    <string>focal</string>
                   </value>
                 </member>
                 <member>
@@ -510,7 +498,7 @@ curl -XPOST -d '<methodCall>
                 <member>
                   <name>name</name>
                   <value>
-                    <string>Ubuntu-18.04-x86_64</string>
+                    <string>Ubuntu-20.04-x86_64</string>
                   </value>
                 </member>
                 <member>
@@ -561,7 +549,7 @@ curl -XPOST -d '<methodCall>
   <params>
     <param>
       <value>
-        <string>Ubuntu-18.04-x86_64</string>
+        <string>Ubuntu-20.04-x86_64</string>
       </value>
     </param>
     <param>
@@ -588,7 +576,7 @@ curl -XPOST -d '<methodCall>
           <member>
             <name>kernel</name>
             <value>
-              <string>/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/linux</string>
+              <string>/var/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/linux</string>
             </value>
           </member>
           <member>
@@ -604,27 +592,15 @@ curl -XPOST -d '<methodCall>
             </value>
           </member>
           <member>
-            <name>redhat_management_key</name>
-            <value>
-              <string>&lt;&lt;inherit&gt;&gt;</string>
-            </value>
-          </member>
-          <member>
             <name>kernel_options</name>
             <value>
               <string/>
             </value>
           </member>
           <member>
-            <name>redhat_management_server</name>
-            <value>
-              <string>&lt;&lt;inherit&gt;&gt;</string>
-            </value>
-          </member>
-          <member>
             <name>initrd</name>
             <value>
-              <string>/var/www/cobbler/distro_mirror/Ubuntu-18.04/install/netboot/ubuntu-installer/amd64/initrd.gz</string>
+              <string>/var/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/initrd.gz</string>
             </value>
           </member>
           <member>
@@ -642,7 +618,7 @@ curl -XPOST -d '<methodCall>
           <member>
             <name>autoinstall_meta</name>
             <value>
-              <string>tree=http://@@http_server@@/cblr/links/Ubuntu-18.04-x86_64 </string>
+              <string>tree=http://@@http_server@@/cblr/links/Ubuntu-20.04-x86_64 </string>
             </value>
           </member>
           <member>
@@ -660,7 +636,7 @@ curl -XPOST -d '<methodCall>
           <member>
             <name>os_version</name>
             <value>
-              <string>bionic</string>
+              <string>focal</string>
             </value>
           </member>
           <member>
@@ -692,7 +668,7 @@ curl -XPOST -d '<methodCall>
           <member>
             <name>name</name>
             <value>
-              <string>Ubuntu-18.04-x86_64</string>
+              <string>Ubuntu-20.04-x86_64</string>
             </value>
           </member>
           <member>
@@ -806,12 +782,6 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>redhat_management_key</name>
-                  <value>
-                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                  </value>
-                </member>
-                <member>
                   <name>virt_path</name>
                   <value>
                     <string/>
@@ -892,7 +862,7 @@ curl -XPOST -d '<methodCall>
                 <member>
                   <name>distro</name>
                   <value>
-                    <string>Ubuntu-18.04-x86_64</string>
+                    <string>Ubuntu-20.04-x86_64</string>
                   </value>
                 </member>
                 <member>
@@ -950,7 +920,7 @@ curl -XPOST -d '<methodCall>
                 <member>
                   <name>name</name>
                   <value>
-                    <string>Ubuntu-18.04-x86_64</string>
+                    <string>Ubuntu-20.04-x86_64</string>
                   </value>
                 </member>
                 <member>
@@ -990,12 +960,6 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>redhat_management_server</name>
-                  <value>
-                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                  </value>
-                </member>
-                <member>
                   <name>depth</name>
                   <value>
                     <int>1</int>
@@ -1022,7 +986,7 @@ curl -XPOST -d '<methodCall>
   <params>
     <param>
       <value>
-        <string>Ubuntu-18.04-x86_64</string>
+        <string>Ubuntu-20.04-x86_64</string>
       </value>
     </param>
     <param>
@@ -1078,12 +1042,6 @@ curl -XPOST -d '<methodCall>
             <name>repos</name>
             <value>
               <string/>
-            </value>
-          </member>
-          <member>
-            <name>redhat_management_key</name>
-            <value>
-              <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>
           </member>
           <member>
@@ -1164,7 +1122,7 @@ curl -XPOST -d '<methodCall>
           <member>
             <name>distro</name>
             <value>
-              <string>Ubuntu-18.04-x86_64</string>
+              <string>Ubuntu-20.04-x86_64</string>
             </value>
           </member>
           <member>
@@ -1221,7 +1179,7 @@ curl -XPOST -d '<methodCall>
           <member>
             <name>name</name>
             <value>
-              <string>Ubuntu-18.04-x86_64</string>
+              <string>Ubuntu-20.04-x86_64</string>
             </value>
           </member>
           <member>
@@ -1256,12 +1214,6 @@ curl -XPOST -d '<methodCall>
           </member>
           <member>
             <name>server</name>
-            <value>
-              <string>&lt;&lt;inherit&gt;&gt;</string>
-            </value>
-          </member>
-          <member>
-            <name>redhat_management_server</name>
             <value>
               <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>
@@ -1321,7 +1273,7 @@ curl -XPOST -d '<methodCall>
                 <member>
                   <name>profile</name>
                   <value>
-                    <string>Ubuntu-18.04-x86_64</string>
+                    <string>Ubuntu-20.04-x86_64</string>
                   </value>
                 </member>
                 <member>
@@ -1357,12 +1309,6 @@ curl -XPOST -d '<methodCall>
                   <name>image</name>
                   <value>
                     <string/>
-                  </value>
-                </member>
-                <member>
-                  <name>redhat_management_key</name>
-                  <value>
-                    <string>&lt;&lt;inherit&gt;&gt;</string>
                   </value>
                 </member>
                 <member>
@@ -1611,12 +1557,6 @@ curl -XPOST -d '<methodCall>
                   </value>
                 </member>
                 <member>
-                  <name>redhat_management_server</name>
-                  <value>
-                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                  </value>
-                </member>
-                <member>
                   <name>depth</name>
                   <value>
                     <int>2</int>
@@ -1676,7 +1616,7 @@ curl -XPOST -d '<methodCall>
           <member>
             <name>profile</name>
             <value>
-              <string>Ubuntu-18.04-x86_64</string>
+              <string>Ubuntu-20.04-x86_64</string>
             </value>
           </member>
           <member>
@@ -1710,12 +1650,6 @@ curl -XPOST -d '<methodCall>
             <name>image</name>
             <value>
               <string/>
-            </value>
-          </member>
-          <member>
-            <name>redhat_management_key</name>
-            <value>
-              <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>
           </member>
           <member>
@@ -1955,12 +1889,6 @@ curl -XPOST -d '<methodCall>
           </member>
           <member>
             <name>server</name>
-            <value>
-              <string>&lt;&lt;inherit&gt;&gt;</string>
-            </value>
-          </member>
-          <member>
-            <name>redhat_management_server</name>
             <value>
               <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>

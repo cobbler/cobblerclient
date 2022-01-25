@@ -22,7 +22,7 @@ import (
 )
 
 // Distro is a created distro.
-// Get the fileds from cobbler/items/distro.py
+// Get the fields from cobbler/items/distro.py
 type Distro struct {
 	// These are internal fields and cannot be modified.
 	Ctime         float64  `mapstructure:"ctime"           cobbler:"noupdate"` // TODO: convert to time
@@ -31,26 +31,21 @@ type Distro struct {
 	SourceRepos   []string `mapstructure:"source_repos"   cobbler:"noupdate"`
 	TreeBuildTime string   `mapstructure:tree_build_time" cobbler:"noupdate"`
 	UID           string   `mapstructure:"uid"            cobbler:"noupdate"`
-
-	Arch                string   `mapstructure:"arch"`
-	BootFiles           string   `mapstructure:"boot_files"`
-	BootLoader          string   `mapstructure:"boot_loader"`
-	Breed               string   `mapstructure:"breed"`
-	Comment             string   `mapstructure:"comment"`
-	FetchableFiles      string   `mapstructure:"fetchable_files"`
-	Initrd              string   `mapstructure:"initrd"`
-	Kernel              string   `mapstructure:"kernel"`
-	KernelOptions       string   `mapstructure:"kernel_options"`
-	KernelOptionsPost   string   `mapstructure:"kernel_options_post"`
-	MGMTClasses         []string `mapstructure:"mgmt_classes"`
-	Name                string   `mapstructure:"name"`
-	OSVersion           string   `mapstructure:"os_version"`
-	Owners              []string `mapstructure:"owners"`
-	RedHatManagementKey string   `mapstructure:"redhat_management_key"`
-	TemplateFiles       string   `mapstructure:"template_files"`
-
-	//AutoinstallMeta     string `mapstructure:"autoinstall_meta"`  // Also commented before as KSMeta
-	//RedHatManagementServer string   `mapstructure:"redhat_management_server"`
+	Arch          string   `mapstructure:"arch"`
+	BootFiles     []string `mapstructure:"boot_files"`
+	//BootLoader         string   `mapstructure:"boot_loader"`
+	Breed             string   `mapstructure:"breed"`
+	Comment           string   `mapstructure:"comment"`
+	FetchableFiles    []string `mapstructure:"fetchable_files"`
+	Initrd            string   `mapstructure:"initrd"`
+	Kernel            string   `mapstructure:"kernel"`
+	KernelOptions     []string `mapstructure:"kernel_options"`
+	KernelOptionsPost []string `mapstructure:"kernel_options_post"`
+	MGMTClasses       []string `mapstructure:"mgmt_classes"`
+	Name              string   `mapstructure:"name"`
+	OSVersion         string   `mapstructure:"os_version"`
+	Owners            []string `mapstructure:"owners"`
+	TemplateFiles     []string `mapstructure:"template_files"`
 }
 
 // GetDistros returns all systems in Cobbler.

@@ -167,6 +167,27 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 	method := fmt.Sprintf("modify_%s", what)
 
 	typeOfT := item.Type()
+	// In Cobbler v3.3.0, if profile name isn't created first, an empty child gets written to the distro, which causes
+	// a ValueError: "calling find with no arguments"  TO-DO: figure a more efficient way of targeting name.
+	for i := 0; i < item.NumField(); i++ {
+		v := item.Field(i)
+		tag := typeOfT.Field(i).Tag
+		field := tag.Get("mapstructure")
+		if method == "modify_profile" && field == "name" {
+			var value interface{}
+			switch v.Type().String() {
+			case "string", "bool", "int64", "int":
+				value = v.Interface()
+			case "[]string":
+				value = strings.Join(v.Interface().([]string), " ")
+			}
+			_, err := c.Call(method, id, field, value, c.Token)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
 	for i := 0; i < item.NumField(); i++ {
 		v := item.Field(i)
 		tag := typeOfT.Field(i).Tag
@@ -180,7 +201,6 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		if field == "" {
 			continue
 		}
-
 		var value interface{}
 		switch v.Type().String() {
 		case "string", "bool", "int64", "int":
@@ -188,8 +208,6 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		case "[]string":
 			value = strings.Join(v.Interface().([]string), " ")
 		}
-
-		//fmt.Printf("%s, %s, %s\n", id, field, value)
 		if result, err := c.Call(method, id, field, value, c.Token); err != nil {
 			return err
 		} else {
@@ -203,6 +221,5 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 			}
 		}
 	}
-
 	return nil
 }

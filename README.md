@@ -2,19 +2,30 @@
 
 Cobbler Client written in Go.
 
-Original authors:
+Authors:
 
 - [Container Solutions](https://www.container-solutions.com/) (2015)
 - [Joe Topjian](https://github.com/jtopjian) (2017)
+- [hbokh](https://github.com/hbokh) (for [Devhouse Spindle](https://wearespindle.com/), 2020) - Cobbler 3.x support
+- [bholmes](https://github.com/bholmes) (2022) - Cobbler 3.3.x support
 
-Adapted by [hbokh](https://github.com/hbokh) (for [Devhouse Spindle](https://wearespindle.com/), 2020) to support Cobbler 3.x.
+## Cobbler 3.3.x support
+v0.5.0 of this client introduced support for Cobbler v3.3.0, which was a refactor from runtime-created Python 
+attributes to Python Properties.  For further details see 
+[release notes](https://github.com/cobbler/cobbler/releases/tag/v3.3.0).  This client's support for earlier Cobbler 
+versions was dropped.
 
-## Cobbler 3 support
+### To-do
+1. Reinstate system interface testing when Cobbler issue #2846 is fixed.
+2. Fix bootloaders
+
+## Cobbler <=3.2.x support
+Retaining the below notes for the time-being, which only apply to v0.4.2 and earlier clients:
 
 [Cobbler](https://github.com/cobbler/cobbler) (up to version 2.8.x) was written in Python2.
 However, Python2 is EOL since January 2020.\
 Cobbler 3 has been adapted to use Python3 and so lots of code changed. Sadly this also broke
-backward compatability with the original `cobblerclient`. Hence this fork.
+backward compatability with the original `cobblerclient`. 
 
 ### XMLRPC API changes
 
@@ -55,7 +66,7 @@ There is being worked on a script to migrate these: `scripts/migrate-data-v2-to-
 
 These fields have been added:
 
-- `boot_loader` - must be either `grub` or `pxelinux`
+- `boot_loader` - must be either `grub`, `pxe`, or `ipxe`
 
 #### Removed
 
@@ -65,9 +76,3 @@ Support for these attributes was dropped in Cobbler 3:
 - `ldap_type`
 - `monit_enabled`
 - `redhat_management_server`
-
-## Todo
-
-- [x] Make `terraform apply` & `terrafrom destroy` at least work for the Spindle setup ("add systems").
-- [x] Fix outdated go tests (`go test -v .`, also broken in origin repo).
-- [ ] Dive deeper into changed types for some fields (see [COBBLER_FIELDS](./COBBLER_FIELDS.md)).

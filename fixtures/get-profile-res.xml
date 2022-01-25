@@ -44,12 +44,6 @@
             </value>
           </member>
           <member>
-            <name>redhat_management_key</name>
-            <value>
-              <string>&lt;&lt;inherit&gt;&gt;</string>
-            </value>
-          </member>
-          <member>
             <name>virt_path</name>
             <value>
               <string/>
@@ -127,7 +121,7 @@
           <member>
             <name>distro</name>
             <value>
-              <string>Ubuntu-18.04-x86_64</string>
+              <string>Ubuntu-20.04-x86_64</string>
             </value>
           </member>
           <member>
@@ -184,7 +178,7 @@
           <member>
             <name>name</name>
             <value>
-              <string>Ubuntu-18.04-x86_64</string>
+              <string>Ubuntu-20.04-x86_64</string>
             </value>
           </member>
           <member>
@@ -219,12 +213,6 @@
           </member>
           <member>
             <name>server</name>
-            <value>
-              <string>&lt;&lt;inherit&gt;&gt;</string>
-            </value>
-          </member>
-          <member>
-            <name>redhat_management_server</name>
             <value>
               <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>

@@ -24,9 +24,9 @@ import (
 )
 
 var config = ClientConfig{
-	URL:      "http://example.org:1234",
-	Username: "john",
-	Password: "doe",
+	URL:      "http://localhost:8081/cobbler_api",
+	Username: "cobbler",
+	Password: "cobbler",
 }
 
 func createStubHTTPClient(t *testing.T, reqFixture string, resFixture string) Client {
