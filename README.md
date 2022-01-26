@@ -12,12 +12,15 @@ Authors:
 ## Cobbler 3.3.x support
 v0.5.0 of this client introduced support for Cobbler v3.3.0, which was a refactor from runtime-created Python 
 attributes to Python Properties.  For further details see 
-[release notes](https://github.com/cobbler/cobbler/releases/tag/v3.3.0).  This client's support for earlier Cobbler 
-versions was dropped.
+[release notes](https://github.com/cobbler/cobbler/releases/tag/v3.3.0).  Breaking changes:
+* This client's support for earlier Cobbler versions was dropped.
+* next_server attribute is now either next_server_v4 or next_server_v6
+* boot_loader string attribute is now boot_loaders list
+* The following string attributes are now lists: FetchableFiles, KernelOptions, KernelOptionsPost, TemplateFiles, 
+  AutoinstallMeta, Repos
 
 ### To-do
-1. Reinstate system interface testing when Cobbler issue #2846 is fixed.
-2. Fix bootloaders
+Reinstate system interface testing when Cobbler issue #2846 is fixed.
 
 ## Cobbler <=3.2.x support
 Retaining the below notes for the time-being, which only apply to v0.4.2 and earlier clients:
