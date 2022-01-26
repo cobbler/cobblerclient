@@ -25,15 +25,15 @@ import (
 // Get the fields from cobbler/items/distro.py
 type Distro struct {
 	// These are internal fields and cannot be modified.
-	Ctime         float64  `mapstructure:"ctime"           cobbler:"noupdate"` // TODO: convert to time
-	Depth         int      `mapstructure:"depth"          cobbler:"noupdate"`
-	Mtime         float64  `mapstructure:"mtime"           cobbler:"noupdate"` // TODO: convert to time
-	SourceRepos   []string `mapstructure:"source_repos"   cobbler:"noupdate"`
-	TreeBuildTime string   `mapstructure:tree_build_time" cobbler:"noupdate"`
-	UID           string   `mapstructure:"uid"            cobbler:"noupdate"`
-	Arch          string   `mapstructure:"arch"`
-	BootFiles     []string `mapstructure:"boot_files"`
-	//BootLoader         string   `mapstructure:"boot_loader"`
+	Ctime             float64  `mapstructure:"ctime"           cobbler:"noupdate"` // TODO: convert to time
+	Depth             int      `mapstructure:"depth"          cobbler:"noupdate"`
+	Mtime             float64  `mapstructure:"mtime"           cobbler:"noupdate"` // TODO: convert to time
+	SourceRepos       []string `mapstructure:"source_repos"   cobbler:"noupdate"`
+	TreeBuildTime     string   `mapstructure:tree_build_time" cobbler:"noupdate"`
+	UID               string   `mapstructure:"uid"            cobbler:"noupdate"`
+	Arch              string   `mapstructure:"arch"`
+	BootFiles         []string `mapstructure:"boot_files"`
+	BootLoaders       []string `mapstructure:"boot_loaders"`
 	Breed             string   `mapstructure:"breed"`
 	Comment           string   `mapstructure:"comment"`
 	FetchableFiles    []string `mapstructure:"fetchable_files"`
