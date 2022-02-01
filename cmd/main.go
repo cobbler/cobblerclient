@@ -125,29 +125,29 @@ func main() {
 
 	fmt.Printf("New System: %+v\n", newSystem)
 
-	// Skipping the interface creation until Cobbler issue #2846 is fixed
-	//	eth0 := cobbler.Interface{
-	//		MACAddress:    "aa:bb:cc:dd:ee:ff",
-	//		Static:        true,
-	//		InterfaceType: "bridge",
-	//	}
+	eth0 := cobbler.Interface{
+		MACAddress:    "aa:bb:cc:dd:ee:ff",
+		Static:        true,
+		InterfaceType: "bridge",
+	}
 
-	//	eth1 := cobbler.Interface{
-	//		MACAddress: "aa:bb:cc:dd:ee:fa",
-	//		Static:     true,
-	//		Management: true,
-	//	}
+	eth1 := cobbler.Interface{
+		MACAddress:    "aa:bb:cc:dd:ee:fa",
+		Static:        true,
+		Management:    true,
+		InterfaceType: "na",
+	}
 
-	//		fmt.Println("Adding NIC to System")
-	//		if err := newSystem.CreateInterface("eth0", eth0); err != nil {
-	//			fmt.Println(err)
-	//		}
+	fmt.Println("Adding NIC to System")
+	if err := newSystem.CreateInterface("eth0", eth0); err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println("Adding second NIC to System")
+	if err := newSystem.CreateInterface("eth1", eth1); err != nil {
+		fmt.Println(err)
+	}
 	//
-	//		fmt.Println("Adding second NIC to System")
-	//		if err := newSystem.CreateInterface("eth1", eth1); err != nil {
-	//			fmt.Println(err)
-	//		}
-
 	fmt.Println("Syncing the cobbler server")
 	if err := c.Sync(); err != nil {
 		fmt.Println(err)
@@ -160,39 +160,48 @@ func main() {
 	}
 	fmt.Println("s2: %s\n", s2)
 
-	//	fmt.Println("Verifying NIC data")
-	//	interfaces, err := s2.GetInterfaces()
-	//	if err != nil {
-	//		fmt.Println(err)
-	//	}
-	//	fmt.Printf("%+v\n\n", interfaces)
+	fmt.Println("Verifying NIC data")
+	interfaces, err := s2.GetInterfaces()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%+v\n\n", interfaces)
 
-	//	iface, err := s2.GetInterface("eth0")
-	//	if err != nil {
-	//		fmt.Println(err)
-	//	}
-	//	fmt.Printf("eth0:\n%+v\n\n", iface)
+	iface, err := s2.GetInterface("eth0")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("eth0:\n%+v\n\n", iface)
 
-	//iface, err = s2.GetInterface("eth1")
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//fmt.Printf("eth1:\n%+v\n\n", iface)
+	iface, err = s2.GetInterface("eth1")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("eth1:\n%+v\n\n", iface)
 
-	//fmt.Println("Deleting Interface")
-	//err = s2.DeleteInterface("eth0")
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
+	fmt.Println("Deleting Interface")
+	err = s2.DeleteInterface("eth0")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Deleting Interface")
+	err = s2.DeleteInterface("eth1")
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	//interfaces, err = s2.GetInterfaces()
-	//if err != nil {
-	//	fmt.Println(err)
-	//}
-	//if len(interfaces) != 1 {
-	//	fmt.Println("Error deleting interface eth1")
-	//	fmt.Printf("%+v\n", interfaces)
-	//}
+	s2, err = c.GetSystem("testsystem")
+	if err != nil {
+		fmt.Println(err)
+	}
+	interfaces, err = s2.GetInterfaces()
+	if err != nil {
+		fmt.Println(err)
+	}
+	if len(interfaces) != 1 {
+		fmt.Println("Error deleting interface eth1")
+		fmt.Printf("%+v\n", interfaces)
+	}
 
 	_, err = c.GetSystem("testsystem")
 	if err != nil {
