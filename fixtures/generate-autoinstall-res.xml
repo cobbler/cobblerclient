@@ -1,0 +1,11 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <string># This automatic OS installation file had errors that prevented it from being rendered correctly.
+# The cobbler.log should have information relating to this failure.</string>
+            </value>
+        </param>
+    </params>
+</methodResponse>

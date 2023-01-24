@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>get_config_data</methodName>
+    <params>
+        <param>
+            <value>
+                <string>testsys</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

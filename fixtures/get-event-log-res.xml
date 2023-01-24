@@ -1,0 +1,36 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value><string>[2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,744 - INFO | start_task(sync); event_id(2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29)
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,744 - INFO | syncing all
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,745 - INFO | copying: /var/lib/cobbler/misc/anamon.init -&gt; /srv/www/cobbler/misc
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,745 - INFO | copying: /var/lib/cobbler/misc/anamon -&gt; /srv/www/cobbler/misc
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,745 - INFO | running pre-sync triggers
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | cleaning trees
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/pxelinux.cfg
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/grub
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/images
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/ipxe
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/esxi
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,747 - INFO | removing: /srv/www/cobbler/rendered
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,747 - INFO | copying bootloaders
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,747 - INFO | running: ['rsync', '-rpt', '--copy-links', '--exclude=.cobbler_postun_cleanup', '/var/lib/cobbler/loaders/', '/srv/tftpboot']
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,936 - INFO | received on stdout:
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,936 - INFO | running: ['rsync', '-rpt', '--copy-links', '--exclude=README.grubconfig', '/var/lib/cobbler/grub_config/', '/srv/tftpboot']
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,942 - INFO | received on stdout:
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,942 - INFO | copying distros to tftpboot
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,943 - INFO | copying images
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,943 - INFO | generating PXE configuration files
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,943 - INFO | generating PXE menu structure
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,945 - INFO | rendering DHCP files
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,945 - INFO | generating /etc/dhcpd.conf
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,962 - INFO | cleaning link caches
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,962 - INFO | running post-sync triggers
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,962 - INFO | running: ['dhcpd', '-t', '-q']
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:25,002 - INFO | received on stdout:
+                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:26,044 - INFO | ### TASK COMPLETE ###
+            </string></value>
+        </param>
+    </params>
+</methodResponse>

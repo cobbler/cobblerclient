@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value><array><data>
+                <value><string>debian</string></value>
+                <value><string>freebsd</string></value>
+                <value><string>generic</string></value>
+                <value><string>powerkvm</string></value>
+                <value><string>redhat</string></value>
+                <value><string>suse</string></value>
+                <value><string>ubuntu</string></value>
+                <value><string>unix</string></value>
+                <value><string>vmware</string></value>
+                <value><string>windows</string></value>
+                <value><string>xen</string></value>
+            </data></array></value>
+        </param>
+    </params>
+</methodResponse>

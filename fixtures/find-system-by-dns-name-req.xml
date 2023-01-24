@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>find_system_by_dns_name</methodName>
+    <params>
+        <param>
+            <value>
+                <string>testname</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

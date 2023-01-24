@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>background_reposync</methodName>
+    <params>
+        <param>
+            <value>
+                <struct>
+                    <member>
+                        <name>Repos</name>
+                        <value>
+                            <array>
+                                <data></data>
+                            </array>
+                        </value>
+                    </member>
+                    <member>
+                        <name>Only</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>Nofail</name>
+                        <value>
+                            <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>Tries</name>
+                        <value>
+                            <int>0</int>
+                        </value>
+                    </member>
+                </struct>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

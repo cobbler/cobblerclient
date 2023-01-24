@@ -1,0 +1,18 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <string>bootstate=0
+title=Loading ESXi installer
+prefix=/images/test
+kernel=kernel
+kernelopt=runweasel
+modules=$esx_modules
+build=
+updated=0
+</string>
+            </value>
+        </param>
+    </params>
+</methodResponse>

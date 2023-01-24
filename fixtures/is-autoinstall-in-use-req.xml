@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>is_autoinstall_in_use</methodName>
+    <params>
+        <param>
+            <value>
+                <string></string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>
