@@ -1,0 +1,25 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value><array><data>
+                <value><string>ARM64</string></value>
+                <value><string>aarch64</string></value>
+                <value><string>amd64</string></value>
+                <value><string>arm</string></value>
+                <value><string>armhfp</string></value>
+                <value><string>i386</string></value>
+                <value><string>i586</string></value>
+                <value><string>ia64</string></value>
+                <value><string>ppc</string></value>
+                <value><string>ppc64</string></value>
+                <value><string>ppc64el</string></value>
+                <value><string>ppc64le</string></value>
+                <value><string>s390</string></value>
+                <value><string>s390x</string></value>
+                <value><string>x86</string></value>
+                <value><string>x86_64</string></value>
+            </data></array></value>
+        </param>
+    </params>
+</methodResponse>

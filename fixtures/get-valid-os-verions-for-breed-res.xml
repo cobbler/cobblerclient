@@ -1,0 +1,37 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value><array><data>
+                <value><string>cloudlinux6</string></value>
+                <value><string>fedora16</string></value>
+                <value><string>fedora17</string></value>
+                <value><string>fedora18</string></value>
+                <value><string>fedora19</string></value>
+                <value><string>fedora20</string></value>
+                <value><string>fedora21</string></value>
+                <value><string>fedora22</string></value>
+                <value><string>fedora23</string></value>
+                <value><string>fedora24</string></value>
+                <value><string>fedora25</string></value>
+                <value><string>fedora26</string></value>
+                <value><string>fedora27</string></value>
+                <value><string>fedora28</string></value>
+                <value><string>fedora29</string></value>
+                <value><string>fedora30</string></value>
+                <value><string>fedora31</string></value>
+                <value><string>fedora32</string></value>
+                <value><string>fedora33</string></value>
+                <value><string>fedora34</string></value>
+                <value><string>fedora35</string></value>
+                <value><string>ovz7</string></value>
+                <value><string>rhel4</string></value>
+                <value><string>rhel5</string></value>
+                <value><string>rhel6</string></value>
+                <value><string>rhel7</string></value>
+                <value><string>rhel8</string></value>
+                <value><string>rhel9</string></value>
+            </data></array></value>
+        </param>
+    </params>
+</methodResponse>

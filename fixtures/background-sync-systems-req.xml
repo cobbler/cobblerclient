@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>background_syncsystems</methodName>
+    <params>
+        <param>
+            <value>
+                <struct>
+                    <member>
+                        <name>Systems</name>
+                        <value>
+                            <array>
+                                <data>
+                                    <value>
+                                        <string></string>
+                                    </value>
+                                    <value>
+                                        <string></string>
+                                    </value>
+                                </data>
+                            </array>
+                        </value>
+                    </member>
+                    <member>
+                        <name>Verbose</name>
+                        <value>
+                            <boolean>0</boolean>
+                        </value>
+                    </member>
+                </struct>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

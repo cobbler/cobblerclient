@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>background_mkloaders</methodName>
+    <params>
+        <param>
+            <value>
+                <struct></struct>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

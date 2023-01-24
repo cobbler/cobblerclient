@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>token_check</methodName>
+    <params>
+        <param>
+            <value>
+                <string>my_fake_token</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

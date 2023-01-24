@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>get_task_status</methodName>
+    <params>
+        <param>
+            <value>
+                <string>2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6</string>
+            </value>
+        </param>
+    </params>
+</methodCall>
