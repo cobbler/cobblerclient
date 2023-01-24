@@ -1,6 +1,6 @@
 module github.com/cobbler/cobblerclient
 
-go 1.14
+go 1.18
 
 require (
 	github.com/ContainerSolutions/go-utils v0.1.0
