@@ -1,31 +1,62 @@
 package item
 
+import (
+	"github.com/cobbler/cobblerclient/client"
+	internalItem "github.com/cobbler/cobblerclient/internal/item"
+	rawItem "github.com/cobbler/cobblerclient/internal/item/raw"
+	resolvedItem "github.com/cobbler/cobblerclient/internal/item/resolved"
+)
+
 // Profile is a created profile.
 type Profile struct {
-	Item `mapstructure:",squash"`
+	// Internal fields
+	raw      *rawItem.Profile
+	resolved *resolvedItem.Profile
 
-	// These are internal fields and cannot be modified.
-	ReposEnabled bool `mapstructure:"repos_enabled"          cobbler:"noupdate"`
+	Item
 
-	Autoinstall       string   `mapstructure:"autoinstall"`
-	DHCPTag           string   `mapstructure:"dhcp_tag"`
-	Distro            string   `mapstructure:"distro"`
-	EnableGPXE        bool     `mapstructure:"enable_gpxe"`
-	EnableMenu        bool     `mapstructure:"enable_menu"`
-	NameServers       []string `mapstructure:"name_servers"`
-	NameServersSearch []string `mapstructure:"name_servers_search"`
-	NextServerv4      string   `mapstructure:"next_server_v4"`
-	NextServerv6      string   `mapstructure:"next_server_v6"`
-	Parent            string   `mapstructure:"parent"`
-	Proxy             string   `mapstructure:"proxy"`
-	Repos             []string `mapstructure:"repos"`
-	Server            string   `mapstructure:"server"`
-	VirtAutoBoot      string   `mapstructure:"virt_auto_boot"`
-	VirtBridge        string   `mapstructure:"virt_bridge"`
-	VirtCPUs          string   `mapstructure:"virt_cpus"`
-	VirtDiskDriver    string   `mapstructure:"virt_disk_driver"`
-	VirtFileSize      string   `mapstructure:"virt_file_size"`
-	VirtPath          string   `mapstructure:"virt_path"`
-	VirtRAM           string   `mapstructure:"virt_ram"`
-	VirtType          string   `mapstructure:"virt_type"`
+	Autoinstall       internalItem.InheritableProperty[string]
+	DHCPTag           internalItem.Property[string]
+	Distro            internalItem.Property[string]
+	EnableIPXE        internalItem.InheritableProperty[bool]
+	EnableMenu        internalItem.InheritableProperty[bool]
+	NameServers       internalItem.InheritableProperty[[]string]
+	NameServersSearch internalItem.InheritableProperty[[]string]
+	NextServerv4      internalItem.InheritableProperty[string]
+	NextServerv6      internalItem.InheritableProperty[string]
+	Parent            internalItem.Property[string]
+	Proxy             internalItem.InheritableProperty[string]
+	Repos             internalItem.Property[[]string]
+	Server            internalItem.InheritableProperty[string]
+	VirtAutoBoot      internalItem.InheritableProperty[string]
+	VirtBridge        internalItem.InheritableProperty[string]
+	VirtCPUs          internalItem.InheritableProperty[string]
+	VirtDiskDriver    internalItem.Property[string]
+	VirtFileSize      internalItem.InheritableProperty[string]
+	VirtPath          internalItem.Property[string]
+	VirtRAM           internalItem.InheritableProperty[string]
+	VirtType          internalItem.Property[string]
+}
+
+func BuildProfile(client client.Client) Profile {
+	var i = BuildItem(client)
+	var p = Profile{
+		raw: &rawItem.Profile{
+			Item: *i.raw,
+		},
+		resolved: &resolvedItem.Profile{
+			Item: *i.resolved,
+		},
+		Item: i,
+	}
+	refreshProfilePointers(&p)
+
+	return p
+}
+
+func refreshProfilePointers(profile *Profile) {
+	profile.Item.raw = &profile.raw.Item
+	profile.Item.resolved = &profile.resolved.Item
+	refreshItemPointers(&profile.Item)
+	// FIXME
 }

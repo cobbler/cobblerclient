@@ -3,29 +3,47 @@ package item
 import (
 	"fmt"
 	"github.com/cobbler/cobblerclient/client"
-	client_internals "github.com/cobbler/cobblerclient/internal/client"
+	clientInternals "github.com/cobbler/cobblerclient/internal/client"
+	"time"
 )
+
+func convertRawProfile(name string, xmlrpcResult interface{}) (*Profile, error) {
+	var profile Profile
+
+	if xmlrpcResult == "~" {
+		return nil, fmt.Errorf("profile %s not found", name)
+	}
+
+	decodeResult, err := clientInternals.DecodeCobblerItem(xmlrpcResult, &profile)
+	if err != nil {
+		return nil, err
+	}
+
+	return decodeResult.(*Profile), nil
+}
+
+func convertRawProfilesList(xmlrpcResult interface{}) ([]*Profile, error) {
+	var profiles []*Profile
+
+	for _, p := range xmlrpcResult.([]interface{}) {
+		profile, err := convertRawProfile("unknown", p)
+		if err != nil {
+			return nil, err
+		}
+		profiles = append(profiles, profile)
+	}
+
+	return profiles, nil
+}
 
 // GetProfiles returns all systems in Cobbler.
 func GetProfiles(c client.Client) ([]*Profile, error) {
-	var profiles []*Profile
-
 	result, err := c.Call("get_profiles", "-1", c.Token)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, p := range result.([]interface{}) {
-		var profile Profile
-		decodedResult, err := client_internals.DecodeCobblerItem(p, &profile)
-		if err != nil {
-			return nil, err
-		}
-		decodedProfile := decodedResult.(*Profile)
-		profiles = append(profiles, decodedProfile)
-	}
-
-	return profiles, nil
+	return convertRawProfilesList(result)
 }
 
 func ListProfileNames(c client.Client) ([]string, error) {
@@ -34,25 +52,14 @@ func ListProfileNames(c client.Client) ([]string, error) {
 
 // GetProfile returns a single profile obtained by its name.
 func GetProfile(c client.Client, name string) (*Profile, error) {
-	var profile Profile
+	var profile = BuildProfile(c)
 
 	result, err := c.Call("get_profile", name, c.Token)
 	if err != nil {
 		return &profile, err
 	}
 
-	if result == "~" {
-		return nil, fmt.Errorf("profile %s not found", name)
-	}
-
-	decodeResult, err := client_internals.DecodeCobblerItem(result, &profile)
-	if err != nil {
-		return nil, err
-	}
-
-	s := decodeResult.(*Profile)
-
-	return s, nil
+	return convertRawProfile(name, result)
 }
 
 // FindProfile is ...
@@ -62,7 +69,11 @@ func FindProfile(c client.Client) error {
 }
 
 // GetProfilesSince is ...
-func GetProfilesSince(c client.Client) error {
-	_, err := c.Call("get_profiles_since")
-	return err
+func GetProfilesSince(c client.Client, time time.Time) ([]*Profile, error) {
+	result, err := c.Call("get_profiles_since", float64(time.Unix()))
+	if err != nil {
+		return nil, err
+	}
+
+	return convertRawProfilesList(result)
 }

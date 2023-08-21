@@ -3,14 +3,15 @@ package item_test
 import (
 	"github.com/cobbler/cobblerclient/item"
 	"testing"
+	"time"
 
 	"github.com/ContainerSolutions/go-utils"
 
-	cobbler_testing "github.com/cobbler/cobblerclient/internal/testing"
+	cobblerTesting "github.com/cobbler/cobblerclient/internal/testing"
 )
 
 func TestGetProfiles(t *testing.T) {
-	c := cobbler_testing.CreateStubHTTPClient(t, "get-profiles-req.xml", "get-profiles-res.xml")
+	c := cobblerTesting.CreateStubHTTPClient(t, "get-profiles-req.xml", "get-profiles-res.xml")
 	profiles, err := item.GetProfiles(c)
 	utils.FailOnError(t, err)
 
@@ -20,7 +21,7 @@ func TestGetProfiles(t *testing.T) {
 }
 
 func TestListProfileNames(t *testing.T) {
-	c := cobbler_testing.CreateStubHTTPClient(t, "get-profiles-req.xml", "get-profiles-res.xml")
+	c := cobblerTesting.CreateStubHTTPClient(t, "get-item-names-profile-req.xml", "get-item-names-profile-res.xml")
 	profiles, err := item.ListProfileNames(c)
 	utils.FailOnError(t, err)
 
@@ -30,7 +31,7 @@ func TestListProfileNames(t *testing.T) {
 }
 
 func TestGetProfile(t *testing.T) {
-	c := cobbler_testing.CreateStubHTTPClient(t, "get-profile-req.xml", "get-profile-res.xml")
+	c := cobblerTesting.CreateStubHTTPClient(t, "get-profile-req.xml", "get-profile-res.xml")
 	profile, err := item.GetProfile(c, "Ubuntu-20.04-x86_64")
 	utils.FailOnError(t, err)
 
@@ -40,13 +41,17 @@ func TestGetProfile(t *testing.T) {
 }
 
 func TestGetProfilesSince(t *testing.T) {
-	c := cobbler_testing.CreateStubHTTPClient(t, "get-distro-req.xml", "get-distro-res.xml")
-	err := item.GetProfilesSince(c)
+	c := cobblerTesting.CreateStubHTTPClient(t, "get-profiles-since-req.xml", "get-profiles-since-res.xml")
+	profiles, err := item.GetProfilesSince(c, time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	utils.FailOnError(t, err)
+
+	if len(profiles) != 1 {
+		t.Errorf("Wrong number of profiles returned.")
+	}
 }
 
 func TestFindProfile(t *testing.T) {
-	c := cobbler_testing.CreateStubHTTPClient(t, "get-distro-req.xml", "get-distro-res.xml")
+	c := cobblerTesting.CreateStubHTTPClient(t, "get-distro-req.xml", "get-distro-res.xml")
 	err := item.FindProfile(c)
 	utils.FailOnError(t, err)
 }

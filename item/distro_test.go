@@ -20,7 +20,7 @@ func TestGetDistros(t *testing.T) {
 }
 
 func TestListDistroNames(t *testing.T) {
-	c := cobblerTesting.CreateStubHTTPClient(t, "get-item-names-distro.xml", "get-item-names-distro.xml")
+	c := cobblerTesting.CreateStubHTTPClient(t, "get-item-names-distro-req.xml", "get-item-names-distro-res.xml")
 	distros, err := item.ListDistroNames(&c)
 	utils.FailOnError(t, err)
 

@@ -96,14 +96,12 @@ func main() {
 	}
 	fmt.Printf("Profiles: %#v\n", profiles)
 	fmt.Println("Creating a Profile")
-	p := item.Profile{
-		Item:           item.BuildItem(c),
-		Distro:         "Ubuntu-20.04-x86_64",
-		Parent:         "Ubuntu-20.04-x86_64",
-		Autoinstall:    "sample.seed",
-		VirtDiskDriver: "raw", // For some reason the virt_disk_driver must be set in Cobbler 3...
-	}
+	p := item.BuildProfile(c)
 	p.Name.Set("testprofile")
+	p.Distro.Set("Ubuntu-20.04-x86_64")
+	p.Parent.Set("Ubuntu-20.04-x86_64")
+	p.Autoinstall.Set("sample.seed")
+	p.VirtDiskDriver.Set("raw")
 
 	newProfile, err := p.Create()
 	if err != nil {
