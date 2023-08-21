@@ -13,18 +13,18 @@ func (p *Profile) Create() (*Profile, error) {
 		return nil, fmt.Errorf("a profile with the name %s already exists", p.Name)
 	}
 
-	if p.Distro == "" {
+	if p.Distro.Get() == "" {
 		return nil, fmt.Errorf("a profile must have a distro set")
 	}
 
 	if len(p.MgmtParameters.Get()) == 0 {
 		p.MgmtParameters.SetRaw("<<inherit>>")
 	}
-	if p.VirtType == "" {
-		p.VirtType = "<<inherit>>"
+	if p.VirtType.Get() == "" {
+		p.VirtType.Set("<<inherit>>")
 	}
-	if p.VirtDiskDriver == "" {
-		p.VirtDiskDriver = "<<inherit>>"
+	if p.VirtDiskDriver.Get() == "" {
+		p.VirtDiskDriver.Set("<<inherit>>")
 	}
 
 	// To create a profile via the Cobbler API, first call new_profile to obtain an ID
