@@ -68,7 +68,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("Distros: %s\n", distros)
+	fmt.Printf("Distros: %#v\n", distros)
 	fmt.Println("Creating a Distro")
 	newDistro, err := c.CreateDistro(d)
 	if err != nil {
@@ -92,7 +92,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("Profiles: %s\n", profiles)
+	fmt.Printf("Profiles: %#v\n", profiles)
 	fmt.Println("Creating a Profile")
 	p := cobbler.Profile{
 		Name:           "testprofile",
@@ -158,7 +158,7 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("s2: %s\n", s2)
+	fmt.Printf("s2: %#v\n", s2)
 
 	fmt.Println("Verifying NIC data")
 	interfaces, err := s2.GetInterfaces()
