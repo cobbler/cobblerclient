@@ -19,6 +19,7 @@ package cobblerclient
 import (
 	"fmt"
 	"reflect"
+	"time"
 )
 
 // Repo is a created repo.
@@ -28,7 +29,7 @@ type Repo struct {
 	Ctime         float64 `mapstructure:"ctime"          cobbler:"noupdate"` // TODO: convert to time
 	Depth         int     `mapstructure:"depth"          cobbler:"noupdate"`
 	Mtime         float64 `mapstructure:"mtime"          cobbler:"noupdate"` // TODO: convert to time
-	TreeBuildTime string  `mapstructure:tree_build_time" cobbler:"noupdate"`
+	TreeBuildTime string  `mapstructure:"tree_build_time" cobbler:"noupdate"`
 	Parent        string  `mapstructure:"parent"            cobbler:"noupdate"`
 	UID           string  `mapstructure:"uid"            cobbler:"noupdate"`
 
@@ -49,42 +50,14 @@ type Repo struct {
 	//YumOpts                map[string]interface{} `mapstructure:"yumopts"`
 }
 
-// GetRepos returns all repos in Cobbler.
-func (c *Client) GetRepos() ([]*Repo, error) {
-	var repos []*Repo
-
-	result, err := c.Call("get_repos", "-1", c.Token)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, r := range result.([]interface{}) {
-		var repo Repo
-		decodedResult, err := decodeCobblerItem(r, &repo)
-		if err != nil {
-			return nil, err
-		}
-
-		repos = append(repos, decodedResult.(*Repo))
-	}
-
-	return repos, nil
-}
-
-// GetRepo returns a single repo obtained by its name.
-func (c *Client) GetRepo(name string) (*Repo, error) {
+func convertRawRepo(name string, xmlrpcResult interface{}) (*Repo, error) {
 	var repo Repo
 
-	result, err := c.Call("get_repo", name, c.Token)
-	if result == "~" {
-		return nil, fmt.Errorf("Repo %s not found.", name)
+	if xmlrpcResult == "~" {
+		return nil, fmt.Errorf("profile %s not found", name)
 	}
 
-	if err != nil {
-		return nil, err
-	}
-
-	decodeResult, err := decodeCobblerItem(result, &repo)
+	decodeResult, err := decodeCobblerItem(xmlrpcResult, &repo)
 	if err != nil {
 		return nil, err
 	}
@@ -92,11 +65,45 @@ func (c *Client) GetRepo(name string) (*Repo, error) {
 	return decodeResult.(*Repo), nil
 }
 
+func convertRawReposList(xmlrpcResult interface{}) ([]*Repo, error) {
+	var repos []*Repo
+
+	for _, r := range xmlrpcResult.([]interface{}) {
+		repo, err := convertRawRepo("unknown", r)
+		if err != nil {
+			return nil, err
+		}
+		repos = append(repos, repo)
+	}
+
+	return repos, nil
+}
+
+// GetRepos returns all repos in Cobbler.
+func (c *Client) GetRepos() ([]*Repo, error) {
+	result, err := c.Call("get_repos", "-1", c.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertRawReposList(result)
+}
+
+// GetRepo returns a single repo obtained by its name.
+func (c *Client) GetRepo(name string) (*Repo, error) {
+	result, err := c.Call("get_repo", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertRawRepo(name, result)
+}
+
 // CreateRepo creates a repo.
 func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 	// Make sure a repo with the same name does not already exist
 	if _, err := c.GetRepo(repo.Name); err == nil {
-		return nil, fmt.Errorf("A Repo with the name %s already exists.", repo.Name)
+		return nil, fmt.Errorf("a Repo with the name %s already exists", repo.Name)
 	}
 
 	result, err := c.Call("new_repo", c.Token)
@@ -110,7 +117,7 @@ func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 		return nil, err
 	}
 
-	if _, err := c.Call("save_repo", newID, c.Token); err != nil {
+	if err := c.SaveRepo(newID, "new"); err != nil {
 		return nil, err
 	}
 
@@ -129,15 +136,79 @@ func (c *Client) UpdateRepo(repo *Repo) error {
 		return err
 	}
 
-	if _, err := c.Call("save_repo", id, c.Token); err != nil {
-		return err
-	}
+	return c.SaveRepo(id, "bypass")
+}
 
-	return nil
+// SaveRepo is ...
+func (c *Client) SaveRepo(objectId, editmode string) error {
+	_, err := c.Call("save_repo", objectId, c.Token, editmode)
+	return err
+}
+
+// CopyRepo is ...
+func (c *Client) CopyRepo(objectId, newName string) error {
+	_, err := c.Call("copy_repo", objectId, newName, c.Token)
+	return err
 }
 
 // DeleteRepo deletes a single repo by its name.
 func (c *Client) DeleteRepo(name string) error {
 	_, err := c.Call("remove_repo", name, c.Token)
 	return err
+}
+
+// ListRepoNames returns the names of all repositories that exist in Cobbler.
+func (c *Client) ListRepoNames() ([]string, error) {
+	return c.GetItemNames("repo")
+}
+
+// FindRepo is ...
+func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
+	result, err := c.Call("find_repo", criteria, true, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return convertRawReposList(result)
+}
+
+// FindRepoNames is ...
+func (c *Client) FindRepoNames(criteria map[string]interface{}) ([]string, error) {
+	var result []string
+
+	resultUnmarshalled, err := c.Call("find_repo", criteria, false, c.Token)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, name := range resultUnmarshalled.([]interface{}) {
+		result = append(result, name.(string))
+	}
+
+	return result, nil
+}
+
+// GetReposSince is ...
+func (c *Client) GetReposSince(mtime time.Time) ([]*Repo, error) {
+	result, err := c.Call("get_repos_since", float64(mtime.Unix()))
+	if err != nil {
+		return nil, err
+	}
+	return convertRawReposList(result)
+}
+
+// RenameRepo is ...
+func (c *Client) RenameRepo(objectId, newName string) error {
+	_, err := c.Call("rename_repo", objectId, newName, c.Token)
+	return err
+}
+
+// GetRepoHandle gets the internal ID of a Cobbler item.
+func (c *Client) GetRepoHandle(name string) (string, error) {
+	result, err := c.Call("get_repo_handle", name, c.Token)
+	if err != nil {
+		return "", err
+	} else {
+		return result.(string), err
+	}
 }
