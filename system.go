@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"log"
 	"reflect"
+	"time"
 
 	"github.com/fatih/structs"
 	"github.com/mitchellh/mapstructure"
@@ -105,27 +106,47 @@ type Interface struct {
 // Interfaces is a collection of interfaces in a system.
 type Interfaces map[string]Interface
 
+func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*System, error) {
+	var system System
+
+	if xmlrpcResult == "~" {
+		return nil, fmt.Errorf("system %s not found", name)
+	}
+
+	decodeResult, err := decodeCobblerItem(xmlrpcResult, &system)
+	if err != nil {
+		return nil, err
+	}
+
+	s := decodeResult.(*System)
+	s.Client = *c
+
+	return s, nil
+}
+
+func (c *Client) convertRawSystemsList(xmlrpcResult interface{}) ([]*System, error) {
+	var systems []*System
+
+	for _, s := range xmlrpcResult.([]interface{}) {
+		system, err := c.convertRawSystem("unkown", s)
+		if err != nil {
+			return nil, err
+		}
+		systems = append(systems, system)
+	}
+
+	return systems, nil
+}
+
 // GetSystems returns all systems in Cobbler.
 func (c *Client) GetSystems() ([]*System, error) {
-	var systems []*System
 
 	result, err := c.Call("get_systems", "", c.Token)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, s := range result.([]interface{}) {
-		var system System
-		decodedResult, err := decodeCobblerItem(s, &system)
-		if err != nil {
-			return nil, err
-		}
-		decodedSystem := decodedResult.(*System)
-		decodedSystem.Client = *c
-		systems = append(systems, decodedSystem)
-	}
-
-	return systems, nil
+	return c.convertRawSystemsList(result)
 }
 
 // GetSystem returns a single system obtained by its name.
@@ -137,19 +158,7 @@ func (c *Client) GetSystem(name string) (*System, error) {
 		return &system, err
 	}
 
-	if result == "~" {
-		return nil, fmt.Errorf("System %s not found.", name)
-	}
-
-	decodeResult, err := decodeCobblerItem(result, &system)
-	if err != nil {
-		return nil, err
-	}
-
-	s := decodeResult.(*System)
-	s.Client = *c
-
-	return s, nil
+	return c.convertRawSystem(name, result)
 }
 
 // CreateSystem creates a system.
@@ -157,11 +166,11 @@ func (c *Client) GetSystem(name string) (*System, error) {
 func (c *Client) CreateSystem(system System) (*System, error) {
 	// Check if a system with the same name already exists
 	if _, err := c.GetSystem(system.Name); err == nil {
-		return nil, fmt.Errorf("A system with the name %s already exists.", system.Name)
+		return nil, fmt.Errorf("a system with the name %s already exists", system.Name)
 	}
 
 	if system.Profile == "" && system.Image == "" {
-		return nil, fmt.Errorf("A system must have a profile or image set.")
+		return nil, fmt.Errorf("a system must have a profile or image set")
 	}
 
 	// Set default values. I guess these aren't taken care of by Cobbler?
@@ -313,7 +322,7 @@ func (s *System) GetInterface(name string) (Interface, error) {
 	if iface, ok := nics[name]; ok {
 		return iface, nil
 	} else {
-		return iface, fmt.Errorf("Interface %s not found.", name)
+		return iface, fmt.Errorf("interface %s not found", name)
 	}
 }
 
@@ -338,4 +347,46 @@ func (s *System) DeleteInterface(name string) error {
 	}
 
 	return nil
+}
+
+// ListSystemNames is ...
+func (c *Client) ListSystemNames() ([]string, error) {
+	return c.GetItemNames("system")
+}
+
+// FindSystem is ...
+func (c *Client) FindSystem(criteria map[string]interface{}) ([]*System, error) {
+	result, err := c.Call("find_system", criteria, true, c.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.convertRawSystemsList(result)
+}
+
+// FindSystemNames is ...
+func (c *Client) FindSystemNames(criteria map[string]interface{}) ([]string, error) {
+	var result []string
+
+	resultUnmarshalled, err := c.Call("find_system", criteria, false, c.Token)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, name := range resultUnmarshalled.([]interface{}) {
+		result = append(result, name.(string))
+	}
+
+	return result, nil
+}
+
+// GetSystemsSince is ...
+func (c *Client) GetSystemsSince(mtime time.Time) ([]*System, error) {
+	result, err := c.Call("get_systems_since", float64(mtime.Unix()))
+	if err != nil {
+		return nil, err
+	}
+
+	return c.convertRawSystemsList(result)
 }

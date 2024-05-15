@@ -18,6 +18,7 @@ package cobblerclient
 
 import (
 	"testing"
+	"time"
 
 	"github.com/ContainerSolutions/go-utils"
 )
@@ -109,4 +110,40 @@ func TestNewSystem(t *testing.T) {
 	if !result.(bool) {
 		t.Errorf("Save failed.")
 	}
+}
+
+func TestListSystemNames(t *testing.T) {
+	c := createStubHTTPClient(t, "get-item-names-system-req.xml", "get-item-names-system-res.xml")
+	sytems, err := c.ListSystemNames()
+	utils.FailOnError(t, err)
+
+	if len(sytems) != 1 {
+		t.Errorf("Wrong number of systems returned.")
+	}
+}
+
+func TestGetSystemsSince(t *testing.T) {
+	c := createStubHTTPClient(t, "get-system-since-req.xml", "get-system-since-res.xml")
+	systems, err := c.GetSystemsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
+	utils.FailOnError(t, err)
+
+	if len(systems) != 1 {
+		t.Errorf("Wrong number of profiles returned.")
+	}
+}
+
+func TestFindSystem(t *testing.T) {
+	c := createStubHTTPClient(t, "find-system-req.xml", "find-system-res.xml")
+	criteria := make(map[string]interface{}, 1)
+	criteria["name"] = "test"
+	_, err := c.FindSystem(criteria)
+	utils.FailOnError(t, err)
+}
+
+func TestFindSystemNames(t *testing.T) {
+	c := createStubHTTPClient(t, "find-system-names-req.xml", "find-system-names-res.xml")
+	criteria := make(map[string]interface{}, 1)
+	criteria["name"] = "test"
+	_, err := c.FindSystem(criteria)
+	utils.FailOnError(t, err)
 }
