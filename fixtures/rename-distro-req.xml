@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>rename_distro</methodName>
+    <params>
+        <param>
+            <value>
+                <string>distro::test2</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>test1</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>
