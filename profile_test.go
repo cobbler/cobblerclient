@@ -18,6 +18,7 @@ package cobblerclient
 
 import (
 	"testing"
+	"time"
 
 	"github.com/ContainerSolutions/go-utils"
 )
@@ -39,5 +40,77 @@ func TestGetProfile(t *testing.T) {
 
 	if profile.Name != "Ubuntu-20.04-x86_64" {
 		t.Errorf("Wrong profile returned.")
+	}
+}
+
+func TestListProfileNames(t *testing.T) {
+	c := createStubHTTPClient(t, "get-item-names-profile-req.xml", "get-item-names-profile-res.xml")
+	profiles, err := c.ListProfileNames()
+	utils.FailOnError(t, err)
+
+	if len(profiles) != 1 {
+		t.Errorf("Wrong number of profiles returned.")
+	}
+}
+
+func TestGetProfilesSince(t *testing.T) {
+	c := createStubHTTPClient(t, "get-profiles-since-req.xml", "get-profiles-since-res.xml")
+	profiles, err := c.GetProfilesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
+	utils.FailOnError(t, err)
+
+	if len(profiles) != 1 {
+		t.Errorf("Wrong number of profiles returned.")
+	}
+}
+
+func TestFindProfile(t *testing.T) {
+	c := createStubHTTPClient(t, "find-profile-req.xml", "find-profile-res.xml")
+	criteria := make(map[string]interface{}, 1)
+	criteria["name"] = "test"
+	profiles, err := c.FindProfile(criteria)
+	utils.FailOnError(t, err)
+
+	if len(profiles) != 1 {
+		t.Errorf("Wrong number of profiles returned.")
+	}
+}
+
+func TestFindProfileNames(t *testing.T) {
+	c := createStubHTTPClient(t, "find-profile-names-req.xml", "find-profile-names-res.xml")
+	criteria := make(map[string]interface{}, 1)
+	criteria["name"] = "test"
+	profiles, err := c.FindProfileNames(criteria)
+	utils.FailOnError(t, err)
+
+	if len(profiles) != 1 {
+		t.Errorf("Wrong number of profiles returned.")
+	}
+}
+
+func TestSaveProfile(t *testing.T) {
+	c := createStubHTTPClient(t, "save-profile-req.xml", "save-profile-res.xml")
+	err := c.SaveProfile("profile::testprof", "bypass")
+	utils.FailOnError(t, err)
+}
+
+func TestCopyProfile(t *testing.T) {
+	c := createStubHTTPClient(t, "copy-profile-req.xml", "copy-profile-res.xml")
+	err := c.CopyProfile("profile::testprof", "testprof2")
+	utils.FailOnError(t, err)
+}
+
+func TestRenameProfile(t *testing.T) {
+	c := createStubHTTPClient(t, "rename-profile-req.xml", "rename-profile-res.xml")
+	err := c.RenameProfile("profile::testprof2", "testprof1")
+	utils.FailOnError(t, err)
+}
+
+func TestGetProfileHandle(t *testing.T) {
+	c := createStubHTTPClient(t, "get-profile-handle-req.xml", "get-profile-handle-res.xml")
+	res, err := c.GetProfileHandle("testprof")
+	utils.FailOnError(t, err)
+
+	if res != "profile::testprof" {
+		t.Error("Wrong object id returned.")
 	}
 }
