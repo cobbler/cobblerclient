@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>get_mgmtclass_handle</methodName>
+    <params>
+        <param>
+            <value>
+                <string>testmgmtclass</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

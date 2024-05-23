@@ -241,16 +241,6 @@ func (c *Client) GetConfigData(hostname string) error {
 	return err
 }
 
-// GetItemHandle gets the internal ID of a Cobbler item.
-func (c *Client) GetItemHandle(what, name string) (string, error) {
-	result, err := c.Call("get_item_handle", what, name, c.Token)
-	if err != nil {
-		return "", err
-	} else {
-		return result.(string), err
-	}
-}
-
 // cobblerDataHacks is a hook for the mapstructure decoder. It's only used by
 // decodeCobblerItem and should never be invoked directly.
 // It's used to smooth out issues with converting fields and types from Cobbler.

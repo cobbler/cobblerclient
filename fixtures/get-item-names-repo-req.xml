@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>get_item_names</methodName>
+    <params>
+        <param>
+            <value>
+                <string>repo</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>copy_image</methodName>
+    <params>
+        <param>
+            <value>
+                <string>image::testimage</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>testimage2</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

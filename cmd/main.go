@@ -22,6 +22,26 @@ func main() {
 
 	fmt.Printf("Token: %s\n", c.Token)
 
+	res, err := c.BackgroundSync(cobbler.BackgroundSyncOptions{Dhcp: true, Dns: true, Verbose: true})
+	if err != nil {
+		fmt.Println(err)
+	}
+	eventLog, err := c.GetEventLog(res)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("Print event log for %s\n", res)
+	fmt.Println(eventLog)
+
+	events, err := c.GetEvents("")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println("Listing all events")
+	for _, event := range events {
+		fmt.Printf("%#v\n", event)
+	}
+
 	fmt.Println("Creating a repo")
 	r := cobbler.Repo{
 		Name:          "myrepo",
