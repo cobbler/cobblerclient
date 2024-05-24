@@ -23,6 +23,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Test
         run: go test -race -coverprofile=coverage.out -covermode=atomic -v ./...
-      - name: Upload coverage to Codecov
-        if: matrix.os == 'ubuntu-latest' && matrix.go-version == '1.17.x'
-        uses: codecov/codecov-action@v2
+      - name: Upload test coverage to Codacy
+        run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report --force-coverage-parser go -r coverage.out
+        env:
+          CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
+          CODACY_ORGANIZATION_PROVIDER: ${{ secrets.CODACY_ORGANIZATION_PROVIDER }}
+          CODACY_USERNAME: ${{ secrets.CODACY_USERNAME }}
+          CODACY_PROJECT_NAME: ${{ secrets.CODACY_PROJECT_NAME }}
