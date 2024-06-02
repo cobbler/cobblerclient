@@ -6,7 +6,8 @@ import (
 	"time"
 )
 
-// File is ...
+// File is a created file.
+// Get the fields from cobbler/items/file.py
 type File struct {
 	Resource `mapstructure:",squash"`
 
@@ -117,7 +118,7 @@ func (c *Client) ListFileNames() ([]string, error) {
 	return c.GetItemNames("file")
 }
 
-// FindFile is ...
+// FindFile is searching for one or more files by any of its attributes.
 func (c *Client) FindFile(criteria map[string]interface{}) ([]*File, error) {
 	result, err := c.Call("find_file", criteria, true, c.Token)
 	if err != nil {
@@ -154,13 +155,13 @@ func (c *Client) GetFileHandle(name string) (string, error) {
 	}
 }
 
-// CopyFile is ...
+// CopyFile is copying a given file server side with a new name.
 func (c *Client) CopyFile(objectId, newName string) error {
 	_, err := c.Call("copy_file", objectId, newName, c.Token)
 	return err
 }
 
-// GetFilesSince is ...
+// GetFilesSince is returning all files which were created after the specified date.
 func (c *Client) GetFilesSince(mtime time.Time) ([]*File, error) {
 	result, err := c.Call("get_files_since", float64(mtime.Unix()))
 	if err != nil {
@@ -170,7 +171,7 @@ func (c *Client) GetFilesSince(mtime time.Time) ([]*File, error) {
 	return convertRawFilesList(result)
 }
 
-// GetFileAsRendered is ...
+// GetFileAsRendered is returning the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetFileAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_file_as_rendered", name, c.Token)
 	if err != nil {
@@ -179,13 +180,13 @@ func (c *Client) GetFileAsRendered(name string) (map[string]interface{}, error) 
 	return result.(map[string]interface{}), err
 }
 
-// SaveFile is ...
+// SaveFile is persisting all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveFile(objectId, editmode string) error {
 	_, err := c.Call("save_file", objectId, c.Token, editmode)
 	return err
 }
 
-// RenameFile is ...
+// RenameFile is renaming a file with a given object id.
 func (c *Client) RenameFile(objectId, newName string) error {
 	_, err := c.Call("rename_file", objectId, newName, c.Token)
 	return err

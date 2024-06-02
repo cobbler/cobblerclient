@@ -42,7 +42,7 @@ func (c *Client) GetEvents(forUser string) ([]*CobblerEvent, error) {
 	return events, err
 }
 
-// GetEventLog is ...
+// GetEventLog is retrieving the logged messages for a given event id.
 func (c *Client) GetEventLog(eventId string) (string, error) {
 	result, err := c.Call("get_event_log", eventId)
 	if err != nil {

@@ -140,6 +140,8 @@ func (v VirtDiskDriver) String() string {
 	return "unknown"
 }
 
+// Image is a created image.
+// Get the fields from cobbler/items/image.py
 type Image struct {
 	Item `mapstructure:",squash"`
 
@@ -272,7 +274,7 @@ func (c *Client) DeleteImage(name string) error {
 	return err
 }
 
-// FindImage is ...
+// FindImage is searching for one or more images by any of its attributes.
 func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
 	result, err := c.Call("find_image", criteria, true, c.Token)
 	if err != nil {
@@ -309,19 +311,19 @@ func (c *Client) GetImageHandle(name string) (string, error) {
 	}
 }
 
-// CopyImage is ...
+// CopyImage is copying a given image server side with a new name.
 func (c *Client) CopyImage(objectId, newName string) error {
 	_, err := c.Call("copy_image", objectId, newName, c.Token)
 	return err
 }
 
-// RenameImage is ...
+// RenameImage is renaming an image with a given object id.
 func (c *Client) RenameImage(objectId, newName string) error {
 	_, err := c.Call("rename_image", objectId, newName, c.Token)
 	return err
 }
 
-// GetImagesSince is ...
+// GetImagesSince is returning all images which were created after the specified date.
 func (c *Client) GetImagesSince(mtime time.Time) ([]*Image, error) {
 	result, err := c.Call("get_images_since", float64(mtime.Unix()))
 	if err != nil {
@@ -331,7 +333,7 @@ func (c *Client) GetImagesSince(mtime time.Time) ([]*Image, error) {
 	return convertRawImagesList(result)
 }
 
-// GetImageAsRendered is ...
+// GetImageAsRendered is returning the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetImageAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_image_as_rendered", name, c.Token)
 	if err != nil {
@@ -340,13 +342,13 @@ func (c *Client) GetImageAsRendered(name string) (map[string]interface{}, error)
 	return result.(map[string]interface{}), err
 }
 
-// SaveImage is ...
+// SaveImage is persisting all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveImage(objectId, editmode string) error {
 	_, err := c.Call("save_image", objectId, c.Token, editmode)
 	return err
 }
 
-// GetValidImageBootLoaders is ...
+// GetValidImageBootLoaders is retrieving the list of bootloaders that can be assinged to an image.
 func (c *Client) GetValidImageBootLoaders(imageName string) ([]string, error) {
 	var result []string
 

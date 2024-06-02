@@ -93,6 +93,7 @@ func (c *Client) BackgroundReplicate(options ReplicateOptions) (string, error) {
 	}
 }
 
+// BackgroundImport is running an import locally on the server with the specified options.
 func (c *Client) BackgroundImport(options BackgroundImportOptions) (string, error) {
 	result, err := c.Call("background_import", options, c.Token)
 	if err != nil {
@@ -102,6 +103,7 @@ func (c *Client) BackgroundImport(options BackgroundImportOptions) (string, erro
 	}
 }
 
+// BackgroundReposync is running a reposyonc asynchronous in the background on the server.
 func (c *Client) BackgroundReposync(options BackgroundReposyncOptions) (string, error) {
 	result, err := c.Call("background_reposync", options, c.Token)
 	if err != nil {
@@ -111,6 +113,7 @@ func (c *Client) BackgroundReposync(options BackgroundReposyncOptions) (string, 
 	}
 }
 
+// BackgroundMkLoaders is running the mkloaders action on the server in the background.
 func (c *Client) BackgroundMkLoaders() (string, error) {
 	result, err := c.Call("background_mkloaders", map[string]string{}, c.Token)
 	if err != nil {

@@ -27,7 +27,8 @@ func convertToInt(integer interface{}) (int, error) {
 	}
 }
 
-// CheckAccessNoFail is ...
+// CheckAccessNoFail is validating if a certain resource can be accessed with the current token. "arg1" and "arg2" have
+// different meanings depending on the authorization provider configured server side.
 func (c *Client) CheckAccessNoFail(resource, arg1, arg2 string) (bool, error) {
 	result, err := c.Call("check_access_no_fail", c.Token, resource, arg1, arg2)
 	if err != nil {
@@ -41,7 +42,8 @@ func (c *Client) CheckAccessNoFail(resource, arg1, arg2 string) (bool, error) {
 	}
 }
 
-// CheckAccess is ...
+// CheckAccess is performing the same check as [Client.CheckAccessNoFail] but returning the error message with the
+// reason instead of a boolean.
 func (c *Client) CheckAccess(resource, arg1, arg2 string) (int, error) {
 	result, err := c.Call("check_access", c.Token, resource, arg1, arg2)
 	if err != nil {
@@ -62,7 +64,7 @@ func (c *Client) CheckAccess(resource, arg1, arg2 string) (int, error) {
 	}
 }
 
-// GetAuthnModuleName is ...
+// GetAuthnModuleName is retrieving the currently configured authentication module name.
 func (c *Client) GetAuthnModuleName() (string, error) {
 	result, err := c.Call("get_authn_module_name", c.Token)
 	if err != nil {
@@ -72,8 +74,7 @@ func (c *Client) GetAuthnModuleName() (string, error) {
 	}
 }
 
-// Login will perform a login request to Cobbler using the credentials provided
-// in the configuration in the initializer.
+// Login will perform a login request to Cobbler using the credentials provided in the configuration in the initializer.
 func (c *Client) Login() (bool, error) {
 	result, err := c.Call("login", c.config.Username, c.config.Password)
 	if err != nil {
@@ -84,7 +85,7 @@ func (c *Client) Login() (bool, error) {
 	return true, nil
 }
 
-// Logout is ...
+// Logout is invalidating the current token server side.
 func (c *Client) Logout() (bool, error) {
 	result, err := c.Call("logout", c.Token)
 	if err != nil {
@@ -94,7 +95,7 @@ func (c *Client) Logout() (bool, error) {
 	}
 }
 
-// TokenCheck is ...
+// TokenCheck is returning if a given token is still valid or not.
 func (c *Client) TokenCheck(token string) (bool, error) {
 	result, err := c.Call("token_check", token)
 	if err != nil {
@@ -104,7 +105,7 @@ func (c *Client) TokenCheck(token string) (bool, error) {
 	}
 }
 
-// GetUserFromToken is ...
+// GetUserFromToken is checking what user a given token is belonging to.
 func (c *Client) GetUserFromToken(token string) (string, error) {
 	result, err := c.Call("get_user_from_token", token)
 	if err != nil {

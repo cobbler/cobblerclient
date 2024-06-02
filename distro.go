@@ -142,13 +142,13 @@ func (c *Client) UpdateDistro(distro *Distro) error {
 	return nil
 }
 
-// SaveDistro is ...
+// SaveDistro is persisting all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveDistro(objectId, editmode string) error {
 	_, err := c.Call("save_distro", objectId, c.Token, editmode)
 	return err
 }
 
-// CopyDistro is ...
+// CopyDistro is copying a given distro server side with a new name.
 func (c *Client) CopyDistro(objectId, newName string) error {
 	_, err := c.Call("copy_distro", objectId, newName, c.Token)
 	return err
@@ -226,7 +226,7 @@ func (c *Client) FindDistroNames(criteria map[string]interface{}) ([]string, err
 	return result, nil
 }
 
-// RenameDistro is ...
+// RenameDistro is renaming a distro with a given object id.
 func (c *Client) RenameDistro(objectId, newName string) error {
 	_, err := c.Call("rename_distro", objectId, newName, c.Token)
 	return err
