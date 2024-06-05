@@ -366,19 +366,8 @@ func (c *Client) FindSystem(criteria map[string]interface{}) ([]*System, error) 
 
 // FindSystemNames searches for one or more systems by any of its attributes.
 func (c *Client) FindSystemNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_system", criteria, false, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetSystemsSince returns all systems which were created after the specified date.

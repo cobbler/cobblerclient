@@ -23,11 +23,11 @@ var EMPTYEVENT = CobblerEvent{
 // GetEvents retrieves all events from the Cobbler server
 func (c *Client) GetEvents(forUser string) ([]*CobblerEvent, error) {
 	var events []*CobblerEvent
-	unmarshalled_result, err := c.Call("get_events", forUser)
+	unmarshalledResult, err := c.Call("get_events", forUser)
 	if err != nil {
 		return nil, err
 	}
-	for key, event := range unmarshalled_result.(map[string]interface{}) {
+	for key, event := range unmarshalledResult.(map[string]interface{}) {
 		eventData := event.([]interface{})
 		eventObj := &CobblerEvent{
 			id:        key,
@@ -44,21 +44,18 @@ func (c *Client) GetEvents(forUser string) ([]*CobblerEvent, error) {
 
 // GetEventLog retrieves the logged messages for a given event id.
 func (c *Client) GetEventLog(eventId string) (string, error) {
-	result, err := c.Call("get_event_log", eventId)
-	if err != nil {
-		return "", err
-	}
-	return result.(string), err
+	res, err := c.Call("get_event_log", eventId)
+	return returnString(res, err)
 }
 
 // GetTaskStatus takes the event ID from Cobbler and returns its status.
 func (c *Client) GetTaskStatus(eventId string) (CobblerEvent, error) {
-	unmarshalled_result, err := c.Call("get_task_status", eventId)
+	unmarshalledResult, err := c.Call("get_task_status", eventId)
 	if err != nil {
 		return EMPTYEVENT, err
 	}
 	// FIXME: Server has the wrong format. Needs to be fixed there.
 	// return result.(string), err
-	fmt.Printf("%#v", unmarshalled_result)
+	fmt.Printf("%#v", unmarshalledResult)
 	return EMPTYEVENT, err
 }

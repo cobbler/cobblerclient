@@ -23,19 +23,8 @@ type Item struct {
 
 // GetItemNames returns the list of names for a specified object type present inside Cobbler.
 func (c *Client) GetItemNames(what string) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("get_item_names", what)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetItemResolvedValue retrieves the value of a single attribute of a single item which was passed through the

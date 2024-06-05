@@ -210,18 +210,8 @@ func (c *Client) FindProfile(criteria map[string]interface{}) ([]*Profile, error
 
 // FindProfileNames searches for one or more profiles by any of its attributes.
 func (c *Client) FindProfileNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_profile", criteria, false, c.Token)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetProfilesSince returns all profiles which were created after the specified date.
@@ -242,10 +232,6 @@ func (c *Client) RenameProfile(objectId, newName string) error {
 
 // GetProfileHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetProfileHandle(name string) (string, error) {
-	result, err := c.Call("get_profile_handle", name, c.Token)
-	if err != nil {
-		return "", err
-	} else {
-		return result.(string), err
-	}
+	res, err := c.Call("get_profile_handle", name, c.Token)
+	return returnString(res, err)
 }

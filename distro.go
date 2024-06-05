@@ -213,19 +213,8 @@ func (c *Client) FindDistro(criteria map[string]interface{}) ([]*Distro, error) 
 
 // FindDistroNames searches for one or more distros by any of its attributes.
 func (c *Client) FindDistroNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_distro", criteria, false, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // RenameDistro renames a distro with a given object id.
@@ -236,10 +225,6 @@ func (c *Client) RenameDistro(objectId, newName string) error {
 
 // GetDistroHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetDistroHandle(name string) (string, error) {
-	result, err := c.Call("get_distro_handle", name, c.Token)
-	if err != nil {
-		return "", err
-	} else {
-		return result.(string), err
-	}
+	res, err := c.Call("get_distro_handle", name, c.Token)
+	return returnString(res, err)
 }

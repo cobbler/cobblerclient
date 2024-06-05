@@ -46,7 +46,7 @@ func convertRawMgmtClassList(xmlrpcResult interface{}) ([]*MgmtClass, error) {
 	return mgmtclasses, nil
 }
 
-// Getmgmtclasses returns all mgmtclasses in Cobbler.
+// GetMgmtClasses returns all mgmtclasses in Cobbler.
 func (c *Client) GetMgmtClasses() ([]*MgmtClass, error) {
 	result, err := c.Call("get_mgmtclasses", "-1", c.Token)
 	if err != nil {
@@ -127,28 +127,14 @@ func (c *Client) FindMgmtClass(criteria map[string]interface{}) ([]*MgmtClass, e
 
 // FindMgmtClassNames searches for one or more managementclasses by any of its attributes.
 func (c *Client) FindMgmtClassNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_mgmtclass", criteria, false, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetMgmtClassHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetMgmtClassHandle(name string) (string, error) {
-	result, err := c.Call("get_mgmtclass_handle", name, c.Token)
-	if err != nil {
-		return "", err
-	}
-	return result.(string), err
+	res, err := c.Call("get_mgmtclass_handle", name, c.Token)
+	return returnString(res, err)
 }
 
 // CopyMgmtClass copies a given managementclass server side with a new name.
@@ -164,7 +150,7 @@ func (c *Client) RenameMgmtClass(objectId, newName string) error {
 }
 
 // GetMgmtClassesSince returns all managementclasses which were created after the specified date.
-func (c *Client) GetMgmtClassSince(mtime time.Time) ([]*MgmtClass, error) {
+func (c *Client) GetMgmtClassesSince(mtime time.Time) ([]*MgmtClass, error) {
 	result, err := c.Call("get_mgmtclasses_since", float64(mtime.Unix()))
 	if err != nil {
 		return nil, err

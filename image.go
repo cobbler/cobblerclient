@@ -287,29 +287,14 @@ func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
 
 // FindImageNames searches for one or more distros by any of its attributes.
 func (c *Client) FindImageNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_image", criteria, false, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetImageHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetImageHandle(name string) (string, error) {
-	result, err := c.Call("get_image_handle", name, c.Token)
-	if err != nil {
-		return "", err
-	} else {
-		return result.(string), err
-	}
+	res, err := c.Call("get_image_handle", name, c.Token)
+	return returnString(res, err)
 }
 
 // CopyImage duplicates an image on the server with a new name.
@@ -351,17 +336,6 @@ func (c *Client) SaveImage(objectId, editmode string) error {
 
 // GetValidImageBootLoaders retrieves the list of bootloaders that can be assigned to an image.
 func (c *Client) GetValidImageBootLoaders(imageName string) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("get_valid_image_boot_loaders", imageName, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, err
+	return returnStringSlice(resultUnmarshalled, err)
 }

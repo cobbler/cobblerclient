@@ -126,28 +126,14 @@ func (c *Client) FindPackage(criteria map[string]interface{}) ([]*Package, error
 
 // FindPackageNames is searching for one or more packages by any of its attributes.
 func (c *Client) FindPackageNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_package", criteria, false, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetPackageHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetPackageHandle(name string) (string, error) {
-	result, err := c.Call("get_package_handle", name, c.Token)
-	if err != nil {
-		return "", err
-	}
-	return result.(string), err
+	res, err := c.Call("get_package_handle", name, c.Token)
+	return returnString(res, err)
 }
 
 // CopyPackage duplicates a given package on the server with a new name.
