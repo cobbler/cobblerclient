@@ -49,6 +49,7 @@ type Distro struct {
 	TemplateFiles     []string `mapstructure:"template_files"`
 }
 
+// convertRawDistro ...
 func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 	var distro Distro
 
@@ -64,6 +65,7 @@ func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 	return decodeResult.(*Distro), nil
 }
 
+//convertRawDistrosList...
 func convertRawDistrosList(xmlrpcResult interface{}) ([]*Distro, error) {
 	var distros []*Distro
 
@@ -142,13 +144,13 @@ func (c *Client) UpdateDistro(distro *Distro) error {
 	return nil
 }
 
-// SaveDistro is persisting all changes performed via XML-RPC to disk on the server side.
+// SaveDistro saves all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveDistro(objectId, editmode string) error {
 	_, err := c.Call("save_distro", objectId, c.Token, editmode)
 	return err
 }
 
-// CopyDistro is copying a given distro server side with a new name.
+// CopyDistro duplicates a distro on the server with a new name.
 func (c *Client) CopyDistro(objectId, newName string) error {
 	_, err := c.Call("copy_distro", objectId, newName, c.Token)
 	return err
@@ -160,12 +162,12 @@ func (c *Client) DeleteDistro(name string) error {
 	return err
 }
 
-// ListDistroNames is returning a list of all distro names currently available in Cobbler.
+// ListDistroNames returns a list of all distro names currently available in Cobbler.
 func (c *Client) ListDistroNames() ([]string, error) {
 	return c.GetItemNames("distro")
 }
 
-// GetDistrosSince is returning all distros which were created after the specified date.
+// GetDistrosSince returns all distros which were created after the specified date.
 func (c *Client) GetDistrosSince(mtime time.Time) ([]*Distro, error) {
 	var distros []*Distro
 
@@ -187,7 +189,7 @@ func (c *Client) GetDistrosSince(mtime time.Time) ([]*Distro, error) {
 	return distros, nil
 }
 
-// FindDistro is searching for one or more distros by any of its attributes.
+// FindDistro searches for one or more distros by any of its attributes.
 func (c *Client) FindDistro(criteria map[string]interface{}) ([]*Distro, error) {
 	var distros []*Distro
 
@@ -209,7 +211,7 @@ func (c *Client) FindDistro(criteria map[string]interface{}) ([]*Distro, error) 
 	return distros, nil
 }
 
-// FindDistroNames is searching for one or more distros by any of its attributes.
+// FindDistroNames searches for one or more distros by any of its attributes.
 func (c *Client) FindDistroNames(criteria map[string]interface{}) ([]string, error) {
 	var result []string
 
@@ -226,7 +228,7 @@ func (c *Client) FindDistroNames(criteria map[string]interface{}) ([]string, err
 	return result, nil
 }
 
-// RenameDistro is renaming a distro with a given object id.
+// RenameDistro renames a distro with a given object id.
 func (c *Client) RenameDistro(objectId, newName string) error {
 	_, err := c.Call("rename_distro", objectId, newName, c.Token)
 	return err

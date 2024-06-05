@@ -97,7 +97,7 @@ func convertRawProfilesList(xmlrpcResult interface{}) ([]*Profile, error) {
 	return profiles, nil
 }
 
-// GetProfiles returns all systems in Cobbler.
+// GetProfiles returns all profiles in Cobbler.
 func (c *Client) GetProfiles() ([]*Profile, error) {
 	result, err := c.Call("get_profiles", "-1", c.Token)
 	if err != nil {
@@ -176,13 +176,13 @@ func (c *Client) UpdateProfile(profile *Profile) error {
 	return c.SaveProfile(id, "bypass")
 }
 
-// SaveProfile is persisting all changes performed via XML-RPC to disk on the server side.
+// SaveProfile saves all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveProfile(objectId, editmode string) error {
 	_, err := c.Call("save_profile", objectId, c.Token, editmode)
 	return err
 }
 
-// CopyProfile is copying a given profile server side with a new name.
+// CopyProfile duplicates a given profile on the server with a new name.
 func (c *Client) CopyProfile(objectId, newName string) error {
 	_, err := c.Call("copy_profile", objectId, newName, c.Token)
 	return err
@@ -194,12 +194,12 @@ func (c *Client) DeleteProfile(name string) error {
 	return err
 }
 
-// ListProfileNames is returning a list of all profile names currently available in Cobbler.
+// ListProfileNames returns a list of all profile names currently available in Cobbler.
 func (c *Client) ListProfileNames() ([]string, error) {
 	return c.GetItemNames("profile")
 }
 
-// FindProfile is searching for one or more profiles by any of its attributes.
+// FindProfile searches for one or more profiles by any of its attributes.
 func (c *Client) FindProfile(criteria map[string]interface{}) ([]*Profile, error) {
 	result, err := c.Call("find_profile", criteria, true, c.Token)
 	if err != nil {
@@ -208,7 +208,7 @@ func (c *Client) FindProfile(criteria map[string]interface{}) ([]*Profile, error
 	return convertRawProfilesList(result)
 }
 
-// FindProfileNames is searching for one or more profiles by any of its attributes.
+// FindProfileNames searches for one or more profiles by any of its attributes.
 func (c *Client) FindProfileNames(criteria map[string]interface{}) ([]string, error) {
 	var result []string
 
@@ -224,7 +224,7 @@ func (c *Client) FindProfileNames(criteria map[string]interface{}) ([]string, er
 	return result, nil
 }
 
-// GetProfilesSince is returning all profiles which were created after the specified date.
+// GetProfilesSince returns all profiles which were created after the specified date.
 func (c *Client) GetProfilesSince(mtime time.Time) ([]*Profile, error) {
 	result, err := c.Call("get_profiles_since", float64(mtime.Unix()))
 	if err != nil {
@@ -234,7 +234,7 @@ func (c *Client) GetProfilesSince(mtime time.Time) ([]*Profile, error) {
 	return convertRawProfilesList(result)
 }
 
-// RenameProfile is renaming a profile with a given object id.
+// RenameProfile renames a profile with a given object id.
 func (c *Client) RenameProfile(objectId, newName string) error {
 	_, err := c.Call("rename_profile", objectId, newName, c.Token)
 	return err

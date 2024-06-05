@@ -108,12 +108,12 @@ func (c *Client) UpdateMenu(menu *Menu) error {
 	return nil
 }
 
-// ListMenuNames is returning a list of all menu names currently available in Cobbler.
+// ListMenuNames returns a list of all menu names currently available in Cobbler.
 func (c *Client) ListMenuNames() ([]string, error) {
 	return c.GetItemNames("menu")
 }
 
-// FindMenu is searching for one or more menus by any of its attributes.
+// FindMenu searches for one or more menus by any of its attributes.
 func (c *Client) FindMenu(criteria map[string]interface{}) ([]*Menu, error) {
 	var menus []*Menu
 
@@ -135,7 +135,7 @@ func (c *Client) FindMenu(criteria map[string]interface{}) ([]*Menu, error) {
 	return menus, nil
 }
 
-// FindMenuNames is searching for one or more menus by any of its attributes.
+// FindMenuNames searches for one or more menus by any of its attributes.
 func (c *Client) FindMenuNames(criteria map[string]interface{}) ([]string, error) {
 	var result []string
 
@@ -161,13 +161,13 @@ func (c *Client) GetMenuHandle(name string) (string, error) {
 	return result.(string), err
 }
 
-// CopyMenu is copying a given menu server side with a new name.
+// CopyMenu duplicates a menu on the server with a new name.
 func (c *Client) CopyMenu(objectId, newName string) error {
 	_, err := c.Call("copy_menu", objectId, newName, c.Token)
 	return err
 }
 
-// GetMenusSince is returning all menus which were created after the specified date.
+// GetMenusSince returns all menus which were created after the specified date.
 func (c *Client) GetMenusSince(mtime time.Time) ([]*Menu, error) {
 	result, err := c.Call("get_menus_since", float64(mtime.Unix()))
 	if err != nil {
@@ -177,19 +177,19 @@ func (c *Client) GetMenusSince(mtime time.Time) ([]*Menu, error) {
 	return convertRawMenusList(result)
 }
 
-// GetMenuAsRendered is returning the datastructure after it has passed through Cobblers inheritance structure.
+// GetMenuAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetMenuAsRendered() error {
 	_, err := c.Call("get_menu_as_rendered")
 	return err
 }
 
-// SaveMenu is persisting all changes performed via XML-RPC to disk on the server side.
+// SaveMenu saves all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveMenu(objectId, editmode string) error {
 	_, err := c.Call("save_menu", objectId, c.Token, editmode)
 	return err
 }
 
-// RenameMenu is renaming a menu with a given object id.
+// RenameMenu renames a menu with a given object id.
 func (c *Client) RenameMenu(objectId, newName string) error {
 	_, err := c.Call("rename_menu", objectId, newName, c.Token)
 	return err

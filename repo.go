@@ -139,13 +139,13 @@ func (c *Client) UpdateRepo(repo *Repo) error {
 	return c.SaveRepo(id, "bypass")
 }
 
-// SaveRepo is persisting all changes performed via XML-RPC to disk on the server side.
+// SaveRepo saves all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveRepo(objectId, editmode string) error {
 	_, err := c.Call("save_repo", objectId, c.Token, editmode)
 	return err
 }
 
-// CopyRepo is copying a given repository server side with a new name.
+// CopyRepo duplicates a given repository on the server with a new name.
 func (c *Client) CopyRepo(objectId, newName string) error {
 	_, err := c.Call("copy_repo", objectId, newName, c.Token)
 	return err
@@ -162,7 +162,7 @@ func (c *Client) ListRepoNames() ([]string, error) {
 	return c.GetItemNames("repo")
 }
 
-// FindRepo is searching for one or more repositories by any of its attributes.
+// FindRepo searches for one or more repositories by any of its attributes.
 func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
 	result, err := c.Call("find_repo", criteria, true, c.Token)
 	if err != nil {
@@ -171,7 +171,7 @@ func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
 	return convertRawReposList(result)
 }
 
-// FindRepoNames is searching for one or more repositories by any of its attributes.
+// FindRepoNames searches for one or more repositories by any of its attributes.
 func (c *Client) FindRepoNames(criteria map[string]interface{}) ([]string, error) {
 	var result []string
 
@@ -188,7 +188,7 @@ func (c *Client) FindRepoNames(criteria map[string]interface{}) ([]string, error
 	return result, nil
 }
 
-// GetReposSince is returning all repositories which were created after the specified date.
+// GetReposSince returns all repositories which were created after the specified date.
 func (c *Client) GetReposSince(mtime time.Time) ([]*Repo, error) {
 	result, err := c.Call("get_repos_since", float64(mtime.Unix()))
 	if err != nil {
@@ -197,7 +197,7 @@ func (c *Client) GetReposSince(mtime time.Time) ([]*Repo, error) {
 	return convertRawReposList(result)
 }
 
-// RenameRepo is renaming a repository with a given object id.
+// RenameRepo renames a repository with a given object id.
 func (c *Client) RenameRepo(objectId, newName string) error {
 	_, err := c.Call("rename_repo", objectId, newName, c.Token)
 	return err

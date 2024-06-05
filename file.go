@@ -44,6 +44,7 @@ func convertRawFilesList(xmlrpcResult interface{}) ([]*File, error) {
 	return files, nil
 }
 
+// GetFiles returns a list of all files.
 func (c *Client) GetFiles() ([]*File, error) {
 	result, err := c.Call("get_files", "-1", c.Token)
 	if err != nil {
@@ -53,7 +54,7 @@ func (c *Client) GetFiles() ([]*File, error) {
 	return convertRawFilesList(result)
 }
 
-// GetFile returns a single distro obtained by its name.
+// GetFile returns a single file obtained by its name.
 func (c *Client) GetFile(name string) (*File, error) {
 	result, err := c.Call("get_file", name, c.Token)
 	if err != nil {
@@ -63,9 +64,9 @@ func (c *Client) GetFile(name string) (*File, error) {
 	return convertRawFile(name, result)
 }
 
-// CreateFile creates a distro.
+// CreateFile creates a single file.
 func (c *Client) CreateFile(file File) (*File, error) {
-	// Make sure a distro with the same name does not already exist
+	// Make sure a file with the same name does not already exist
 	if _, err := c.GetFile(file.Name); err == nil {
 		return nil, fmt.Errorf("a File with the name %s already exists", file.Name)
 	}
@@ -107,18 +108,18 @@ func (c *Client) UpdateFile(file *File) error {
 	return nil
 }
 
-// DeleteDistro deletes a single distro by its name.
+// DeleteFile deletes a single file by its name.
 func (c *Client) DeleteFile(name string) error {
 	_, err := c.Call("remove_file", name, c.Token)
 	return err
 }
 
-// ListDistroNames is returning a list of all distro names currently available in Cobbler.
+// ListDistroNames returns a list of all files names currently available in Cobbler.
 func (c *Client) ListFileNames() ([]string, error) {
 	return c.GetItemNames("file")
 }
 
-// FindFile is searching for one or more files by any of its attributes.
+// FindFile searches for one or more files by any of its attributes.
 func (c *Client) FindFile(criteria map[string]interface{}) ([]*File, error) {
 	result, err := c.Call("find_file", criteria, true, c.Token)
 	if err != nil {
@@ -128,7 +129,7 @@ func (c *Client) FindFile(criteria map[string]interface{}) ([]*File, error) {
 	return convertRawFilesList(result)
 }
 
-// FindFileNames is searching for one or more files by any of its attributes.
+// FindFileNames searches for one or more files by any of its attributes.
 func (c *Client) FindFileNames(criteria map[string]interface{}) ([]string, error) {
 	var result []string
 
@@ -155,13 +156,13 @@ func (c *Client) GetFileHandle(name string) (string, error) {
 	}
 }
 
-// CopyFile is copying a given file server side with a new name.
+// CopyFile duplicates a file on the server with a new name.
 func (c *Client) CopyFile(objectId, newName string) error {
 	_, err := c.Call("copy_file", objectId, newName, c.Token)
 	return err
 }
 
-// GetFilesSince is returning all files which were created after the specified date.
+// GetFilesSince returns all files which were created after the specified date.
 func (c *Client) GetFilesSince(mtime time.Time) ([]*File, error) {
 	result, err := c.Call("get_files_since", float64(mtime.Unix()))
 	if err != nil {
@@ -171,7 +172,7 @@ func (c *Client) GetFilesSince(mtime time.Time) ([]*File, error) {
 	return convertRawFilesList(result)
 }
 
-// GetFileAsRendered is returning the datastructure after it has passed through Cobblers inheritance structure.
+// GetFileAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetFileAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_file_as_rendered", name, c.Token)
 	if err != nil {
@@ -180,13 +181,13 @@ func (c *Client) GetFileAsRendered(name string) (map[string]interface{}, error) 
 	return result.(map[string]interface{}), err
 }
 
-// SaveFile is persisting all changes performed via XML-RPC to disk on the server side.
+// SaveFile saves all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveFile(objectId, editmode string) error {
 	_, err := c.Call("save_file", objectId, c.Token, editmode)
 	return err
 }
 
-// RenameFile is renaming a file with a given object id.
+// RenameFile renames a file with a given object id.
 func (c *Client) RenameFile(objectId, newName string) error {
 	_, err := c.Call("rename_file", objectId, newName, c.Token)
 	return err

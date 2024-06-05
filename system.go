@@ -264,7 +264,7 @@ func (c *Client) DeleteSystem(name string) error {
 	return err
 }
 
-// CreateInterface controls network interfaces in Cobbler
+// CreateInterface creates network interfaces in Cobbler
 func (s *System) CreateInterface(name string, iface Interface) error {
 	i := structs.Map(iface)
 	nic := make(map[string]interface{})
@@ -349,12 +349,12 @@ func (s *System) DeleteInterface(name string) error {
 	return nil
 }
 
-// ListSystemNames is returning a list of all system names currently available in Cobbler.
+// ListSystemNames returns a list of all system names currently available in Cobbler.
 func (c *Client) ListSystemNames() ([]string, error) {
 	return c.GetItemNames("system")
 }
 
-// FindSystem is searching for one or more systems by any of its attributes.
+// FindSystem searches for one or more systems by any of its attributes.
 func (c *Client) FindSystem(criteria map[string]interface{}) ([]*System, error) {
 	result, err := c.Call("find_system", criteria, true, c.Token)
 	if err != nil {
@@ -364,7 +364,7 @@ func (c *Client) FindSystem(criteria map[string]interface{}) ([]*System, error) 
 	return c.convertRawSystemsList(result)
 }
 
-// FindSystemNames is searching for one or more systems by any of its attributes.
+// FindSystemNames searches for one or more systems by any of its attributes.
 func (c *Client) FindSystemNames(criteria map[string]interface{}) ([]string, error) {
 	var result []string
 
@@ -381,7 +381,7 @@ func (c *Client) FindSystemNames(criteria map[string]interface{}) ([]string, err
 	return result, nil
 }
 
-// GetSystemsSince is returning all systems which were created after the specified date.
+// GetSystemsSince returns all systems which were created after the specified date.
 func (c *Client) GetSystemsSince(mtime time.Time) ([]*System, error) {
 	result, err := c.Call("get_systems_since", float64(mtime.Unix()))
 	if err != nil {

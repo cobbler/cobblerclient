@@ -31,13 +31,13 @@ import (
 
 const bodyTypeXML = "text/xml"
 
-// HTTPClient is the interface that defines the API that is required for the [Client] to work correctly. Normally this
+// HTTPClient is the interface which defines the API required for the [Client] to work correctly. Normally this
 // is satisfied by a [http.DefaultClient].
 type HTTPClient interface {
 	Post(string, string, io.Reader) (*http.Response, error)
 }
 
-// Client is the type that all API methods are attached to.
+// Client is the type which all API methods are attached to.
 type Client struct {
 	httpClient HTTPClient
 	config     ClientConfig
@@ -53,7 +53,7 @@ type ClientConfig struct {
 	Password string
 }
 
-// NewClient is creating a [Client] struct which is ready for usage.
+// NewClient creates a [Client] struct which is ready for usage.
 func NewClient(httpClient HTTPClient, c ClientConfig) Client {
 	return Client{
 		httpClient: httpClient,
@@ -95,7 +95,7 @@ func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 	return result, nil
 }
 
-// GenerateAutoinstall is generating the autoinstallation file for a given profile or system.
+// GenerateAutoinstall generates the autoinstallation file for a given profile or system.
 func (c *Client) GenerateAutoinstall(profile string, system string) (string, error) {
 	result, err := c.Call("generate_autoinstall", profile, system)
 	if err != nil {
@@ -105,7 +105,7 @@ func (c *Client) GenerateAutoinstall(profile string, system string) (string, err
 	}
 }
 
-// LastModifiedTime is retrieving the timestamp when any object in Cobbler was last modified.
+// LastModifiedTime retrieves the timestamp when any object in Cobbler was last modified.
 func (c *Client) LastModifiedTime() (float64, error) {
 	result, err := c.Call("last_modified_time")
 	if err != nil {
@@ -125,69 +125,69 @@ func (c *Client) Ping() (bool, error) {
 	}
 }
 
-// AutoAddRepos is automatically importing any repos server side that are known to the daemon. It is the responsitbility
+// AutoAddRepos automatically imports any repos server side that are known to the daemon. It is the responsitbility
 // of the caller to execute [Client.BackgroundReposync].
 func (c *Client) AutoAddRepos() error {
 	_, err := c.Call("auto_add_repos", c.Token)
 	return err
 }
 
-// GetAutoinstallTemplates is retrieving a list of all templates that are in use by Cobbler.
+// GetAutoinstallTemplates retrieves a list of all templates that are in use by Cobbler.
 func (c *Client) GetAutoinstallTemplates() error {
 	_, err := c.Call("get_autoinstall_templates", c.Token)
 	return err
 }
 
-// GetAutoinstallSnippets is retrieving a list of all snippets that are in use by Cobbler.
+// GetAutoinstallSnippets retrieves a list of all snippets that are in use by Cobbler.
 func (c *Client) GetAutoinstallSnippets() error {
 	_, err := c.Call("get_autoinstall_snippets", c.Token)
 	return err
 }
 
-// IsAutoinstallInUse is checking if a given system has reported that it is currently installing.
+// IsAutoinstallInUse checks if a given system has reported that it is currently installing.
 func (c *Client) IsAutoinstallInUse(name string) error {
 	_, err := c.Call("is_autoinstall_in_use", name, c.Token)
 	return err
 }
 
-// GenerateIPxe is generating the iPXE (formerly gPXE) configuration data.
+// GenerateIPxe generates the iPXE (formerly gPXE) configuration data.
 func (c *Client) GenerateIPxe(profile, image, system string) error {
 	_, err := c.Call("generate_ipxe", profile, image, system)
 	return err
 }
 
-// GenerateBootCfg is rendering the bootcfg for a given MS Windows profile or system.
+// GenerateBootCfg generates the bootcfg for a given MS Windows profile or system.
 func (c *Client) GenerateBootCfg(profile, system string) error {
 	_, err := c.Call("generate_bootcfg", profile, system)
 	return err
 }
 
-// GenerateScript is rendering for either a profile or sytem the requested script.
+// GenerateScript generates for either a profile or sytem the requested script.
 func (c *Client) GenerateScript(profile, system, name string) error {
 	_, err := c.Call("generate_script", profile, system, name)
 	return err
 }
 
-// GetBlendedData is passing a profile or system through Cobblers inheritance chain and returning the result.
+// GetBlendedData passes a profile or system through Cobblers inheritance chain and returns the result.
 func (c *Client) GetBlendedData(profile, system string) error {
 	_, err := c.Call("get_blended_data", profile, system)
 	return err
 }
 
-// GetSettings is returning the currently active settings.
+// GetSettings returns the currently active settings.
 func (c *Client) GetSettings() error {
 	_, err := c.Call("get_settings", c.Token)
 	return err
 }
 
-// RegisterNewSystem is an endpoint to register a new system without have a Cobbler token. This is normally called
+// RegisterNewSystem registers a new system without a Cobbler token. This is normally called
 // during unattended installation by a script.
 func (c *Client) RegisterNewSystem(info map[string]interface{}) error {
 	_, err := c.Call("register_new_system", info, c.Token)
 	return err
 }
 
-// RunInstallTriggers is an endpoint to run installation triggers for a given object. This is normally called during
+// RunInstallTriggers runs installation triggers for a given object. This is normally called during
 // unattended installation.
 func (c *Client) RunInstallTriggers(mode string, objtype string, name string, ip string) error {
 	_, err := c.Call("run_install_triggers", mode, objtype, name, ip, c.Token)
@@ -200,26 +200,26 @@ func (c *Client) Version() (float64, error) {
 	return res.(float64), err
 }
 
-// ExtendedVersion is returning the version information of the server.
+// ExtendedVersion returns the version information of the server.
 func (c *Client) ExtendedVersion() error {
 	// FIXME: Parse and return result.
 	_, err := c.Call("extended_version")
 	return err
 }
 
-// GetReposCompatibleWithProfile is returning all repositories that can be potentially assigned to a given profile.
+// GetReposCompatibleWithProfile returns all repositories that can be potentially assigned to a given profile.
 func (c *Client) GetReposCompatibleWithProfile(profile_name string) error {
 	_, err := c.Call("get_repos_compatible_with_profile", profile_name, c.Token)
 	return err
 }
 
-// FindSystemByDnsName is searching for a system with a given DNS name.
+// FindSystemByDnsName searches for a system with a given DNS name.
 func (c *Client) FindSystemByDnsName(dns_name string) error {
 	_, err := c.Call("find_system_by_dns_name", dns_name)
 	return err
 }
 
-// GetRandomMac is generating a random MAC address for use with a virtualized system.
+// GetRandomMac generates a random MAC address for use with a virtualized system.
 func (c *Client) GetRandomMac() error {
 	_, err := c.Call("get_random_mac")
 	return err
@@ -232,19 +232,19 @@ func (c *Client) XmlRpcHacks(data interface{}) error {
 	return err
 }
 
-// GetStatus is retrieving the current status of installation progress that has been reported to Cobbler.
+// GetStatus retrieves the current status of installation progress that has been reported to Cobbler.
 func (c *Client) GetStatus(mode string) error {
 	_, err := c.Call("get_status", mode, c.Token)
 	return err
 }
 
-// SyncDhcp is updating the DHCP configuration synchronous.
+// SyncDhcp updates the DHCP configuration synchronous.
 func (c *Client) SyncDhcp() error {
 	_, err := c.Call("sync_dhcp", c.Token)
 	return err
 }
 
-// GetConfigData is rendering configuration data for a given host.
+// GetConfigData retrieves configuration data for a given host.
 func (c *Client) GetConfigData(hostname string) error {
 	_, err := c.Call("get_config_data", hostname)
 	return err
