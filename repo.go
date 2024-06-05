@@ -173,19 +173,8 @@ func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
 
 // FindRepoNames searches for one or more repositories by any of its attributes.
 func (c *Client) FindRepoNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_repo", criteria, false, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetReposSince returns all repositories which were created after the specified date.
@@ -205,10 +194,6 @@ func (c *Client) RenameRepo(objectId, newName string) error {
 
 // GetRepoHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetRepoHandle(name string) (string, error) {
-	result, err := c.Call("get_repo_handle", name, c.Token)
-	if err != nil {
-		return "", err
-	} else {
-		return result.(string), err
-	}
+	res, err := c.Call("get_repo_handle", name, c.Token)
+	return returnString(res, err)
 }

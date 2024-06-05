@@ -55,7 +55,7 @@ func TestListMgmtClassNames(t *testing.T) {
 
 func TestGetMgmtclassSince(t *testing.T) {
 	c := createStubHTTPClient(t, "get-mgmtclasses-since-req.xml", "get-mgmtclasses-since-res.xml")
-	mgmtclasses, err := c.GetMgmtClassSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
+	mgmtclasses, err := c.GetMgmtClassesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	utils.FailOnError(t, err)
 
 	if len(mgmtclasses) != 1 {

@@ -137,19 +137,8 @@ func (c *Client) FindMenu(criteria map[string]interface{}) ([]*Menu, error) {
 
 // FindMenuNames searches for one or more menus by any of its attributes.
 func (c *Client) FindMenuNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_menu", criteria, false, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetMenuHandle gets the internal ID of a Cobbler item.

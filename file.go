@@ -114,7 +114,7 @@ func (c *Client) DeleteFile(name string) error {
 	return err
 }
 
-// ListDistroNames returns a list of all files names currently available in Cobbler.
+// ListFileNames returns a list of all files names currently available in Cobbler.
 func (c *Client) ListFileNames() ([]string, error) {
 	return c.GetItemNames("file")
 }
@@ -131,29 +131,14 @@ func (c *Client) FindFile(criteria map[string]interface{}) ([]*File, error) {
 
 // FindFileNames searches for one or more files by any of its attributes.
 func (c *Client) FindFileNames(criteria map[string]interface{}) ([]string, error) {
-	var result []string
-
 	resultUnmarshalled, err := c.Call("find_file", criteria, false, c.Token)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, name := range resultUnmarshalled.([]interface{}) {
-		result = append(result, name.(string))
-	}
-
-	return result, nil
+	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetFileHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetFileHandle(name string) (string, error) {
-	result, err := c.Call("get_file_handle", name, c.Token)
-	if err != nil {
-		return "", err
-	} else {
-		return result.(string), err
-	}
+	res, err := c.Call("get_file_handle", name, c.Token)
+	return returnString(res, err)
 }
 
 // CopyFile duplicates a file on the server with a new name.
