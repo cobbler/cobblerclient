@@ -140,6 +140,8 @@ func (v VirtDiskDriver) String() string {
 	return "unknown"
 }
 
+// Image is a created image.
+// Get the fields from cobbler/items/image.py
 type Image struct {
 	Item `mapstructure:",squash"`
 
@@ -209,6 +211,7 @@ func (c *Client) GetImages() ([]*Image, error) {
 	return convertRawImagesList(result)
 }
 
+// ListImageNames returns a list of all known image names.
 func (c *Client) ListImageNames() ([]string, error) {
 	return c.GetItemNames("image")
 }
@@ -223,7 +226,7 @@ func (c *Client) GetImage(name string) (*Image, error) {
 	return convertRawImage(name, result)
 }
 
-// CreateImage creates a profile.
+// CreateImage creates an image.
 func (c *Client) CreateImage(image Image) (*Image, error) {
 	// To create an image via the Cobbler API, first call new_image to obtain an ID
 	result, err := c.Call("new_image", c.Token)
@@ -272,7 +275,7 @@ func (c *Client) DeleteImage(name string) error {
 	return err
 }
 
-// FindImage is ...
+// FindImage searches for one or more images by any of its attributes.
 func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
 	result, err := c.Call("find_image", criteria, true, c.Token)
 	if err != nil {
@@ -282,7 +285,7 @@ func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
 	return convertRawImagesList(result)
 }
 
-// FindDistroNames is searching for one or more distros by any of its attributes.
+// FindImageNames searches for one or more distros by any of its attributes.
 func (c *Client) FindImageNames(criteria map[string]interface{}) ([]string, error) {
 	var result []string
 
@@ -309,19 +312,19 @@ func (c *Client) GetImageHandle(name string) (string, error) {
 	}
 }
 
-// CopyImage is ...
+// CopyImage duplicates an image on the server with a new name.
 func (c *Client) CopyImage(objectId, newName string) error {
 	_, err := c.Call("copy_image", objectId, newName, c.Token)
 	return err
 }
 
-// RenameImage is ...
+// RenameImage renames an image with a given object id.
 func (c *Client) RenameImage(objectId, newName string) error {
 	_, err := c.Call("rename_image", objectId, newName, c.Token)
 	return err
 }
 
-// GetImagesSince is ...
+// GetImagesSince returns all images which were created after the specified date.
 func (c *Client) GetImagesSince(mtime time.Time) ([]*Image, error) {
 	result, err := c.Call("get_images_since", float64(mtime.Unix()))
 	if err != nil {
@@ -331,7 +334,7 @@ func (c *Client) GetImagesSince(mtime time.Time) ([]*Image, error) {
 	return convertRawImagesList(result)
 }
 
-// GetImageAsRendered is ...
+// GetImageAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetImageAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_image_as_rendered", name, c.Token)
 	if err != nil {
@@ -340,13 +343,13 @@ func (c *Client) GetImageAsRendered(name string) (map[string]interface{}, error)
 	return result.(map[string]interface{}), err
 }
 
-// SaveImage is ...
+// SaveImage saves all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SaveImage(objectId, editmode string) error {
 	_, err := c.Call("save_image", objectId, c.Token, editmode)
 	return err
 }
 
-// GetValidImageBootLoaders is ...
+// GetValidImageBootLoaders retrieves the list of bootloaders that can be assigned to an image.
 func (c *Client) GetValidImageBootLoaders(imageName string) ([]string, error) {
 	var result []string
 

@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+// Package is a created package.
+// Get the fields from cobbler/items/package.py
 type Package struct {
 	Resource `mapstructure:",squash"`
 
@@ -107,12 +109,12 @@ func (c *Client) UpdatePackage(linuxpackage *Package) error {
 	return nil
 }
 
-// ListPackageNames is returning a list of all packages names currently available in Cobbler.
+// ListPackageNames returns a list of all packages names currently available in Cobbler.
 func (c *Client) ListPackageNames() ([]string, error) {
 	return c.GetItemNames("package")
 }
 
-// FindPackage is ...
+// FindPackage is the search method that allows looking for a package by any of its attributes.
 func (c *Client) FindPackage(criteria map[string]interface{}) ([]*Package, error) {
 	result, err := c.Call("find_package", criteria, true, c.Token)
 	if err != nil {
@@ -122,7 +124,7 @@ func (c *Client) FindPackage(criteria map[string]interface{}) ([]*Package, error
 	return convertRawLinuxPackageList(result)
 }
 
-// FindPackageNames is searching for one or more distros by any of its attributes.
+// FindPackageNames is searching for one or more packages by any of its attributes.
 func (c *Client) FindPackageNames(criteria map[string]interface{}) ([]string, error) {
 	var result []string
 
@@ -148,7 +150,7 @@ func (c *Client) GetPackageHandle(name string) (string, error) {
 	return result.(string), err
 }
 
-// CopyPackage is ...
+// CopyPackage duplicates a given package on the server with a new name.
 func (c *Client) CopyPackage(objectId, newName string) error {
 	_, err := c.Call("copy_package", objectId, newName, c.Token)
 	return err
@@ -160,13 +162,13 @@ func (c *Client) DeletePackage(name string) error {
 	return err
 }
 
-// RenamePackage is ...
+// RenamePackage renames a package with a given object id.
 func (c *Client) RenamePackage(objectId, newName string) error {
 	_, err := c.Call("rename_package", objectId, newName, c.Token)
 	return err
 }
 
-// GetPackagesSince is ...
+// GetPackagesSince returns all packages that have been edited since a given timestamp.
 func (c *Client) GetPackagesSince(mtime time.Time) ([]*Package, error) {
 	result, err := c.Call("get_packages_since", float64(mtime.Unix()))
 	if err != nil {
@@ -176,7 +178,7 @@ func (c *Client) GetPackagesSince(mtime time.Time) ([]*Package, error) {
 	return convertRawLinuxPackageList(result)
 }
 
-// GetPackageAsRendered is ...
+// GetPackageAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetPackageAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_package_as_rendered", name, c.Token)
 	if err != nil {
@@ -185,7 +187,7 @@ func (c *Client) GetPackageAsRendered(name string) (map[string]interface{}, erro
 	return result.(map[string]interface{}), err
 }
 
-// SavePackage is ...
+// SavePackage saves all changes performed via XML-RPC to disk on the server side.
 func (c *Client) SavePackage(objectId, editmode string) error {
 	_, err := c.Call("save_package", objectId, c.Token, editmode)
 	return err
