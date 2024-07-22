@@ -25,28 +25,18 @@ import (
 // Distro is a created distro.
 // Get the fields from cobbler/items/distro.py
 type Distro struct {
+	Item `mapstructure:",squash"`
+
 	// These are internal fields and cannot be modified.
-	Ctime             float64  `mapstructure:"ctime"           cobbler:"noupdate"` // TODO: convert to time
-	Depth             int      `mapstructure:"depth"          cobbler:"noupdate"`
-	Mtime             float64  `mapstructure:"mtime"           cobbler:"noupdate"` // TODO: convert to time
-	SourceRepos       []string `mapstructure:"source_repos"   cobbler:"noupdate"`
-	TreeBuildTime     string   `mapstructure:"tree_build_time" cobbler:"noupdate"`
-	UID               string   `mapstructure:"uid"            cobbler:"noupdate"`
-	Arch              string   `mapstructure:"arch"`
-	BootFiles         []string `mapstructure:"boot_files"`
-	BootLoaders       []string `mapstructure:"boot_loaders"`
-	Breed             string   `mapstructure:"breed"`
-	Comment           string   `mapstructure:"comment"`
-	FetchableFiles    []string `mapstructure:"fetchable_files"`
-	Initrd            string   `mapstructure:"initrd"`
-	Kernel            string   `mapstructure:"kernel"`
-	KernelOptions     []string `mapstructure:"kernel_options"`
-	KernelOptionsPost []string `mapstructure:"kernel_options_post"`
-	MGMTClasses       []string `mapstructure:"mgmt_classes"`
-	Name              string   `mapstructure:"name"`
-	OSVersion         string   `mapstructure:"os_version"`
-	Owners            []string `mapstructure:"owners"`
-	TemplateFiles     []string `mapstructure:"template_files"`
+	SourceRepos   []string `mapstructure:"source_repos"   cobbler:"noupdate"`
+	TreeBuildTime string   `mapstructure:"tree_build_time" cobbler:"noupdate"`
+	Arch          string   `mapstructure:"arch"`
+	BootLoaders   []string `mapstructure:"boot_loaders"`
+	Breed         string   `mapstructure:"breed"`
+	Comment       string   `mapstructure:"comment"`
+	Initrd        string   `mapstructure:"initrd"`
+	Kernel        string   `mapstructure:"kernel"`
+	OSVersion     string   `mapstructure:"os_version"`
 }
 
 // convertRawDistro ...

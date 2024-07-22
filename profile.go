@@ -25,37 +25,23 @@ import (
 // Profile is a created profile.
 // Get the fields from cobbler/items/profile.py
 type Profile struct {
+	Item `mapstructure:",squash"`
+
 	// These are internal fields and cannot be modified.
-	Ctime        float64 `mapstructure:"ctime"                  cobbler:"noupdate"` // TODO: convert to time
-	Depth        int     `mapstructure:"depth"                  cobbler:"noupdate"`
-	ID           string  `mapstructure:"uid"                    cobbler:"noupdate"`
-	Mtime        float64 `mapstructure:"mtime"                  cobbler:"noupdate"` // TODO: convert to time
-	ReposEnabled bool    `mapstructure:"repos_enabled"          cobbler:"noupdate"`
+	ReposEnabled bool `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
 	Autoinstall       string      `mapstructure:"autoinstall"`
-	AutoinstallMeta   []string    `mapstructure:"autoinstall_meta"`
-	BootFiles         []string    `mapstructure:"boot_files"`
-	Comment           string      `mapstructure:"comment"`
 	DHCPTag           string      `mapstructure:"dhcp_tag"`
 	Distro            string      `mapstructure:"distro"`
 	EnableGPXE        bool        `mapstructure:"enable_gpxe"`
 	EnableMenu        interface{} `mapstructure:"enable_menu"`
-	FetchableFiles    []string    `mapstructure:"fetchable_files"`
-	KernelOptions     []string    `mapstructure:"kernel_options"`
-	KernelOptionsPost []string    `mapstructure:"kernel_options_post"`
-	MGMTClasses       []string    `mapstructure:"mgmt_classes"`
-	MGMTParameters    string      `mapstructure:"mgmt_parameters"`
-	Name              string      `mapstructure:"name"`
 	NameServers       []string    `mapstructure:"name_servers"`
 	NameServersSearch []string    `mapstructure:"name_servers_search"`
 	NextServerv4      string      `mapstructure:"next_server_v4"`
 	NextServerv6      string      `mapstructure:"next_server_v6"`
-	Owners            []string    `mapstructure:"owners"`
-	Parent            string      `mapstructure:"parent"`
 	Proxy             string      `mapstructure:"proxy"`
 	Repos             []string    `mapstructure:"repos"`
 	Server            string      `mapstructure:"server"`
-	TemplateFiles     []string    `mapstructure:"template_files"`
 	VirtAutoBoot      string      `mapstructure:"virt_auto_boot"`
 	VirtBridge        string      `mapstructure:"virt_bridge"`
 	VirtCPUs          string      `mapstructure:"virt_cpus"`
@@ -129,8 +115,8 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		return nil, fmt.Errorf("a profile must have a distro set")
 	}
 
-	if profile.MGMTParameters == "" {
-		profile.MGMTParameters = "<<inherit>>"
+	if profile.MgmtParameters == "" {
+		profile.MgmtParameters = "<<inherit>>"
 	}
 	if profile.VirtType == "" {
 		profile.VirtType = "<<inherit>>"

@@ -28,36 +28,24 @@ import (
 
 // System is a created system.
 type System struct {
+	Item `mapstructure:",squash"`
+
 	// These are internal fields and cannot be modified.
-	Ctime                 float64                `mapstructure:"ctime"                 cobbler:"noupdate"` // TODO: convert to time
-	Depth                 int                    `mapstructure:"depth"                 cobbler:"noupdate"`
-	ID                    string                 `mapstructure:"uid"                   cobbler:"noupdate"`
 	IPv6Autoconfiguration bool                   `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate"`
-	Mtime                 float64                `mapstructure:"mtime"                 cobbler:"noupdate"` // TODO: convert to time
 	ReposEnabled          bool                   `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 	Autoinstall           string                 `mapstructure:"autoinstall"`
-	AutoinstallMeta       []string               `mapstructure:"autoinstall_meta"`
-	BootFiles             string                 `mapstructure:"boot_files"`
 	BootLoaders           []string               `mapstructure:"boot_loaders"`
-	Comment               string                 `mapstructure:"comment"`
 	EnableGPXE            bool                   `mapstructure:"enable_gpxe"`
-	FetchableFiles        []string               `mapstructure:"fetchable_files"`
 	Gateway               string                 `mapstructure:"gateway"`
 	Hostname              string                 `mapstructure:"hostname"`
 	Image                 string                 `mapstructure:"image"`
 	Interfaces            map[string]interface{} `mapstructure:"interfaces" cobbler:"noupdate"`
 	IPv6DefaultDevice     string                 `mapstructure:"ipv6_default_device"`
-	KernelOptions         []string               `mapstructure:"kernel_options"`
-	KernelOptionsPost     []string               `mapstructure:"kernel_options_post"`
-	MGMTClasses           []string               `mapstructure:"mgmt_classes"`
-	MGMTParameters        string                 `mapstructure:"mgmt_parameters"`
-	Name                  string                 `mapstructure:"name"`
 	NameServers           []string               `mapstructure:"name_servers"`
 	NameServersSearch     []string               `mapstructure:"name_servers_search"`
 	NetbootEnabled        bool                   `mapstructure:"netboot_enabled"`
 	NextServerv4          string                 `mapstructure:"next_server_v4"`
 	NextServerv6          string                 `mapstructure:"next_server_v6"`
-	Owners                []string               `mapstructure:"owners"`
 	PowerAddress          string                 `mapstructure:"power_address"`
 	PowerID               string                 `mapstructure:"power_id"`
 	PowerPass             string                 `mapstructure:"power_pass"`
@@ -66,7 +54,6 @@ type System struct {
 	Profile               string                 `mapstructure:"profile"`
 	Proxy                 string                 `mapstructure:"proxy"`
 	Status                string                 `mapstructure:"status"`
-	TemplateFiles         []string               `mapstructure:"template_files"`
 	VirtAutoBoot          string                 `mapstructure:"virt_auto_boot"`
 	VirtCPUs              string                 `mapstructure:"virt_cpus"`
 	VirtDiskDriver        string                 `mapstructure:"virt_disk_driver"`
@@ -183,11 +170,11 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	}
 
 	if len(system.BootLoaders) == 0 {
-		system.FetchableFiles = []string{"<<inherit>>"}
+		system.FetchableFiles = "<<inherit>>"
 	}
 
-	if system.MGMTParameters == "" {
-		system.MGMTParameters = "<<inherit>>"
+	if system.MgmtParameters == "" {
+		system.MgmtParameters = "<<inherit>>"
 	}
 
 	if system.PowerType == "" {

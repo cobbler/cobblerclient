@@ -25,26 +25,20 @@ import (
 // Repo is a created repo.
 // Get the fileds from cobbler/items/repo.py
 type Repo struct {
+	Item `mapstructure:",squash"`
+
 	// These are internal fields and cannot be modified.
-	Ctime         float64 `mapstructure:"ctime"          cobbler:"noupdate"` // TODO: convert to time
-	Depth         int     `mapstructure:"depth"          cobbler:"noupdate"`
-	Mtime         float64 `mapstructure:"mtime"          cobbler:"noupdate"` // TODO: convert to time
-	TreeBuildTime string  `mapstructure:"tree_build_time" cobbler:"noupdate"`
-	Parent        string  `mapstructure:"parent"            cobbler:"noupdate"`
-	UID           string  `mapstructure:"uid"            cobbler:"noupdate"`
+	TreeBuildTime string `mapstructure:"tree_build_time" cobbler:"noupdate"`
 
 	AptComponents   []string `mapstructure:"apt_components"`
 	AptDists        []string `mapstructure:"apt_dists"`
 	Arch            string   `mapstructure:"arch"`
 	Breed           string   `mapstructure:"breed"`
-	Comment         string   `mapstructure:"comment"`
 	CreateRepoFlags string   `mapstructure:"createrepo_flags"`
 	Environment     []string `mapstructure:"environment"`
 	KeepUpdated     bool     `mapstructure:"keep_updated"`
 	Mirror          string   `mapstructure:"mirror"`
 	MirrorLocally   bool     `mapstructure:"mirror_locally"`
-	Name            string   `mapstructure:"name"`
-	Owners          []string `mapstructure:"owners"`
 	Proxy           string   `mapstructure:"proxy" cobbler:"newfield"`
 	RpmList         []string `mapstructure:"rpm_list"`
 	//YumOpts                map[string]interface{} `mapstructure:"yumopts"`
