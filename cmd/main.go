@@ -44,11 +44,13 @@ func main() {
 
 	fmt.Println("Creating a repo")
 	r := cobbler.Repo{
-		Name:          "myrepo",
+		Item: cobbler.Item{
+			Name: "myrepo",
+		},
 		Arch:          "x86_64",
 		Breed:         "yum",
-		MirrorLocally: false,
 		Mirror:        "http://repo/homeawayel7/",
+		MirrorLocally: false,
 	}
 
 	newRepo, err := c.CreateRepo(r)
@@ -75,12 +77,14 @@ func main() {
 	}
 
 	d := cobbler.Distro{
-		Name:      "testdistro",
-		Breed:     "Ubuntu",
-		OSVersion: "focal",
+		Item: cobbler.Item{
+			Name: "mydistro",
+		},
 		Arch:      "x86_64",
-		Kernel:    "/srv/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/linux",
+		Breed:     "Ubuntu",
 		Initrd:    "/srv/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/initrd.gz",
+		Kernel:    "/srv/www/cobbler/distro_mirror/Ubuntu-20.04/install/netboot/ubuntu-installer/amd64/linux",
+		OSVersion: "focal",
 	}
 
 	fmt.Println("Listing all distros")
@@ -115,10 +119,12 @@ func main() {
 	fmt.Printf("Profiles: %#v\n", profiles)
 	fmt.Println("Creating a Profile")
 	p := cobbler.Profile{
-		Name:           "testprofile",
-		Distro:         "Ubuntu-20.04-x86_64",
-		Parent:         "Ubuntu-20.04-x86_64",
+		Item: cobbler.Item{
+			Name:   "testprofile",
+			Parent: "Ubuntu-20.04-x86_64",
+		},
 		Autoinstall:    "sample.seed",
+		Distro:         "Ubuntu-20.04-x86_64",
 		VirtDiskDriver: "raw", // For some reason the virt_disk_driver must be set in Cobbler 3...
 	}
 
@@ -131,11 +137,13 @@ func main() {
 
 	fmt.Println("Creating a System")
 	s := cobbler.System{
-		Comment:     "I'd like to teach the world to sing",
-		Name:        "testsystem",
-		Profile:     "testprofile",
+		Item: cobbler.Item{
+			Comment: "I'd like to teach the world to sing",
+			Name:    "testsystem",
+		},
 		NameServers: []string{"8.8.8.8", "1.1.1.1"},
 		PowerID:     "foo",
+		Profile:     "testprofile",
 	}
 
 	newSystem, err := c.CreateSystem(s)
