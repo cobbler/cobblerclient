@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Test
-        run: go test -race -coverprofile=coverage.out -covermode=atomic -v ./...
+        run: go test -race -coverprofile="coverage.out" -covermode="atomic" -v ./...
       - name: Upload test coverage to Codacy
         run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report --force-coverage-parser go -r coverage.out
         env:
