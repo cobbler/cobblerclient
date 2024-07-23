@@ -17,6 +17,7 @@ limitations under the License.
 package cobblerclient
 
 import (
+	"reflect"
 	"regexp"
 	"testing"
 
@@ -193,9 +194,19 @@ func TestVersion(t *testing.T) {
 
 func TestExtendedVersion(t *testing.T) {
 	c := createStubHTTPClient(t, "extended-version-req.xml", "extended-version-res.xml")
+	expectedResult := ExtendedVersion{
+		Gitdate:      "Mon Jun 13 16:13:33 2022 +0200",
+		Gitstamp:     "0e20f01b",
+		Builddate:    "Mon Jun 27 06:34:23 2022",
+		Version:      "3.4.0",
+		VersionTuple: []int{3, 4, 0},
+	}
 
-	err := c.ExtendedVersion()
+	result, err := c.ExtendedVersion()
 	utils.FailOnError(t, err)
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Errorf("Result from 'extended_version' did not match expected result.")
+	}
 }
 
 func TestGetReposCompatibleWithProfile(t *testing.T) {

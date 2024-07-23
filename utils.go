@@ -1,6 +1,8 @@
 package cobblerclient
 
-import "errors"
+import (
+	"errors"
+)
 
 func returnString(res interface{}, err error) (string, error) {
 	if err != nil {
@@ -19,6 +21,24 @@ func returnStringSlice(res interface{}, err error) ([]string, error) {
 
 	for _, name := range res.([]interface{}) {
 		result = append(result, name.(string))
+	}
+
+	return result, nil
+}
+
+func returnIntSlice(res interface{}, err error) ([]int, error) {
+	var result []int
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, name := range res.([]interface{}) {
+		var parsedInt, err = convertToInt(name)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, parsedInt)
 	}
 
 	return result, nil
