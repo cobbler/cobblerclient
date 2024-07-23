@@ -53,6 +53,14 @@ type ClientConfig struct {
 	Password string
 }
 
+type ExtendedVersion struct {
+	Gitdate      string
+	Gitstamp     string
+	Builddate    string
+	Version      string
+	VersionTuple []int
+}
+
 // NewClient creates a [Client] struct which is ready for usage.
 func NewClient(httpClient HTTPClient, c ClientConfig) Client {
 	return Client{
@@ -201,10 +209,28 @@ func (c *Client) Version() (float64, error) {
 }
 
 // ExtendedVersion returns the version information of the server.
-func (c *Client) ExtendedVersion() error {
-	// FIXME: Parse and return result.
-	_, err := c.Call("extended_version")
-	return err
+func (c *Client) ExtendedVersion() (ExtendedVersion, error) {
+	extendedVersion := ExtendedVersion{}
+	data, err := c.Call("extended_version")
+	if err != nil {
+		return extendedVersion, err
+	}
+	switch data.(type) {
+	case map[string]interface{}:
+		data := data.(map[string]interface{})
+		var versionTuple, err = returnIntSlice(data["version_tuple"], err)
+		if err != nil {
+			return extendedVersion, err
+		}
+		extendedVersion.Version = data["version"].(string)
+		extendedVersion.VersionTuple = versionTuple
+		extendedVersion.Builddate = data["builddate"].(string)
+		extendedVersion.Gitdate = data["gitdate"].(string)
+		extendedVersion.Gitstamp = data["gitstamp"].(string)
+	default:
+		return extendedVersion, err
+	}
+	return extendedVersion, err
 }
 
 // GetReposCompatibleWithProfile returns all repositories that can be potentially assigned to a given profile.
