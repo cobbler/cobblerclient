@@ -9,8 +9,11 @@ import (
 func TestGetSignatures(t *testing.T) {
 	c := createStubHTTPClient(t, "get-signatures-req.xml", "get-signatures-res.xml")
 
-	err := c.GetSignatures()
+	result, err := c.GetSignatures()
 	utils.FailOnError(t, err)
+	if result.Breeds["redhat"]["rhel4"].VersionFile != `(redhat|sl|centos)-release-4(AS|WS|ES)[\.-]+(.*)\.rpm` {
+		t.Fatalf("Expected a different regex!")
+	}
 }
 
 func TestGetValidBreeds(t *testing.T) {
