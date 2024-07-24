@@ -25,8 +25,8 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/kolo/xmlrpc"
-	"github.com/mitchellh/mapstructure"
 )
 
 const bodyTypeXML = "text/xml"
