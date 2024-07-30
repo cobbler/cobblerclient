@@ -177,9 +177,9 @@ func (c *Client) GenerateScript(profile, system, name string) error {
 }
 
 // GetBlendedData passes a profile or system through Cobblers inheritance chain and returns the result.
-func (c *Client) GetBlendedData(profile, system string) error {
-	_, err := c.Call("get_blended_data", profile, system)
-	return err
+func (c *Client) GetBlendedData(profile, system string) (map[string]interface{}, error) {
+	result, err := c.Call("get_blended_data", profile, system)
+	return result.(map[string]interface{}), err
 }
 
 // GetSettings returns the currently active settings.
