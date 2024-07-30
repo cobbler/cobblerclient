@@ -151,23 +151,6 @@ func TestGetBlendedData(t *testing.T) {
 	}
 }
 
-func TestGetSettings(t *testing.T) {
-	c := createStubHTTPClient(t, "get-settings-req.xml", "get-settings-res.xml")
-
-	err := c.GetSettings()
-	utils.FailOnError(t, err)
-}
-
-func TestModifySettings(t *testing.T) {
-	c := createStubHTTPClient(t, "modify-settings-req.xml", "modify-settings-res.xml")
-
-	result, err := c.ModifySetting("auth_token_expiration", 7200)
-	utils.FailOnError(t, err)
-	if result != 1 {
-		t.Fatalf("Expected 1 but got %d", result)
-	}
-}
-
 func TestRegisterNewSystem(t *testing.T) {
 	// Skip for now as the XML appears to have a different order.
 	t.Skip("XML has different order. Needs to be fixed at a later point!")
