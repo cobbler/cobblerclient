@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>modify_setting</methodName>
+    <params>
+        <param>
+            <value>
+                <string>auth_token_expiration</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <int>7200</int>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>
