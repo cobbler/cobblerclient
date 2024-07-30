@@ -144,8 +144,11 @@ func TestGenerateScript(t *testing.T) {
 func TestGetBlendedData(t *testing.T) {
 	c := createStubHTTPClient(t, "get-blended-data-req.xml", "get-blended-data-res.xml")
 
-	err := c.GetBlendedData("testprof", "")
+	result, err := c.GetBlendedData("testprof", "")
 	utils.FailOnError(t, err)
+	if len(result) != 184 {
+		t.Fatalf("Expected a map with 184 entries, got %d.", len(result))
+	}
 }
 
 func TestGetSettings(t *testing.T) {
