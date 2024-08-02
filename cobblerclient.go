@@ -182,26 +182,6 @@ func (c *Client) GetBlendedData(profile, system string) (map[string]interface{},
 	return result.(map[string]interface{}), err
 }
 
-// GetSettings returns the currently active settings.
-func (c *Client) GetSettings() error {
-	_, err := c.Call("get_settings", c.Token)
-	return err
-}
-
-// ModifySetting modifies a settings if "allow_dynamic_settings" is turned on server side.
-func (c *Client) ModifySetting(name string, value interface{}) (int, error) {
-	result, err := c.Call("modify_setting", name, value, c.Token)
-	if err != nil {
-		return -1, err
-	} else {
-		convertedInteger, err := convertToInt(result)
-		if err != nil {
-			return -1, err
-		}
-		return convertedInteger, err
-	}
-}
-
 // RegisterNewSystem registers a new system without a Cobbler token. This is normally called
 // during unattended installation by a script.
 func (c *Client) RegisterNewSystem(info map[string]interface{}) error {
