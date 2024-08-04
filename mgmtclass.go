@@ -110,6 +110,17 @@ func (c *Client) UpdateMgmtClass(distro *Distro) error {
 	return nil
 }
 
+// DeleteMgmtClass deletes a single MgmtClass by its name.
+func (c *Client) DeleteMgmtClass(name string) error {
+	return c.DeleteMgmtClassRecursive(name, false)
+}
+
+// DeleteMgmtClassRecursive deletes a single MgmtClass by its name with the option to do so recursively.
+func (c *Client) DeleteMgmtClassRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_mgmtclass", name, c.Token, recursive)
+	return err
+}
+
 // ListMgmtClassNames returns a list of all managementclass names currently available in Cobbler.
 func (c *Client) ListMgmtClassNames() ([]string, error) {
 	return c.GetItemNames("mgmtclass")

@@ -108,6 +108,17 @@ func (c *Client) UpdateMenu(menu *Menu) error {
 	return nil
 }
 
+// DeleteMenu deletes a single Menu by its name.
+func (c *Client) DeleteMenu(name string) error {
+	return c.DeleteMenuRecursive(name, false)
+}
+
+// DeleteMenuRecursive deletes a single Menu by its name with the option to do so recursively.
+func (c *Client) DeleteMenuRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_menu", name, c.Token, recursive)
+	return err
+}
+
 // ListMenuNames returns a list of all menu names currently available in Cobbler.
 func (c *Client) ListMenuNames() ([]string, error) {
 	return c.GetItemNames("menu")

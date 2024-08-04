@@ -245,9 +245,14 @@ func (c *Client) UpdateSystem(system *System) error {
 	return c.updateCobblerFields("system", item, id)
 }
 
-// DeleteSystem deletes a single system by its name.
+// DeleteSystem deletes a single System by its name.
 func (c *Client) DeleteSystem(name string) error {
-	_, err := c.Call("remove_system", name, c.Token)
+	return c.DeleteSystemRecursive(name, false)
+}
+
+// DeleteSystemRecursive deletes a single System by its name with the option to do so recursively.
+func (c *Client) DeleteSystemRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_system", name, c.Token, recursive)
 	return err
 }
 

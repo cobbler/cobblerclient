@@ -43,6 +43,18 @@ func TestGetFile(t *testing.T) {
 	}
 }
 
+func TestDeleteFile(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-file-req.xml", "delete-file-res.xml")
+	err := c.DeleteFile("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeleteFileRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-file-req.xml", "delete-file-res.xml")
+	err := c.DeleteFileRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListFileNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-file-req.xml", "get-item-names-file-res.xml")
 	files, err := c.ListFileNames()

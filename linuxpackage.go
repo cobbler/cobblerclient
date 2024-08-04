@@ -142,9 +142,14 @@ func (c *Client) CopyPackage(objectId, newName string) error {
 	return err
 }
 
-// DeletePackage deletes a single distro by its name.
+// DeletePackage deletes a single Package by its name.
 func (c *Client) DeletePackage(name string) error {
-	_, err := c.Call("remove_package", name, c.Token)
+	return c.DeletePackageRecursive(name, false)
+}
+
+// DeletePackageRecursive deletes a single Package by its name with the option to do so recursively.
+func (c *Client) DeletePackageRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_package", name, c.Token, recursive)
 	return err
 }
 

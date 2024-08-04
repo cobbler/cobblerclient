@@ -108,9 +108,14 @@ func (c *Client) UpdateFile(file *File) error {
 	return nil
 }
 
-// DeleteFile deletes a single file by its name.
+// DeleteFile deletes a single File by its name.
 func (c *Client) DeleteFile(name string) error {
-	_, err := c.Call("remove_file", name, c.Token)
+	return c.DeleteFileRecursive(name, false)
+}
+
+// DeleteFileRecursive deletes a single File by its name with the option to do so recursively.
+func (c *Client) DeleteFileRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_file", name, c.Token, recursive)
 	return err
 }
 

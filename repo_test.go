@@ -41,6 +41,18 @@ func TestGetRepo(t *testing.T) {
 	}
 }
 
+func TestDeleteRepo(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-repo-req.xml", "delete-repo-res.xml")
+	err := c.DeleteRepo("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeleteRepoRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-repo-req.xml", "delete-repo-res.xml")
+	err := c.DeleteRepoRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListRepoNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-repo-req.xml", "get-item-names-repo-res.xml")
 	repos, err := c.ListRepoNames()

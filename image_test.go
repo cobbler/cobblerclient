@@ -43,6 +43,18 @@ func TestGetImage(t *testing.T) {
 	}
 }
 
+func TestDeleteImage(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-image-req.xml", "delete-image-res.xml")
+	err := c.DeleteImage("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeleteImageRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-image-req.xml", "delete-image-res.xml")
+	err := c.DeleteImageRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListImageNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-image-req.xml", "get-item-names-image-res.xml")
 	images, err := c.ListImageNames()

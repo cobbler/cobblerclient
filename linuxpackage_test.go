@@ -43,6 +43,18 @@ func TestGetPackage(t *testing.T) {
 	}
 }
 
+func TestDeletePackage(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-package-req.xml", "delete-package-res.xml")
+	err := c.DeletePackage("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeletePackageRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-package-req.xml", "delete-package-res.xml")
+	err := c.DeletePackageRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListPackageNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-package-req.xml", "get-item-names-package-res.xml")
 	linuxpackages, err := c.ListPackageNames()
