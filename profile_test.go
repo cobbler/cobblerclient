@@ -43,6 +43,18 @@ func TestGetProfile(t *testing.T) {
 	}
 }
 
+func TestDeleteProfile(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-profile-req.xml", "delete-profile-res.xml")
+	err := c.DeleteProfile("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeleteProfileRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-profile-req.xml", "delete-profile-res.xml")
+	err := c.DeleteProfileRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListProfileNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-profile-req.xml", "get-item-names-profile-res.xml")
 	profiles, err := c.ListProfileNames()

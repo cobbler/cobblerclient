@@ -43,6 +43,18 @@ func TestGetMgmtclass(t *testing.T) {
 	}
 }
 
+func TestDeleteMgmtClass(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-mgmtclass-req.xml", "delete-mgmtclass-res.xml")
+	err := c.DeleteMgmtClass("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeleteMgmtClassRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-mgmtclass-req.xml", "delete-mgmtclass-res.xml")
+	err := c.DeleteMgmtClassRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListMgmtClassNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-mgmtclass-req.xml", "get-item-names-mgmtclass-res.xml")
 	mgmtclasses, err := c.ListMgmtClassNames()

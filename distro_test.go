@@ -43,6 +43,18 @@ func TestGetDistro(t *testing.T) {
 	}
 }
 
+func TestDeleteDistro(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-distro-req.xml", "delete-distro-res.xml")
+	err := c.DeleteDistro("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeleteDistroRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-distro-req.xml", "delete-distro-res.xml")
+	err := c.DeleteDistroRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListDistroNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-distro-req.xml", "get-item-names-distro-res.xml")
 	distros, err := c.ListDistroNames()

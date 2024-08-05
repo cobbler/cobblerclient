@@ -43,6 +43,18 @@ func TestGetMenu(t *testing.T) {
 	}
 }
 
+func TestDeleteMenu(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-menu-req.xml", "delete-menu-res.xml")
+	err := c.DeleteMenu("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeleteMenuRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-menu-req.xml", "delete-menu-res.xml")
+	err := c.DeleteMenuRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListMenuNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-menu-req.xml", "get-item-names-menu-res.xml")
 	menus, err := c.ListMenuNames()

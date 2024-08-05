@@ -112,6 +112,18 @@ func TestNewSystem(t *testing.T) {
 	}
 }
 
+func TestDeleteSystem(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-system-req.xml", "delete-system-res.xml")
+	err := c.DeleteSystem("test")
+	utils.FailOnError(t, err)
+}
+
+func TestDeleteSystemRecursive(t *testing.T) {
+	c := createStubHTTPClient(t, "delete-system-req.xml", "delete-system-res.xml")
+	err := c.DeleteSystemRecursive("test", false)
+	utils.FailOnError(t, err)
+}
+
 func TestListSystemNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-system-req.xml", "get-item-names-system-res.xml")
 	sytems, err := c.ListSystemNames()

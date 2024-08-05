@@ -176,7 +176,12 @@ func (c *Client) CopyProfile(objectId, newName string) error {
 
 // DeleteProfile deletes a single profile by its name.
 func (c *Client) DeleteProfile(name string) error {
-	_, err := c.Call("remove_profile", name, c.Token)
+	return c.DeleteProfileRecursive(name, false)
+}
+
+// DeleteProfileRecursive deletes a single profile by its name.
+func (c *Client) DeleteProfileRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_profile", name, c.Token, recursive)
 	return err
 }
 

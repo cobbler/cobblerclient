@@ -145,9 +145,14 @@ func (c *Client) CopyRepo(objectId, newName string) error {
 	return err
 }
 
-// DeleteRepo deletes a single repo by its name.
+// DeleteRepo deletes a single Repo by its name.
 func (c *Client) DeleteRepo(name string) error {
-	_, err := c.Call("remove_repo", name, c.Token)
+	return c.DeleteRepoRecursive(name, false)
+}
+
+// DeleteRepoRecursive deletes a single Repo by its name with the option to do so recursively.
+func (c *Client) DeleteRepoRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_repo", name, c.Token, recursive)
 	return err
 }
 

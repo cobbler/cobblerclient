@@ -269,9 +269,14 @@ func (c *Client) UpdateImage(image *Image) error {
 	return nil
 }
 
-// DeleteImage deletes a single image by its name.
+// DeleteImage deletes a single Image by its name.
 func (c *Client) DeleteImage(name string) error {
-	_, err := c.Call("remove_image", name, c.Token)
+	return c.DeleteImageRecursive(name, false)
+}
+
+// DeleteImageRecursive deletes a single Image by its name with the option to do so recursively.
+func (c *Client) DeleteImageRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_image", name, c.Token, recursive)
 	return err
 }
 

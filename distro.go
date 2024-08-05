@@ -55,7 +55,7 @@ func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 	return decodeResult.(*Distro), nil
 }
 
-//convertRawDistrosList...
+// convertRawDistrosList...
 func convertRawDistrosList(xmlrpcResult interface{}) ([]*Distro, error) {
 	var distros []*Distro
 
@@ -146,9 +146,14 @@ func (c *Client) CopyDistro(objectId, newName string) error {
 	return err
 }
 
-// DeleteDistro deletes a single distro by its name.
+// DeleteDistro deletes a single Distro by its name.
 func (c *Client) DeleteDistro(name string) error {
-	_, err := c.Call("remove_distro", name, c.Token)
+	return c.DeleteDistroRecursive(name, false)
+}
+
+// DeleteDistroRecursive deletes a single Distro by its name with the option to do so recursively.
+func (c *Client) DeleteDistroRecursive(name string, recursive bool) error {
+	_, err := c.Call("remove_distro", name, c.Token, recursive)
 	return err
 }
 
