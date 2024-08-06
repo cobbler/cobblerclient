@@ -161,3 +161,26 @@ func TestBackgroundMkLoaders(t *testing.T) {
 	_, err := c.BackgroundMkLoaders()
 	utils.FailOnError(t, err)
 }
+
+func TestBackgroundPowerSystem(t *testing.T) {
+	c := createStubHTTPClient(t, "background-power-system-req.xml", "background-power-system-res.xml")
+
+	result, err := c.BackgroundPowerSystem(BackgroundPowerSystemOptions{
+		Systems: []string{"testsys1"},
+		Power:   "off",
+	})
+	utils.FailOnError(t, err)
+	if result != "2024-08-06_072956_Power management ()_1a44f162efa74806b16d055dfad0fc04" {
+		t.Errorf("Event-ID was malformed")
+	}
+}
+
+func TestPowerSystem(t *testing.T) {
+	c := createStubHTTPClient(t, "power-system-req.xml", "power-system-res.xml")
+
+	result, err := c.PowerSystem("system::testsys1", "status")
+	utils.FailOnError(t, err)
+	if !result {
+		t.Errorf("Expected power operation not to fail!")
+	}
+}

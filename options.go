@@ -68,3 +68,8 @@ type BackgroundReposyncOptions struct {
 	Nofail bool     `mapstructure:"nofail"`
 	Tries  int      `mapstructure:"tries"`
 }
+
+type BackgroundPowerSystemOptions struct {
+	Systems []string `mapstructure:"systems"`
+	Power   string   `mapstructure:"power"`
+}
