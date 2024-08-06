@@ -1,9 +1,5 @@
 package cobblerclient
 
-import (
-	"fmt"
-)
-
 type CobblerEvent struct {
 	id        string
 	statetime float64
@@ -20,6 +16,21 @@ var EMPTYEVENT = CobblerEvent{
 	readByWho: nil,
 }
 
+func unmarshalEvent(eventId string, data interface{}) *CobblerEvent {
+	eventData := data.([]interface{})
+	readByWho := make([]string, 0)
+	for _, user := range eventData[3].([]interface{}) {
+		readByWho = append(readByWho, user.(string))
+	}
+	return &CobblerEvent{
+		id:        eventId,
+		statetime: eventData[0].(float64),
+		name:      eventData[1].(string),
+		state:     eventData[2].(string),
+		readByWho: readByWho,
+	}
+}
+
 // GetEvents retrieves all events from the Cobbler server
 func (c *Client) GetEvents(forUser string) ([]*CobblerEvent, error) {
 	var events []*CobblerEvent
@@ -28,15 +39,7 @@ func (c *Client) GetEvents(forUser string) ([]*CobblerEvent, error) {
 		return nil, err
 	}
 	for key, event := range unmarshalledResult.(map[string]interface{}) {
-		eventData := event.([]interface{})
-		eventObj := &CobblerEvent{
-			id:        key,
-			statetime: eventData[0].(float64),
-			name:      eventData[1].(string),
-			state:     eventData[2].(string),
-			readByWho: nil, // eventData[3].([]string)
-		}
-		// TODO: Add readByWho
+		eventObj := unmarshalEvent(key, event)
 		events = append(events, eventObj)
 	}
 	return events, err
@@ -54,8 +57,6 @@ func (c *Client) GetTaskStatus(eventId string) (CobblerEvent, error) {
 	if err != nil {
 		return EMPTYEVENT, err
 	}
-	// FIXME: Server has the wrong format. Needs to be fixed there.
-	// return result.(string), err
-	fmt.Printf("%#v", unmarshalledResult)
-	return EMPTYEVENT, err
+	eventObj := unmarshalEvent(eventId, unmarshalledResult)
+	return *eventObj, err
 }

@@ -1,6 +1,7 @@
 package cobblerclient
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/ContainerSolutions/go-utils"
@@ -8,11 +9,18 @@ import (
 
 func TestGetTaskStatus(t *testing.T) {
 	c := createStubHTTPClient(t, "get-task-status-req.xml", "get-task-status-res.xml")
+	expectedResult := CobblerEvent{
+		id:        "2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6",
+		statetime: 1664568243.5196018,
+		name:      "Updating Signatures",
+		state:     "complete",
+		readByWho: []string{},
+	}
 
-	res, err := c.GetTaskStatus("2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6")
+	result, err := c.GetTaskStatus("2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6")
 	utils.FailOnError(t, err)
-	if res.name == "" {
-		t.Fatalf("Expected non emtpy string")
+	if !reflect.DeepEqual(result, expectedResult) {
+		t.Errorf("Result from 'get_task_status' did not match expected result.")
 	}
 }
 
