@@ -18,6 +18,7 @@ package cobblerclient
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -273,15 +274,30 @@ func (c *Client) GetConfigData(hostname string) error {
 // cobblerDataHacks is a hook for the mapstructure decoder. It's only used by
 // decodeCobblerItem and should never be invoked directly.
 // It's used to smooth out issues with converting fields and types from Cobbler.
-func cobblerDataHacks(f, t reflect.Kind, data interface{}) (interface{}, error) {
+func cobblerDataHacks(f, targetType reflect.Kind, data interface{}) (interface{}, error) {
 	dataVal := reflect.ValueOf(data)
 
 	// Cobbler uses ~ internally to mean None/nil
 	if dataVal.String() == "~" {
-		return map[string]interface{}{}, nil
+		switch targetType {
+		case reflect.String:
+			return "", nil
+		case reflect.Slice:
+			return []string{}, nil
+		case reflect.Map:
+			return map[string]interface{}{}, nil
+		case reflect.Int:
+			return -1, nil
+		case reflect.Interface:
+			return nil, nil
+		case reflect.Array:
+			return []string{}, nil
+		default:
+			return nil, errors.New("unknown type was nil")
+		}
 	}
 
-	if f == reflect.Int64 && t == reflect.Bool {
+	if f == reflect.Int64 && targetType == reflect.Bool {
 		if dataVal.Int() > 0 {
 			return true, nil
 		} else {

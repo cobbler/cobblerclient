@@ -67,7 +67,9 @@ func TestBackgroundSignatureUpdate(t *testing.T) {
 		"background-signature-update-res.xml",
 	)
 
-	// FIXME: Test event-id return
-	_, err := c.BackgroundSignatureUpdate()
+	res, err := c.BackgroundSignatureUpdate()
 	utils.FailOnError(t, err)
+	if res != "2022-09-30_195846_Updating Signatures_6c5300d51c224984b4319fb536cc21d0" {
+		t.Fatalf("Expected a different Event-ID!")
+	}
 }

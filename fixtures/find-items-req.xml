@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>find_items_paged</methodName>
+    <params>
+        <param>
+            <value>
+                <string>menu</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <struct>
+                    <member>
+                        <name>display_name</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                </struct>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string></string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <int>1</int>
+            </value>
+        </param>
+        <param>
+            <value>
+                <int>5</int>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

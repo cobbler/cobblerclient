@@ -2,6 +2,8 @@ github.com/ContainerSolutions/go-utils v0.1.0 h1:cjCek/u3qVUSDejTqdSNQFummm9W/OU
 github.com/ContainerSolutions/go-utils v0.1.0/go.mod h1:kwETtmd5o1Ih1kSnvyZ5CPBNREDObipu4e0zWF3Vo8g=
 github.com/fatih/structs v1.1.0 h1:Q7juDM0QtcnhCpeyLGQKyg4TOIghuNXrkL32pHAUMxo=
 github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
+github.com/go-test/deep v1.1.1 h1:0r/53hagsehfO4bzD2Pgr/+RgHqhmf+k1Bpse2cTu1U=
+github.com/go-test/deep v1.1.1/go.mod h1:5C2ZWiW0ErCdrYzpqxLbTX7MG14M9iiw8DgHncVwcsE=
 github.com/go-viper/mapstructure/v2 v2.0.0 h1:dhn8MZ1gZ0mzeodTG3jt5Vj/o87xZKuNAprG2mQfMfc=
 github.com/go-viper/mapstructure/v2 v2.0.0/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
 github.com/kolo/xmlrpc v0.0.0-20190909154602-56d5ec7c422e h1:JZPIpxHmcXiQn101f6P9wkfRZs2A9268tHHnanj+esA=

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>power_system</methodName>
+    <params>
+        <param>
+            <value>
+                <string>system::testsys1</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>status</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

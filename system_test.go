@@ -159,3 +159,19 @@ func TestFindSystemNames(t *testing.T) {
 	_, err := c.FindSystem(criteria)
 	utils.FailOnError(t, err)
 }
+
+func TestRenameSystem(t *testing.T) {
+	c := createStubHTTPClient(t, "rename-system-req.xml", "rename-system-res.xml")
+	err := c.RenameSystem("system::testsys", "testsys1")
+	utils.FailOnError(t, err)
+}
+
+func TestGetSystemHandle(t *testing.T) {
+	c := createStubHTTPClient(t, "get-system-handle-req.xml", "get-system-handle-res.xml")
+	res, err := c.GetSystemHandle("testsys")
+	utils.FailOnError(t, err)
+
+	if res != "system::testsys" {
+		t.Error("Wrong object id returned.")
+	}
+}

@@ -1,7 +1,6 @@
 package cobblerclient
 
 import (
-	"fmt"
 	"github.com/ContainerSolutions/go-utils"
 	"testing"
 )
@@ -11,7 +10,6 @@ func TestGetSettings(t *testing.T) {
 
 	result, err := c.GetSettings()
 	utils.FailOnError(t, err)
-	fmt.Printf("%+v\n", result)
 	if result.AuthTokenExpiration != 3600 {
 		t.Errorf("Expected AuthTokenExpiration to be 3600, instead got %d", result.AuthTokenExpiration)
 	}

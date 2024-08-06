@@ -371,3 +371,15 @@ func (c *Client) GetSystemsSince(mtime time.Time) ([]*System, error) {
 
 	return c.convertRawSystemsList(result)
 }
+
+// RenameSystem renames a System with a given object id.
+func (c *Client) RenameSystem(objectId, newName string) error {
+	_, err := c.Call("rename_system", objectId, newName, c.Token)
+	return err
+}
+
+// GetSystemHandle gets the internal ID of a Cobbler item.
+func (c *Client) GetSystemHandle(name string) (string, error) {
+	res, err := c.Call("get_system_handle", name, c.Token)
+	return returnString(res, err)
+}
