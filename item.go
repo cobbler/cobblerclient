@@ -47,11 +47,36 @@ func (c *Client) FindItems(what string, criteria map[string]interface{}, sortFie
 	return err
 }
 
+type PageInfo struct {
+	Page             int   `mapstructure:"page"`
+	PrevPage         int   `mapstructure:"prev_page"`
+	NextPage         int   `mapstructure:"next_page"`
+	Pages            []int `mapstructure:"pages"`
+	NumPages         int   `mapstructure:"num_pages"`
+	NumItems         int   `mapstructure:"num_items"`
+	StartItem        int   `mapstructure:"start_item"`
+	EndItem          int   `mapstructure:"end_item"`
+	ItemsPerPage     int   `mapstructure:"items_per_page"`
+	ItemsPerPageList []int `mapstructure:"items_per_page_list"`
+}
+
+type PagedSearchResult struct {
+	FoundItems []interface{} `mapstructure:"items"`
+	PageInfo   PageInfo      `mapstructure:"pageinfo"`
+}
+
 // FindItemsPaged searches for items with the given criteria and returning
-func (c *Client) FindItemsPaged(what string, criteria map[string]interface{}, sortField string, page, itemsPerPage int32) error {
-	_, err := c.Call("find_items_paged", what, criteria, sortField, page, itemsPerPage, c.Token)
-	// TODO: Parse result
-	return err
+func (c *Client) FindItemsPaged(what string, criteria map[string]interface{}, sortField string, page, itemsPerPage int32) (*PagedSearchResult, error) {
+	var pagedSearchResult PagedSearchResult
+	unmarshalledResult, err := c.Call("find_items_paged", what, criteria, sortField, page, itemsPerPage, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	parsedResult, err := decodeCobblerItem(unmarshalledResult, &pagedSearchResult)
+	if err != nil {
+		return nil, err
+	}
+	return parsedResult.(*PagedSearchResult), err
 }
 
 // HasItem checks if an item with the given name exists.

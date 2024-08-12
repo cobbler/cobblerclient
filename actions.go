@@ -82,3 +82,19 @@ func (c *Client) BackgroundMkLoaders() (string, error) {
 	res, err := c.Call("background_mkloaders", map[string]string{}, c.Token)
 	return returnString(res, err)
 }
+
+// BackgroundPowerSystem executes power operations for a given list of systems.
+func (c *Client) BackgroundPowerSystem(options BackgroundPowerSystemOptions) (string, error) {
+	res, err := c.Call("background_power_system", options, c.Token)
+	return returnString(res, err)
+}
+
+// PowerSystem executes a power operation for a single system synchronously.
+func (c *Client) PowerSystem(systemId, power string) (bool, error) {
+	result, err := c.Call("power_system", systemId, power, c.Token)
+	if err != nil {
+		return false, err
+	} else {
+		return result.(bool), err
+	}
+}
