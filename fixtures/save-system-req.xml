@@ -12,5 +12,10 @@
         <string>securetoken99</string>
       </value>
     </param>
+    <param>
+      <value>
+        <string>bypass</string>
+      </value>
+    </param>
   </params>
 </methodCall>

@@ -76,3 +76,13 @@ func convertToInt(integer interface{}) (int, error) {
 		return -1, errors.New("integer could not be converted")
 	}
 }
+
+func stringInSlice(a string, list []string) bool {
+	// https://stackoverflow.com/a/15323988
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}

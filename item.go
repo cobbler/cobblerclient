@@ -1,5 +1,10 @@
 package cobblerclient
 
+import (
+	"errors"
+	"strings"
+)
+
 // Item general fields
 type Item struct {
 	Parent            string      `mapstructure:"parent"`
@@ -18,7 +23,59 @@ type Item struct {
 	TemplateFiles     interface{} `mapstructure:"template_files"`
 	Owners            []string    `mapstructure:"owners"`
 	MgmtClasses       []string    `mapstructure:"mgmt_classes"`
-	MgmtParameters    interface{} `mapstructure:"mgmt_parameters"` // FIXME: This is not a str but a dict
+	MgmtParameters    interface{} `mapstructure:"mgmt_parameters"`
+}
+
+// ModifyItem is a generic method to modify items. Changes made with this method are not persisted until a call to
+// SaveItem or one of its other concrete methods.
+func (c *Client) ModifyItem(what, objectId, attribute string, arg interface{}) error {
+	_, err := c.Call("modify_item", what, objectId, attribute, arg, c.Token)
+	return err
+}
+
+// ModifyItemInPlace attempts to recreate the functionality of the "in_place" parameter for the "xapi_object_edit"
+// XML-RPC method.
+func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[string]interface{}) error {
+	itemKey := []string{
+		"autoinstall_meta",
+		"kernel_options",
+		"kernel_options_post",
+		"template_files",
+		"boot_files",
+		"fetchable_files",
+		"params",
+	}
+	if !stringInSlice(attribute, itemKey) {
+		return errors.New("invalid attribute")
+	}
+	rawItem, err := c.GetItem(what, name, false, false)
+	if err != nil {
+		return err
+	}
+	newMapInterface, keyExists := rawItem[attribute]
+	if !keyExists {
+		return errors.New("attribute not found in ")
+	}
+	newMap, castSuccessful := newMapInterface.(map[string]interface{})
+	if !castSuccessful {
+		return errors.New("failed to cast to map[string]interface{}")
+	}
+	for key, mapValue := range value {
+		if strings.HasPrefix(key, "~") && len(key) > 1 {
+			delete(newMap, key[1:])
+		} else {
+			newMap[key] = mapValue
+		}
+	}
+	itemHandle, err := c.GetItemHandle(what, name)
+	if err != nil {
+		return err
+	}
+	err = c.ModifyItem(what, itemHandle, attribute, newMap)
+	if err != nil {
+		return err
+	}
+	return c.SaveItem(what, itemHandle, c.Token, "bypass")
 }
 
 // GetItemNames returns the list of names for a specified object type present inside Cobbler.
@@ -34,10 +91,23 @@ func (c *Client) GetItemResolvedValue(itemUuid string, attribute string) error {
 	return err
 }
 
-// GetItem retrieves a single item from the database.
-func (c *Client) GetItem(what string, name string, flatten bool) error {
-	_, err := c.Call("get_item", what, name, flatten)
-	return err
+// GetItem retrieves a single item from the database. An empty map means that the item could not be found.
+func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[string]interface{}, error) {
+	unmarshalledResult, err := c.Call("get_item", what, name, flatten, resolved)
+	if err != nil {
+		return nil, err
+	}
+	marshalledResult, marshallSuccessful := unmarshalledResult.(map[string]interface{})
+	if !marshallSuccessful {
+		notFoundMarker, marshallSuccessful := unmarshalledResult.(string)
+		if !marshallSuccessful {
+			return nil, errors.New("marshall to map unsuccessful and not-found marker not detected")
+		}
+		if notFoundMarker == "~" {
+			return make(map[string]interface{}), nil
+		}
+	}
+	return marshalledResult, nil
 }
 
 // FindItems searches for one or more items by any of its attributes.
