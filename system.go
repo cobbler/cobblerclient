@@ -228,7 +228,7 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	}
 
 	// Save the final system
-	if _, err := c.Call("save_system", newID, c.Token); err != nil {
+	if err := c.SaveSystem(newID, "new"); err != nil {
 		return nil, err
 	}
 
@@ -244,6 +244,18 @@ func (c *Client) UpdateSystem(system *System) error {
 		return err
 	}
 	return c.updateCobblerFields("system", item, id)
+}
+
+// SaveSystem saves all changes performed via XML-RPC to disk on the server side.
+func (c *Client) SaveSystem(objectId, editmode string) error {
+	_, err := c.Call("save_system", objectId, c.Token, editmode)
+	return err
+}
+
+// CopySystem duplicates a given system on the server with a new name.
+func (c *Client) CopySystem(objectId, newName string) error {
+	_, err := c.Call("copy_system", objectId, newName, c.Token)
+	return err
 }
 
 // DeleteSystem deletes a single System by its name.
@@ -278,7 +290,7 @@ func (s *System) CreateInterface(name string, iface Interface) error {
 	}
 
 	// Save the final system
-	_, err = s.Client.Call("save_system", systemID, s.Client.Token)
+	err = s.Client.SaveSystem(systemID, "bypass")
 	if err != nil {
 		return err
 	}
@@ -335,7 +347,7 @@ func (s *System) DeleteInterface(name string) error {
 	}
 
 	// Save the final system
-	if _, err := s.Client.Call("save_system", systemID, s.Client.Token); err != nil {
+	if err := s.Client.SaveSystem(systemID, "bypass"); err != nil {
 		return err
 	}
 

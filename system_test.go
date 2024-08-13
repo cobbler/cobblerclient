@@ -104,12 +104,8 @@ func TestNewSystem(t *testing.T) {
 	*/
 
 	c = createStubHTTPClient(t, "save-system-req.xml", "save-system-res.xml")
-	result, err = c.Call("save_system", newID, c.Token)
+	err = c.SaveSystem(newID, "bypass")
 	utils.FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Save failed.")
-	}
 }
 
 func TestDeleteSystem(t *testing.T) {
@@ -157,6 +153,18 @@ func TestFindSystemNames(t *testing.T) {
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	_, err := c.FindSystem(criteria)
+	utils.FailOnError(t, err)
+}
+
+func TestSaveSystem(t *testing.T) {
+	c := createStubHTTPClient(t, "save-system-req.xml", "save-system-res.xml")
+	err := c.SaveSystem("___NEW___system::abc123==", "bypass")
+	utils.FailOnError(t, err)
+}
+
+func TestCopySystem(t *testing.T) {
+	c := createStubHTTPClient(t, "copy-system-req.xml", "copy-system-res.xml")
+	err := c.CopySystem("system::testsys", "testsys2")
 	utils.FailOnError(t, err)
 }
 
