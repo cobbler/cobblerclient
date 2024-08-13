@@ -136,3 +136,12 @@ func TestFindItemsPaged(t *testing.T) {
 		t.Error(diff)
 	}
 }
+
+func TestGetItem(t *testing.T) {
+	c := createStubHTTPClient(t, "get-item-req.xml", "get-item-res.xml")
+	res, err := c.GetItem("system", "test", false, false)
+	utils.FailOnError(t, err)
+	if res["profile"] != "Ubuntu-20.04-x86_64" {
+		t.Error("expected a different profile")
+	}
+}

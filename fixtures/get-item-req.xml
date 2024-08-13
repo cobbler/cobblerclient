@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>get_item</methodName>
+    <params>
+        <param>
+            <value>
+                <string>system</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>test</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <boolean>0</boolean>
+            </value>
+        </param>
+        <param>
+            <value>
+                <boolean>0</boolean>
+            </value>
+        </param>
+    </params>
+</methodCall>
