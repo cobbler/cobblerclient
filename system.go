@@ -53,6 +53,7 @@ type System struct {
 	PowerUser             string                 `mapstructure:"power_user"`
 	Profile               string                 `mapstructure:"profile"`
 	Proxy                 string                 `mapstructure:"proxy"`
+	RedhatManagementKey   string                 `mapstructure:"redhat_management_key"`
 	Status                string                 `mapstructure:"status"`
 	VirtAutoBoot          string                 `mapstructure:"virt_auto_boot"`
 	VirtCPUs              string                 `mapstructure:"virt_cpus"`

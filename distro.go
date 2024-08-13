@@ -28,15 +28,18 @@ type Distro struct {
 	Item `mapstructure:",squash"`
 
 	// These are internal fields and cannot be modified.
-	SourceRepos   []string `mapstructure:"source_repos"   cobbler:"noupdate"`
-	TreeBuildTime string   `mapstructure:"tree_build_time" cobbler:"noupdate"`
-	Arch          string   `mapstructure:"arch"`
-	BootLoaders   []string `mapstructure:"boot_loaders"`
-	Breed         string   `mapstructure:"breed"`
-	Comment       string   `mapstructure:"comment"`
-	Initrd        string   `mapstructure:"initrd"`
-	Kernel        string   `mapstructure:"kernel"`
-	OSVersion     string   `mapstructure:"os_version"`
+	SourceRepos         []string `mapstructure:"source_repos"   cobbler:"noupdate"`
+	TreeBuildTime       string   `mapstructure:"tree_build_time" cobbler:"noupdate"`
+	Arch                string   `mapstructure:"arch"`
+	BootLoaders         []string `mapstructure:"boot_loaders"`
+	Breed               string   `mapstructure:"breed"`
+	Comment             string   `mapstructure:"comment"`
+	Initrd              string   `mapstructure:"initrd"`
+	RemoteBootInitrd    string   `mapstructure:"remote_boot_initrd"`
+	Kernel              string   `mapstructure:"kernel"`
+	RemoteBootKernel    string   `mapstructure:"remote_boot_kernel"`
+	RedhatManagementKey string   `mapstructure:"redhat_management_key"`
+	OSVersion           string   `mapstructure:"os_version"`
 }
 
 // convertRawDistro ...
