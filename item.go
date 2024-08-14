@@ -111,10 +111,14 @@ func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[
 }
 
 // FindItems searches for one or more items by any of its attributes.
-func (c *Client) FindItems(what string, criteria map[string]interface{}, sortField string, expand bool) error {
-	_, err := c.Call("find_items", what, criteria, sortField, expand)
-	// TODO: Parse result
-	return err
+func (c *Client) FindItems(what string, criteria map[string]interface{}, sortField string, expand bool) ([]interface{}, error) {
+	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, expand)
+	return unmarshalledResult.([]interface{}), err
+}
+
+func (c *Client) FindItemNames(what string, criteria map[string]interface{}, sortField string) ([]string, error) {
+	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, false)
+	return returnStringSlice(unmarshalledResult, err)
 }
 
 type PageInfo struct {

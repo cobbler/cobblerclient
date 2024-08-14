@@ -7,7 +7,7 @@ import (
 )
 
 func TestFindItemsPaged(t *testing.T) {
-	c := createStubHTTPClient(t, "find-items-req.xml", "find-items-res.xml")
+	c := createStubHTTPClient(t, "find-items-paged-req.xml", "find-items-paged-res.xml")
 	var items []interface{}
 	var nilMap map[string]interface{}
 	item1 := map[string]interface{}{
@@ -143,5 +143,28 @@ func TestGetItem(t *testing.T) {
 	utils.FailOnError(t, err)
 	if res["profile"] != "Ubuntu-20.04-x86_64" {
 		t.Error("expected a different profile")
+	}
+}
+
+func TestFindItems(t *testing.T) {
+	c := createStubHTTPClient(t, "find-items-req.xml", "find-items-res.xml")
+	criteria := make(map[string]interface{}, 1)
+	criteria["name"] = "test*"
+	res, err := c.FindItems("profile", criteria, "name", false)
+	utils.FailOnError(t, err)
+	if len(res) != 1 {
+		t.Error("expected a single result profile")
+	}
+}
+
+func TestFindItemNames(t *testing.T) {
+	c := createStubHTTPClient(t, "find-item-names-req.xml", "find-item-names-res.xml")
+	expectedResult := []string{"testprof"}
+	criteria := make(map[string]interface{}, 1)
+	criteria["name"] = "test*"
+	res, err := c.FindItemNames("profile", criteria, "name")
+	utils.FailOnError(t, err)
+	if diff := deep.Equal(res, expectedResult); diff != nil {
+		t.Error(diff)
 	}
 }
