@@ -31,10 +31,13 @@ type Profile struct {
 	ReposEnabled bool `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
 	Autoinstall         string      `mapstructure:"autoinstall"`
+	BootLoaders         interface{} `mapstructure:"boot_loaders"`
 	DHCPTag             string      `mapstructure:"dhcp_tag"`
 	Distro              string      `mapstructure:"distro"`
 	EnableGPXE          bool        `mapstructure:"enable_gpxe"`
 	EnableMenu          interface{} `mapstructure:"enable_menu"`
+	Filename            string      `mapstructure:"filename"`
+	Menu                string      `mapstructure:"menu"`
 	NameServers         []string    `mapstructure:"name_servers"`
 	NameServersSearch   []string    `mapstructure:"name_servers_search"`
 	NextServerv4        string      `mapstructure:"next_server_v4"`
