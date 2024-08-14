@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>find_items</methodName>
+    <methodName>find_items_paged</methodName>
     <params>
         <param>
             <value>
-                <string>profile</string>
+                <string>menu</string>
             </value>
         </param>
         <param>
             <value>
                 <struct>
                     <member>
-                        <name>name</name>
+                        <name>display_name</name>
                         <value>
-                            <string>test*</string>
+                            <string></string>
                         </value>
                     </member>
                 </struct>
@@ -21,12 +21,22 @@
         </param>
         <param>
             <value>
-                <string>name</string>
+                <string></string>
             </value>
         </param>
         <param>
             <value>
-                <boolean>0</boolean>
+                <int>1</int>
+            </value>
+        </param>
+        <param>
+            <value>
+                <int>5</int>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
             </value>
         </param>
     </params>
