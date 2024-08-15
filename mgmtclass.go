@@ -68,7 +68,7 @@ func (c *Client) GetMgmtClass(name string) (*MgmtClass, error) {
 
 // CreateMgmtClass creates a mgmtclass.
 func (c *Client) CreateMgmtClass(mgmtclass MgmtClass) (*MgmtClass, error) {
-	// Make sure a distro with the same name does not already exist
+	// Make sure a mgmtclass with the same name does not already exist
 	if _, err := c.GetMgmtClass(mgmtclass.Name); err == nil {
 		return nil, fmt.Errorf("a MgmtClass with the name %s already exists", mgmtclass.Name)
 	}
@@ -92,9 +92,9 @@ func (c *Client) CreateMgmtClass(mgmtclass MgmtClass) (*MgmtClass, error) {
 }
 
 // UpdateMgmtClass updates a single MgmtClass.
-func (c *Client) UpdateMgmtClass(distro *Distro) error {
-	item := reflect.ValueOf(distro).Elem()
-	id, err := c.GetItemHandle("mgmtclass", distro.Name)
+func (c *Client) UpdateMgmtClass(mgmtclass *MgmtClass) error {
+	item := reflect.ValueOf(mgmtclass).Elem()
+	id, err := c.GetItemHandle("mgmtclass", mgmtclass.Name)
 	if err != nil {
 		return err
 	}
