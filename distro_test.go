@@ -19,14 +19,12 @@ package cobblerclient
 import (
 	"testing"
 	"time"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestGetDistros(t *testing.T) {
 	c := createStubHTTPClient(t, "get-distros-req.xml", "get-distros-res.xml")
 	distros, err := c.GetDistros()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(distros) != 1 {
 		t.Errorf("Wrong number of distros returned.")
@@ -36,7 +34,7 @@ func TestGetDistros(t *testing.T) {
 func TestGetDistro(t *testing.T) {
 	c := createStubHTTPClient(t, "get-distro-req.xml", "get-distro-res.xml")
 	distro, err := c.GetDistro("Ubuntu-20.04-x86_64")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if distro.Name != "Ubuntu-20.04-x86_64" {
 		t.Errorf("Wrong distro returned.")
@@ -46,19 +44,19 @@ func TestGetDistro(t *testing.T) {
 func TestDeleteDistro(t *testing.T) {
 	c := createStubHTTPClient(t, "delete-distro-req.xml", "delete-distro-res.xml")
 	err := c.DeleteDistro("test")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestDeleteDistroRecursive(t *testing.T) {
 	c := createStubHTTPClient(t, "delete-distro-req.xml", "delete-distro-res.xml")
 	err := c.DeleteDistroRecursive("test", false)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestListDistroNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-distro-req.xml", "get-item-names-distro-res.xml")
 	distros, err := c.ListDistroNames()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(distros) != 1 {
 		t.Errorf("Wrong number of distros returned.")
@@ -68,7 +66,7 @@ func TestListDistroNames(t *testing.T) {
 func TestGetDistrosSince(t *testing.T) {
 	c := createStubHTTPClient(t, "get-distros-since-req.xml", "get-distros-since-res.xml")
 	distros, err := c.GetDistrosSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(distros) != 1 {
 		t.Errorf("Wrong number of distros returned.")
@@ -80,7 +78,7 @@ func TestFindDistro(t *testing.T) {
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	distros, err := c.FindDistro(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(distros) != 1 {
 		t.Errorf("Wrong number of distros returned.")
@@ -92,7 +90,7 @@ func TestFindDistroNames(t *testing.T) {
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	distros, err := c.FindDistroNames(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(distros) != 1 {
 		t.Error("Wrong number of distros returned.")
@@ -102,25 +100,25 @@ func TestFindDistroNames(t *testing.T) {
 func TestSaveDistro(t *testing.T) {
 	c := createStubHTTPClient(t, "save-distro-req.xml", "save-distro-res.xml")
 	err := c.SaveDistro("distro::test", "bypass")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestCopyDistro(t *testing.T) {
 	c := createStubHTTPClient(t, "copy-distro-req.xml", "copy-distro-res.xml")
 	err := c.CopyDistro("distro::test", "test2")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestRenameDistro(t *testing.T) {
 	c := createStubHTTPClient(t, "rename-distro-req.xml", "rename-distro-res.xml")
 	err := c.RenameDistro("distro::test2", "test1")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestGetDistroHandle(t *testing.T) {
 	c := createStubHTTPClient(t, "get-distro-handle-req.xml", "get-distro-handle-res.xml")
 	res, err := c.GetDistroHandle("test")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if res != "distro::test" {
 		t.Error("Wrong object id returned.")

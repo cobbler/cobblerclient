@@ -19,14 +19,12 @@ package cobblerclient
 import (
 	"testing"
 	"time"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestGetPackages(t *testing.T) {
 	c := createStubHTTPClient(t, "get-packages-req.xml", "get-packages-res.xml")
 	linuxpackages, err := c.GetPackages()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(linuxpackages) != 1 {
 		t.Errorf("Wrong number of packages returned.")
@@ -36,7 +34,7 @@ func TestGetPackages(t *testing.T) {
 func TestGetPackage(t *testing.T) {
 	c := createStubHTTPClient(t, "get-package-req.xml", "get-package-res.xml")
 	distro, err := c.GetPackage("testpackage")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if distro.Name != "testpackage" {
 		t.Errorf("Wrong package returned.")
@@ -46,19 +44,19 @@ func TestGetPackage(t *testing.T) {
 func TestDeletePackage(t *testing.T) {
 	c := createStubHTTPClient(t, "delete-package-req.xml", "delete-package-res.xml")
 	err := c.DeletePackage("test")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestDeletePackageRecursive(t *testing.T) {
 	c := createStubHTTPClient(t, "delete-package-req.xml", "delete-package-res.xml")
 	err := c.DeletePackageRecursive("test", false)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestListPackageNames(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-names-package-req.xml", "get-item-names-package-res.xml")
 	linuxpackages, err := c.ListPackageNames()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(linuxpackages) != 1 {
 		t.Errorf("Wrong number of packages returned.")
@@ -68,7 +66,7 @@ func TestListPackageNames(t *testing.T) {
 func TestGetPackagesSince(t *testing.T) {
 	c := createStubHTTPClient(t, "get-packages-since-req.xml", "get-packages-since-res.xml")
 	linuxpackages, err := c.GetPackagesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(linuxpackages) != 1 {
 		t.Errorf("Wrong number of packages returned.")
@@ -80,7 +78,7 @@ func TestFindPackage(t *testing.T) {
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testpackage"
 	linuxpackages, err := c.FindPackage(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(linuxpackages) != 1 {
 		t.Errorf("Wrong number of packages returned.")
@@ -92,7 +90,7 @@ func TestFindPackageNames(t *testing.T) {
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testpackage"
 	linuxpackages, err := c.FindPackageNames(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(linuxpackages) != 1 {
 		t.Error("Wrong number of packages returned.")
@@ -102,25 +100,25 @@ func TestFindPackageNames(t *testing.T) {
 func TestSavePackage(t *testing.T) {
 	c := createStubHTTPClient(t, "save-package-req.xml", "save-package-res.xml")
 	err := c.SavePackage("package::testpackage", "bypass")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestCopyPackage(t *testing.T) {
 	c := createStubHTTPClient(t, "copy-package-req.xml", "copy-package-res.xml")
 	err := c.CopyPackage("package::testpackage", "testpackage2")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestRenamePackage(t *testing.T) {
 	c := createStubHTTPClient(t, "rename-package-req.xml", "rename-package-res.xml")
 	err := c.RenamePackage("package::testpackage2", "testpackage1")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestGetPackageHandle(t *testing.T) {
 	c := createStubHTTPClient(t, "get-package-handle-req.xml", "get-package-handle-res.xml")
 	res, err := c.GetPackageHandle("testpackage")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if res != "package::testpackage" {
 		t.Error("Wrong object id returned.")

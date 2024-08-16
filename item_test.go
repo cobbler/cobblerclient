@@ -1,7 +1,6 @@
 package cobblerclient
 
 import (
-	"github.com/ContainerSolutions/go-utils"
 	"github.com/go-test/deep"
 	"testing"
 )
@@ -131,7 +130,7 @@ func TestFindItemsPaged(t *testing.T) {
 	criteria := make(map[string]interface{}, 1)
 	criteria["display_name"] = ""
 	result, err := c.FindItemsPaged("menu", criteria, "", 1, 5)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if diff := deep.Equal(*result, expectedResult); diff != nil {
 		t.Error(diff)
 	}
@@ -140,7 +139,7 @@ func TestFindItemsPaged(t *testing.T) {
 func TestGetItem(t *testing.T) {
 	c := createStubHTTPClient(t, "get-item-req.xml", "get-item-res.xml")
 	res, err := c.GetItem("system", "test", false, false)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if res["profile"] != "Ubuntu-20.04-x86_64" {
 		t.Error("expected a different profile")
 	}
@@ -151,7 +150,7 @@ func TestFindItems(t *testing.T) {
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test*"
 	res, err := c.FindItems("profile", criteria, "name", false)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if len(res) != 1 {
 		t.Error("expected a single result profile")
 	}
@@ -163,7 +162,7 @@ func TestFindItemNames(t *testing.T) {
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test*"
 	res, err := c.FindItemNames("profile", criteria, "name")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if diff := deep.Equal(res, expectedResult); diff != nil {
 		t.Error(diff)
 	}

@@ -2,15 +2,13 @@ package cobblerclient
 
 import (
 	"testing"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestCheckAccessNoFail(t *testing.T) {
 	c := createStubHTTPClient(t, "check-access-no-fail-req.xml", "check-access-no-fail-res.xml")
 
 	res, err := c.CheckAccessNoFail("", "", "")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if res != false {
 		t.Errorf(`"%t" expected; got "%t"`, false, res)
 	}
@@ -20,7 +18,7 @@ func TestCheckAccess(t *testing.T) {
 	c := createStubHTTPClient(t, "check-access-req.xml", "check-access-res.xml")
 
 	res, err := c.CheckAccess("", "", "")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if res < 0 || res > 1 {
 		t.Errorf(`"0" or "1" expected; got "%d"`, res)
 	}
@@ -31,7 +29,7 @@ func TestGetAuthnModuleName(t *testing.T) {
 	var expected = "authentication.configfile"
 
 	res, err := c.GetAuthnModuleName()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if res != expected {
 		t.Errorf(`"%s" expected; got "%s"`, expected, res)
 	}
@@ -40,7 +38,7 @@ func TestGetAuthnModuleName(t *testing.T) {
 func TestLogin(t *testing.T) {
 	c := createStubHTTPClient(t, "login-req.xml", "login-res.xml")
 	ok, err := c.Login()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if !ok {
 		t.Errorf("true expected; got false")
@@ -71,7 +69,7 @@ func TestLogout(t *testing.T) {
 	var expected = false
 
 	res, err := c.Logout()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if res != expected {
 		t.Errorf(`"%t" expected; got "%t"`, expected, res)
 	}
@@ -82,7 +80,7 @@ func TestTokenCheck(t *testing.T) {
 	var expected = false
 
 	res, err := c.TokenCheck("my_fake_token")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if res == expected {
 		t.Errorf(`"%t" expected; got "%t"`, expected, res)
 	}
@@ -93,7 +91,7 @@ func TestGetUserFromToken(t *testing.T) {
 	var expected = "testuser"
 
 	res, err := c.GetUserFromToken("securetoken99")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if res != expected {
 		t.Errorf(`"%s" expected; got "%s"`, expected, res)
 	}

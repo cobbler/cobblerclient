@@ -18,8 +18,6 @@ package cobblerclient
 
 import (
 	"testing"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestCreateSnippet(t *testing.T) {
@@ -29,7 +27,7 @@ func TestCreateSnippet(t *testing.T) {
 		Body: "sample content",
 	}
 	err := c.CreateSnippet(snippet)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestGetSnippet(t *testing.T) {
@@ -40,7 +38,7 @@ func TestGetSnippet(t *testing.T) {
 		Body: "sample content",
 	}
 	returnedSnippet, err := c.GetSnippet(snippetName)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if returnedSnippet.Body != expectedSnippet.Body {
 		t.Errorf("Snippet Body did not match.")
 	}
