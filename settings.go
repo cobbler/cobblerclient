@@ -69,7 +69,7 @@ type Settings struct {
 	Include                           []string                              `json:"include" mapstructure:"include"`
 	IsoTemplateDirectory              string                                `json:"iso_template_dir" mapstructure:"iso_template_dir"`
 	Jinja2IncludeDirectory            string                                `json:"jinja2_includedir" mapstructure:"jinja2_includedir"`
-	KernelOptions                     map[string]interface{}                `json:"kernel_options" mapstructure:"kernel_options"`
+	KernelOptions                     map[string]string                     `json:"kernel_options" mapstructure:"kernel_options"`
 	LazyStart                         bool                                  `json:"lazy_start" mapstructure:"lazy_start"`
 	LdapAnonymousBind                 bool                                  `json:"ldap_anonymous_bind" mapstructure:"ldap_anonymous_bind"`
 	LdapBaseDn                        string                                `json:"ldap_base_dn" mapstructure:"ldap_base_dn"`
@@ -95,7 +95,7 @@ type Settings struct {
 	ManageRsync                       bool                                  `json:"manage_rsync" mapstructure:"manage_rsync"`
 	ManageTftpd                       bool                                  `json:"manage_tftpd" mapstructure:"manage_tftpd"`
 	MgmtClasses                       []string                              `json:"mgmt_classes" mapstructure:"mgmt_classes"`
-	MgmtParameters                    map[string]interface{}                `json:"mgmt_parameters" mapstructure:"mgmt_parameters"`
+	MgmtParameters                    map[string]string                     `json:"mgmt_parameters" mapstructure:"mgmt_parameters"`
 	NextServerV4                      string                                `json:"next_server_v4" mapstructure:"next_server_v4"`
 	NextServerV6                      string                                `json:"next_server_v6" mapstructure:"next_server_v6"`
 	NoPxeWithTriggers                 bool                                  `json:"nopxe_with_triggers" mapstructure:"nopxe_with_triggers"`

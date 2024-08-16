@@ -10,11 +10,11 @@ type MgmtClass struct {
 	Item `mapstructure:",squash"`
 
 	// Mgmtclass specific fields
-	IsDefiniton bool                   `mapstructure:"is_definition"`
-	Params      map[string]interface{} `mapstructure:"params"`
-	ClassName   string                 `mapstructure:"class_name"`
-	Files       []string               `mapstructure:"files"`
-	Packages    []string               `mapstructure:"packages"`
+	IsDefiniton bool              `mapstructure:"is_definition"`
+	Params      map[string]string `mapstructure:"params"`
+	ClassName   string            `mapstructure:"class_name"`
+	Files       []string          `mapstructure:"files"`
+	Packages    []string          `mapstructure:"packages"`
 }
 
 func convertRawMgmtClass(name string, xmlrpcResult interface{}) (*MgmtClass, error) {
