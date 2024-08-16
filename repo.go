@@ -30,21 +30,21 @@ type Repo struct {
 	// These are internal fields and cannot be modified.
 	TreeBuildTime string `mapstructure:"tree_build_time" cobbler:"noupdate"`
 
-	AptComponents   []string               `mapstructure:"apt_components"`
-	AptDists        []string               `mapstructure:"apt_dists"`
-	Arch            string                 `mapstructure:"arch"`
-	Breed           string                 `mapstructure:"breed"`
-	CreateRepoFlags string                 `mapstructure:"createrepo_flags"`
-	Environment     map[string]interface{} `mapstructure:"environment"`
-	KeepUpdated     bool                   `mapstructure:"keep_updated"`
-	Mirror          string                 `mapstructure:"mirror"`
-	MirrorLocally   bool                   `mapstructure:"mirror_locally"`
-	MirrorType      string                 `mapstructure:"mirror_type"`
-	Priority        int                    `mapstructure:"priority"`
-	Proxy           string                 `mapstructure:"proxy" cobbler:"newfield"`
-	RsyncOpts       map[string]interface{} `mapstructure:"rsyncopts"`
-	RpmList         []string               `mapstructure:"rpm_list"`
-	YumOpts         map[string]interface{} `mapstructure:"yumopts"`
+	AptComponents   []string          `mapstructure:"apt_components"`
+	AptDists        []string          `mapstructure:"apt_dists"`
+	Arch            string            `mapstructure:"arch"`
+	Breed           string            `mapstructure:"breed"`
+	CreateRepoFlags string            `mapstructure:"createrepo_flags"`
+	Environment     map[string]string `mapstructure:"environment"`
+	KeepUpdated     bool              `mapstructure:"keep_updated"`
+	Mirror          string            `mapstructure:"mirror"`
+	MirrorLocally   bool              `mapstructure:"mirror_locally"`
+	MirrorType      string            `mapstructure:"mirror_type"`
+	Priority        int               `mapstructure:"priority"`
+	Proxy           string            `mapstructure:"proxy" cobbler:"newfield"`
+	RsyncOpts       map[string]string `mapstructure:"rsyncopts"`
+	RpmList         []string          `mapstructure:"rpm_list"`
+	YumOpts         map[string]string `mapstructure:"yumopts"`
 }
 
 func convertRawRepo(name string, xmlrpcResult interface{}) (*Repo, error) {
