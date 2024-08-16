@@ -127,6 +127,16 @@ func TestGetFileHandle(t *testing.T) {
 	}
 }
 
+func TestGetFileAsRendered(t *testing.T) {
+	c := createStubHTTPClient(t, "get-file-as-rendered-req.xml", "get-file-as-rendered-res.xml")
+	res, err := c.GetFileAsRendered("testfile")
+	utils.FailOnError(t, err)
+
+	if res["name"] != "testfile" {
+		t.Error("Wrong object name returned.")
+	}
+}
+
 /*
  * NOTE: We're skipping the testing of CREATE, UPDATE, DELETE methods for now because
  *       the current implementation of the StubHTTPClient does not allow
