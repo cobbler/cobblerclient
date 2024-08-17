@@ -34,7 +34,7 @@ func createStubHTTPClient(t *testing.T, reqFixture string, resFixture string) Cl
 	hc := utils.NewStubHTTPClient(t)
 
 	if reqFixture != "" {
-		rawRequest, err := utils.Fixture(reqFixture)
+		rawRequest, err := Fixture(reqFixture)
 		FailOnError(t, err)
 
 		// flatten the request so it matches the kolo generated xml
@@ -44,7 +44,7 @@ func createStubHTTPClient(t *testing.T, reqFixture string, resFixture string) Cl
 	}
 
 	if resFixture != "" {
-		response, err := utils.Fixture(resFixture)
+		response, err := Fixture(resFixture)
 		FailOnError(t, err)
 		hc.Response = response
 	}
