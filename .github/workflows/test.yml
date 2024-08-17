@@ -24,6 +24,7 @@ jobs:
       - name: Test
         run: go test -race -coverprofile="coverage.out" -covermode="atomic" -v ./...
       - name: Upload test coverage to Codacy
+        if: matrix.os == 'ubuntu-latest'
         run: bash <(curl -Ls https://coverage.codacy.com/get.sh) report --force-coverage-parser go -r coverage.out
         env:
           CODACY_API_TOKEN: ${{ secrets.CODACY_API_TOKEN }}
