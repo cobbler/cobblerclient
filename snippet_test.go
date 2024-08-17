@@ -21,7 +21,7 @@ import (
 )
 
 func TestCreateSnippet(t *testing.T) {
-	c := createStubHTTPClient(t, "create-snippet-req.xml", "create-snippet-res.xml")
+	c := createStubHTTPClientSingle(t, "create-snippet")
 	snippet := Snippet{
 		Name: "/var/lib/cobbler/snippets/some-snippet",
 		Body: "sample content",
@@ -32,7 +32,7 @@ func TestCreateSnippet(t *testing.T) {
 
 func TestGetSnippet(t *testing.T) {
 	snippetName := "/var/lib/cobbler/snippets/some-snippet"
-	c := createStubHTTPClient(t, "get-snippet-req.xml", "get-snippet-res.xml")
+	c := createStubHTTPClientSingle(t, "get-snippet")
 	expectedSnippet := Snippet{
 		Name: snippetName,
 		Body: "sample content",

@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
@@ -26,12 +25,17 @@ func Fixture(fn string) ([]byte, error) {
 	return os.ReadFile("./fixtures/" + fn) // nosemgrep
 }
 
+type APIResponsePair struct {
+	Actual   []byte // This is the actual response that the client gets from the server side.
+	Expected []byte // The payload that you expect to receive. This is to verify that your implementation is sending the proper payload to the server.
+	Response []byte // The response you want to return.
+}
+
 type StubHTTPClient struct {
-	t            *testing.T
-	actual       []byte // This is the actual response that the client gets from the server side.
-	Expected     []byte // The payload that you expect to receive. This is to verify that your implementation is sending the proper payload to the server.
-	Response     []byte // The response you want to return.
-	ShouldVerify bool   // Make sure that the expected and the actual sent payload match.
+	t              *testing.T
+	answers        []APIResponsePair
+	ShouldVerify   bool // Make sure that the expected and the actual sent payload match.
+	requestCounter int
 }
 
 func NewStubHTTPClient(t *testing.T) *StubHTTPClient {
@@ -40,24 +44,27 @@ func NewStubHTTPClient(t *testing.T) *StubHTTPClient {
 }
 
 func (s *StubHTTPClient) Verify() {
-	if !bytes.Equal(s.Expected, s.actual) {
-		spit("/tmp/expected", s.Expected)
-		spit("/tmp/actual", s.actual)
-		s.t.Errorf("expected:\n%sgot:\n%s", s.Expected, s.actual)
+	for _, a := range s.answers {
+		if !bytes.Equal(a.Expected, a.Actual) {
+			spit("/tmp/expected", a.Expected)
+			spit("/tmp/actual", a.Actual)
+			s.t.Errorf("expected:\n%sgot:\n%s", a.Expected, a.Actual)
+		}
 	}
 }
 
 func (s *StubHTTPClient) Post(uri, bodyType string, req io.Reader) (*http.Response, error) {
-	b, err := ioutil.ReadAll(req)
+	b, err := io.ReadAll(req)
 	if err != nil {
 		s.t.Fatal(err)
 	}
 
-	s.actual = b
+	s.answers[s.requestCounter].Actual = b
 	if s.ShouldVerify {
 		s.Verify()
 	}
-	res := &http.Response{Body: ioutil.NopCloser(bytes.NewBuffer(s.Response))}
+	res := &http.Response{Body: io.NopCloser(bytes.NewBuffer(s.answers[s.requestCounter].Response))}
+	s.requestCounter++
 	return res, nil
 }
 

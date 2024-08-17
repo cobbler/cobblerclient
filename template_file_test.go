@@ -21,7 +21,7 @@ import (
 )
 
 func TestCreateTemplateFile(t *testing.T) {
-	c := createStubHTTPClient(t, "create-template-file-req.xml", "create-template-file-res.xml")
+	c := createStubHTTPClientSingle(t, "create-template-file")
 	ks := TemplateFile{
 		Name: "/var/lib/cobbler/templates/foo.ks",
 		Body: "sample content",
@@ -32,7 +32,7 @@ func TestCreateTemplateFile(t *testing.T) {
 
 func TestGetTemplateFile(t *testing.T) {
 	ksName := "/var/lib/cobbler/templates/foo.ks"
-	c := createStubHTTPClient(t, "get-template-file-req.xml", "get-template-file-res.xml")
+	c := createStubHTTPClientSingle(t, "get-template-file")
 	expectedKS := TemplateFile{
 		Name: ksName,
 		Body: "sample content",

@@ -5,7 +5,7 @@ import (
 )
 
 func TestGetSettings(t *testing.T) {
-	c := createStubHTTPClient(t, "get-settings-req.xml", "get-settings-res.xml")
+	c := createStubHTTPClientSingle(t, "get-settings")
 
 	result, err := c.GetSettings()
 	FailOnError(t, err)
@@ -15,7 +15,7 @@ func TestGetSettings(t *testing.T) {
 }
 
 func TestModifySettings(t *testing.T) {
-	c := createStubHTTPClient(t, "modify-settings-req.xml", "modify-settings-res.xml")
+	c := createStubHTTPClientSingle(t, "modify-settings")
 
 	result, err := c.ModifySetting("auth_token_expiration", 7200)
 	FailOnError(t, err)

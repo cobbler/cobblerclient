@@ -22,7 +22,7 @@ import (
 )
 
 func TestGetMgmtclasses(t *testing.T) {
-	c := createStubHTTPClient(t, "get-mgmtclasses-req.xml", "get-mgmtclasses-res.xml")
+	c := createStubHTTPClientSingle(t, "get-mgmtclasses")
 	mgmtclasses, err := c.GetMgmtClasses()
 	FailOnError(t, err)
 
@@ -32,7 +32,7 @@ func TestGetMgmtclasses(t *testing.T) {
 }
 
 func TestGetMgmtclass(t *testing.T) {
-	c := createStubHTTPClient(t, "get-mgmtclass-req.xml", "get-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "get-mgmtclass")
 	mgmtclass, err := c.GetMgmtClass("testmgmtclass")
 	FailOnError(t, err)
 
@@ -42,19 +42,19 @@ func TestGetMgmtclass(t *testing.T) {
 }
 
 func TestDeleteMgmtClass(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-mgmtclass-req.xml", "delete-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-mgmtclass")
 	err := c.DeleteMgmtClass("test")
 	FailOnError(t, err)
 }
 
 func TestDeleteMgmtClassRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-mgmtclass-req.xml", "delete-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-mgmtclass")
 	err := c.DeleteMgmtClassRecursive("test", false)
 	FailOnError(t, err)
 }
 
 func TestListMgmtClassNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-mgmtclass-req.xml", "get-item-names-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-mgmtclass")
 	mgmtclasses, err := c.ListMgmtClassNames()
 	FailOnError(t, err)
 
@@ -64,7 +64,7 @@ func TestListMgmtClassNames(t *testing.T) {
 }
 
 func TestGetMgmtclassSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-mgmtclasses-since-req.xml", "get-mgmtclasses-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-mgmtclasses-since")
 	mgmtclasses, err := c.GetMgmtClassesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
@@ -74,7 +74,7 @@ func TestGetMgmtclassSince(t *testing.T) {
 }
 
 func TestFindMgmtclass(t *testing.T) {
-	c := createStubHTTPClient(t, "find-mgmtclass-req.xml", "find-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "find-mgmtclass")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testmgmtclass"
 	mgmtclasses, err := c.FindMgmtClass(criteria)
@@ -86,7 +86,7 @@ func TestFindMgmtclass(t *testing.T) {
 }
 
 func TestFindMgmtClassNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-mgmtclass-names-req.xml", "find-mgmtclass-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-mgmtclass-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testmgmtclass"
 	mgmtclasses, err := c.FindMgmtClassNames(criteria)
@@ -98,25 +98,25 @@ func TestFindMgmtClassNames(t *testing.T) {
 }
 
 func TestSaveMgmtClass(t *testing.T) {
-	c := createStubHTTPClient(t, "save-mgmtclass-req.xml", "save-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "save-mgmtclass")
 	err := c.SaveMgmtClass("mgmtclass::testmgmtclass", "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyMgmtClas(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-mgmtclass-req.xml", "copy-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-mgmtclass")
 	err := c.CopyMgmtClass("mgmtclass::testmgmtclass", "testmgmtclass2")
 	FailOnError(t, err)
 }
 
 func TestRenameMgmtClass(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-mgmtclass-req.xml", "rename-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-mgmtclass")
 	err := c.RenameMgmtClass("mgmtclass::testmgmtclass2", "mgmtclass1")
 	FailOnError(t, err)
 }
 
 func TestGetMgmtClassHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-mgmtclass-handle-req.xml", "get-mgmtclass-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-mgmtclass-handle")
 	res, err := c.GetMgmtClassHandle("testmgmtclass")
 	FailOnError(t, err)
 

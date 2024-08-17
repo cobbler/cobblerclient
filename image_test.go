@@ -22,7 +22,7 @@ import (
 )
 
 func TestGetImages(t *testing.T) {
-	c := createStubHTTPClient(t, "get-images-req.xml", "get-images-res.xml")
+	c := createStubHTTPClientSingle(t, "get-images")
 	images, err := c.GetImages()
 	FailOnError(t, err)
 
@@ -32,7 +32,7 @@ func TestGetImages(t *testing.T) {
 }
 
 func TestGetImage(t *testing.T) {
-	c := createStubHTTPClient(t, "get-image-req.xml", "get-image-res.xml")
+	c := createStubHTTPClientSingle(t, "get-image")
 	image, err := c.GetImage("testimage")
 	FailOnError(t, err)
 
@@ -42,19 +42,19 @@ func TestGetImage(t *testing.T) {
 }
 
 func TestDeleteImage(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-image-req.xml", "delete-image-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-image")
 	err := c.DeleteImage("test")
 	FailOnError(t, err)
 }
 
 func TestDeleteImageRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-image-req.xml", "delete-image-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-image")
 	err := c.DeleteImageRecursive("test", false)
 	FailOnError(t, err)
 }
 
 func TestListImageNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-image-req.xml", "get-item-names-image-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-image")
 	images, err := c.ListImageNames()
 	FailOnError(t, err)
 
@@ -64,7 +64,7 @@ func TestListImageNames(t *testing.T) {
 }
 
 func TestGetImagesSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-images-since-req.xml", "get-images-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-images-since")
 	images, err := c.GetImagesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
@@ -74,7 +74,7 @@ func TestGetImagesSince(t *testing.T) {
 }
 
 func TestFindImage(t *testing.T) {
-	c := createStubHTTPClient(t, "find-image-req.xml", "find-image-res.xml")
+	c := createStubHTTPClientSingle(t, "find-image")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testimage"
 	images, err := c.FindImage(criteria)
@@ -86,7 +86,7 @@ func TestFindImage(t *testing.T) {
 }
 
 func TestFindImageNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-image-names-req.xml", "find-image-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-image-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testimage"
 	images, err := c.FindImageNames(criteria)
@@ -98,25 +98,25 @@ func TestFindImageNames(t *testing.T) {
 }
 
 func TestSaveImage(t *testing.T) {
-	c := createStubHTTPClient(t, "save-image-req.xml", "save-image-res.xml")
+	c := createStubHTTPClientSingle(t, "save-image")
 	err := c.SaveImage("image::testimage", "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyImage(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-image-req.xml", "copy-image-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-image")
 	err := c.CopyImage("image::testimage", "testimage2")
 	FailOnError(t, err)
 }
 
 func TestRenameImage(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-image-req.xml", "rename-image-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-image")
 	err := c.RenameImage("image::testimage2", "testimage1")
 	FailOnError(t, err)
 }
 
 func TestGetImageHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-image-handle-req.xml", "get-image-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-image-handle")
 	res, err := c.GetImageHandle("testimage")
 	FailOnError(t, err)
 

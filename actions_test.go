@@ -6,14 +6,14 @@ import (
 )
 
 func TestSync(t *testing.T) {
-	c := createStubHTTPClient(t, "sync-req.xml", "sync-res.xml")
+	c := createStubHTTPClientSingle(t, "sync")
 
 	err := c.Sync()
 	FailOnError(t, err)
 }
 
 func TestBackgroundSync(t *testing.T) {
-	c := createStubHTTPClient(t, "background-sync-req.xml", "background-sync-res.xml")
+	c := createStubHTTPClientSingle(t, "background-sync")
 
 	res, err := c.BackgroundSync(BackgroundSyncOptions{Dhcp: false, Dns: false, Verbose: false})
 	FailOnError(t, err)
@@ -23,7 +23,7 @@ func TestBackgroundSync(t *testing.T) {
 }
 
 func TestBackgroundSyncSystems(t *testing.T) {
-	c := createStubHTTPClient(t, "background-sync-systems-req.xml", "background-sync-systems-res.xml")
+	c := createStubHTTPClientSingle(t, "background-sync-systems")
 
 	res, err := c.BackgroundSyncSystems(BackgroundSyncSystemsOptions{Systems: []string{"", ""}, Verbose: false})
 	FailOnError(t, err)
@@ -33,7 +33,7 @@ func TestBackgroundSyncSystems(t *testing.T) {
 }
 
 func TestCheck(t *testing.T) {
-	c := createStubHTTPClient(t, "check-req.xml", "check-res.xml")
+	c := createStubHTTPClientSingle(t, "check")
 	expected := []string{"reposync not installed, install yum-utils"}
 
 	result, err := c.Check()
@@ -46,7 +46,7 @@ func TestCheck(t *testing.T) {
 }
 
 func TestBackgroundBuildiso(t *testing.T) {
-	c := createStubHTTPClient(t, "background-buildiso-req.xml", "background-buildiso-res.xml")
+	c := createStubHTTPClientSingle(t, "background-buildiso")
 
 	res, err := c.BackgroundBuildiso(BuildisoOptions{
 		Iso:           "",
@@ -67,7 +67,7 @@ func TestBackgroundBuildiso(t *testing.T) {
 }
 
 func TestBackgroundHardlink(t *testing.T) {
-	c := createStubHTTPClient(t, "background-hardlink-req.xml", "background-hardlink-res.xml")
+	c := createStubHTTPClientSingle(t, "background-hardlink")
 
 	res, err := c.BackgroundHardlink()
 	FailOnError(t, err)
@@ -77,10 +77,9 @@ func TestBackgroundHardlink(t *testing.T) {
 }
 
 func TestValidateAutoinstallFiles(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"background-validate-autoinstall-files-req.xml",
-		"background-validate-autoinstall-files-res.xml",
+		"background-validate-autoinstall-files",
 	)
 
 	res, err := c.BackgroundValidateAutoinstallFiles()
@@ -91,7 +90,7 @@ func TestValidateAutoinstallFiles(t *testing.T) {
 }
 
 func TestBackgroundReplicate(t *testing.T) {
-	c := createStubHTTPClient(t, "background-replicate-req.xml", "background-replicate-res.xml")
+	c := createStubHTTPClientSingle(t, "background-replicate")
 
 	res, err := c.BackgroundReplicate(ReplicateOptions{
 		Master:            "",
@@ -116,7 +115,7 @@ func TestBackgroundReplicate(t *testing.T) {
 }
 
 func TestBackgroundAclSetup(t *testing.T) {
-	c := createStubHTTPClient(t, "background-aclsetup-req.xml", "background-aclsetup-res.xml")
+	c := createStubHTTPClientSingle(t, "background-aclsetup")
 
 	res, err := c.BackgroundAclSetup(AclSetupOptions{
 		AddUser:     "testing",
@@ -131,7 +130,7 @@ func TestBackgroundAclSetup(t *testing.T) {
 }
 
 func TestBackgroundImport(t *testing.T) {
-	c := createStubHTTPClient(t, "background-import-req.xml", "background-import-res.xml")
+	c := createStubHTTPClientSingle(t, "background-import")
 
 	res, err := c.BackgroundImport(BackgroundImportOptions{
 		Path:            "",
@@ -150,7 +149,7 @@ func TestBackgroundImport(t *testing.T) {
 }
 
 func TestBackgroundReposync(t *testing.T) {
-	c := createStubHTTPClient(t, "background-reposync-req.xml", "background-reposync-res.xml")
+	c := createStubHTTPClientSingle(t, "background-reposync")
 
 	res, err := c.BackgroundReposync(BackgroundReposyncOptions{
 		Repos:  nil,
@@ -165,7 +164,7 @@ func TestBackgroundReposync(t *testing.T) {
 }
 
 func TestBackgroundMkLoaders(t *testing.T) {
-	c := createStubHTTPClient(t, "background-mkloaders-req.xml", "background-mkloaders-res.xml")
+	c := createStubHTTPClientSingle(t, "background-mkloaders")
 
 	res, err := c.BackgroundMkLoaders()
 	FailOnError(t, err)
@@ -175,7 +174,7 @@ func TestBackgroundMkLoaders(t *testing.T) {
 }
 
 func TestBackgroundPowerSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "background-power-system-req.xml", "background-power-system-res.xml")
+	c := createStubHTTPClientSingle(t, "background-power-system")
 
 	result, err := c.BackgroundPowerSystem(BackgroundPowerSystemOptions{
 		Systems: []string{"testsys1"},
@@ -188,7 +187,7 @@ func TestBackgroundPowerSystem(t *testing.T) {
 }
 
 func TestPowerSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "power-system-req.xml", "power-system-res.xml")
+	c := createStubHTTPClientSingle(t, "power-system")
 
 	result, err := c.PowerSystem("system::testsys1", "status")
 	FailOnError(t, err)

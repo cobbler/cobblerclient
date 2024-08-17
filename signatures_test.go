@@ -5,7 +5,7 @@ import (
 )
 
 func TestGetSignatures(t *testing.T) {
-	c := createStubHTTPClient(t, "get-signatures-req.xml", "get-signatures-res.xml")
+	c := createStubHTTPClientSingle(t, "get-signatures")
 
 	result, err := c.GetSignatures()
 	FailOnError(t, err)
@@ -15,7 +15,7 @@ func TestGetSignatures(t *testing.T) {
 }
 
 func TestGetValidBreeds(t *testing.T) {
-	c := createStubHTTPClient(t, "get-valid-breeds-req.xml", "get-valid-breeds-res.xml")
+	c := createStubHTTPClientSingle(t, "get-valid-breeds")
 
 	res, err := c.GetValidBreeds()
 	FailOnError(t, err)
@@ -25,10 +25,9 @@ func TestGetValidBreeds(t *testing.T) {
 }
 
 func TestGetValidOsVersionsForBreed(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"get-valid-os-verions-for-breed-req.xml",
-		"get-valid-os-verions-for-breed-res.xml",
+		"get-valid-os-verions-for-breed",
 	)
 
 	res, err := c.GetValidOsVersionsForBreed("redhat")
@@ -39,7 +38,7 @@ func TestGetValidOsVersionsForBreed(t *testing.T) {
 }
 
 func TestGetValidOsVersions(t *testing.T) {
-	c := createStubHTTPClient(t, "get-valid-os-versions-req.xml", "get-valid-os-versions-res.xml")
+	c := createStubHTTPClientSingle(t, "get-valid-os-versions")
 
 	res, err := c.GetValidOsVersions()
 	FailOnError(t, err)
@@ -49,7 +48,7 @@ func TestGetValidOsVersions(t *testing.T) {
 }
 
 func TestGetValidArchs(t *testing.T) {
-	c := createStubHTTPClient(t, "get-valid-archs-req.xml", "get-valid-archs-res.xml")
+	c := createStubHTTPClientSingle(t, "get-valid-archs")
 
 	res, err := c.GetValidArchs()
 	FailOnError(t, err)
@@ -59,10 +58,9 @@ func TestGetValidArchs(t *testing.T) {
 }
 
 func TestBackgroundSignatureUpdate(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"background-signature-update-req.xml",
-		"background-signature-update-res.xml",
+		"background-signature-update",
 	)
 
 	res, err := c.BackgroundSignatureUpdate()

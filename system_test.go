@@ -22,7 +22,7 @@ import (
 )
 
 func TestGetSystems(t *testing.T) {
-	c := createStubHTTPClient(t, "get-systems-req.xml", "get-systems-res.xml")
+	c := createStubHTTPClientSingle(t, "get-systems")
 	systems, err := c.GetSystems()
 	FailOnError(t, err)
 
@@ -32,7 +32,7 @@ func TestGetSystems(t *testing.T) {
 }
 
 func TestGetSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "get-system-req.xml", "get-system-res.xml")
+	c := createStubHTTPClientSingle(t, "get-system")
 	system, err := c.GetSystem("test")
 	FailOnError(t, err)
 
@@ -42,7 +42,7 @@ func TestGetSystem(t *testing.T) {
 }
 
 func TestNewSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "new-system-req.xml", "new-system-res.xml")
+	c := createStubHTTPClientSingle(t, "new-system")
 	result, err := c.Call("new_system", c.Token)
 	FailOnError(t, err)
 	newID := result.(string)
@@ -51,7 +51,7 @@ func TestNewSystem(t *testing.T) {
 		t.Errorf("Wrong ID returned.")
 	}
 
-	c = createStubHTTPClient(t, "set-system-hostname-req.xml", "set-system-hostname-res.xml")
+	c = createStubHTTPClientSingle(t, "set-system-hostname")
 	result, err = c.Call("modify_system", newID, "hostname", "blahhost", c.Token)
 	FailOnError(t, err)
 
@@ -59,7 +59,7 @@ func TestNewSystem(t *testing.T) {
 		t.Errorf("Setting hostname failed.")
 	}
 
-	c = createStubHTTPClient(t, "set-system-name-req.xml", "set-system-name-res.xml")
+	c = createStubHTTPClientSingle(t, "set-system-name")
 	result, err = c.Call("modify_system", newID, "name", "mytestsystem", c.Token)
 	FailOnError(t, err)
 
@@ -67,7 +67,7 @@ func TestNewSystem(t *testing.T) {
 		t.Errorf("Setting name failed.")
 	}
 
-	c = createStubHTTPClient(t, "set-system-nameservers-req.xml", "set-system-nameservers-res.xml")
+	c = createStubHTTPClientSingle(t, "set-system-nameservers")
 	result, err = c.Call("modify_system", newID, "name_servers", "8.8.8.8 8.8.4.4", c.Token)
 	FailOnError(t, err)
 
@@ -75,7 +75,7 @@ func TestNewSystem(t *testing.T) {
 		t.Errorf("Setting name servers failed.")
 	}
 
-	c = createStubHTTPClient(t, "set-system-profile-req.xml", "set-system-profile-res.xml")
+	c = createStubHTTPClientSingle(t, "set-system-profile")
 	result, err = c.Call("modify_system", newID, "profile", "centos7-x86_64", c.Token)
 	FailOnError(t, err)
 
@@ -92,7 +92,7 @@ func TestNewSystem(t *testing.T) {
 		"if-gateway-eth0":  "4.3.2.1",
 	}
 
-	c = createStubHTTPClient(t, "set-system-network-req.xml", "set-system-network-res.xml")
+	c = createStubHTTPClientSingle(t, "set-system-network-req.xml", "set-system-network-res.xml")
 	result, err = c.Call("modify_system", newID, "modify_interface", nicInfo, c.Token)
 	FailOnError(t, err)
 
@@ -101,25 +101,25 @@ func TestNewSystem(t *testing.T) {
 	}
 	*/
 
-	c = createStubHTTPClient(t, "save-system-req.xml", "save-system-res.xml")
+	c = createStubHTTPClientSingle(t, "save-system")
 	err = c.SaveSystem(newID, "bypass")
 	FailOnError(t, err)
 }
 
 func TestDeleteSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-system-req.xml", "delete-system-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-system")
 	err := c.DeleteSystem("test")
 	FailOnError(t, err)
 }
 
 func TestDeleteSystemRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-system-req.xml", "delete-system-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-system")
 	err := c.DeleteSystemRecursive("test", false)
 	FailOnError(t, err)
 }
 
 func TestListSystemNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-system-req.xml", "get-item-names-system-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-system")
 	sytems, err := c.ListSystemNames()
 	FailOnError(t, err)
 
@@ -129,7 +129,7 @@ func TestListSystemNames(t *testing.T) {
 }
 
 func TestGetSystemsSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-system-since-req.xml", "get-system-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-system-since")
 	systems, err := c.GetSystemsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
@@ -139,7 +139,7 @@ func TestGetSystemsSince(t *testing.T) {
 }
 
 func TestFindSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "find-system-req.xml", "find-system-res.xml")
+	c := createStubHTTPClientSingle(t, "find-system")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	_, err := c.FindSystem(criteria)
@@ -147,7 +147,7 @@ func TestFindSystem(t *testing.T) {
 }
 
 func TestFindSystemNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-system-names-req.xml", "find-system-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-system-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	_, err := c.FindSystem(criteria)
@@ -155,25 +155,25 @@ func TestFindSystemNames(t *testing.T) {
 }
 
 func TestSaveSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "save-system-req.xml", "save-system-res.xml")
+	c := createStubHTTPClientSingle(t, "save-system")
 	err := c.SaveSystem("___NEW___system::abc123==", "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopySystem(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-system-req.xml", "copy-system-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-system")
 	err := c.CopySystem("system::testsys", "testsys2")
 	FailOnError(t, err)
 }
 
 func TestRenameSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-system-req.xml", "rename-system-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-system")
 	err := c.RenameSystem("system::testsys", "testsys1")
 	FailOnError(t, err)
 }
 
 func TestGetSystemHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-system-handle-req.xml", "get-system-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-system-handle")
 	res, err := c.GetSystemHandle("testsys")
 	FailOnError(t, err)
 

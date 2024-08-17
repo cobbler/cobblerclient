@@ -29,23 +29,24 @@ var config = ClientConfig{
 }
 
 // createStubHTTPClient ...
-func createStubHTTPClient(t *testing.T, reqFixture string, resFixture string) Client {
+func createStubHTTPClient(t *testing.T, fixtures []string) Client {
 	hc := NewStubHTTPClient(t)
 
-	if reqFixture != "" {
-		rawRequest, err := Fixture(reqFixture)
-		FailOnError(t, err)
+	for _, fixture := range fixtures {
+		if fixture != "" {
+			rawRequest, err := Fixture(fixture + "-req.xml")
+			FailOnError(t, err)
+			response, err := Fixture(fixture + "-res.xml")
+			FailOnError(t, err)
 
-		// flatten the request so it matches the kolo generated xml
-		r := regexp.MustCompile(`\s+<`)
-		expectedReq := []byte(r.ReplaceAllString(string(rawRequest), "<"))
-		hc.Expected = expectedReq
-	}
-
-	if resFixture != "" {
-		response, err := Fixture(resFixture)
-		FailOnError(t, err)
-		hc.Response = response
+			// flatten the request so it matches the kolo generated xml
+			r := regexp.MustCompile(`\s+<`)
+			expectedReq := []byte(r.ReplaceAllString(string(rawRequest), "<"))
+			hc.answers = append(hc.answers, APIResponsePair{
+				Expected: expectedReq,
+				Response: response,
+			})
+		}
 	}
 
 	c := NewClient(hc, config)
@@ -53,8 +54,13 @@ func createStubHTTPClient(t *testing.T, reqFixture string, resFixture string) Cl
 	return c
 }
 
+// createStubHTTPClientSingle ...
+func createStubHTTPClientSingle(t *testing.T, fixture string) Client {
+	return createStubHTTPClient(t, []string{fixture})
+}
+
 func TestGenerateAutoinstall(t *testing.T) {
-	c := createStubHTTPClient(t, "generate-autoinstall-req.xml", "generate-autoinstall-res.xml")
+	c := createStubHTTPClientSingle(t, "generate-autoinstall")
 
 	res, err := c.GenerateAutoinstall("", "")
 	FailOnError(t, err)
@@ -64,7 +70,7 @@ func TestGenerateAutoinstall(t *testing.T) {
 }
 
 func TestLastModifiedTime(t *testing.T) {
-	c := createStubHTTPClient(t, "last-modified-time-req.xml", "last-modified-time-res.xml")
+	c := createStubHTTPClientSingle(t, "last-modified-time")
 
 	res, err := c.LastModifiedTime()
 	FailOnError(t, err)
@@ -74,7 +80,7 @@ func TestLastModifiedTime(t *testing.T) {
 }
 
 func TestPing(t *testing.T) {
-	c := createStubHTTPClient(t, "ping-req.xml", "ping-res.xml")
+	c := createStubHTTPClientSingle(t, "ping")
 
 	res, err := c.Ping()
 	FailOnError(t, err)
@@ -84,17 +90,16 @@ func TestPing(t *testing.T) {
 }
 
 func TestAutoAddRepos(t *testing.T) {
-	c := createStubHTTPClient(t, "auto-add-repos-req.xml", "auto-add-repos-res.xml")
+	c := createStubHTTPClientSingle(t, "auto-add-repos")
 
 	err := c.AutoAddRepos()
 	FailOnError(t, err)
 }
 
 func TestGetAutoinstallTemplates(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"get-autoinstall-templates-req.xml",
-		"get-autoinstall-templates-res.xml",
+		"get-autoinstall-templates",
 	)
 
 	err := c.GetAutoinstallTemplates()
@@ -102,10 +107,9 @@ func TestGetAutoinstallTemplates(t *testing.T) {
 }
 
 func TestGetAutoinstallSnippets(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"get-autoinstall-snippets-req.xml",
-		"get-autoinstall-snippets-res.xml",
+		"get-autoinstall-snippets",
 	)
 
 	err := c.GetAutoinstallSnippets()
@@ -113,35 +117,35 @@ func TestGetAutoinstallSnippets(t *testing.T) {
 }
 
 func TestIsAutoinstallInUse(t *testing.T) {
-	c := createStubHTTPClient(t, "is-autoinstall-in-use-req.xml", "is-autoinstall-in-use-res.xml")
+	c := createStubHTTPClientSingle(t, "is-autoinstall-in-use")
 
 	err := c.IsAutoinstallInUse("")
 	FailOnError(t, err)
 }
 
 func TestGenerateIPxe(t *testing.T) {
-	c := createStubHTTPClient(t, "generate-ipxe-req.xml", "generate-ipxe-res.xml")
+	c := createStubHTTPClientSingle(t, "generate-ipxe")
 
 	err := c.GenerateIPxe("", "", "")
 	FailOnError(t, err)
 }
 
 func TestGenerateBootCfg(t *testing.T) {
-	c := createStubHTTPClient(t, "generate-boot-cfg-req.xml", "generate-boot-cfg-res.xml")
+	c := createStubHTTPClientSingle(t, "generate-boot-cfg")
 
 	err := c.GenerateBootCfg("testprof", "")
 	FailOnError(t, err)
 }
 
 func TestGenerateScript(t *testing.T) {
-	c := createStubHTTPClient(t, "generate-script-req.xml", "generate-script-res.xml")
+	c := createStubHTTPClientSingle(t, "generate-script")
 
 	err := c.GenerateScript("testprof", "", "preseed_early_default")
 	FailOnError(t, err)
 }
 
 func TestGetBlendedData(t *testing.T) {
-	c := createStubHTTPClient(t, "get-blended-data-req.xml", "get-blended-data-res.xml")
+	c := createStubHTTPClientSingle(t, "get-blended-data")
 
 	result, err := c.GetBlendedData("testprof", "")
 	FailOnError(t, err)
@@ -154,7 +158,7 @@ func TestRegisterNewSystem(t *testing.T) {
 	// Skip for now as the XML appears to have a different order.
 	t.Skip("XML has different order. Needs to be fixed at a later point!")
 
-	c := createStubHTTPClient(t, "register-new-system-req.xml", "register-new-system-res.xml")
+	c := createStubHTTPClientSingle(t, "register-new-system")
 
 	err := c.RegisterNewSystem(
 		map[string]interface{}{
@@ -171,14 +175,14 @@ func TestRegisterNewSystem(t *testing.T) {
 }
 
 func TestRunInstallTriggers(t *testing.T) {
-	c := createStubHTTPClient(t, "run-install-triggers-req.xml", "run-install-triggers-res.xml")
+	c := createStubHTTPClientSingle(t, "run-install-triggers")
 
 	err := c.RunInstallTriggers("", "", "", "")
 	FailOnError(t, err)
 }
 
 func TestVersion(t *testing.T) {
-	c := createStubHTTPClient(t, "version-req.xml", "version-res.xml")
+	c := createStubHTTPClientSingle(t, "version")
 
 	res, err := c.Version()
 	FailOnError(t, err)
@@ -188,7 +192,7 @@ func TestVersion(t *testing.T) {
 }
 
 func TestExtendedVersion(t *testing.T) {
-	c := createStubHTTPClient(t, "extended-version-req.xml", "extended-version-res.xml")
+	c := createStubHTTPClientSingle(t, "extended-version")
 	expectedResult := ExtendedVersion{
 		Gitdate:      "Mon Jun 13 16:13:33 2022 +0200",
 		Gitstamp:     "0e20f01b",
@@ -205,10 +209,9 @@ func TestExtendedVersion(t *testing.T) {
 }
 
 func TestGetReposCompatibleWithProfile(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"get-repos-compatible-with-profile-req.xml",
-		"get-repos-compatible-with-profile-res.xml",
+		"get-repos-compatible-with-profile",
 	)
 
 	err := c.GetReposCompatibleWithProfile("testprof")
@@ -216,10 +219,9 @@ func TestGetReposCompatibleWithProfile(t *testing.T) {
 }
 
 func TestFindSystemByDnsName(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"find-system-by-dns-name-req.xml",
-		"find-system-by-dns-name-res.xml",
+		"find-system-by-dns-name",
 	)
 
 	err := c.FindSystemByDnsName("testname")
@@ -227,35 +229,35 @@ func TestFindSystemByDnsName(t *testing.T) {
 }
 
 func TestGetRandomMac(t *testing.T) {
-	c := createStubHTTPClient(t, "get-random-mac-req.xml", "get-random-mac-res.xml")
+	c := createStubHTTPClientSingle(t, "get-random-mac")
 
 	err := c.GetRandomMac()
 	FailOnError(t, err)
 }
 
 func TestXmlRpcHacks(t *testing.T) {
-	c := createStubHTTPClient(t, "xmlrpc-hacks-req.xml", "xmlrpc-hacks-res.xml")
+	c := createStubHTTPClientSingle(t, "xmlrpc-hacks")
 
 	err := c.XmlRpcHacks(map[string]interface{}{"test": true})
 	FailOnError(t, err)
 }
 
 func TestGetStatus(t *testing.T) {
-	c := createStubHTTPClient(t, "get-status-req.xml", "get-status-res.xml")
+	c := createStubHTTPClientSingle(t, "get-status")
 
 	err := c.GetStatus("normal")
 	FailOnError(t, err)
 }
 
 func TestSyncDhcp(t *testing.T) {
-	c := createStubHTTPClient(t, "sync-dhcp-req.xml", "sync-dhcp-res.xml")
+	c := createStubHTTPClientSingle(t, "sync-dhcp")
 
 	err := c.SyncDhcp()
 	FailOnError(t, err)
 }
 
 func TestGetConfigData(t *testing.T) {
-	c := createStubHTTPClient(t, "get-config-data-req.xml", "get-config-data-res.xml")
+	c := createStubHTTPClientSingle(t, "get-config-data")
 
 	err := c.GetConfigData("testsys")
 	FailOnError(t, err)

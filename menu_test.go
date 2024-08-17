@@ -22,7 +22,7 @@ import (
 )
 
 func TestGetMenus(t *testing.T) {
-	c := createStubHTTPClient(t, "get-menus-req.xml", "get-menus-res.xml")
+	c := createStubHTTPClientSingle(t, "get-menus")
 	menus, err := c.GetMenus()
 	FailOnError(t, err)
 
@@ -32,7 +32,7 @@ func TestGetMenus(t *testing.T) {
 }
 
 func TestGetMenu(t *testing.T) {
-	c := createStubHTTPClient(t, "get-menu-req.xml", "get-menu-res.xml")
+	c := createStubHTTPClientSingle(t, "get-menu")
 	menu, err := c.GetMenu("testmenu")
 	FailOnError(t, err)
 
@@ -42,19 +42,19 @@ func TestGetMenu(t *testing.T) {
 }
 
 func TestDeleteMenu(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-menu-req.xml", "delete-menu-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-menu")
 	err := c.DeleteMenu("test")
 	FailOnError(t, err)
 }
 
 func TestDeleteMenuRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-menu-req.xml", "delete-menu-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-menu")
 	err := c.DeleteMenuRecursive("test", false)
 	FailOnError(t, err)
 }
 
 func TestListMenuNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-menu-req.xml", "get-item-names-menu-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-menu")
 	menus, err := c.ListMenuNames()
 	FailOnError(t, err)
 
@@ -64,7 +64,7 @@ func TestListMenuNames(t *testing.T) {
 }
 
 func TestGetMenusSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-menus-since-req.xml", "get-menus-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-menus-since")
 	menus, err := c.GetMenusSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
@@ -74,7 +74,7 @@ func TestGetMenusSince(t *testing.T) {
 }
 
 func TestFindMenu(t *testing.T) {
-	c := createStubHTTPClient(t, "find-menu-req.xml", "find-menu-res.xml")
+	c := createStubHTTPClientSingle(t, "find-menu")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testmenu"
 	menus, err := c.FindMenu(criteria)
@@ -86,7 +86,7 @@ func TestFindMenu(t *testing.T) {
 }
 
 func TestFindMenuNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-menu-names-req.xml", "find-menu-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-menu-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testmenu"
 	menus, err := c.FindMenuNames(criteria)
@@ -98,25 +98,25 @@ func TestFindMenuNames(t *testing.T) {
 }
 
 func TestSaveMenu(t *testing.T) {
-	c := createStubHTTPClient(t, "save-menu-req.xml", "save-menu-res.xml")
+	c := createStubHTTPClientSingle(t, "save-menu")
 	err := c.SaveMenu("menu::testmenu", "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyMenu(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-menu-req.xml", "copy-menu-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-menu")
 	err := c.CopyMenu("menu::testmenu", "testmenu2")
 	FailOnError(t, err)
 }
 
 func TestRenameMenu(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-menu-req.xml", "rename-menu-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-menu")
 	err := c.RenameMenu("menu::testmenu2", "testmenu1")
 	FailOnError(t, err)
 }
 
 func TestGetMenuHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-menu-handle-req.xml", "get-menu-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-menu-handle")
 	res, err := c.GetMenuHandle("testmenu")
 	FailOnError(t, err)
 

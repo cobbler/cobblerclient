@@ -22,7 +22,7 @@ import (
 )
 
 func TestGetPackages(t *testing.T) {
-	c := createStubHTTPClient(t, "get-packages-req.xml", "get-packages-res.xml")
+	c := createStubHTTPClientSingle(t, "get-packages")
 	linuxpackages, err := c.GetPackages()
 	FailOnError(t, err)
 
@@ -32,7 +32,7 @@ func TestGetPackages(t *testing.T) {
 }
 
 func TestGetPackage(t *testing.T) {
-	c := createStubHTTPClient(t, "get-package-req.xml", "get-package-res.xml")
+	c := createStubHTTPClientSingle(t, "get-package")
 	distro, err := c.GetPackage("testpackage")
 	FailOnError(t, err)
 
@@ -42,19 +42,19 @@ func TestGetPackage(t *testing.T) {
 }
 
 func TestDeletePackage(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-package-req.xml", "delete-package-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-package")
 	err := c.DeletePackage("test")
 	FailOnError(t, err)
 }
 
 func TestDeletePackageRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-package-req.xml", "delete-package-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-package")
 	err := c.DeletePackageRecursive("test", false)
 	FailOnError(t, err)
 }
 
 func TestListPackageNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-package-req.xml", "get-item-names-package-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-package")
 	linuxpackages, err := c.ListPackageNames()
 	FailOnError(t, err)
 
@@ -64,7 +64,7 @@ func TestListPackageNames(t *testing.T) {
 }
 
 func TestGetPackagesSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-packages-since-req.xml", "get-packages-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-packages-since")
 	linuxpackages, err := c.GetPackagesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
@@ -74,7 +74,7 @@ func TestGetPackagesSince(t *testing.T) {
 }
 
 func TestFindPackage(t *testing.T) {
-	c := createStubHTTPClient(t, "find-package-req.xml", "find-package-res.xml")
+	c := createStubHTTPClientSingle(t, "find-package")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testpackage"
 	linuxpackages, err := c.FindPackage(criteria)
@@ -86,7 +86,7 @@ func TestFindPackage(t *testing.T) {
 }
 
 func TestFindPackageNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-package-names-req.xml", "find-package-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-package-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testpackage"
 	linuxpackages, err := c.FindPackageNames(criteria)
@@ -98,25 +98,25 @@ func TestFindPackageNames(t *testing.T) {
 }
 
 func TestSavePackage(t *testing.T) {
-	c := createStubHTTPClient(t, "save-package-req.xml", "save-package-res.xml")
+	c := createStubHTTPClientSingle(t, "save-package")
 	err := c.SavePackage("package::testpackage", "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyPackage(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-package-req.xml", "copy-package-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-package")
 	err := c.CopyPackage("package::testpackage", "testpackage2")
 	FailOnError(t, err)
 }
 
 func TestRenamePackage(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-package-req.xml", "rename-package-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-package")
 	err := c.RenamePackage("package::testpackage2", "testpackage1")
 	FailOnError(t, err)
 }
 
 func TestGetPackageHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-package-handle-req.xml", "get-package-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-package-handle")
 	res, err := c.GetPackageHandle("testpackage")
 	FailOnError(t, err)
 

@@ -22,7 +22,7 @@ import (
 )
 
 func TestGetRepos(t *testing.T) {
-	c := createStubHTTPClient(t, "get-repos-req.xml", "get-repos-res.xml")
+	c := createStubHTTPClientSingle(t, "get-repos")
 	repos, err := c.GetRepos()
 	FailOnError(t, err)
 	if len(repos) != 1 {
@@ -31,7 +31,7 @@ func TestGetRepos(t *testing.T) {
 }
 
 func TestGetRepo(t *testing.T) {
-	c := createStubHTTPClient(t, "get-repo-req.xml", "get-repo-res.xml")
+	c := createStubHTTPClientSingle(t, "get-repo")
 	repo, err := c.GetRepo("rhel-7-x86_64")
 	FailOnError(t, err)
 	if repo.Name != "rhel-7-x86_64" {
@@ -40,19 +40,19 @@ func TestGetRepo(t *testing.T) {
 }
 
 func TestDeleteRepo(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-repo-req.xml", "delete-repo-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-repo")
 	err := c.DeleteRepo("test")
 	FailOnError(t, err)
 }
 
 func TestDeleteRepoRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-repo-req.xml", "delete-repo-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-repo")
 	err := c.DeleteRepoRecursive("test", false)
 	FailOnError(t, err)
 }
 
 func TestListRepoNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-repo-req.xml", "get-item-names-repo-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-repo")
 	repos, err := c.ListRepoNames()
 	FailOnError(t, err)
 
@@ -62,7 +62,7 @@ func TestListRepoNames(t *testing.T) {
 }
 
 func TestGetReposSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-repo-since-req.xml", "get-repo-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-repo-since")
 	repos, err := c.GetReposSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
@@ -72,7 +72,7 @@ func TestGetReposSince(t *testing.T) {
 }
 
 func TestFindRepo(t *testing.T) {
-	c := createStubHTTPClient(t, "find-repo-req.xml", "find-repo-res.xml")
+	c := createStubHTTPClientSingle(t, "find-repo")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	repos, err := c.FindRepo(criteria)
@@ -84,7 +84,7 @@ func TestFindRepo(t *testing.T) {
 }
 
 func TestFindRepoNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-repo-names-req.xml", "find-repo-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-repo-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	repos, err := c.FindRepoNames(criteria)
@@ -96,25 +96,25 @@ func TestFindRepoNames(t *testing.T) {
 }
 
 func TestSaveRepo(t *testing.T) {
-	c := createStubHTTPClient(t, "save-repo-req.xml", "save-repo-res.xml")
+	c := createStubHTTPClientSingle(t, "save-repo")
 	err := c.SaveRepo("repo::testrepo", "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyRepo(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-repo-req.xml", "copy-repo-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-repo")
 	err := c.CopyRepo("repo::testrepo", "testrepo2")
 	FailOnError(t, err)
 }
 
 func TestRenameRepo(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-repo-req.xml", "rename-repo-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-repo")
 	err := c.RenameRepo("repo::testrepo2", "testrepo1")
 	FailOnError(t, err)
 }
 
 func TestGetRepoHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-repo-handle-req.xml", "get-repo-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-repo-handle")
 	res, err := c.GetRepoHandle("testrepo")
 	FailOnError(t, err)
 

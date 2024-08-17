@@ -6,7 +6,7 @@ import (
 )
 
 func TestFindItemsPaged(t *testing.T) {
-	c := createStubHTTPClient(t, "find-items-paged-req.xml", "find-items-paged-res.xml")
+	c := createStubHTTPClientSingle(t, "find-items-paged")
 	var items []interface{}
 	var nilMap map[string]interface{}
 	item1 := map[string]interface{}{
@@ -137,7 +137,7 @@ func TestFindItemsPaged(t *testing.T) {
 }
 
 func TestGetItem(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-req.xml", "get-item-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item")
 	res, err := c.GetItem("system", "test", false, false)
 	FailOnError(t, err)
 	if res["profile"] != "Ubuntu-20.04-x86_64" {
@@ -146,7 +146,7 @@ func TestGetItem(t *testing.T) {
 }
 
 func TestFindItems(t *testing.T) {
-	c := createStubHTTPClient(t, "find-items-req.xml", "find-items-res.xml")
+	c := createStubHTTPClientSingle(t, "find-items")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test*"
 	res, err := c.FindItems("profile", criteria, "name", false)
@@ -157,7 +157,7 @@ func TestFindItems(t *testing.T) {
 }
 
 func TestFindItemNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-item-names-req.xml", "find-item-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-item-names")
 	expectedResult := []string{"testprof"}
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test*"

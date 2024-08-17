@@ -22,7 +22,7 @@ import (
 )
 
 func TestGetDistros(t *testing.T) {
-	c := createStubHTTPClient(t, "get-distros-req.xml", "get-distros-res.xml")
+	c := createStubHTTPClientSingle(t, "get-distros")
 	distros, err := c.GetDistros()
 	FailOnError(t, err)
 
@@ -32,7 +32,7 @@ func TestGetDistros(t *testing.T) {
 }
 
 func TestGetDistro(t *testing.T) {
-	c := createStubHTTPClient(t, "get-distro-req.xml", "get-distro-res.xml")
+	c := createStubHTTPClientSingle(t, "get-distro")
 	distro, err := c.GetDistro("Ubuntu-20.04-x86_64")
 	FailOnError(t, err)
 
@@ -42,19 +42,19 @@ func TestGetDistro(t *testing.T) {
 }
 
 func TestDeleteDistro(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-distro-req.xml", "delete-distro-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-distro")
 	err := c.DeleteDistro("test")
 	FailOnError(t, err)
 }
 
 func TestDeleteDistroRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-distro-req.xml", "delete-distro-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-distro")
 	err := c.DeleteDistroRecursive("test", false)
 	FailOnError(t, err)
 }
 
 func TestListDistroNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-distro-req.xml", "get-item-names-distro-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-distro")
 	distros, err := c.ListDistroNames()
 	FailOnError(t, err)
 
@@ -64,7 +64,7 @@ func TestListDistroNames(t *testing.T) {
 }
 
 func TestGetDistrosSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-distros-since-req.xml", "get-distros-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-distros-since")
 	distros, err := c.GetDistrosSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
@@ -74,7 +74,7 @@ func TestGetDistrosSince(t *testing.T) {
 }
 
 func TestFindDistro(t *testing.T) {
-	c := createStubHTTPClient(t, "find-distro-req.xml", "find-distro-res.xml")
+	c := createStubHTTPClientSingle(t, "find-distro")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	distros, err := c.FindDistro(criteria)
@@ -86,7 +86,7 @@ func TestFindDistro(t *testing.T) {
 }
 
 func TestFindDistroNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-distro-names-req.xml", "find-distro-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-distro-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	distros, err := c.FindDistroNames(criteria)
@@ -98,25 +98,25 @@ func TestFindDistroNames(t *testing.T) {
 }
 
 func TestSaveDistro(t *testing.T) {
-	c := createStubHTTPClient(t, "save-distro-req.xml", "save-distro-res.xml")
+	c := createStubHTTPClientSingle(t, "save-distro")
 	err := c.SaveDistro("distro::test", "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyDistro(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-distro-req.xml", "copy-distro-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-distro")
 	err := c.CopyDistro("distro::test", "test2")
 	FailOnError(t, err)
 }
 
 func TestRenameDistro(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-distro-req.xml", "rename-distro-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-distro")
 	err := c.RenameDistro("distro::test2", "test1")
 	FailOnError(t, err)
 }
 
 func TestGetDistroHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-distro-handle-req.xml", "get-distro-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-distro-handle")
 	res, err := c.GetDistroHandle("test")
 	FailOnError(t, err)
 
