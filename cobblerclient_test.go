@@ -20,8 +20,6 @@ import (
 	"reflect"
 	"regexp"
 	"testing"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 var config = ClientConfig{
@@ -30,8 +28,9 @@ var config = ClientConfig{
 	Password: "cobbler",
 }
 
+// createStubHTTPClient ...
 func createStubHTTPClient(t *testing.T, reqFixture string, resFixture string) Client {
-	hc := utils.NewStubHTTPClient(t)
+	hc := NewStubHTTPClient(t)
 
 	if reqFixture != "" {
 		rawRequest, err := Fixture(reqFixture)
