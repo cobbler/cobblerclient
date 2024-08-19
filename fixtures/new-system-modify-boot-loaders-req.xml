@@ -9,7 +9,7 @@
         </param>
         <param>
             <value>
-                <string>name_servers</string>
+                <string>boot_loaders</string>
             </value>
         </param>
         <param>
@@ -17,10 +17,7 @@
                 <array>
                     <data>
                         <value>
-                            <string>8.8.8.8</string>
-                        </value>
-                        <value>
-                            <string>8.8.4.4</string>
+                            <string>&lt;&lt;inherit&gt;&gt;</string>
                         </value>
                     </data>
                 </array>

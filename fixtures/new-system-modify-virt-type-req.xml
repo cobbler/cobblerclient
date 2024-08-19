@@ -9,21 +9,12 @@
         </param>
         <param>
             <value>
-                <string>name_servers</string>
+                <string>virt_type</string>
             </value>
         </param>
         <param>
             <value>
-                <array>
-                    <data>
-                        <value>
-                            <string>8.8.8.8</string>
-                        </value>
-                        <value>
-                            <string>8.8.4.4</string>
-                        </value>
-                    </data>
-                </array>
+                <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>
         </param>
         <param>

@@ -9,23 +9,10 @@
         </param>
         <param>
             <value>
-                <string>name_servers</string>
+                <string>kernel_options</string>
             </value>
         </param>
-        <param>
-            <value>
-                <array>
-                    <data>
-                        <value>
-                            <string>8.8.8.8</string>
-                        </value>
-                        <value>
-                            <string>8.8.4.4</string>
-                        </value>
-                    </data>
-                </array>
-            </value>
-        </param>
+        <param></param>
         <param>
             <value>
                 <string>securetoken99</string>

@@ -9,20 +9,13 @@
         </param>
         <param>
             <value>
-                <string>name_servers</string>
+                <string>children</string>
             </value>
         </param>
         <param>
             <value>
                 <array>
-                    <data>
-                        <value>
-                            <string>8.8.8.8</string>
-                        </value>
-                        <value>
-                            <string>8.8.4.4</string>
-                        </value>
-                    </data>
+                    <data></data>
                 </array>
             </value>
         </param>

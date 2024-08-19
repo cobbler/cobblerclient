@@ -42,68 +42,80 @@ func TestGetSystem(t *testing.T) {
 }
 
 func TestNewSystem(t *testing.T) {
-	c := createStubHTTPClientSingle(t, "new-system")
-	result, err := c.Call("new_system", c.Token)
+	c := createStubHTTPClient(t, []string{
+		"create-system-name-check",
+		"new-system",
+		"new-system-modify-parent",
+		"new-system-modify-children",
+		"set-system-name",
+		"new-system-modify-comment",
+		"new-system-modify-kernel-options",
+		"new-system-modify-kernel-options-post",
+		"new-system-modify-autoinstall-meta",
+		"new-system-modify-fetchable-files",
+		"new-system-modify-boot-files",
+		"new-system-modify-template-files",
+		"new-system-modify-owners",
+		"new-system-modify-mgmt-classes",
+		"new-system-modify-mgmt-parameters",
+		"new-system-modify-autoinstall",
+		"new-system-modify-boot-loaders",
+		"new-system-modify-enable-ipxe",
+		"new-system-modify-gateway",
+		"set-system-hostname",
+		"new-system-modify-image",
+		"new-system-modify-ipv6-default-device",
+		"set-system-nameservers",
+		"new-system-modify-name-servers-search",
+		"new-system-modify-netboot-enabled",
+		"new-system-modify-next-server-v4",
+		"new-system-modify-next-server-v6",
+		"new-system-modify-power-address",
+		"new-system-modify-power-id",
+		"new-system-modify-power-pass",
+		"new-system-modify-power-type",
+		"new-system-modify-power-user",
+		"set-system-profile",
+		"new-system-modify-proxy",
+		"new-system-modify-redhat-management-key",
+		"new-system-modify-status",
+		"new-system-modify-virt-auto-boot",
+		"new-system-modify-virt-cpus",
+		"new-system-modify-virt-disk-driver",
+		"new-system-modify-virt-file-size",
+		"new-system-modify-virt-path",
+		"new-system-modify-virt-pxe-boot",
+		"new-system-modify-virt-ram",
+		"new-system-modify-virt-type",
+		"new-system-save",
+		"new-system-get",
+	})
+	sys := System{
+		Item: Item{
+			Name: "mytestsystem",
+		},
+		Hostname:    "blahhost",
+		NameServers: []string{"8.8.8.8", "8.8.4.4"},
+		Profile:     "centos7-x86_64",
+	}
+	newSys, err := c.CreateSystem(sys)
 	FailOnError(t, err)
-	newID := result.(string)
 
-	if newID != "___NEW___system::abc123==" {
-		t.Errorf("Wrong ID returned.")
+	if newSys.Name != "mytestsystem" {
+		t.Errorf("Wrong system name returned.")
 	}
 
-	c = createStubHTTPClientSingle(t, "set-system-hostname")
-	result, err = c.Call("modify_system", newID, "hostname", "blahhost", c.Token)
-	FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting hostname failed.")
+	if newSys.Hostname != "blahhost" {
+		t.Errorf("Wrong system hostname returned.")
 	}
 
-	c = createStubHTTPClientSingle(t, "set-system-name")
-	result, err = c.Call("modify_system", newID, "name", "mytestsystem", c.Token)
-	FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting name failed.")
+	if len(newSys.NameServers) != 2 || newSys.NameServers[0] != "8.8.8.8" {
+		t.Errorf("Wrong system name servers returned.")
 	}
 
-	c = createStubHTTPClientSingle(t, "set-system-nameservers")
-	result, err = c.Call("modify_system", newID, "name_servers", "8.8.8.8 8.8.4.4", c.Token)
-	FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting name servers failed.")
+	if newSys.Profile != "centos7-x86_64" {
+		t.Errorf("Wrong system profile returned.")
 	}
-
-	c = createStubHTTPClientSingle(t, "set-system-profile")
-	result, err = c.Call("modify_system", newID, "profile", "centos7-x86_64", c.Token)
-	FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting name servers failed.")
-	}
-
-	/* I'm not sure how to get this test to pass with unordered maps
-	nicInfo := map[string]interface{}{
-		"macaddress-eth0":  "01:02:03:04:05:06",
-		"ipaddress-eth0":   "1.2.3.4",
-		"dnsname-eth0":     "deathstar",
-		"subnetsmask-eth0": "255.255.255.0",
-		"if-gateway-eth0":  "4.3.2.1",
-	}
-
-	c = createStubHTTPClientSingle(t, "set-system-network-req.xml", "set-system-network-res.xml")
-	result, err = c.Call("modify_system", newID, "modify_interface", nicInfo, c.Token)
-	FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting interface failed.")
-	}
-	*/
-
-	c = createStubHTTPClientSingle(t, "save-system")
-	err = c.SaveSystem(newID, "bypass")
-	FailOnError(t, err)
 }
 
 func TestDeleteSystem(t *testing.T) {

@@ -18,46 +18,8 @@ package cobblerclient
 
 import (
 	"reflect"
-	"regexp"
 	"testing"
 )
-
-var config = ClientConfig{
-	URL:      "http://localhost:8081/cobbler_api",
-	Username: "cobbler",
-	Password: "cobbler",
-}
-
-// createStubHTTPClient ...
-func createStubHTTPClient(t *testing.T, fixtures []string) Client {
-	hc := NewStubHTTPClient(t)
-
-	for _, fixture := range fixtures {
-		if fixture != "" {
-			rawRequest, err := Fixture(fixture + "-req.xml")
-			FailOnError(t, err)
-			response, err := Fixture(fixture + "-res.xml")
-			FailOnError(t, err)
-
-			// flatten the request so it matches the kolo generated xml
-			r := regexp.MustCompile(`\s+<`)
-			expectedReq := []byte(r.ReplaceAllString(string(rawRequest), "<"))
-			hc.answers = append(hc.answers, APIResponsePair{
-				Expected: expectedReq,
-				Response: response,
-			})
-		}
-	}
-
-	c := NewClient(hc, config)
-	c.Token = "securetoken99"
-	return c
-}
-
-// createStubHTTPClientSingle ...
-func createStubHTTPClientSingle(t *testing.T, fixture string) Client {
-	return createStubHTTPClient(t, []string{fixture})
-}
 
 func TestGenerateAutoinstall(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "generate-autoinstall")

@@ -20,14 +20,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/go-viper/mapstructure/v2"
+	"github.com/kolo/xmlrpc"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"reflect"
-	"strings"
-
-	"github.com/go-viper/mapstructure/v2"
-	"github.com/kolo/xmlrpc"
 )
 
 const bodyTypeXML = "text/xml"
@@ -343,23 +341,27 @@ func decodeCobblerItem(raw interface{}, result interface{}) (interface{}, error)
 // updateCobblerFields updates all fields in a Cobbler Item structure.
 func (c *Client) updateCobblerFields(what string, item reflect.Value, id string) error {
 	method := fmt.Sprintf("modify_%s", what)
-
 	typeOfT := item.Type()
+
 	// In Cobbler v3.3.0, if profile name isn't created first, an empty child gets written to the distro, which causes
 	// a ValueError: "calling find with no arguments"  TO-DO: figure a more efficient way of targeting name.
 	for i := 0; i < item.NumField(); i++ {
 		v := item.Field(i)
+		fieldType := v.Type().Name()
 		tag := typeOfT.Field(i).Tag
 		field := tag.Get("mapstructure")
-		if method == "modify_profile" && field == "name" {
-			var value interface{}
-			switch v.Type().String() {
-			case "string", "bool", "int64", "int":
-				value = v.Interface()
-			case "[]string":
-				value = strings.Join(v.Interface().([]string), " ")
+
+		if fieldType == "Item" {
+			// Update embedded Item struct if present (should be present once on all items)
+			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
+			if err != nil {
+				return err
 			}
-			_, err := c.Call(method, id, field, value, c.Token)
+			continue
+		}
+
+		if method == "modify_profile" && field == "name" {
+			_, err := c.Call(method, id, field, v.Interface(), c.Token)
 			if err != nil {
 				return err
 			}
@@ -369,33 +371,28 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 	for i := 0; i < item.NumField(); i++ {
 		v := item.Field(i)
 		tag := typeOfT.Field(i).Tag
+		fieldType := v.Type().Name()
 		field := tag.Get("mapstructure")
 		cobblerTag := tag.Get("cobbler")
 
-		if cobblerTag == "noupdate" {
+		if cobblerTag == "noupdate" || fieldType == "Item" {
 			continue
 		}
 
 		if field == "" {
 			continue
 		}
-		var value interface{}
-		switch v.Type().String() {
-		case "string", "bool", "int64", "int":
-			value = v.Interface()
-		case "[]string":
-			value = strings.Join(v.Interface().([]string), " ")
-		}
-		if result, err := c.Call(method, id, field, value, c.Token); err != nil {
+
+		if result, err := c.Call(method, id, field, v.Interface(), c.Token); err != nil {
 			return err
 		} else {
-			if result.(bool) == false && value != false {
+			if result.(bool) == false && v.Interface() != false {
 				// It's possible this is a new field that isn't available on
 				// older versions.
 				if cobblerTag == "newfield" {
 					continue
 				}
-				return fmt.Errorf("error updating %s to %s", field, value)
+				return fmt.Errorf("error updating %s to %s", field, v.Interface())
 			}
 		}
 	}

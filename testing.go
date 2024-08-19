@@ -9,8 +9,17 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
+	"runtime"
+	"strings"
 	"testing"
 )
+
+var config = ClientConfig{
+	URL:      "http://localhost:8081/cobbler_api",
+	Username: "cobbler",
+	Password: "cobbler",
+}
 
 // FailOnError ...
 func FailOnError(t *testing.T, err error) {
@@ -43,13 +52,20 @@ func NewStubHTTPClient(t *testing.T) *StubHTTPClient {
 	return &s
 }
 
+func removeLineBreaks(input []byte) []byte {
+	return []byte(strings.Replace(string(input), "\r", "", -1))
+}
+
 func (s *StubHTTPClient) Verify() {
-	for _, a := range s.answers {
-		if !bytes.Equal(a.Expected, a.Actual) {
-			spit("/tmp/expected", a.Expected)
-			spit("/tmp/actual", a.Actual)
-			s.t.Errorf("expected:\n%sgot:\n%s", a.Expected, a.Actual)
-		}
+	a := s.answers[s.requestCounter]
+	if runtime.GOOS == "windows" {
+		a.Expected = removeLineBreaks(a.Expected)
+		a.Actual = removeLineBreaks(a.Actual)
+	}
+	if !bytes.Equal(a.Expected, a.Actual) {
+		spit("/tmp/expected", a.Expected)
+		spit("/tmp/actual", a.Actual)
+		s.t.Errorf("expected:\n%sgot:\n%s", a.Expected, a.Actual)
 	}
 }
 
@@ -58,12 +74,17 @@ func (s *StubHTTPClient) Post(uri, bodyType string, req io.Reader) (*http.Respon
 	if err != nil {
 		s.t.Fatal(err)
 	}
+	if s.requestCounter >= len(s.answers) {
+		s.t.Errorf("Received unbuffered request: %s", b)
+		s.t.Fatal("Not enough buffered answers!")
+	}
+	a := &s.answers[s.requestCounter]
 
-	s.answers[s.requestCounter].Actual = b
+	a.Actual = b
 	if s.ShouldVerify {
 		s.Verify()
 	}
-	res := &http.Response{Body: io.NopCloser(bytes.NewBuffer(s.answers[s.requestCounter].Response))}
+	res := &http.Response{Body: io.NopCloser(bytes.NewBuffer(a.Response))}
 	s.requestCounter++
 	return res, nil
 }
@@ -80,4 +101,35 @@ func spit(path string, b []byte) {
 	}
 
 	fmt.Printf("%v bytes written to %s\n", n, path)
+}
+
+// createStubHTTPClient ...
+func createStubHTTPClient(t *testing.T, fixtures []string) Client {
+	hc := NewStubHTTPClient(t)
+
+	for _, fixture := range fixtures {
+		if fixture != "" {
+			rawRequest, err := Fixture(fixture + "-req.xml")
+			FailOnError(t, err)
+			response, err := Fixture(fixture + "-res.xml")
+			FailOnError(t, err)
+
+			// flatten the request so it matches the kolo generated xml
+			r := regexp.MustCompile(`\s+<`)
+			expectedReq := []byte(r.ReplaceAllString(string(rawRequest), "<"))
+			hc.answers = append(hc.answers, APIResponsePair{
+				Expected: expectedReq,
+				Response: response,
+			})
+		}
+	}
+
+	c := NewClient(hc, config)
+	c.Token = "securetoken99"
+	return c
+}
+
+// createStubHTTPClientSingle ...
+func createStubHTTPClientSingle(t *testing.T, fixture string) Client {
+	return createStubHTTPClient(t, []string{fixture})
 }
