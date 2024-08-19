@@ -34,7 +34,7 @@ type Profile struct {
 	BootLoaders         interface{} `mapstructure:"boot_loaders"`
 	DHCPTag             string      `mapstructure:"dhcp_tag"`
 	Distro              string      `mapstructure:"distro"`
-	EnableGPXE          bool        `mapstructure:"enable_gpxe"`
+	EnableIPXE          interface{} `mapstructure:"enable_ipxe"`
 	EnableMenu          interface{} `mapstructure:"enable_menu"`
 	Filename            string      `mapstructure:"filename"`
 	Menu                string      `mapstructure:"menu"`
