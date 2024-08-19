@@ -262,3 +262,27 @@ func TestGetConfigData(t *testing.T) {
 	err := c.GetConfigData("testsys")
 	FailOnError(t, err)
 }
+
+func TestClient_IsValueInherit(t *testing.T) {
+	type args struct {
+		value interface{}
+	}
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{name: "inherit-string", args: struct{ value interface{} }{value: "<<inherit>>"}, want: true},
+		{name: "non-inherit-string", args: struct{ value interface{} }{value: "garbage"}, want: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			hc := NewStubHTTPClient(t)
+			c := NewClient(hc, config)
+			c.Token = "securetoken99"
+			if got := c.IsValueInherit(tt.args.value); got != tt.want {
+				t.Errorf("IsValueInherit() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -271,6 +271,18 @@ func (c *Client) GetConfigData(hostname string) error {
 	return err
 }
 
+// IsValueInherit safely verifies if a given value is set to the magic "<<inherit>>".
+func (c *Client) IsValueInherit(value interface{}) bool {
+	if value == nil {
+		return false
+	}
+	stringValue, ok := value.(string)
+	if !ok {
+		return false
+	}
+	return stringValue == "<<inherit>>"
+}
+
 // cobblerDataHacks is a hook for the mapstructure decoder. It's only used by
 // decodeCobblerItem and should never be invoked directly.
 // It's used to smooth out issues with converting fields and types from Cobbler.
