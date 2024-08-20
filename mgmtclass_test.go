@@ -19,14 +19,12 @@ package cobblerclient
 import (
 	"testing"
 	"time"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestGetMgmtclasses(t *testing.T) {
-	c := createStubHTTPClient(t, "get-mgmtclasses-req.xml", "get-mgmtclasses-res.xml")
+	c := createStubHTTPClientSingle(t, "get-mgmtclasses")
 	mgmtclasses, err := c.GetMgmtClasses()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(mgmtclasses) != 1 {
 		t.Errorf("Wrong number of mgmtclass returned.")
@@ -34,9 +32,9 @@ func TestGetMgmtclasses(t *testing.T) {
 }
 
 func TestGetMgmtclass(t *testing.T) {
-	c := createStubHTTPClient(t, "get-mgmtclass-req.xml", "get-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "get-mgmtclass")
 	mgmtclass, err := c.GetMgmtClass("testmgmtclass")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if mgmtclass.Name != "testmgmtclass" {
 		t.Errorf("Wrong mgmtclass returned.")
@@ -44,21 +42,21 @@ func TestGetMgmtclass(t *testing.T) {
 }
 
 func TestDeleteMgmtClass(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-mgmtclass-req.xml", "delete-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-mgmtclass")
 	err := c.DeleteMgmtClass("test")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestDeleteMgmtClassRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-mgmtclass-req.xml", "delete-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-mgmtclass")
 	err := c.DeleteMgmtClassRecursive("test", false)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestListMgmtClassNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-mgmtclass-req.xml", "get-item-names-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-mgmtclass")
 	mgmtclasses, err := c.ListMgmtClassNames()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(mgmtclasses) != 1 {
 		t.Errorf("Wrong number of mgmtclasses returned.")
@@ -66,9 +64,9 @@ func TestListMgmtClassNames(t *testing.T) {
 }
 
 func TestGetMgmtclassSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-mgmtclasses-since-req.xml", "get-mgmtclasses-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-mgmtclasses-since")
 	mgmtclasses, err := c.GetMgmtClassesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(mgmtclasses) != 1 {
 		t.Errorf("Wrong number of mgmtclasses returned.")
@@ -76,11 +74,11 @@ func TestGetMgmtclassSince(t *testing.T) {
 }
 
 func TestFindMgmtclass(t *testing.T) {
-	c := createStubHTTPClient(t, "find-mgmtclass-req.xml", "find-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "find-mgmtclass")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testmgmtclass"
 	mgmtclasses, err := c.FindMgmtClass(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(mgmtclasses) != 1 {
 		t.Errorf("Wrong number of mgmtclasses returned.")
@@ -88,11 +86,11 @@ func TestFindMgmtclass(t *testing.T) {
 }
 
 func TestFindMgmtClassNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-mgmtclass-names-req.xml", "find-mgmtclass-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-mgmtclass-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testmgmtclass"
 	mgmtclasses, err := c.FindMgmtClassNames(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(mgmtclasses) != 1 {
 		t.Error("Wrong number of mgmtclasses returned.")
@@ -100,27 +98,27 @@ func TestFindMgmtClassNames(t *testing.T) {
 }
 
 func TestSaveMgmtClass(t *testing.T) {
-	c := createStubHTTPClient(t, "save-mgmtclass-req.xml", "save-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "save-mgmtclass")
 	err := c.SaveMgmtClass("mgmtclass::testmgmtclass", "bypass")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestCopyMgmtClas(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-mgmtclass-req.xml", "copy-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-mgmtclass")
 	err := c.CopyMgmtClass("mgmtclass::testmgmtclass", "testmgmtclass2")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestRenameMgmtClass(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-mgmtclass-req.xml", "rename-mgmtclass-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-mgmtclass")
 	err := c.RenameMgmtClass("mgmtclass::testmgmtclass2", "mgmtclass1")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestGetMgmtClassHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-mgmtclass-handle-req.xml", "get-mgmtclass-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-mgmtclass-handle")
 	res, err := c.GetMgmtClassHandle("testmgmtclass")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if res != "mgmtclass::testmgmtclass" {
 		t.Error("Wrong object id returned.")

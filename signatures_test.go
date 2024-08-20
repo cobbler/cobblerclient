@@ -2,73 +2,69 @@ package cobblerclient
 
 import (
 	"testing"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestGetSignatures(t *testing.T) {
-	c := createStubHTTPClient(t, "get-signatures-req.xml", "get-signatures-res.xml")
+	c := createStubHTTPClientSingle(t, "get-signatures")
 
 	result, err := c.GetSignatures()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if result.Breeds["redhat"]["rhel4"].VersionFile != `(redhat|sl|centos)-release-4(AS|WS|ES)[\.-]+(.*)\.rpm` {
 		t.Fatalf("Expected a different regex!")
 	}
 }
 
 func TestGetValidBreeds(t *testing.T) {
-	c := createStubHTTPClient(t, "get-valid-breeds-req.xml", "get-valid-breeds-res.xml")
+	c := createStubHTTPClientSingle(t, "get-valid-breeds")
 
 	res, err := c.GetValidBreeds()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if len(res) <= 1 {
 		t.Fatalf("Expected a length of greater then one.")
 	}
 }
 
 func TestGetValidOsVersionsForBreed(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"get-valid-os-verions-for-breed-req.xml",
-		"get-valid-os-verions-for-breed-res.xml",
+		"get-valid-os-verions-for-breed",
 	)
 
 	res, err := c.GetValidOsVersionsForBreed("redhat")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if len(res) <= 1 {
 		t.Fatalf("Expected a length of greater then one.")
 	}
 }
 
 func TestGetValidOsVersions(t *testing.T) {
-	c := createStubHTTPClient(t, "get-valid-os-versions-req.xml", "get-valid-os-versions-res.xml")
+	c := createStubHTTPClientSingle(t, "get-valid-os-versions")
 
 	res, err := c.GetValidOsVersions()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if len(res) <= 1 {
 		t.Fatalf("Expected a length of greater then one.")
 	}
 }
 
 func TestGetValidArchs(t *testing.T) {
-	c := createStubHTTPClient(t, "get-valid-archs-req.xml", "get-valid-archs-res.xml")
+	c := createStubHTTPClientSingle(t, "get-valid-archs")
 
 	res, err := c.GetValidArchs()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if len(res) <= 1 {
 		t.Fatalf("Expected a length of greater then one.")
 	}
 }
 
 func TestBackgroundSignatureUpdate(t *testing.T) {
-	c := createStubHTTPClient(
+	c := createStubHTTPClientSingle(
 		t,
-		"background-signature-update-req.xml",
-		"background-signature-update-res.xml",
+		"background-signature-update",
 	)
 
 	res, err := c.BackgroundSignatureUpdate()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if res != "2022-09-30_195846_Updating Signatures_6c5300d51c224984b4319fb536cc21d0" {
 		t.Fatalf("Expected a different Event-ID!")
 	}

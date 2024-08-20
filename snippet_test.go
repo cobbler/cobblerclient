@@ -18,29 +18,27 @@ package cobblerclient
 
 import (
 	"testing"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestCreateSnippet(t *testing.T) {
-	c := createStubHTTPClient(t, "create-snippet-req.xml", "create-snippet-res.xml")
+	c := createStubHTTPClientSingle(t, "create-snippet")
 	snippet := Snippet{
 		Name: "/var/lib/cobbler/snippets/some-snippet",
 		Body: "sample content",
 	}
 	err := c.CreateSnippet(snippet)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestGetSnippet(t *testing.T) {
 	snippetName := "/var/lib/cobbler/snippets/some-snippet"
-	c := createStubHTTPClient(t, "get-snippet-req.xml", "get-snippet-res.xml")
+	c := createStubHTTPClientSingle(t, "get-snippet")
 	expectedSnippet := Snippet{
 		Name: snippetName,
 		Body: "sample content",
 	}
 	returnedSnippet, err := c.GetSnippet(snippetName)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 	if returnedSnippet.Body != expectedSnippet.Body {
 		t.Errorf("Snippet Body did not match.")
 	}

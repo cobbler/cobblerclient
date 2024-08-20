@@ -1,5 +1,3 @@
-github.com/ContainerSolutions/go-utils v0.1.0 h1:cjCek/u3qVUSDejTqdSNQFummm9W/OUR7yfzplTaDN0=
-github.com/ContainerSolutions/go-utils v0.1.0/go.mod h1:kwETtmd5o1Ih1kSnvyZ5CPBNREDObipu4e0zWF3Vo8g=
 github.com/fatih/structs v1.1.0 h1:Q7juDM0QtcnhCpeyLGQKyg4TOIghuNXrkL32pHAUMxo=
 github.com/fatih/structs v1.1.0/go.mod h1:9NiDSp5zOcgEDl+j00MP/WkGVPOlPRLejGD8Ga6PJ7M=
 github.com/go-test/deep v1.1.1 h1:0r/53hagsehfO4bzD2Pgr/+RgHqhmf+k1Bpse2cTu1U=

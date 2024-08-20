@@ -19,14 +19,12 @@ package cobblerclient
 import (
 	"testing"
 	"time"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestGetSystems(t *testing.T) {
-	c := createStubHTTPClient(t, "get-systems-req.xml", "get-systems-res.xml")
+	c := createStubHTTPClientSingle(t, "get-systems")
 	systems, err := c.GetSystems()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(systems) != 1 {
 		t.Errorf("Wrong number of systems returned.")
@@ -34,9 +32,9 @@ func TestGetSystems(t *testing.T) {
 }
 
 func TestGetSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "get-system-req.xml", "get-system-res.xml")
+	c := createStubHTTPClientSingle(t, "get-system")
 	system, err := c.GetSystem("test")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if system.Name != "test" {
 		t.Errorf("Wrong system returned.")
@@ -44,86 +42,98 @@ func TestGetSystem(t *testing.T) {
 }
 
 func TestNewSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "new-system-req.xml", "new-system-res.xml")
-	result, err := c.Call("new_system", c.Token)
-	utils.FailOnError(t, err)
-	newID := result.(string)
+	c := createStubHTTPClient(t, []string{
+		"create-system-name-check",
+		"new-system",
+		"new-system-modify-parent",
+		"new-system-modify-children",
+		"set-system-name",
+		"new-system-modify-comment",
+		"new-system-modify-kernel-options",
+		"new-system-modify-kernel-options-post",
+		"new-system-modify-autoinstall-meta",
+		"new-system-modify-fetchable-files",
+		"new-system-modify-boot-files",
+		"new-system-modify-template-files",
+		"new-system-modify-owners",
+		"new-system-modify-mgmt-classes",
+		"new-system-modify-mgmt-parameters",
+		"new-system-modify-autoinstall",
+		"new-system-modify-boot-loaders",
+		"new-system-modify-enable-ipxe",
+		"new-system-modify-gateway",
+		"set-system-hostname",
+		"new-system-modify-image",
+		"new-system-modify-ipv6-default-device",
+		"set-system-nameservers",
+		"new-system-modify-name-servers-search",
+		"new-system-modify-netboot-enabled",
+		"new-system-modify-next-server-v4",
+		"new-system-modify-next-server-v6",
+		"new-system-modify-power-address",
+		"new-system-modify-power-id",
+		"new-system-modify-power-pass",
+		"new-system-modify-power-type",
+		"new-system-modify-power-user",
+		"set-system-profile",
+		"new-system-modify-proxy",
+		"new-system-modify-redhat-management-key",
+		"new-system-modify-status",
+		"new-system-modify-virt-auto-boot",
+		"new-system-modify-virt-cpus",
+		"new-system-modify-virt-disk-driver",
+		"new-system-modify-virt-file-size",
+		"new-system-modify-virt-path",
+		"new-system-modify-virt-pxe-boot",
+		"new-system-modify-virt-ram",
+		"new-system-modify-virt-type",
+		"new-system-save",
+		"new-system-get",
+	})
+	sys := System{
+		Item: Item{
+			Name: "mytestsystem",
+		},
+		Hostname:    "blahhost",
+		NameServers: []string{"8.8.8.8", "8.8.4.4"},
+		Profile:     "centos7-x86_64",
+	}
+	newSys, err := c.CreateSystem(sys)
+	FailOnError(t, err)
 
-	if newID != "___NEW___system::abc123==" {
-		t.Errorf("Wrong ID returned.")
+	if newSys.Name != "mytestsystem" {
+		t.Errorf("Wrong system name returned.")
 	}
 
-	c = createStubHTTPClient(t, "set-system-hostname-req.xml", "set-system-hostname-res.xml")
-	result, err = c.Call("modify_system", newID, "hostname", "blahhost", c.Token)
-	utils.FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting hostname failed.")
+	if newSys.Hostname != "blahhost" {
+		t.Errorf("Wrong system hostname returned.")
 	}
 
-	c = createStubHTTPClient(t, "set-system-name-req.xml", "set-system-name-res.xml")
-	result, err = c.Call("modify_system", newID, "name", "mytestsystem", c.Token)
-	utils.FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting name failed.")
+	if len(newSys.NameServers) != 2 || newSys.NameServers[0] != "8.8.8.8" {
+		t.Errorf("Wrong system name servers returned.")
 	}
 
-	c = createStubHTTPClient(t, "set-system-nameservers-req.xml", "set-system-nameservers-res.xml")
-	result, err = c.Call("modify_system", newID, "name_servers", "8.8.8.8 8.8.4.4", c.Token)
-	utils.FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting name servers failed.")
+	if newSys.Profile != "centos7-x86_64" {
+		t.Errorf("Wrong system profile returned.")
 	}
-
-	c = createStubHTTPClient(t, "set-system-profile-req.xml", "set-system-profile-res.xml")
-	result, err = c.Call("modify_system", newID, "profile", "centos7-x86_64", c.Token)
-	utils.FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting name servers failed.")
-	}
-
-	/* I'm not sure how to get this test to pass with unordered maps
-	nicInfo := map[string]interface{}{
-		"macaddress-eth0":  "01:02:03:04:05:06",
-		"ipaddress-eth0":   "1.2.3.4",
-		"dnsname-eth0":     "deathstar",
-		"subnetsmask-eth0": "255.255.255.0",
-		"if-gateway-eth0":  "4.3.2.1",
-	}
-
-	c = createStubHTTPClient(t, "set-system-network-req.xml", "set-system-network-res.xml")
-	result, err = c.Call("modify_system", newID, "modify_interface", nicInfo, c.Token)
-	utils.FailOnError(t, err)
-
-	if !result.(bool) {
-		t.Errorf("Setting interface failed.")
-	}
-	*/
-
-	c = createStubHTTPClient(t, "save-system-req.xml", "save-system-res.xml")
-	err = c.SaveSystem(newID, "bypass")
-	utils.FailOnError(t, err)
 }
 
 func TestDeleteSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-system-req.xml", "delete-system-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-system")
 	err := c.DeleteSystem("test")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestDeleteSystemRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-system-req.xml", "delete-system-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-system")
 	err := c.DeleteSystemRecursive("test", false)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestListSystemNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-system-req.xml", "get-item-names-system-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-system")
 	sytems, err := c.ListSystemNames()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(sytems) != 1 {
 		t.Errorf("Wrong number of systems returned.")
@@ -131,9 +141,9 @@ func TestListSystemNames(t *testing.T) {
 }
 
 func TestGetSystemsSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-system-since-req.xml", "get-system-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-system-since")
 	systems, err := c.GetSystemsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(systems) != 1 {
 		t.Errorf("Wrong number of profiles returned.")
@@ -141,43 +151,43 @@ func TestGetSystemsSince(t *testing.T) {
 }
 
 func TestFindSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "find-system-req.xml", "find-system-res.xml")
+	c := createStubHTTPClientSingle(t, "find-system")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	_, err := c.FindSystem(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestFindSystemNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-system-names-req.xml", "find-system-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-system-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	_, err := c.FindSystem(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestSaveSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "save-system-req.xml", "save-system-res.xml")
+	c := createStubHTTPClientSingle(t, "save-system")
 	err := c.SaveSystem("___NEW___system::abc123==", "bypass")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestCopySystem(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-system-req.xml", "copy-system-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-system")
 	err := c.CopySystem("system::testsys", "testsys2")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestRenameSystem(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-system-req.xml", "rename-system-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-system")
 	err := c.RenameSystem("system::testsys", "testsys1")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestGetSystemHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-system-handle-req.xml", "get-system-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-system-handle")
 	res, err := c.GetSystemHandle("testsys")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if res != "system::testsys" {
 		t.Error("Wrong object id returned.")

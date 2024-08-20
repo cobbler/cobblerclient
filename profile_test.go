@@ -19,14 +19,12 @@ package cobblerclient
 import (
 	"testing"
 	"time"
-
-	"github.com/ContainerSolutions/go-utils"
 )
 
 func TestGetProfiles(t *testing.T) {
-	c := createStubHTTPClient(t, "get-profiles-req.xml", "get-profiles-res.xml")
+	c := createStubHTTPClientSingle(t, "get-profiles")
 	profiles, err := c.GetProfiles()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(profiles) != 1 {
 		t.Errorf("Wrong number of profiles returned.")
@@ -34,9 +32,9 @@ func TestGetProfiles(t *testing.T) {
 }
 
 func TestGetProfile(t *testing.T) {
-	c := createStubHTTPClient(t, "get-profile-req.xml", "get-profile-res.xml")
+	c := createStubHTTPClientSingle(t, "get-profile")
 	profile, err := c.GetProfile("Ubuntu-20.04-x86_64")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if profile.Name != "Ubuntu-20.04-x86_64" {
 		t.Errorf("Wrong profile returned.")
@@ -44,21 +42,21 @@ func TestGetProfile(t *testing.T) {
 }
 
 func TestDeleteProfile(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-profile-req.xml", "delete-profile-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-profile")
 	err := c.DeleteProfile("test")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestDeleteProfileRecursive(t *testing.T) {
-	c := createStubHTTPClient(t, "delete-profile-req.xml", "delete-profile-res.xml")
+	c := createStubHTTPClientSingle(t, "delete-profile")
 	err := c.DeleteProfileRecursive("test", false)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestListProfileNames(t *testing.T) {
-	c := createStubHTTPClient(t, "get-item-names-profile-req.xml", "get-item-names-profile-res.xml")
+	c := createStubHTTPClientSingle(t, "get-item-names-profile")
 	profiles, err := c.ListProfileNames()
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(profiles) != 1 {
 		t.Errorf("Wrong number of profiles returned.")
@@ -66,9 +64,9 @@ func TestListProfileNames(t *testing.T) {
 }
 
 func TestGetProfilesSince(t *testing.T) {
-	c := createStubHTTPClient(t, "get-profiles-since-req.xml", "get-profiles-since-res.xml")
+	c := createStubHTTPClientSingle(t, "get-profiles-since")
 	profiles, err := c.GetProfilesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(profiles) != 1 {
 		t.Errorf("Wrong number of profiles returned.")
@@ -76,11 +74,11 @@ func TestGetProfilesSince(t *testing.T) {
 }
 
 func TestFindProfile(t *testing.T) {
-	c := createStubHTTPClient(t, "find-profile-req.xml", "find-profile-res.xml")
+	c := createStubHTTPClientSingle(t, "find-profile")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	profiles, err := c.FindProfile(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(profiles) != 1 {
 		t.Errorf("Wrong number of profiles returned.")
@@ -88,11 +86,11 @@ func TestFindProfile(t *testing.T) {
 }
 
 func TestFindProfileNames(t *testing.T) {
-	c := createStubHTTPClient(t, "find-profile-names-req.xml", "find-profile-names-res.xml")
+	c := createStubHTTPClientSingle(t, "find-profile-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
 	profiles, err := c.FindProfileNames(criteria)
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if len(profiles) != 1 {
 		t.Errorf("Wrong number of profiles returned.")
@@ -100,27 +98,27 @@ func TestFindProfileNames(t *testing.T) {
 }
 
 func TestSaveProfile(t *testing.T) {
-	c := createStubHTTPClient(t, "save-profile-req.xml", "save-profile-res.xml")
+	c := createStubHTTPClientSingle(t, "save-profile")
 	err := c.SaveProfile("profile::testprof", "bypass")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestCopyProfile(t *testing.T) {
-	c := createStubHTTPClient(t, "copy-profile-req.xml", "copy-profile-res.xml")
+	c := createStubHTTPClientSingle(t, "copy-profile")
 	err := c.CopyProfile("profile::testprof", "testprof2")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestRenameProfile(t *testing.T) {
-	c := createStubHTTPClient(t, "rename-profile-req.xml", "rename-profile-res.xml")
+	c := createStubHTTPClientSingle(t, "rename-profile")
 	err := c.RenameProfile("profile::testprof2", "testprof1")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 }
 
 func TestGetProfileHandle(t *testing.T) {
-	c := createStubHTTPClient(t, "get-profile-handle-req.xml", "get-profile-handle-res.xml")
+	c := createStubHTTPClientSingle(t, "get-profile-handle")
 	res, err := c.GetProfileHandle("testprof")
-	utils.FailOnError(t, err)
+	FailOnError(t, err)
 
 	if res != "profile::testprof" {
 		t.Error("Wrong object id returned.")
