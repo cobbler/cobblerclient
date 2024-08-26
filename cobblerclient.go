@@ -43,6 +43,8 @@ type Client struct {
 	// The longevity of this token is defined server side in the setting "auth_token_duration". Per default no token is
 	// retrieved. A token can be obtained via the [Client.Login] method.
 	Token string
+	// To allow for version dependant API calls in the client we cache the major, minor and patch version.
+	CachedVersion CobblerVersion
 }
 
 // ClientConfig is the URL of Cobbler plus login credentials.
@@ -52,19 +54,12 @@ type ClientConfig struct {
 	Password string
 }
 
-type ExtendedVersion struct {
-	Gitdate      string
-	Gitstamp     string
-	Builddate    string
-	Version      string
-	VersionTuple []int
-}
-
 // NewClient creates a [Client] struct which is ready for usage.
 func NewClient(httpClient HTTPClient, c ClientConfig) Client {
 	return Client{
-		httpClient: httpClient,
-		config:     c,
+		httpClient:    httpClient,
+		config:        c,
+		CachedVersion: CobblerVersion{},
 	}
 }
 
@@ -100,6 +95,29 @@ func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 	}
 
 	return result, nil
+}
+
+func (c *Client) setCachedVersion() error {
+	if c.CachedVersion != (CobblerVersion{}) {
+		return nil
+	}
+	extendedVersion, err := c.ExtendedVersion()
+	if err != nil {
+		return err
+	}
+	if len(extendedVersion.VersionTuple) != 3 {
+		return errors.New("cobblerclient: invalid length of extended version tuple")
+	}
+	c.CachedVersion = CobblerVersion{
+		Major: extendedVersion.VersionTuple[0],
+		Minor: extendedVersion.VersionTuple[1],
+		Patch: extendedVersion.VersionTuple[2],
+	}
+	return nil
+}
+
+func (c *Client) invalidateCachedVersion() {
+	c.CachedVersion = CobblerVersion{}
 }
 
 // GenerateAutoinstall generates the autoinstallation file for a given profile or system.
@@ -193,37 +211,6 @@ func (c *Client) RegisterNewSystem(info map[string]interface{}) error {
 func (c *Client) RunInstallTriggers(mode string, objtype string, name string, ip string) error {
 	_, err := c.Call("run_install_triggers", mode, objtype, name, ip, c.Token)
 	return err
-}
-
-// Version is a shorter and easier version representation. Normally you want to call [Client.ExtendedVersion].
-func (c *Client) Version() (float64, error) {
-	res, err := c.Call("version")
-	return res.(float64), err
-}
-
-// ExtendedVersion returns the version information of the server.
-func (c *Client) ExtendedVersion() (ExtendedVersion, error) {
-	extendedVersion := ExtendedVersion{}
-	data, err := c.Call("extended_version")
-	if err != nil {
-		return extendedVersion, err
-	}
-	switch data.(type) {
-	case map[string]interface{}:
-		data := data.(map[string]interface{})
-		var versionTuple, err = returnIntSlice(data["version_tuple"], err)
-		if err != nil {
-			return extendedVersion, err
-		}
-		extendedVersion.Version = data["version"].(string)
-		extendedVersion.VersionTuple = versionTuple
-		extendedVersion.Builddate = data["builddate"].(string)
-		extendedVersion.Gitdate = data["gitdate"].(string)
-		extendedVersion.Gitstamp = data["gitstamp"].(string)
-	default:
-		return extendedVersion, err
-	}
-	return extendedVersion, err
 }
 
 // GetReposCompatibleWithProfile returns all repositories that can be potentially assigned to a given profile.
