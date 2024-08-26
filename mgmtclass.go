@@ -40,6 +40,10 @@ func convertRawMgmtClassList(xmlrpcResult interface{}) ([]*MgmtClass, error) {
 		if err != nil {
 			return nil, err
 		}
+		mgmtclass.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		mgmtclasses = append(mgmtclasses, mgmtclass)
 	}
 
@@ -63,7 +67,15 @@ func (c *Client) GetMgmtClass(name string, flattened, resolved bool) (*MgmtClass
 		return nil, err
 	}
 
-	return convertRawMgmtClass(name, result)
+	mgmtclass, err := convertRawMgmtClass(name, result)
+	if err != nil {
+		return nil, err
+	}
+	mgmtclass.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return mgmtclass, nil
 }
 
 // CreateMgmtClass creates a mgmtclass.

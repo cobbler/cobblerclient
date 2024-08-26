@@ -30,30 +30,30 @@ type Profile struct {
 	// These are internal fields and cannot be modified.
 	ReposEnabled bool `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	Autoinstall         string      `mapstructure:"autoinstall"`
-	BootLoaders         interface{} `mapstructure:"boot_loaders"`
-	DHCPTag             string      `mapstructure:"dhcp_tag"`
-	Distro              string      `mapstructure:"distro"`
-	EnableIPXE          interface{} `mapstructure:"enable_ipxe"`
-	EnableMenu          interface{} `mapstructure:"enable_menu"`
-	Filename            string      `mapstructure:"filename"`
-	Menu                string      `mapstructure:"menu"`
-	NameServers         []string    `mapstructure:"name_servers"`
-	NameServersSearch   []string    `mapstructure:"name_servers_search"`
-	NextServerv4        string      `mapstructure:"next_server_v4"`
-	NextServerv6        string      `mapstructure:"next_server_v6"`
-	Proxy               string      `mapstructure:"proxy"`
-	RedhatManagementKey string      `mapstructure:"redhat_management_key"`
-	Repos               []string    `mapstructure:"repos"`
-	Server              string      `mapstructure:"server"`
-	VirtAutoBoot        string      `mapstructure:"virt_auto_boot"`
-	VirtBridge          string      `mapstructure:"virt_bridge"`
-	VirtCPUs            string      `mapstructure:"virt_cpus"`
-	VirtDiskDriver      string      `mapstructure:"virt_disk_driver"`
-	VirtFileSize        string      `mapstructure:"virt_file_size"`
-	VirtPath            string      `mapstructure:"virt_path"`
-	VirtRAM             string      `mapstructure:"virt_ram"`
-	VirtType            string      `mapstructure:"virt_type"`
+	Autoinstall         string          `mapstructure:"autoinstall"`
+	BootLoaders         Value[[]string] `mapstructure:"boot_loaders"`
+	DHCPTag             string          `mapstructure:"dhcp_tag"`
+	Distro              string          `mapstructure:"distro"`
+	EnableIPXE          Value[bool]     `mapstructure:"enable_ipxe"`
+	EnableMenu          Value[bool]     `mapstructure:"enable_menu"`
+	Filename            string          `mapstructure:"filename"`
+	Menu                string          `mapstructure:"menu"`
+	NameServers         []string        `mapstructure:"name_servers"`
+	NameServersSearch   []string        `mapstructure:"name_servers_search"`
+	NextServerv4        string          `mapstructure:"next_server_v4"`
+	NextServerv6        string          `mapstructure:"next_server_v6"`
+	Proxy               string          `mapstructure:"proxy"`
+	RedhatManagementKey string          `mapstructure:"redhat_management_key"`
+	Repos               []string        `mapstructure:"repos"`
+	Server              string          `mapstructure:"server"`
+	VirtAutoBoot        string          `mapstructure:"virt_auto_boot"`
+	VirtBridge          string          `mapstructure:"virt_bridge"`
+	VirtCPUs            string          `mapstructure:"virt_cpus"`
+	VirtDiskDriver      string          `mapstructure:"virt_disk_driver"`
+	VirtFileSize        string          `mapstructure:"virt_file_size"`
+	VirtPath            string          `mapstructure:"virt_path"`
+	VirtRAM             string          `mapstructure:"virt_ram"`
+	VirtType            string          `mapstructure:"virt_type"`
 
 	Client
 }
@@ -81,6 +81,10 @@ func convertRawProfilesList(xmlrpcResult interface{}) ([]*Profile, error) {
 		if err != nil {
 			return nil, err
 		}
+		profile.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		profiles = append(profiles, profile)
 	}
 
@@ -105,7 +109,15 @@ func (c *Client) GetProfile(name string, flattened, resolved bool) (*Profile, er
 		return nil, err
 	}
 
-	return convertRawProfile(name, result)
+	profile, err := convertRawProfile(name, result)
+	if err != nil {
+		return nil, err
+	}
+	profile.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return profile, nil
 }
 
 // CreateProfile creates a profile.
@@ -120,8 +132,8 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		return nil, fmt.Errorf("a profile must have a distro set")
 	}
 
-	if profile.MgmtParameters == "" {
-		profile.MgmtParameters = "<<inherit>>"
+	if profile.MgmtParameters.RawData.(string) == "" {
+		profile.MgmtParameters.IsInherited = true
 	}
 	if profile.VirtType == "" {
 		profile.VirtType = "<<inherit>>"

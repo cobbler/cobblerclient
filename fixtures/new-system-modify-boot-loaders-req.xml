@@ -14,13 +14,7 @@
         </param>
         <param>
             <value>
-                <array>
-                    <data>
-                        <value>
-                            <string>&lt;&lt;inherit&gt;&gt;</string>
-                        </value>
-                    </data>
-                </array>
+                <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>
         </param>
         <param>

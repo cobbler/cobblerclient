@@ -31,38 +31,38 @@ type System struct {
 	Item `mapstructure:",squash"`
 
 	// These are internal fields and cannot be modified.
-	IPv6Autoconfiguration bool        `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate"`
-	ReposEnabled          bool        `mapstructure:"repos_enabled"          cobbler:"noupdate"`
-	Autoinstall           string      `mapstructure:"autoinstall"`
-	BootLoaders           []string    `mapstructure:"boot_loaders"`
-	EnableIPXE            interface{} `mapstructure:"enable_ipxe"`
-	Gateway               string      `mapstructure:"gateway"`
-	Hostname              string      `mapstructure:"hostname"`
-	Image                 string      `mapstructure:"image"`
-	Interfaces            Interfaces  `mapstructure:"interfaces" cobbler:"noupdate"`
-	IPv6DefaultDevice     string      `mapstructure:"ipv6_default_device"`
-	NameServers           []string    `mapstructure:"name_servers"`
-	NameServersSearch     []string    `mapstructure:"name_servers_search"`
-	NetbootEnabled        bool        `mapstructure:"netboot_enabled"`
-	NextServerv4          string      `mapstructure:"next_server_v4"`
-	NextServerv6          string      `mapstructure:"next_server_v6"`
-	PowerAddress          string      `mapstructure:"power_address"`
-	PowerID               string      `mapstructure:"power_id"`
-	PowerPass             string      `mapstructure:"power_pass"`
-	PowerType             string      `mapstructure:"power_type"`
-	PowerUser             string      `mapstructure:"power_user"`
-	Profile               string      `mapstructure:"profile"`
-	Proxy                 string      `mapstructure:"proxy"`
-	RedhatManagementKey   string      `mapstructure:"redhat_management_key"`
-	Status                string      `mapstructure:"status"`
-	VirtAutoBoot          string      `mapstructure:"virt_auto_boot"`
-	VirtCPUs              string      `mapstructure:"virt_cpus"`
-	VirtDiskDriver        string      `mapstructure:"virt_disk_driver"`
-	VirtFileSize          string      `mapstructure:"virt_file_size"`
-	VirtPath              string      `mapstructure:"virt_path"`
-	VirtPXEBoot           int         `mapstructure:"virt_pxe_boot"`
-	VirtRAM               string      `mapstructure:"virt_ram"`
-	VirtType              string      `mapstructure:"virt_type"`
+	IPv6Autoconfiguration bool            `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate"`
+	ReposEnabled          bool            `mapstructure:"repos_enabled"          cobbler:"noupdate"`
+	Autoinstall           string          `mapstructure:"autoinstall"`
+	BootLoaders           Value[[]string] `mapstructure:"boot_loaders"`
+	EnableIPXE            Value[bool]     `mapstructure:"enable_ipxe"`
+	Gateway               string          `mapstructure:"gateway"`
+	Hostname              string          `mapstructure:"hostname"`
+	Image                 string          `mapstructure:"image"`
+	Interfaces            Interfaces      `mapstructure:"interfaces" cobbler:"noupdate"`
+	IPv6DefaultDevice     string          `mapstructure:"ipv6_default_device"`
+	NameServers           []string        `mapstructure:"name_servers"`
+	NameServersSearch     []string        `mapstructure:"name_servers_search"`
+	NetbootEnabled        bool            `mapstructure:"netboot_enabled"`
+	NextServerv4          string          `mapstructure:"next_server_v4"`
+	NextServerv6          string          `mapstructure:"next_server_v6"`
+	PowerAddress          string          `mapstructure:"power_address"`
+	PowerID               string          `mapstructure:"power_id"`
+	PowerPass             string          `mapstructure:"power_pass"`
+	PowerType             string          `mapstructure:"power_type"`
+	PowerUser             string          `mapstructure:"power_user"`
+	Profile               string          `mapstructure:"profile"`
+	Proxy                 string          `mapstructure:"proxy"`
+	RedhatManagementKey   string          `mapstructure:"redhat_management_key"`
+	Status                string          `mapstructure:"status"`
+	VirtAutoBoot          string          `mapstructure:"virt_auto_boot"`
+	VirtCPUs              string          `mapstructure:"virt_cpus"`
+	VirtDiskDriver        string          `mapstructure:"virt_disk_driver"`
+	VirtFileSize          string          `mapstructure:"virt_file_size"`
+	VirtPath              string          `mapstructure:"virt_path"`
+	VirtPXEBoot           int             `mapstructure:"virt_pxe_boot"`
+	VirtRAM               string          `mapstructure:"virt_ram"`
+	VirtType              string          `mapstructure:"virt_type"`
 
 	Client
 }
@@ -120,6 +120,10 @@ func (c *Client) convertRawSystemsList(xmlrpcResult interface{}) ([]*System, err
 		if err != nil {
 			return nil, err
 		}
+		system.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		systems = append(systems, system)
 	}
 
@@ -144,7 +148,15 @@ func (c *Client) GetSystem(name string, flattened, resolved bool) (*System, erro
 		return nil, err
 	}
 
-	return c.convertRawSystem(name, result)
+	system, err := c.convertRawSystem(name, result)
+	if err != nil {
+		return nil, err
+	}
+	system.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return system, nil
 }
 
 // CreateSystem creates a system.
@@ -160,24 +172,24 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	}
 
 	// Set default values. I guess these aren't taken care of by Cobbler?
-	if system.BootFiles == "" {
-		system.BootFiles = "<<inherit>>"
+	if len(system.BootFiles.Data) == 0 {
+		system.BootFiles.IsInherited = true
 	}
 
-	if len(system.BootLoaders) == 0 {
-		system.BootLoaders = []string{"<<inherit>>"}
+	if len(system.BootLoaders.Data) == 0 {
+		system.BootLoaders.IsInherited = true
 	}
 
-	if len(system.BootLoaders) == 0 {
-		system.FetchableFiles = "<<inherit>>"
+	if len(system.FetchableFiles.Data) == 0 {
+		system.FetchableFiles.IsInherited = true
 	}
 
-	if system.MgmtParameters == "" {
-		system.MgmtParameters = "<<inherit>>"
+	if len(system.MgmtParameters.Data) == 0 {
+		system.MgmtParameters.IsInherited = true
 	}
 
 	if system.PowerType == "" {
-		system.PowerType = "ipmilan"
+		system.PowerType = "ipmilanplus"
 	}
 
 	if system.Status == "" {

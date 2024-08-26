@@ -39,6 +39,10 @@ func convertRawLinuxPackageList(xmlrpcResult interface{}) ([]*Package, error) {
 		if err != nil {
 			return nil, err
 		}
+		linuxpackage.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		linuxpackages = append(linuxpackages, linuxpackage)
 	}
 
@@ -62,7 +66,15 @@ func (c *Client) GetPackage(name string, flattened, resolved bool) (*Package, er
 		return nil, err
 	}
 
-	return convertRawLinuxPackage(name, result)
+	linuxpackage, err := convertRawLinuxPackage(name, result)
+	if err != nil {
+		return nil, err
+	}
+	linuxpackage.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return linuxpackage, nil
 }
 
 // CreatePackage creates a package.

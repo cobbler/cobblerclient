@@ -28,18 +28,17 @@ type Distro struct {
 	Item `mapstructure:",squash"`
 
 	// These are internal fields and cannot be modified.
-	SourceRepos         []string `mapstructure:"source_repos"   cobbler:"noupdate"`
-	TreeBuildTime       string   `mapstructure:"tree_build_time" cobbler:"noupdate"`
-	Arch                string   `mapstructure:"arch"`
-	BootLoaders         []string `mapstructure:"boot_loaders"`
-	Breed               string   `mapstructure:"breed"`
-	Comment             string   `mapstructure:"comment"`
-	Initrd              string   `mapstructure:"initrd"`
-	RemoteBootInitrd    string   `mapstructure:"remote_boot_initrd"`
-	Kernel              string   `mapstructure:"kernel"`
-	RemoteBootKernel    string   `mapstructure:"remote_boot_kernel"`
-	RedhatManagementKey string   `mapstructure:"redhat_management_key"`
-	OSVersion           string   `mapstructure:"os_version"`
+	SourceRepos         []string        `mapstructure:"source_repos"   cobbler:"noupdate"`
+	TreeBuildTime       string          `mapstructure:"tree_build_time" cobbler:"noupdate"`
+	Arch                string          `mapstructure:"arch"`
+	BootLoaders         Value[[]string] `mapstructure:"boot_loaders"`
+	Breed               string          `mapstructure:"breed"`
+	Initrd              string          `mapstructure:"initrd"`
+	RemoteBootInitrd    string          `mapstructure:"remote_boot_initrd"`
+	Kernel              string          `mapstructure:"kernel"`
+	RemoteBootKernel    string          `mapstructure:"remote_boot_kernel"`
+	RedhatManagementKey string          `mapstructure:"redhat_management_key"`
+	OSVersion           string          `mapstructure:"os_version"`
 }
 
 // convertRawDistro ...
@@ -67,6 +66,10 @@ func convertRawDistrosList(xmlrpcResult interface{}) ([]*Distro, error) {
 		if err != nil {
 			return nil, err
 		}
+		distro.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		distros = append(distros, distro)
 	}
 
@@ -90,7 +93,15 @@ func (c *Client) GetDistro(name string, flattened, resolved bool) (*Distro, erro
 		return nil, err
 	}
 
-	return convertRawDistro(name, result)
+	distro, err := convertRawDistro(name, result)
+	if err != nil {
+		return nil, err
+	}
+	distro.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return distro, nil
 }
 
 // CreateDistro creates a distro.

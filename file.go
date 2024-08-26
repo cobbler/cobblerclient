@@ -38,6 +38,10 @@ func convertRawFilesList(xmlrpcResult interface{}) ([]*File, error) {
 		if err != nil {
 			return nil, err
 		}
+		file.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		files = append(files, file)
 	}
 
@@ -61,7 +65,15 @@ func (c *Client) GetFile(name string, flattened, resolved bool) (*File, error) {
 		return nil, err
 	}
 
-	return convertRawFile(name, result)
+	file, err := convertRawFile(name, result)
+	if err != nil {
+		return nil, err
+	}
+	file.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return file, nil
 }
 
 // CreateFile creates a single file.

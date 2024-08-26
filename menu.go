@@ -38,6 +38,10 @@ func convertRawMenusList(xmlrpcResult interface{}) ([]*Menu, error) {
 		if err != nil {
 			return nil, err
 		}
+		menu.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		menus = append(menus, menu)
 	}
 
@@ -61,7 +65,15 @@ func (c *Client) GetMenu(name string, flattened, resolved bool) (*Menu, error) {
 		return nil, err
 	}
 
-	return convertRawMenu(name, result)
+	menu, err := convertRawMenu(name, result)
+	if err != nil {
+		return nil, err
+	}
+	menu.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return menu, nil
 }
 
 // CreateMenu creates a menu.

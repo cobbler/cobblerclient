@@ -26,6 +26,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strings"
 )
 
 const bodyTypeXML = "text/xml"
@@ -271,7 +272,7 @@ func (c *Client) IsValueInherit(value interface{}) bool {
 // cobblerDataHacks is a hook for the mapstructure decoder. It's only used by
 // decodeCobblerItem and should never be invoked directly.
 // It's used to smooth out issues with converting fields and types from Cobbler.
-func cobblerDataHacks(f, targetType reflect.Kind, data interface{}) (interface{}, error) {
+func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (interface{}, error) {
 	dataVal := reflect.ValueOf(data)
 
 	// Cobbler uses ~ internally to mean None/nil
@@ -289,18 +290,66 @@ func cobblerDataHacks(f, targetType reflect.Kind, data interface{}) (interface{}
 			return nil, nil
 		case reflect.Array:
 			return []string{}, nil
+		case reflect.Struct:
+			return Value[interface{}]{RawData: nil}, nil
 		default:
 			return nil, errors.New("unknown type was nil")
 		}
 	}
 
-	if f == reflect.Int64 && targetType == reflect.Bool {
+	if fromType == reflect.Int64 && targetType == reflect.Bool {
+		// XML-RPC Integer Booleans
 		if dataVal.Int() > 0 {
 			return true, nil
 		} else {
 			return false, nil
 		}
 	}
+
+	if fromType == reflect.String && targetType == reflect.Struct {
+		// Inherit or Flattened
+		// We can only safely tell if it is inherited but not if it is flattened
+		valueStruct := Value[interface{}]{}
+		valueStruct.IsInherited = dataVal.String() == "<<inherit>>"
+		valueStruct.RawData = data
+		return valueStruct, nil
+	}
+
+	if fromType == reflect.Slice && targetType == reflect.Struct {
+		// Slice that may or may not be inherited
+		valueStruct := Value[[]interface{}]{}
+		valueStruct.RawData = data
+		return valueStruct, nil
+	}
+
+	if fromType == reflect.Int64 && targetType == reflect.Struct {
+		// Slice that may or may not be inherited
+		valueStruct := Value[int]{}
+		integerValue, err := convertToInt(data)
+		valueStruct.Data = integerValue
+		valueStruct.RawData = data
+		if err == nil {
+			return Value[int]{}, err
+		}
+		return valueStruct, nil
+	}
+
+	if fromType == reflect.Bool && targetType == reflect.Struct {
+		// Slice that may or may not be inherited
+		valueStruct := Value[bool]{}
+		integerBoolean, err := convertToInt(data)
+		if err == nil {
+			return Value[bool]{}, err
+		}
+		boolValue, err := convertIntBool(integerBoolean)
+		valueStruct.Data = boolValue
+		valueStruct.RawData = data
+		if err == nil {
+			return Value[bool]{}, err
+		}
+		return valueStruct, nil
+	}
+
 	return data, nil
 }
 
@@ -369,8 +418,16 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		if field == "" {
 			continue
 		}
+		fieldValue := v.Interface()
+		if strings.HasPrefix(fieldType, "Value") {
+			if v.FieldByName("IsInherited").Interface().(bool) == true {
+				fieldValue = "<<inherit>>"
+			} else {
+				fieldValue = v.FieldByName("Data").Interface()
+			}
+		}
 
-		if result, err := c.Call(method, id, field, v.Interface(), c.Token); err != nil {
+		if result, err := c.Call(method, id, field, fieldValue, c.Token); err != nil {
 			return err
 		} else {
 			if result.(bool) == false && v.Interface() != false {
