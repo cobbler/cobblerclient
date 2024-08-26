@@ -217,8 +217,8 @@ func (c *Client) ListImageNames() ([]string, error) {
 }
 
 // GetImage returns a single image obtained by its name.
-func (c *Client) GetImage(name string) (*Image, error) {
-	result, err := c.Call("get_image", name, c.Token)
+func (c *Client) GetImage(name string, flattened, resolved bool) (*Image, error) {
+	result, err := c.getConcreteItem("get_image", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +246,7 @@ func (c *Client) CreateImage(image Image) (*Image, error) {
 	}
 
 	// Return a clean copy of the image
-	return c.GetImage(image.Name)
+	return c.GetImage(image.Name, false, false)
 }
 
 // UpdateImage updates a single image.

@@ -182,7 +182,7 @@ func main() {
 	}
 
 	fmt.Println("Getting system")
-	s2, err := c.GetSystem("testsystem")
+	s2, err := c.GetSystem("testsystem", false, false)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -218,7 +218,7 @@ func main() {
 		fmt.Println(err)
 	}
 
-	s2, err = c.GetSystem("testsystem")
+	s2, err = c.GetSystem("testsystem", false, false)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -231,7 +231,7 @@ func main() {
 		fmt.Printf("%+v\n", interfaces)
 	}
 
-	_, err = c.GetSystem("testsystem")
+	_, err = c.GetSystem("testsystem", false, false)
 	if err != nil {
 		fmt.Println(err)
 	}

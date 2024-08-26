@@ -31,8 +31,14 @@ func TestGetRepos(t *testing.T) {
 }
 
 func TestGetRepo(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClientSingle(t, "get-repo")
-	repo, err := c.GetRepo("rhel-7-x86_64")
+	c.CachedVersion = CobblerVersion{3, 3, 2}
+
+	// Act
+	repo, err := c.GetRepo("rhel-7-x86_64", false, false)
+
+	// Assert
 	FailOnError(t, err)
 	if repo.Name != "rhel-7-x86_64" {
 		t.Errorf("Wrong repo returned.")

@@ -87,8 +87,8 @@ func (c *Client) GetRepos() ([]*Repo, error) {
 }
 
 // GetRepo returns a single repo obtained by its name.
-func (c *Client) GetRepo(name string) (*Repo, error) {
-	result, err := c.Call("get_repo", name, c.Token)
+func (c *Client) GetRepo(name string, flattened, resolved bool) (*Repo, error) {
+	result, err := c.getConcreteItem("get_repo", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (c *Client) GetRepo(name string) (*Repo, error) {
 // CreateRepo creates a repo.
 func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 	// Make sure a repo with the same name does not already exist
-	if _, err := c.GetRepo(repo.Name); err == nil {
+	if _, err := c.GetRepo(repo.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a Repo with the name %s already exists", repo.Name)
 	}
 
@@ -118,7 +118,7 @@ func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 		return nil, err
 	}
 
-	return c.GetRepo(repo.Name)
+	return c.GetRepo(repo.Name, false, false)
 }
 
 // UpdateRepo updates a single repo.

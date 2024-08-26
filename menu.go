@@ -55,8 +55,8 @@ func (c *Client) GetMenus() ([]*Distro, error) {
 }
 
 // GetMenu returns a single menu obtained by its name.
-func (c *Client) GetMenu(name string) (*Menu, error) {
-	result, err := c.Call("get_menu", name, c.Token)
+func (c *Client) GetMenu(name string, flattened, resolved bool) (*Menu, error) {
+	result, err := c.getConcreteItem("get_menu", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func (c *Client) GetMenu(name string) (*Menu, error) {
 // CreateMenu creates a menu.
 func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 	// Make sure a menu with the same name does not already exist
-	if _, err := c.GetMenu(menu.Name); err == nil {
+	if _, err := c.GetMenu(menu.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a Menu with the name %s already exists", menu.Name)
 	}
 
@@ -86,7 +86,7 @@ func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 		return nil, err
 	}
 
-	return c.GetMenu(menu.Name)
+	return c.GetMenu(menu.Name, false, false)
 }
 
 // UpdateMenu updates a single menu.

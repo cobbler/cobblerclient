@@ -84,8 +84,8 @@ func (c *Client) GetDistros() ([]*Distro, error) {
 }
 
 // GetDistro returns a single distro obtained by its name.
-func (c *Client) GetDistro(name string) (*Distro, error) {
-	result, err := c.Call("get_distro", name, c.Token)
+func (c *Client) GetDistro(name string, flattened, resolved bool) (*Distro, error) {
+	result, err := c.getConcreteItem("get_distro", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
@@ -96,7 +96,7 @@ func (c *Client) GetDistro(name string) (*Distro, error) {
 // CreateDistro creates a distro.
 func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 	// Make sure a distro with the same name does not already exist
-	if _, err := c.GetDistro(distro.Name); err == nil {
+	if _, err := c.GetDistro(distro.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a Distro with the name %s already exists", distro.Name)
 	}
 
@@ -115,7 +115,7 @@ func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 		return nil, err
 	}
 
-	return c.GetDistro(distro.Name)
+	return c.GetDistro(distro.Name, false, false)
 }
 
 // UpdateDistro updates a single distro.

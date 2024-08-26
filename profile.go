@@ -98,8 +98,9 @@ func (c *Client) GetProfiles() ([]*Profile, error) {
 }
 
 // GetProfile returns a single profile obtained by its name.
-func (c *Client) GetProfile(name string) (*Profile, error) {
-	result, err := c.Call("get_profile", name, c.Token)
+func (c *Client) GetProfile(name string, flattened, resolved bool) (*Profile, error) {
+	result, err := c.getConcreteItem("get_profile", name, flattened, resolved)
+
 	if err != nil {
 		return nil, err
 	}
@@ -111,7 +112,7 @@ func (c *Client) GetProfile(name string) (*Profile, error) {
 // It ensures that a Distro is set and then sets other default values.
 func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	// Check if a profile with the same name already exists
-	if _, err := c.GetProfile(profile.Name); err == nil {
+	if _, err := c.GetProfile(profile.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a profile with the name %s already exists", profile.Name)
 	}
 
@@ -148,7 +149,7 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	}
 
 	// Return a clean copy of the profile
-	return c.GetProfile(profile.Name)
+	return c.GetProfile(profile.Name, false, false)
 }
 
 // UpdateProfile updates a single profile.

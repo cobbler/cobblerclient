@@ -57,8 +57,8 @@ func (c *Client) GetMgmtClasses() ([]*MgmtClass, error) {
 }
 
 // GetMgmtClass returns a single mgmtclass obtained by its name.
-func (c *Client) GetMgmtClass(name string) (*MgmtClass, error) {
-	result, err := c.Call("get_mgmtclass", name, c.Token)
+func (c *Client) GetMgmtClass(name string, flattened, resolved bool) (*MgmtClass, error) {
+	result, err := c.getConcreteItem("get_mgmtclass", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (c *Client) GetMgmtClass(name string) (*MgmtClass, error) {
 // CreateMgmtClass creates a mgmtclass.
 func (c *Client) CreateMgmtClass(mgmtclass MgmtClass) (*MgmtClass, error) {
 	// Make sure a mgmtclass with the same name does not already exist
-	if _, err := c.GetMgmtClass(mgmtclass.Name); err == nil {
+	if _, err := c.GetMgmtClass(mgmtclass.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a MgmtClass with the name %s already exists", mgmtclass.Name)
 	}
 
@@ -88,7 +88,7 @@ func (c *Client) CreateMgmtClass(mgmtclass MgmtClass) (*MgmtClass, error) {
 		return nil, err
 	}
 
-	return c.GetMgmtClass(mgmtclass.Name)
+	return c.GetMgmtClass(mgmtclass.Name, false, false)
 }
 
 // UpdateMgmtClass updates a single MgmtClass.

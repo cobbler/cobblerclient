@@ -32,10 +32,15 @@ func TestGetMenus(t *testing.T) {
 }
 
 func TestGetMenu(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClientSingle(t, "get-menu")
-	menu, err := c.GetMenu("testmenu")
-	FailOnError(t, err)
+	c.CachedVersion = CobblerVersion{3, 3, 2}
 
+	// Act
+	menu, err := c.GetMenu("testmenu", false, false)
+
+	// Assert
+	FailOnError(t, err)
 	if menu.Name != "testmenu" {
 		t.Errorf("Wrong menu returned.")
 	}

@@ -32,10 +32,15 @@ func TestGetProfiles(t *testing.T) {
 }
 
 func TestGetProfile(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClientSingle(t, "get-profile")
-	profile, err := c.GetProfile("Ubuntu-20.04-x86_64")
-	FailOnError(t, err)
+	c.CachedVersion = CobblerVersion{3, 3, 2}
 
+	// Act
+	profile, err := c.GetProfile("Ubuntu-20.04-x86_64", false, false)
+
+	// Assert
+	FailOnError(t, err)
 	if profile.Name != "Ubuntu-20.04-x86_64" {
 		t.Errorf("Wrong profile returned.")
 	}

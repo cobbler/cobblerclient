@@ -5,6 +5,17 @@ import (
 	"strings"
 )
 
+type Value[T any] struct {
+	Data           T
+	FlattenedValue string
+	IsInherited    bool
+}
+
+type ItemMeta struct {
+	IsFlattened bool
+	IsResolved  bool
+}
+
 // Item general fields
 type Item struct {
 	Parent            string      `mapstructure:"parent"`
@@ -108,6 +119,26 @@ func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[
 		}
 	}
 	return marshalledResult, nil
+}
+
+func (c *Client) getConcreteItem(method, name string, flattened, resolved bool) (interface{}, error) {
+	// Verify CachedVersion is set
+	err := c.setCachedVersion()
+	if err != nil {
+		return nil, err
+	}
+
+	// resolved was added with 3.3.3
+	var result interface{}
+	if c.CachedVersion.GreaterThan(&CobblerVersion{3, 3, 3}) {
+		// name, flatten, resolved, token
+		result, err = c.Call(method, name, flattened, resolved, c.Token)
+	} else {
+		// name, flatten, token
+		result, err = c.Call(method, name, flattened, c.Token)
+	}
+
+	return result, err
 }
 
 // FindItems searches for one or more items by any of its attributes.

@@ -138,12 +138,10 @@ func (c *Client) GetSystems() ([]*System, error) {
 }
 
 // GetSystem returns a single system obtained by its name.
-func (c *Client) GetSystem(name string) (*System, error) {
-	var system System
-
-	result, err := c.Call("get_system", name, c.Token)
+func (c *Client) GetSystem(name string, flattened, resolved bool) (*System, error) {
+	result, err := c.getConcreteItem("get_system", name, flattened, resolved)
 	if err != nil {
-		return &system, err
+		return nil, err
 	}
 
 	return c.convertRawSystem(name, result)
@@ -153,7 +151,7 @@ func (c *Client) GetSystem(name string) (*System, error) {
 // It ensures that either a Profile or Image are set and then sets other default values.
 func (c *Client) CreateSystem(system System) (*System, error) {
 	// Check if a system with the same name already exists
-	if _, err := c.GetSystem(system.Name); err == nil {
+	if _, err := c.GetSystem(system.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a system with the name %s already exists", system.Name)
 	}
 
@@ -233,7 +231,7 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	}
 
 	// Return a clean copy of the system
-	return c.GetSystem(system.Name)
+	return c.GetSystem(system.Name, false, false)
 }
 
 // UpdateSystem updates a single system.

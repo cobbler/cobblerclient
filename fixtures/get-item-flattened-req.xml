@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>get_mgmtclass</methodName>
+    <methodName>get_item</methodName>
     <params>
         <param>
             <value>
-                <string>testmgmtclass</string>
+                <string>system</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>testsys</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <boolean>1</boolean>
             </value>
         </param>
         <param>
             <value>
                 <boolean>0</boolean>
-            </value>
-        </param>
-        <param>
-            <value>
-                <string>securetoken99</string>
             </value>
         </param>
     </params>
