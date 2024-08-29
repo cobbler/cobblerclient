@@ -299,10 +299,12 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 
 	if fromType == reflect.Int64 && targetType == reflect.Bool {
 		// XML-RPC Integer Booleans
-		if dataVal.Int() > 0 {
+		if dataVal.Int() == 1 {
 			return true, nil
-		} else {
+		} else if dataVal.Int() == 0 {
 			return false, nil
+		} else {
+			return nil, errors.New("boolean needs to be 0 or 1 according to XML-RPC spec")
 		}
 	}
 
