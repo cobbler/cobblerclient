@@ -38,6 +38,10 @@ func convertRawMenusList(xmlrpcResult interface{}) ([]*Menu, error) {
 		if err != nil {
 			return nil, err
 		}
+		menu.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		menus = append(menus, menu)
 	}
 
@@ -55,19 +59,27 @@ func (c *Client) GetMenus() ([]*Distro, error) {
 }
 
 // GetMenu returns a single menu obtained by its name.
-func (c *Client) GetMenu(name string) (*Menu, error) {
-	result, err := c.Call("get_menu", name, c.Token)
+func (c *Client) GetMenu(name string, flattened, resolved bool) (*Menu, error) {
+	result, err := c.getConcreteItem("get_menu", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertRawMenu(name, result)
+	menu, err := convertRawMenu(name, result)
+	if err != nil {
+		return nil, err
+	}
+	menu.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return menu, nil
 }
 
 // CreateMenu creates a menu.
 func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 	// Make sure a menu with the same name does not already exist
-	if _, err := c.GetMenu(menu.Name); err == nil {
+	if _, err := c.GetMenu(menu.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a Menu with the name %s already exists", menu.Name)
 	}
 
@@ -86,7 +98,7 @@ func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 		return nil, err
 	}
 
-	return c.GetMenu(menu.Name)
+	return c.GetMenu(menu.Name, false, false)
 }
 
 // UpdateMenu updates a single menu.

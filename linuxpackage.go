@@ -39,6 +39,10 @@ func convertRawLinuxPackageList(xmlrpcResult interface{}) ([]*Package, error) {
 		if err != nil {
 			return nil, err
 		}
+		linuxpackage.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		linuxpackages = append(linuxpackages, linuxpackage)
 	}
 
@@ -56,19 +60,27 @@ func (c *Client) GetPackages() ([]*Package, error) {
 }
 
 // GetPackage returns a single package obtained by its name.
-func (c *Client) GetPackage(name string) (*Package, error) {
-	result, err := c.Call("get_package", name, c.Token)
+func (c *Client) GetPackage(name string, flattened, resolved bool) (*Package, error) {
+	result, err := c.getConcreteItem("get_package", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertRawLinuxPackage(name, result)
+	linuxpackage, err := convertRawLinuxPackage(name, result)
+	if err != nil {
+		return nil, err
+	}
+	linuxpackage.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return linuxpackage, nil
 }
 
 // CreatePackage creates a package.
 func (c *Client) CreatePackage(linuxpackage Package) (*Package, error) {
 	// Make sure a package with the same name does not already exist
-	if _, err := c.GetPackage(linuxpackage.Name); err == nil {
+	if _, err := c.GetPackage(linuxpackage.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a Package with the name %s already exists", linuxpackage.Name)
 	}
 
@@ -87,7 +99,7 @@ func (c *Client) CreatePackage(linuxpackage Package) (*Package, error) {
 		return nil, err
 	}
 
-	return c.GetPackage(linuxpackage.Name)
+	return c.GetPackage(linuxpackage.Name, false, false)
 }
 
 // UpdatePackage updates a single package.

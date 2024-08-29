@@ -32,16 +32,22 @@ func TestGetSystems(t *testing.T) {
 }
 
 func TestGetSystem(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClientSingle(t, "get-system")
-	system, err := c.GetSystem("test")
-	FailOnError(t, err)
+	c.CachedVersion = CobblerVersion{3, 3, 2}
 
+	// Act
+	system, err := c.GetSystem("test", false, false)
+
+	// Assert
+	FailOnError(t, err)
 	if system.Name != "test" {
 		t.Errorf("Wrong system returned.")
 	}
 }
 
 func TestNewSystem(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClient(t, []string{
 		"create-system-name-check",
 		"new-system",
@@ -90,6 +96,7 @@ func TestNewSystem(t *testing.T) {
 		"new-system-save",
 		"new-system-get",
 	})
+	c.CachedVersion = CobblerVersion{3, 3, 2}
 	sys := System{
 		Item: Item{
 			Name: "mytestsystem",
@@ -98,21 +105,21 @@ func TestNewSystem(t *testing.T) {
 		NameServers: []string{"8.8.8.8", "8.8.4.4"},
 		Profile:     "centos7-x86_64",
 	}
-	newSys, err := c.CreateSystem(sys)
-	FailOnError(t, err)
 
+	// Act
+	newSys, err := c.CreateSystem(sys)
+
+	// Assert
+	FailOnError(t, err)
 	if newSys.Name != "mytestsystem" {
 		t.Errorf("Wrong system name returned.")
 	}
-
 	if newSys.Hostname != "blahhost" {
 		t.Errorf("Wrong system hostname returned.")
 	}
-
 	if len(newSys.NameServers) != 2 || newSys.NameServers[0] != "8.8.8.8" {
 		t.Errorf("Wrong system name servers returned.")
 	}
-
 	if newSys.Profile != "centos7-x86_64" {
 		t.Errorf("Wrong system profile returned.")
 	}

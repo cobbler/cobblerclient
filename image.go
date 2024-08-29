@@ -150,24 +150,24 @@ type Image struct {
 	// ImageType            ImageType      `mapstructure:"image_type"`
 	// VirtDiskDriver       VirtDiskDriver `mapstructure:"virt_disk_driver"`
 	// VirtType             VirtType `mapstructure:"virt_type"`
-	Arch                 string      `mapstructure:"arch"`
-	Autoinstall          string      `mapstructure:"autoinstall"`
-	Breed                string      `mapstructure:"breed"`
-	File                 string      `mapstructure:"file"`
-	ImageType            string      `mapstructure:"image_type"`
-	NetworkCount         int         `mapstructure:"network_count"`
-	OsVersion            string      `mapstructure:"os_version"`
-	BootLoaders          []string    `mapstructure:"boot_loaders"`
-	Menu                 string      `mapstructure:"menu"`
-	VirtAutoBoot         bool        `mapstructure:"virt_auto_boot"`
-	VirtBridge           string      `mapstructure:"virt_bridge"`
-	VirtCpus             int         `mapstructure:"virt_cpus"`
-	VirtDiskDriver       string      `mapstructure:"virt_disk_driver"`
-	VirtFileSize         interface{} `mapstructure:"virt_file_size"`
-	VirtPath             string      `mapstructure:"virt_path"`
-	VirtRam              int         `mapstructure:"virt_ram"`
-	VirtType             string      `mapstructure:"virt_type"`
-	SupportedBootLoaders []string    `mapstructure:"supported_boot_loaders"`
+	Arch                 string         `mapstructure:"arch"`
+	Autoinstall          string         `mapstructure:"autoinstall"`
+	Breed                string         `mapstructure:"breed"`
+	File                 string         `mapstructure:"file"`
+	ImageType            string         `mapstructure:"image_type"`
+	NetworkCount         int            `mapstructure:"network_count"`
+	OsVersion            string         `mapstructure:"os_version"`
+	BootLoaders          []string       `mapstructure:"boot_loaders"`
+	Menu                 string         `mapstructure:"menu"`
+	VirtAutoBoot         bool           `mapstructure:"virt_auto_boot"`
+	VirtBridge           string         `mapstructure:"virt_bridge"`
+	VirtCpus             int            `mapstructure:"virt_cpus"`
+	VirtDiskDriver       string         `mapstructure:"virt_disk_driver"`
+	VirtFileSize         Value[float64] `mapstructure:"virt_file_size"`
+	VirtPath             string         `mapstructure:"virt_path"`
+	VirtRam              Value[int]     `mapstructure:"virt_ram"`
+	VirtType             string         `mapstructure:"virt_type"`
+	SupportedBootLoaders []string       `mapstructure:"supported_boot_loaders"`
 
 	Client
 }
@@ -191,11 +191,15 @@ func convertRawImagesList(xmlrpcResult interface{}) ([]*Image, error) {
 	var images []*Image
 
 	for _, d := range xmlrpcResult.([]interface{}) {
-		distro, err := convertRawImage("unknown", d)
+		image, err := convertRawImage("unknown", d)
 		if err != nil {
 			return nil, err
 		}
-		images = append(images, distro)
+		image.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
+		images = append(images, image)
 	}
 
 	return images, nil
@@ -217,13 +221,21 @@ func (c *Client) ListImageNames() ([]string, error) {
 }
 
 // GetImage returns a single image obtained by its name.
-func (c *Client) GetImage(name string) (*Image, error) {
-	result, err := c.Call("get_image", name, c.Token)
+func (c *Client) GetImage(name string, flattened, resolved bool) (*Image, error) {
+	result, err := c.getConcreteItem("get_image", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertRawImage(name, result)
+	image, err := convertRawImage(name, result)
+	if err != nil {
+		return nil, err
+	}
+	image.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return image, nil
 }
 
 // CreateImage creates an image.
@@ -246,7 +258,7 @@ func (c *Client) CreateImage(image Image) (*Image, error) {
 	}
 
 	// Return a clean copy of the image
-	return c.GetImage(image.Name)
+	return c.GetImage(image.Name, false, false)
 }
 
 // UpdateImage updates a single image.

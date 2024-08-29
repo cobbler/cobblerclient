@@ -32,11 +32,16 @@ func TestGetPackages(t *testing.T) {
 }
 
 func TestGetPackage(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClientSingle(t, "get-package")
-	distro, err := c.GetPackage("testpackage")
-	FailOnError(t, err)
+	c.CachedVersion = CobblerVersion{3, 3, 2}
 
-	if distro.Name != "testpackage" {
+	// Act
+	linuxpackage, err := c.GetPackage("testpackage", false, false)
+
+	// Assert
+	FailOnError(t, err)
+	if linuxpackage.Name != "testpackage" {
 		t.Errorf("Wrong package returned.")
 	}
 }

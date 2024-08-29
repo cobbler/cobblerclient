@@ -28,18 +28,17 @@ type Distro struct {
 	Item `mapstructure:",squash"`
 
 	// These are internal fields and cannot be modified.
-	SourceRepos         []string `mapstructure:"source_repos"   cobbler:"noupdate"`
-	TreeBuildTime       string   `mapstructure:"tree_build_time" cobbler:"noupdate"`
-	Arch                string   `mapstructure:"arch"`
-	BootLoaders         []string `mapstructure:"boot_loaders"`
-	Breed               string   `mapstructure:"breed"`
-	Comment             string   `mapstructure:"comment"`
-	Initrd              string   `mapstructure:"initrd"`
-	RemoteBootInitrd    string   `mapstructure:"remote_boot_initrd"`
-	Kernel              string   `mapstructure:"kernel"`
-	RemoteBootKernel    string   `mapstructure:"remote_boot_kernel"`
-	RedhatManagementKey string   `mapstructure:"redhat_management_key"`
-	OSVersion           string   `mapstructure:"os_version"`
+	SourceRepos         []string        `mapstructure:"source_repos"   cobbler:"noupdate"`
+	TreeBuildTime       string          `mapstructure:"tree_build_time" cobbler:"noupdate"`
+	Arch                string          `mapstructure:"arch"`
+	BootLoaders         Value[[]string] `mapstructure:"boot_loaders"`
+	Breed               string          `mapstructure:"breed"`
+	Initrd              string          `mapstructure:"initrd"`
+	RemoteBootInitrd    string          `mapstructure:"remote_boot_initrd"`
+	Kernel              string          `mapstructure:"kernel"`
+	RemoteBootKernel    string          `mapstructure:"remote_boot_kernel"`
+	RedhatManagementKey string          `mapstructure:"redhat_management_key"`
+	OSVersion           string          `mapstructure:"os_version"`
 }
 
 // convertRawDistro ...
@@ -67,6 +66,10 @@ func convertRawDistrosList(xmlrpcResult interface{}) ([]*Distro, error) {
 		if err != nil {
 			return nil, err
 		}
+		distro.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		distros = append(distros, distro)
 	}
 
@@ -84,19 +87,27 @@ func (c *Client) GetDistros() ([]*Distro, error) {
 }
 
 // GetDistro returns a single distro obtained by its name.
-func (c *Client) GetDistro(name string) (*Distro, error) {
-	result, err := c.Call("get_distro", name, c.Token)
+func (c *Client) GetDistro(name string, flattened, resolved bool) (*Distro, error) {
+	result, err := c.getConcreteItem("get_distro", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertRawDistro(name, result)
+	distro, err := convertRawDistro(name, result)
+	if err != nil {
+		return nil, err
+	}
+	distro.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return distro, nil
 }
 
 // CreateDistro creates a distro.
 func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 	// Make sure a distro with the same name does not already exist
-	if _, err := c.GetDistro(distro.Name); err == nil {
+	if _, err := c.GetDistro(distro.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a Distro with the name %s already exists", distro.Name)
 	}
 
@@ -115,7 +126,7 @@ func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 		return nil, err
 	}
 
-	return c.GetDistro(distro.Name)
+	return c.GetDistro(distro.Name, false, false)
 }
 
 // UpdateDistro updates a single distro.

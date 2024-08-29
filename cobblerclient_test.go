@@ -17,9 +17,38 @@ limitations under the License.
 package cobblerclient
 
 import (
-	"reflect"
+	"github.com/go-test/deep"
 	"testing"
 )
+
+func TestSetCachedVersion(t *testing.T) {
+	// Arrange
+	c := createStubHTTPClientSingle(t, "extended-version")
+	expectedVersion := CobblerVersion{
+		Major: 3,
+		Minor: 4,
+		Patch: 0,
+	}
+
+	// Act
+	err := c.setCachedVersion()
+
+	// Assert
+	FailOnError(t, err)
+	deep.Equal(c.CachedVersion, expectedVersion)
+}
+
+func TestInvalidateCachedVersion(t *testing.T) {
+	// Arrange
+	c := createStubHTTPClientSingle(t, "extended-version")
+	_ = c.setCachedVersion()
+
+	// Act
+	c.invalidateCachedVersion()
+
+	// Assert
+	deep.Equal(c.CachedVersion, CobblerVersion{})
+}
 
 func TestGenerateAutoinstall(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "generate-autoinstall")
@@ -141,33 +170,6 @@ func TestRunInstallTriggers(t *testing.T) {
 
 	err := c.RunInstallTriggers("", "", "", "")
 	FailOnError(t, err)
-}
-
-func TestVersion(t *testing.T) {
-	c := createStubHTTPClientSingle(t, "version")
-
-	res, err := c.Version()
-	FailOnError(t, err)
-	if res != 3.4 {
-		t.Errorf("Wrong version returned.")
-	}
-}
-
-func TestExtendedVersion(t *testing.T) {
-	c := createStubHTTPClientSingle(t, "extended-version")
-	expectedResult := ExtendedVersion{
-		Gitdate:      "Mon Jun 13 16:13:33 2022 +0200",
-		Gitstamp:     "0e20f01b",
-		Builddate:    "Mon Jun 27 06:34:23 2022",
-		Version:      "3.4.0",
-		VersionTuple: []int{3, 4, 0},
-	}
-
-	result, err := c.ExtendedVersion()
-	FailOnError(t, err)
-	if !reflect.DeepEqual(result, expectedResult) {
-		t.Errorf("Result from 'extended_version' did not match expected result.")
-	}
 }
 
 func TestGetReposCompatibleWithProfile(t *testing.T) {

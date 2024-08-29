@@ -32,10 +32,15 @@ func TestGetImages(t *testing.T) {
 }
 
 func TestGetImage(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClientSingle(t, "get-image")
-	image, err := c.GetImage("testimage")
-	FailOnError(t, err)
+	c.CachedVersion = CobblerVersion{3, 3, 2}
 
+	// Act
+	image, err := c.GetImage("testimage", false, false)
+
+	// Assert
+	FailOnError(t, err)
 	if image.Name != "testimage" {
 		t.Errorf("Wrong image returned.")
 	}

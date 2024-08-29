@@ -34,14 +34,14 @@ type Repo struct {
 	AptDists        []string          `mapstructure:"apt_dists"`
 	Arch            string            `mapstructure:"arch"`
 	Breed           string            `mapstructure:"breed"`
-	CreateRepoFlags string            `mapstructure:"createrepo_flags"`
+	CreateRepoFlags Value[string]     `mapstructure:"createrepo_flags"`
 	Environment     map[string]string `mapstructure:"environment"`
 	KeepUpdated     bool              `mapstructure:"keep_updated"`
 	Mirror          string            `mapstructure:"mirror"`
 	MirrorLocally   bool              `mapstructure:"mirror_locally"`
 	MirrorType      string            `mapstructure:"mirror_type"`
 	Priority        int               `mapstructure:"priority"`
-	Proxy           string            `mapstructure:"proxy" cobbler:"newfield"`
+	Proxy           Value[string]     `mapstructure:"proxy" cobbler:"newfield"`
 	RsyncOpts       map[string]string `mapstructure:"rsyncopts"`
 	RpmList         []string          `mapstructure:"rpm_list"`
 	YumOpts         map[string]string `mapstructure:"yumopts"`
@@ -70,6 +70,10 @@ func convertRawReposList(xmlrpcResult interface{}) ([]*Repo, error) {
 		if err != nil {
 			return nil, err
 		}
+		repo.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		repos = append(repos, repo)
 	}
 
@@ -87,19 +91,27 @@ func (c *Client) GetRepos() ([]*Repo, error) {
 }
 
 // GetRepo returns a single repo obtained by its name.
-func (c *Client) GetRepo(name string) (*Repo, error) {
-	result, err := c.Call("get_repo", name, c.Token)
+func (c *Client) GetRepo(name string, flattened, resolved bool) (*Repo, error) {
+	result, err := c.getConcreteItem("get_repo", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertRawRepo(name, result)
+	repo, err := convertRawRepo(name, result)
+	if err != nil {
+		return nil, err
+	}
+	repo.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return repo, nil
 }
 
 // CreateRepo creates a repo.
 func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 	// Make sure a repo with the same name does not already exist
-	if _, err := c.GetRepo(repo.Name); err == nil {
+	if _, err := c.GetRepo(repo.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a Repo with the name %s already exists", repo.Name)
 	}
 
@@ -118,7 +130,7 @@ func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 		return nil, err
 	}
 
-	return c.GetRepo(repo.Name)
+	return c.GetRepo(repo.Name, false, false)
 }
 
 // UpdateRepo updates a single repo.

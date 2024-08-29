@@ -32,10 +32,15 @@ func TestGetMgmtclasses(t *testing.T) {
 }
 
 func TestGetMgmtclass(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClientSingle(t, "get-mgmtclass")
-	mgmtclass, err := c.GetMgmtClass("testmgmtclass")
-	FailOnError(t, err)
+	c.CachedVersion = CobblerVersion{3, 3, 2}
 
+	// Act
+	mgmtclass, err := c.GetMgmtClass("testmgmtclass", false, false)
+
+	// Assert
+	FailOnError(t, err)
 	if mgmtclass.Name != "testmgmtclass" {
 		t.Errorf("Wrong mgmtclass returned.")
 	}

@@ -145,6 +145,33 @@ func TestGetItem(t *testing.T) {
 	}
 }
 
+func TestGetItemFlattened(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-item-flattened")
+	res, err := c.GetItem("system", "testsys", true, false)
+	FailOnError(t, err)
+	if res["profile"] != "testprof" {
+		t.Error("expected a different profile")
+	}
+	if res["kernel_options"] != "test=1" {
+		t.Error("expected different kernel options")
+	}
+}
+
+func TestGetItemResolved(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-item-resolved")
+	res, err := c.GetItem("system", "testsys", false, true)
+	FailOnError(t, err)
+	if res["profile"] != "testprof" {
+		t.Error("expected a different profile")
+	}
+	if res["redhat_management_key"] != "test" {
+		t.Error("expected a different redhat_management_key")
+	}
+	if len(deep.Equal(res["kernel_options"], map[string]interface{}{"test": "1"})) != 0 {
+		t.Error("expected different kernel options")
+	}
+}
+
 func TestFindItems(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-items")
 	criteria := make(map[string]interface{}, 1)

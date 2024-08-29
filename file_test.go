@@ -32,10 +32,15 @@ func TestGetFiles(t *testing.T) {
 }
 
 func TestGetFile(t *testing.T) {
+	// Arrange
 	c := createStubHTTPClientSingle(t, "get-file")
-	file, err := c.GetFile("testfile")
-	FailOnError(t, err)
+	c.CachedVersion = CobblerVersion{3, 3, 2}
 
+	// Act
+	file, err := c.GetFile("testfile", false, false)
+
+	// Assert
+	FailOnError(t, err)
 	if file.Name != "testfile" {
 		t.Errorf("Wrong file returned.")
 	}

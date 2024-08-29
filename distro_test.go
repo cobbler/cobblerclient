@@ -33,7 +33,8 @@ func TestGetDistros(t *testing.T) {
 
 func TestGetDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distro")
-	distro, err := c.GetDistro("Ubuntu-20.04-x86_64")
+	c.CachedVersion = CobblerVersion{3, 3, 2}
+	distro, err := c.GetDistro("Ubuntu-20.04-x86_64", false, false)
 	FailOnError(t, err)
 
 	if distro.Name != "Ubuntu-20.04-x86_64" {

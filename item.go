@@ -5,25 +5,41 @@ import (
 	"strings"
 )
 
+type Value[T any] struct {
+	Data           T
+	FlattenedValue string
+	IsInherited    bool
+	RawData        interface{}
+}
+
+type ItemMeta struct {
+	IsFlattened bool
+	IsResolved  bool
+}
+
 // Item general fields
 type Item struct {
-	Parent            string      `mapstructure:"parent"`
-	Depth             int         `mapstructure:"depth"          cobbler:"noupdate"`
-	Children          []string    `mapstructure:"children"`
-	CTime             float64     `mapstructure:"ctime"          cobbler:"noupdate"`
-	MTime             float64     `mapstructure:"mtime"          cobbler:"noupdate"`
-	Uid               string      `mapstructure:"uid"            cobbler:"noupdate"`
-	Name              string      `mapstructure:"name"`
-	Comment           string      `mapstructure:"comment"`
-	KernelOptions     interface{} `mapstructure:"kernel_options"`
-	KernelOptionsPost interface{} `mapstructure:"kernel_options_post"`
-	AutoinstallMeta   interface{} `mapstructure:"autoinstall_meta"`
-	FetchableFiles    interface{} `mapstructure:"fetchable_files"`
-	BootFiles         interface{} `mapstructure:"boot_files"`
-	TemplateFiles     interface{} `mapstructure:"template_files"`
-	Owners            []string    `mapstructure:"owners"`
-	MgmtClasses       []string    `mapstructure:"mgmt_classes"`
-	MgmtParameters    interface{} `mapstructure:"mgmt_parameters"`
+	// Meta information about an item
+	Meta ItemMeta `cobbler:"noupdate"`
+
+	// Item fields
+	Parent            string                        `mapstructure:"parent"`
+	Depth             int                           `mapstructure:"depth"          cobbler:"noupdate"`
+	Children          []string                      `mapstructure:"children"`
+	CTime             float64                       `mapstructure:"ctime"          cobbler:"noupdate"`
+	MTime             float64                       `mapstructure:"mtime"          cobbler:"noupdate"`
+	Uid               string                        `mapstructure:"uid"            cobbler:"noupdate"`
+	Name              string                        `mapstructure:"name"`
+	Comment           string                        `mapstructure:"comment"`
+	KernelOptions     Value[map[string]interface{}] `mapstructure:"kernel_options"`
+	KernelOptionsPost Value[map[string]interface{}] `mapstructure:"kernel_options_post"`
+	AutoinstallMeta   Value[map[string]interface{}] `mapstructure:"autoinstall_meta"`
+	FetchableFiles    Value[map[string]interface{}] `mapstructure:"fetchable_files"`
+	BootFiles         Value[map[string]interface{}] `mapstructure:"boot_files"`
+	TemplateFiles     Value[map[string]interface{}] `mapstructure:"template_files"`
+	Owners            Value[[]string]               `mapstructure:"owners"`
+	MgmtClasses       Value[[]string]               `mapstructure:"mgmt_classes"`
+	MgmtParameters    Value[map[string]interface{}] `mapstructure:"mgmt_parameters"`
 }
 
 // ModifyItem is a generic method to modify items. Changes made with this method are not persisted until a call to
@@ -108,6 +124,26 @@ func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[
 		}
 	}
 	return marshalledResult, nil
+}
+
+func (c *Client) getConcreteItem(method, name string, flattened, resolved bool) (interface{}, error) {
+	// Verify CachedVersion is set
+	err := c.setCachedVersion()
+	if err != nil {
+		return nil, err
+	}
+
+	// resolved was added with 3.3.3
+	var result interface{}
+	if c.CachedVersion.GreaterThan(&CobblerVersion{3, 3, 3}) {
+		// name, flatten, resolved, token
+		result, err = c.Call(method, name, flattened, resolved, c.Token)
+	} else {
+		// name, flatten, token
+		result, err = c.Call(method, name, flattened, c.Token)
+	}
+
+	return result, err
 }
 
 // FindItems searches for one or more items by any of its attributes.

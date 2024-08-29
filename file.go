@@ -38,6 +38,10 @@ func convertRawFilesList(xmlrpcResult interface{}) ([]*File, error) {
 		if err != nil {
 			return nil, err
 		}
+		file.Meta = ItemMeta{
+			IsFlattened: false,
+			IsResolved:  false,
+		}
 		files = append(files, file)
 	}
 
@@ -55,19 +59,27 @@ func (c *Client) GetFiles() ([]*File, error) {
 }
 
 // GetFile returns a single file obtained by its name.
-func (c *Client) GetFile(name string) (*File, error) {
-	result, err := c.Call("get_file", name, c.Token)
+func (c *Client) GetFile(name string, flattened, resolved bool) (*File, error) {
+	result, err := c.getConcreteItem("get_file", name, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertRawFile(name, result)
+	file, err := convertRawFile(name, result)
+	if err != nil {
+		return nil, err
+	}
+	file.Meta = ItemMeta{
+		IsFlattened: flattened,
+		IsResolved:  resolved,
+	}
+	return file, nil
 }
 
 // CreateFile creates a single file.
 func (c *Client) CreateFile(file File) (*File, error) {
 	// Make sure a file with the same name does not already exist
-	if _, err := c.GetFile(file.Name); err == nil {
+	if _, err := c.GetFile(file.Name, false, false); err == nil {
 		return nil, fmt.Errorf("a File with the name %s already exists", file.Name)
 	}
 
@@ -86,7 +98,7 @@ func (c *Client) CreateFile(file File) (*File, error) {
 		return nil, err
 	}
 
-	return c.GetFile(file.Name)
+	return c.GetFile(file.Name, false, false)
 }
 
 // UpdateFile updates a single file.

@@ -1,6 +1,6 @@
 module github.com/cobbler/cobblerclient
 
-go 1.16
+go 1.18
 
 require (
 	github.com/fatih/structs v1.1.0

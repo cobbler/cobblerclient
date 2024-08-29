@@ -26,6 +26,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strings"
 )
 
 const bodyTypeXML = "text/xml"
@@ -43,6 +44,8 @@ type Client struct {
 	// The longevity of this token is defined server side in the setting "auth_token_duration". Per default no token is
 	// retrieved. A token can be obtained via the [Client.Login] method.
 	Token string
+	// To allow for version dependant API calls in the client we cache the major, minor and patch version.
+	CachedVersion CobblerVersion
 }
 
 // ClientConfig is the URL of Cobbler plus login credentials.
@@ -52,19 +55,12 @@ type ClientConfig struct {
 	Password string
 }
 
-type ExtendedVersion struct {
-	Gitdate      string
-	Gitstamp     string
-	Builddate    string
-	Version      string
-	VersionTuple []int
-}
-
 // NewClient creates a [Client] struct which is ready for usage.
 func NewClient(httpClient HTTPClient, c ClientConfig) Client {
 	return Client{
-		httpClient: httpClient,
-		config:     c,
+		httpClient:    httpClient,
+		config:        c,
+		CachedVersion: CobblerVersion{},
 	}
 }
 
@@ -100,6 +96,29 @@ func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 	}
 
 	return result, nil
+}
+
+func (c *Client) setCachedVersion() error {
+	if c.CachedVersion != (CobblerVersion{}) {
+		return nil
+	}
+	extendedVersion, err := c.ExtendedVersion()
+	if err != nil {
+		return err
+	}
+	if len(extendedVersion.VersionTuple) != 3 {
+		return errors.New("cobblerclient: invalid length of extended version tuple")
+	}
+	c.CachedVersion = CobblerVersion{
+		Major: extendedVersion.VersionTuple[0],
+		Minor: extendedVersion.VersionTuple[1],
+		Patch: extendedVersion.VersionTuple[2],
+	}
+	return nil
+}
+
+func (c *Client) invalidateCachedVersion() {
+	c.CachedVersion = CobblerVersion{}
 }
 
 // GenerateAutoinstall generates the autoinstallation file for a given profile or system.
@@ -195,37 +214,6 @@ func (c *Client) RunInstallTriggers(mode string, objtype string, name string, ip
 	return err
 }
 
-// Version is a shorter and easier version representation. Normally you want to call [Client.ExtendedVersion].
-func (c *Client) Version() (float64, error) {
-	res, err := c.Call("version")
-	return res.(float64), err
-}
-
-// ExtendedVersion returns the version information of the server.
-func (c *Client) ExtendedVersion() (ExtendedVersion, error) {
-	extendedVersion := ExtendedVersion{}
-	data, err := c.Call("extended_version")
-	if err != nil {
-		return extendedVersion, err
-	}
-	switch data.(type) {
-	case map[string]interface{}:
-		data := data.(map[string]interface{})
-		var versionTuple, err = returnIntSlice(data["version_tuple"], err)
-		if err != nil {
-			return extendedVersion, err
-		}
-		extendedVersion.Version = data["version"].(string)
-		extendedVersion.VersionTuple = versionTuple
-		extendedVersion.Builddate = data["builddate"].(string)
-		extendedVersion.Gitdate = data["gitdate"].(string)
-		extendedVersion.Gitstamp = data["gitstamp"].(string)
-	default:
-		return extendedVersion, err
-	}
-	return extendedVersion, err
-}
-
 // GetReposCompatibleWithProfile returns all repositories that can be potentially assigned to a given profile.
 func (c *Client) GetReposCompatibleWithProfile(profile_name string) error {
 	_, err := c.Call("get_repos_compatible_with_profile", profile_name, c.Token)
@@ -284,7 +272,7 @@ func (c *Client) IsValueInherit(value interface{}) bool {
 // cobblerDataHacks is a hook for the mapstructure decoder. It's only used by
 // decodeCobblerItem and should never be invoked directly.
 // It's used to smooth out issues with converting fields and types from Cobbler.
-func cobblerDataHacks(f, targetType reflect.Kind, data interface{}) (interface{}, error) {
+func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (interface{}, error) {
 	dataVal := reflect.ValueOf(data)
 
 	// Cobbler uses ~ internally to mean None/nil
@@ -302,18 +290,68 @@ func cobblerDataHacks(f, targetType reflect.Kind, data interface{}) (interface{}
 			return nil, nil
 		case reflect.Array:
 			return []string{}, nil
+		case reflect.Struct:
+			return Value[interface{}]{RawData: nil}, nil
 		default:
 			return nil, errors.New("unknown type was nil")
 		}
 	}
 
-	if f == reflect.Int64 && targetType == reflect.Bool {
-		if dataVal.Int() > 0 {
+	if fromType == reflect.Int64 && targetType == reflect.Bool {
+		// XML-RPC Integer Booleans
+		if dataVal.Int() == 1 {
 			return true, nil
-		} else {
+		} else if dataVal.Int() == 0 {
 			return false, nil
+		} else {
+			return nil, errors.New("boolean needs to be 0 or 1 according to XML-RPC spec")
 		}
 	}
+
+	if fromType == reflect.String && targetType == reflect.Struct {
+		// Inherit or Flattened
+		// We can only safely tell if it is inherited but not if it is flattened
+		valueStruct := Value[interface{}]{}
+		valueStruct.IsInherited = dataVal.String() == "<<inherit>>"
+		valueStruct.RawData = data
+		return valueStruct, nil
+	}
+
+	if fromType == reflect.Slice && targetType == reflect.Struct {
+		// Slice that may or may not be inherited
+		valueStruct := Value[[]interface{}]{}
+		valueStruct.RawData = data
+		return valueStruct, nil
+	}
+
+	if fromType == reflect.Int64 && targetType == reflect.Struct {
+		// Slice that may or may not be inherited
+		valueStruct := Value[int]{}
+		integerValue, err := convertToInt(data)
+		valueStruct.Data = integerValue
+		valueStruct.RawData = data
+		if err == nil {
+			return Value[int]{}, err
+		}
+		return valueStruct, nil
+	}
+
+	if fromType == reflect.Bool && targetType == reflect.Struct {
+		// Slice that may or may not be inherited
+		valueStruct := Value[bool]{}
+		integerBoolean, err := convertToInt(data)
+		if err == nil {
+			return Value[bool]{}, err
+		}
+		boolValue, err := convertIntBool(integerBoolean)
+		valueStruct.Data = boolValue
+		valueStruct.RawData = data
+		if err == nil {
+			return Value[bool]{}, err
+		}
+		return valueStruct, nil
+	}
+
 	return data, nil
 }
 
@@ -382,8 +420,16 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		if field == "" {
 			continue
 		}
+		fieldValue := v.Interface()
+		if strings.HasPrefix(fieldType, "Value") {
+			if v.FieldByName("IsInherited").Interface().(bool) == true {
+				fieldValue = "<<inherit>>"
+			} else {
+				fieldValue = v.FieldByName("Data").Interface()
+			}
+		}
 
-		if result, err := c.Call(method, id, field, v.Interface(), c.Token); err != nil {
+		if result, err := c.Call(method, id, field, fieldValue, c.Token); err != nil {
 			return err
 		} else {
 			if result.(bool) == false && v.Interface() != false {
