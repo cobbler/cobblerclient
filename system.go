@@ -35,12 +35,16 @@ type System struct {
 	ReposEnabled          bool            `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 	Autoinstall           string          `mapstructure:"autoinstall"`
 	BootLoaders           Value[[]string] `mapstructure:"boot_loaders"`
+	ConnectedMode         bool            `mapstructure:"connected_mode"`
 	EnableIPXE            Value[bool]     `mapstructure:"enable_ipxe"`
+	EnableMenu            Value[bool]     `mapstructure:"enable_menu"`
+	Filename              string          `mapstructure:"filename"`
 	Gateway               string          `mapstructure:"gateway"`
 	Hostname              string          `mapstructure:"hostname"`
+	IPv6DefaultDevice     string          `mapstructure:"ipv6_default_device"`
 	Image                 string          `mapstructure:"image"`
 	Interfaces            Interfaces      `mapstructure:"interfaces" cobbler:"noupdate"`
-	IPv6DefaultDevice     string          `mapstructure:"ipv6_default_device"`
+	Menu                  string          `mapstructure:"menu"`
 	NameServers           []string        `mapstructure:"name_servers"`
 	NameServersSearch     []string        `mapstructure:"name_servers_search"`
 	NetbootEnabled        bool            `mapstructure:"netboot_enabled"`
@@ -48,19 +52,25 @@ type System struct {
 	NextServerv6          string          `mapstructure:"next_server_v6"`
 	PowerAddress          string          `mapstructure:"power_address"`
 	PowerID               string          `mapstructure:"power_id"`
+	PowerIdentityFile     string          `mapstructure:"power_identity_file"`
+	PowerOptions          string          `mapstructure:"power_options"`
 	PowerPass             string          `mapstructure:"power_pass"`
 	PowerType             string          `mapstructure:"power_type"`
 	PowerUser             string          `mapstructure:"power_user"`
 	Profile               string          `mapstructure:"profile"`
 	Proxy                 string          `mapstructure:"proxy"`
 	RedhatManagementKey   string          `mapstructure:"redhat_management_key"`
+	SerialBaudRate        int             `mapstructure:"serial_baud_rate"`
+	SerialDevice          int             `mapstructure:"serial_device"`
+	Server                string          `mapstructure:"server"`
 	Status                string          `mapstructure:"status"`
 	VirtAutoBoot          string          `mapstructure:"virt_auto_boot"`
+	VirtBridge            string          `mapstructure:"virt_bridge"`
 	VirtCPUs              string          `mapstructure:"virt_cpus"`
 	VirtDiskDriver        string          `mapstructure:"virt_disk_driver"`
 	VirtFileSize          string          `mapstructure:"virt_file_size"`
+	VirtPXEBoot           bool            `mapstructure:"virt_pxe_boot"`
 	VirtPath              string          `mapstructure:"virt_path"`
-	VirtPXEBoot           int             `mapstructure:"virt_pxe_boot"`
 	VirtRAM               string          `mapstructure:"virt_ram"`
 	VirtType              string          `mapstructure:"virt_type"`
 
@@ -69,21 +79,23 @@ type System struct {
 
 // Interface is an interface in a system.
 type Interface struct {
+	BondingOpts        string   `mapstructure:"bonding_opts" structs:"bonding_opts"`
+	BridgeOpts         string   `mapstructure:"bridge_opts" structs:"bridge_opts"`
 	CNAMEs             []string `mapstructure:"cnames" structs:"cnames"`
 	DHCPTag            string   `mapstructure:"dhcp_tag" structs:"dhcp_tag"`
 	DNSName            string   `mapstructure:"dns_name" structs:"dns_name"`
-	BondingOpts        string   `mapstructure:"bonding_opts" structs:"bonding_opts"`
-	BridgeOpts         string   `mapstructure:"bridge_opts" structs:"bridge_opts"`
 	Gateway            string   `mapstructure:"if_gateway" structs:"if_gateway"`
-	InterfaceType      string   `mapstructure:"interface_type" structs:"interface_type"`
-	InterfaceMaster    string   `mapstructure:"interface_master" structs:"interface_master"`
 	IPAddress          string   `mapstructure:"ip_address" structs:"ip_address"`
 	IPv6Address        string   `mapstructure:"ipv6_address" structs:"ipv6_address"`
-	IPv6Secondaries    []string `mapstructure:"ipv6_secondaries" structs:"ipv6_secondaries"`
-	IPv6MTU            string   `mapstructure:"ipv6_mtu" structs:"ipv6_mtu"`
-	IPv6StaticRoutes   []string `mapstructure:"ipv6_static_routes" structs:"ipv6_static_routes"`
 	IPv6DefaultGateway string   `mapstructure:"ipv6_default_gateway" structs:"ipv6_default_gateway"`
+	IPv6MTU            string   `mapstructure:"ipv6_mtu" structs:"ipv6_mtu"`
+	IPv6Prefix         string   `mapstructure:"ipv6_prefix" structs:"ipv6_prefix"`
+	IPv6Secondaries    []string `mapstructure:"ipv6_secondaries" structs:"ipv6_secondaries"`
+	IPv6StaticRoutes   []string `mapstructure:"ipv6_static_routes" structs:"ipv6_static_routes"`
+	InterfaceMaster    string   `mapstructure:"interface_master" structs:"interface_master"`
+	InterfaceType      string   `mapstructure:"interface_type" structs:"interface_type"`
 	MACAddress         string   `mapstructure:"mac_address" structs:"mac_address"`
+	MTU                string   `mapstructure:"mtu" structs:"mtu"`
 	Management         bool     `mapstructure:"management" structs:"management"`
 	Netmask            string   `mapstructure:"netmask" structs:"netmask"`
 	Static             bool     `mapstructure:"static" structs:"static"`
