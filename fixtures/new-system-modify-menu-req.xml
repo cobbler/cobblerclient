@@ -9,12 +9,12 @@
         </param>
         <param>
             <value>
-                <string>virt_pxe_boot</string>
+                <string>menu</string>
             </value>
         </param>
         <param>
             <value>
-                <boolean>0</boolean>
+                <string></string>
             </value>
         </param>
         <param>

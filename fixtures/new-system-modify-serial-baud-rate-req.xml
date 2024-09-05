@@ -9,12 +9,12 @@
         </param>
         <param>
             <value>
-                <string>virt_pxe_boot</string>
+                <string>serial_baud_rate</string>
             </value>
         </param>
         <param>
             <value>
-                <boolean>0</boolean>
+                <int>0</int>
             </value>
         </param>
         <param>

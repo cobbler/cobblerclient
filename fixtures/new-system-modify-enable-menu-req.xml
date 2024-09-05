@@ -9,7 +9,7 @@
         </param>
         <param>
             <value>
-                <string>virt_pxe_boot</string>
+                <string>enable_menu</string>
             </value>
         </param>
         <param>
