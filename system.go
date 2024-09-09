@@ -35,7 +35,6 @@ type System struct {
 	ReposEnabled          bool            `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 	Autoinstall           string          `mapstructure:"autoinstall"`
 	BootLoaders           Value[[]string] `mapstructure:"boot_loaders"`
-	ConnectedMode         bool            `mapstructure:"connected_mode"`
 	EnableIPXE            Value[bool]     `mapstructure:"enable_ipxe"`
 	EnableMenu            Value[bool]     `mapstructure:"enable_menu"`
 	Filename              string          `mapstructure:"filename"`
@@ -64,14 +63,13 @@ type System struct {
 	SerialDevice          int             `mapstructure:"serial_device"`
 	Server                string          `mapstructure:"server"`
 	Status                string          `mapstructure:"status"`
-	VirtAutoBoot          string          `mapstructure:"virt_auto_boot"`
-	VirtBridge            string          `mapstructure:"virt_bridge"`
-	VirtCPUs              string          `mapstructure:"virt_cpus"`
+	VirtAutoBoot          Value[bool]     `mapstructure:"virt_auto_boot"`
+	VirtCPUs              Value[int]      `mapstructure:"virt_cpus"`
 	VirtDiskDriver        string          `mapstructure:"virt_disk_driver"`
-	VirtFileSize          string          `mapstructure:"virt_file_size"`
+	VirtFileSize          Value[float64]  `mapstructure:"virt_file_size"`
 	VirtPXEBoot           bool            `mapstructure:"virt_pxe_boot"`
 	VirtPath              string          `mapstructure:"virt_path"`
-	VirtRAM               string          `mapstructure:"virt_ram"`
+	VirtRAM               Value[int]      `mapstructure:"virt_ram"`
 	VirtType              string          `mapstructure:"virt_type"`
 
 	Client
@@ -82,6 +80,7 @@ type Interface struct {
 	BondingOpts        string   `mapstructure:"bonding_opts" structs:"bonding_opts"`
 	BridgeOpts         string   `mapstructure:"bridge_opts" structs:"bridge_opts"`
 	CNAMEs             []string `mapstructure:"cnames" structs:"cnames"`
+	ConnectedMode      bool     `mapstructure:"connected_mode"`
 	DHCPTag            string   `mapstructure:"dhcp_tag" structs:"dhcp_tag"`
 	DNSName            string   `mapstructure:"dns_name" structs:"dns_name"`
 	Gateway            string   `mapstructure:"if_gateway" structs:"if_gateway"`
@@ -105,6 +104,82 @@ type Interface struct {
 
 // Interfaces is a collection of interfaces in a system.
 type Interfaces map[string]Interface
+
+func NewSystem() System {
+	system := System{
+		Item:        NewItem(),
+		Autoinstall: inherit,
+		BootLoaders: Value[[]string]{
+			IsInherited: true,
+		},
+		EnableIPXE: Value[bool]{
+			IsInherited: true,
+		},
+		EnableMenu: Value[bool]{
+			IsInherited: true,
+		},
+		Filename:            inherit,
+		Interfaces:          make(map[string]Interface),
+		NameServers:         make([]string, 0),
+		NameServersSearch:   make([]string, 0),
+		NetbootEnabled:      false,
+		NextServerv4:        inherit,
+		NextServerv6:        inherit,
+		Proxy:               inherit,
+		RedhatManagementKey: inherit,
+		SerialBaudRate:      -1,
+		SerialDevice:        -1,
+		Server:              inherit,
+		VirtAutoBoot: Value[bool]{
+			IsInherited: true,
+		},
+		VirtCPUs: Value[int]{
+			IsInherited: true,
+		},
+		VirtDiskDriver: inherit,
+		VirtFileSize: Value[float64]{
+			IsInherited: true,
+		},
+		VirtPath: inherit,
+		VirtRAM: Value[int]{
+			IsInherited: true,
+		},
+		VirtType: inherit,
+	}
+	// Overwrite defaults from Item
+	system.Owners = Value[[]string]{
+		IsInherited: true,
+	}
+	system.BootFiles = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	system.FetchableFiles = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	system.AutoinstallMeta = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	system.KernelOptions = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	system.KernelOptionsPost = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	system.MgmtClasses = Value[[]string]{
+		IsInherited: true,
+	}
+	return system
+}
+
+func NewInterface() Interface {
+	return Interface{
+		InterfaceType:    "na",
+		CNAMEs:           make([]string, 0),
+		IPv6Secondaries:  make([]string, 0),
+		IPv6StaticRoutes: make([]string, 0),
+		StaticRoutes:     make([]string, 0),
+	}
+}
 
 func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*System, error) {
 	var system System
@@ -208,32 +283,16 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 		system.Status = "production"
 	}
 
-	if system.VirtAutoBoot == "" {
-		system.VirtAutoBoot = "0"
-	}
-
-	if system.VirtCPUs == "" {
-		system.VirtCPUs = "<<inherit>>"
-	}
-
 	if system.VirtDiskDriver == "" {
-		system.VirtDiskDriver = "<<inherit>>"
-	}
-
-	if system.VirtFileSize == "" {
-		system.VirtFileSize = "<<inherit>>"
+		system.VirtDiskDriver = inherit
 	}
 
 	if system.VirtPath == "" {
-		system.VirtPath = "<<inherit>>"
-	}
-
-	if system.VirtRAM == "" {
-		system.VirtRAM = "<<inherit>>"
+		system.VirtPath = inherit
 	}
 
 	if system.VirtType == "" {
-		system.VirtType = "<<inherit>>"
+		system.VirtType = inherit
 	}
 
 	// To create a system via the Cobbler API, first call new_system to obtain an ID

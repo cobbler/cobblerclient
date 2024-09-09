@@ -17,6 +17,15 @@ type MgmtClass struct {
 	Packages    []string          `mapstructure:"packages"`
 }
 
+func NewMgmtClass() MgmtClass {
+	return MgmtClass{
+		Item:     NewItem(),
+		Params:   make(map[string]string),
+		Files:    make([]string, 0),
+		Packages: make([]string, 0),
+	}
+}
+
 func convertRawMgmtClass(name string, xmlrpcResult interface{}) (*MgmtClass, error) {
 	var mgmtclass MgmtClass
 

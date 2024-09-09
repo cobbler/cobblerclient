@@ -47,6 +47,27 @@ type Repo struct {
 	YumOpts         map[string]string `mapstructure:"yumopts"`
 }
 
+func NewRepo() Repo {
+	return Repo{
+		Item:          NewItem(),
+		AptComponents: make([]string, 0),
+		AptDists:      make([]string, 0),
+		Arch:          none,
+		Breed:         none,
+		CreateRepoFlags: Value[string]{
+			IsInherited: true,
+		},
+		Environment: make(map[string]string),
+		MirrorType:  "baseurl",
+		Proxy: Value[string]{
+			IsInherited: true,
+		},
+		RsyncOpts: make(map[string]string),
+		RpmList:   make([]string, 0),
+		YumOpts:   make(map[string]string),
+	}
+}
+
 func convertRawRepo(name string, xmlrpcResult interface{}) (*Repo, error) {
 	var repo Repo
 

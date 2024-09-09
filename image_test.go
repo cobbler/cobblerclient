@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+func TestNewImage(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewImage()
+}
+
 func TestGetImages(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-images")
 	images, err := c.GetImages()

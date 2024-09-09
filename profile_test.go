@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+func TestNewProfile(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewProfile()
+}
+
 func TestGetProfiles(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-profiles")
 	profiles, err := c.GetProfiles()

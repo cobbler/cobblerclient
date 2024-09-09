@@ -14,9 +14,7 @@
         </param>
         <param>
             <value>
-                <array>
-                    <data></data>
-                </array>
+                <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>
         </param>
         <param>

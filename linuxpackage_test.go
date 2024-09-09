@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+func TestNewPackage(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewPackage()
+}
+
 func TestGetPackages(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-packages")
 	linuxpackages, err := c.GetPackages()
