@@ -90,7 +90,7 @@ const (
 func (v VirtType) String() string {
 	switch v {
 	case itINHERITED:
-		return "<<inherit>>"
+		return inherit
 	case vtQEMU:
 		return "qemu"
 	case itKVM:
@@ -125,7 +125,7 @@ const (
 func (v VirtDiskDriver) String() string {
 	switch v {
 	case vddINHERITED:
-		return "<<inherit>>"
+		return inherit
 	case vddRAW:
 		return "raw"
 	case vddQCOW2:
@@ -170,6 +170,26 @@ type Image struct {
 	SupportedBootLoaders []string       `mapstructure:"supported_boot_loaders"`
 
 	Client
+}
+
+func NewImage() Image {
+	return Image{
+		Item:           NewItem(),
+		Arch:           "x86_64",
+		Autoinstall:    inherit,
+		BootLoaders:    make([]string, 0),
+		ImageType:      "direct",
+		VirtCpus:       1,
+		VirtDiskDriver: "raw",
+		VirtFileSize: Value[float64]{
+			IsInherited: true,
+		},
+		VirtRam: Value[int]{
+			IsInherited: true,
+		},
+		VirtType:             inherit,
+		SupportedBootLoaders: make([]string, 0),
+	}
 }
 
 func convertRawImage(name string, xmlrpcResult interface{}) (*Image, error) {

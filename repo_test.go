@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+func TestNewRepo(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewRepo()
+}
+
 func TestGetRepos(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-repos")
 	repos, err := c.GetRepos()

@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+func TestNewMgmtClass(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewMgmtClass()
+}
+
 func TestGetMgmtclasses(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-mgmtclasses")
 	mgmtclasses, err := c.GetMgmtClasses()

@@ -5,6 +5,9 @@ import (
 	"strings"
 )
 
+const inherit string = "<<inherit>>"
+const none string = "none"
+
 type Value[T any] struct {
 	Data           T
 	FlattenedValue string
@@ -40,6 +43,42 @@ type Item struct {
 	Owners            Value[[]string]               `mapstructure:"owners"`
 	MgmtClasses       Value[[]string]               `mapstructure:"mgmt_classes"`
 	MgmtParameters    Value[map[string]interface{}] `mapstructure:"mgmt_parameters"`
+}
+
+// NewItem is a method to initialize the struct with the values that the server-side would internally use. Using this is
+// important since the client overwrites all fields with those chosen locally inside the item.
+func NewItem() Item {
+	return Item{
+		AutoinstallMeta: Value[map[string]interface{}]{
+			Data: make(map[string]interface{}),
+		},
+		BootFiles: Value[map[string]interface{}]{
+			Data: make(map[string]interface{}),
+		},
+		Children: make([]string, 0),
+		FetchableFiles: Value[map[string]interface{}]{
+			Data: make(map[string]interface{}),
+		},
+		KernelOptions: Value[map[string]interface{}]{
+			Data: make(map[string]interface{}),
+		},
+		KernelOptionsPost: Value[map[string]interface{}]{
+			Data: make(map[string]interface{}),
+		},
+		Owners: Value[[]string]{
+			Data:        make([]string, 0),
+			IsInherited: true,
+		},
+		MgmtClasses: Value[[]string]{
+			Data: make([]string, 0),
+		},
+		MgmtParameters: Value[map[string]interface{}]{
+			IsInherited: true,
+		},
+		TemplateFiles: Value[map[string]interface{}]{
+			Data: make(map[string]interface{}),
+		},
+	}
 }
 
 // ModifyItem is a generic method to modify items. Changes made with this method are not persisted until a call to

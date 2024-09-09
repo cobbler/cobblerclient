@@ -15,6 +15,12 @@ type Menu struct {
 	DisplayName string `mapstructure:"display_name"`
 }
 
+func NewMenu() Menu {
+	return Menu{
+		Item: NewItem(),
+	}
+}
+
 func convertRawMenu(name string, xmlrpcResult interface{}) (*Menu, error) {
 	var menu Menu
 

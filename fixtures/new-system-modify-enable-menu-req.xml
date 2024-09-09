@@ -14,7 +14,7 @@
         </param>
         <param>
             <value>
-                <boolean>0</boolean>
+                <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>
         </param>
         <param>

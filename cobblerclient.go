@@ -266,7 +266,7 @@ func (c *Client) IsValueInherit(value interface{}) bool {
 	if !ok {
 		return false
 	}
-	return stringValue == "<<inherit>>"
+	return stringValue == inherit
 }
 
 // cobblerDataHacks is a hook for the mapstructure decoder. It's only used by
@@ -312,7 +312,7 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 		// Inherit or Flattened
 		// We can only safely tell if it is inherited but not if it is flattened
 		valueStruct := Value[interface{}]{}
-		valueStruct.IsInherited = dataVal.String() == "<<inherit>>"
+		valueStruct.IsInherited = dataVal.String() == inherit
 		valueStruct.RawData = data
 		return valueStruct, nil
 	}
@@ -423,7 +423,7 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		fieldValue := v.Interface()
 		if strings.HasPrefix(fieldType, "Value") {
 			if v.FieldByName("IsInherited").Interface().(bool) == true {
-				fieldValue = "<<inherit>>"
+				fieldValue = inherit
 			} else {
 				fieldValue = v.FieldByName("Data").Interface()
 			}

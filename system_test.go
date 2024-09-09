@@ -21,6 +21,16 @@ import (
 	"time"
 )
 
+func TestNewSystem(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewSystem()
+}
+
+func TestNewInterface(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewInterface()
+}
+
 func TestGetSystems(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-systems")
 	systems, err := c.GetSystems()
@@ -46,13 +56,12 @@ func TestGetSystem(t *testing.T) {
 	}
 }
 
-func TestNewSystem(t *testing.T) {
+func TestSystemCreate(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
 		"create-system-name-check",
 		"new-system",
 		"new-system-modify-parent",
-		"new-system-modify-children",
 		"set-system-name",
 		"new-system-modify-comment",
 		"new-system-modify-kernel-options",
@@ -66,7 +75,6 @@ func TestNewSystem(t *testing.T) {
 		"new-system-modify-mgmt-parameters",
 		"new-system-modify-autoinstall",
 		"new-system-modify-boot-loaders",
-		"new-system-modify-connected-mode",
 		"new-system-modify-enable-ipxe",
 		"new-system-modify-enable-menu",
 		"new-system-modify-filename",
@@ -95,7 +103,6 @@ func TestNewSystem(t *testing.T) {
 		"new-system-modify-server",
 		"new-system-modify-status",
 		"new-system-modify-virt-auto-boot",
-		"new-system-modify-virt-bridge",
 		"new-system-modify-virt-cpus",
 		"new-system-modify-virt-disk-driver",
 		"new-system-modify-virt-file-size",
@@ -107,14 +114,11 @@ func TestNewSystem(t *testing.T) {
 		"new-system-get",
 	})
 	c.CachedVersion = CobblerVersion{3, 3, 2}
-	sys := System{
-		Item: Item{
-			Name: "mytestsystem",
-		},
-		Hostname:    "blahhost",
-		NameServers: []string{"8.8.8.8", "8.8.4.4"},
-		Profile:     "centos7-x86_64",
-	}
+	sys := NewSystem()
+	sys.Name = "mytestsystem"
+	sys.Hostname = "blahhost"
+	sys.NameServers = []string{"8.8.8.8", "8.8.4.4"}
+	sys.Profile = "centos7-x86_64"
 
 	// Act
 	newSys, err := c.CreateSystem(sys)

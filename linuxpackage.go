@@ -16,6 +16,12 @@ type Package struct {
 	Version   string `mapstructure:"version"`
 }
 
+func NewPackage() Package {
+	return Package{
+		Resource: NewResource(),
+	}
+}
+
 func convertRawLinuxPackage(name string, xmlrpcResult interface{}) (*Package, error) {
 	var linuxpackage Package
 

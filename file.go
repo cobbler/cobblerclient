@@ -15,6 +15,12 @@ type File struct {
 	IsDir bool `mapstructure:"is_dir"`
 }
 
+func NewFile() File {
+	return File{
+		Resource: NewResource(),
+	}
+}
+
 func convertRawFile(name string, xmlrpcResult interface{}) (*File, error) {
 	var file File
 

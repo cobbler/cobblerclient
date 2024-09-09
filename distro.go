@@ -41,6 +41,18 @@ type Distro struct {
 	OSVersion           string          `mapstructure:"os_version"`
 }
 
+func NewDistro() Distro {
+	return Distro{
+		Item: NewItem(),
+		Arch: "x86_64",
+		BootLoaders: Value[[]string]{
+			Data:        make([]string, 0),
+			IsInherited: true,
+		},
+		RedhatManagementKey: inherit,
+	}
+}
+
 // convertRawDistro ...
 func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 	var distro Distro

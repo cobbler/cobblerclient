@@ -31,3 +31,10 @@ type Resource struct {
 	Path     string `mapstructure:"path"`
 	Template string `mapstructure:"template"`
 }
+
+func NewResource() Resource {
+	return Resource{
+		Item:   NewItem(),
+		Action: "create",
+	}
+}

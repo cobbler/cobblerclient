@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+func TestNewDistro(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewDistro()
+}
+
 func TestGetDistros(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distros")
 	distros, err := c.GetDistros()

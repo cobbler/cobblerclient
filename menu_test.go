@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+func TestNewMenu(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewMenu()
+}
+
 func TestGetMenus(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-menus")
 	menus, err := c.GetMenus()

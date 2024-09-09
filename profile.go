@@ -38,24 +38,89 @@ type Profile struct {
 	EnableMenu          Value[bool]     `mapstructure:"enable_menu"`
 	Filename            string          `mapstructure:"filename"`
 	Menu                string          `mapstructure:"menu"`
-	NameServers         []string        `mapstructure:"name_servers"`
-	NameServersSearch   []string        `mapstructure:"name_servers_search"`
+	NameServers         Value[[]string] `mapstructure:"name_servers"`
+	NameServersSearch   Value[[]string] `mapstructure:"name_servers_search"`
 	NextServerv4        string          `mapstructure:"next_server_v4"`
 	NextServerv6        string          `mapstructure:"next_server_v6"`
 	Proxy               string          `mapstructure:"proxy"`
 	RedhatManagementKey string          `mapstructure:"redhat_management_key"`
 	Repos               []string        `mapstructure:"repos"`
 	Server              string          `mapstructure:"server"`
-	VirtAutoBoot        string          `mapstructure:"virt_auto_boot"`
+	VirtAutoBoot        Value[bool]     `mapstructure:"virt_auto_boot"`
 	VirtBridge          string          `mapstructure:"virt_bridge"`
-	VirtCPUs            string          `mapstructure:"virt_cpus"`
+	VirtCPUs            int             `mapstructure:"virt_cpus"`
 	VirtDiskDriver      string          `mapstructure:"virt_disk_driver"`
-	VirtFileSize        string          `mapstructure:"virt_file_size"`
+	VirtFileSize        Value[float64]  `mapstructure:"virt_file_size"`
 	VirtPath            string          `mapstructure:"virt_path"`
-	VirtRAM             string          `mapstructure:"virt_ram"`
+	VirtRAM             Value[int]      `mapstructure:"virt_ram"`
 	VirtType            string          `mapstructure:"virt_type"`
 
 	Client
+}
+
+func NewProfile() Profile {
+	profile := Profile{
+		Item:         NewItem(),
+		ReposEnabled: false,
+		Autoinstall:  inherit,
+		BootLoaders: Value[[]string]{
+			Data:        make([]string, 0),
+			IsInherited: true,
+		},
+		EnableIPXE: Value[bool]{
+			IsInherited: true,
+		},
+		EnableMenu: Value[bool]{
+			IsInherited: true,
+		},
+		NameServers: Value[[]string]{
+			Data:        make([]string, 0),
+			IsInherited: true,
+		},
+		NameServersSearch: Value[[]string]{
+			Data:        make([]string, 0),
+			IsInherited: true,
+		},
+		NextServerv4:        inherit,
+		NextServerv6:        inherit,
+		Proxy:               inherit,
+		RedhatManagementKey: inherit,
+		Repos:               make([]string, 0),
+		Server:              inherit,
+		VirtAutoBoot: Value[bool]{
+			IsInherited: true,
+		},
+		VirtBridge:     inherit,
+		VirtCPUs:       1,
+		VirtDiskDriver: inherit,
+		VirtFileSize: Value[float64]{
+			IsInherited: true,
+		},
+		VirtRAM: Value[int]{
+			IsInherited: true,
+		},
+		VirtType: inherit,
+	}
+	// Overwrite Item defaults
+	profile.BootFiles = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	profile.FetchableFiles = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	profile.AutoinstallMeta = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	profile.KernelOptions = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	profile.KernelOptionsPost = Value[map[string]interface{}]{
+		IsInherited: true,
+	}
+	profile.MgmtClasses = Value[[]string]{
+		IsInherited: true,
+	}
+	return profile
 }
 
 func convertRawProfile(name string, xmlrpcResult interface{}) (*Profile, error) {
@@ -136,10 +201,10 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		profile.MgmtParameters.IsInherited = true
 	}
 	if profile.VirtType == "" {
-		profile.VirtType = "<<inherit>>"
+		profile.VirtType = inherit
 	}
 	if profile.VirtDiskDriver == "" {
-		profile.VirtDiskDriver = "<<inherit>>"
+		profile.VirtDiskDriver = inherit
 	}
 
 	// To create a profile via the Cobbler API, first call new_profile to obtain an ID

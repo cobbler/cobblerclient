@@ -21,6 +21,11 @@ import (
 	"time"
 )
 
+func TestNewFile(t *testing.T) {
+	// Arrange, Act & Assert
+	_ = NewFile()
+}
+
 func TestGetFiles(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-files")
 	files, err := c.GetFiles()

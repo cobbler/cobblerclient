@@ -14,7 +14,7 @@
         </param>
         <param>
             <value>
-                <struct></struct>
+                <string>&lt;&lt;inherit&gt;&gt;</string>
             </value>
         </param>
         <param>
