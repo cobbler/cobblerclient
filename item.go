@@ -25,7 +25,7 @@ type Item struct {
 	// Item fields
 	Parent            string                        `mapstructure:"parent"`
 	Depth             int                           `mapstructure:"depth"          cobbler:"noupdate"`
-	Children          []string                      `mapstructure:"children"`
+	Children          []string                      `mapstructure:"children"       cobbler:"noupdate"`
 	CTime             float64                       `mapstructure:"ctime"          cobbler:"noupdate"`
 	MTime             float64                       `mapstructure:"mtime"          cobbler:"noupdate"`
 	Uid               string                        `mapstructure:"uid"            cobbler:"noupdate"`
