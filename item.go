@@ -109,7 +109,7 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 		"params",
 	}
 	if !stringInSlice(attribute, itemKey) {
-		return errors.New("invalid attribute")
+		return errors.New("invalid attribute for in-place modification")
 	}
 	rawItem, err := c.GetItem(what, name, false, false)
 	if err != nil {
