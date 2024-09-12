@@ -26,6 +26,8 @@ type Value[T any] struct {
 type ItemMeta struct {
 	IsFlattened bool
 	IsResolved  bool
+	// This flag signals if the item was modified by a called method server-side.
+	IsDirty bool
 }
 
 // Item general fields
