@@ -52,6 +52,20 @@ func returnBool(res interface{}, err error) (bool, error) {
 	}
 }
 
+func convertXmlRpcBool(data interface{}) (bool, error) {
+	convertedData, ok := data.(int)
+	if !ok {
+		return false, errors.New("convertXmlRpcBool: data is not a number")
+	}
+	if convertedData == 1 {
+		return true, nil
+	} else if convertedData == 0 {
+		return false, nil
+	} else {
+		return false, errors.New("boolean needs to be 0 or 1 according to XML-RPC spec")
+	}
+}
+
 func convertIntBool(integer int) (bool, error) {
 	if integer == 0 {
 		return false, nil
