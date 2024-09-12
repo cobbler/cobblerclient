@@ -199,13 +199,6 @@ func TestGetRandomMac(t *testing.T) {
 	FailOnError(t, err)
 }
 
-func TestXmlRpcHacks(t *testing.T) {
-	c := createStubHTTPClientSingle(t, "xmlrpc-hacks")
-
-	err := c.XmlRpcHacks(map[string]interface{}{"test": true})
-	FailOnError(t, err)
-}
-
 func TestGetStatus(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-status")
 

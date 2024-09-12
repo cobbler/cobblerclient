@@ -232,13 +232,6 @@ func (c *Client) GetRandomMac() error {
 	return err
 }
 
-// XmlRpcHacks is an internal endpoint that doesn't make sense to be called externally.
-func (c *Client) XmlRpcHacks(data interface{}) error {
-	// FIXME: Make private server-side and remove from here.
-	_, err := c.Call("xmlrpc_hacks", data)
-	return err
-}
-
 // GetStatus retrieves the current status of installation progress that has been reported to Cobbler.
 func (c *Client) GetStatus(mode string) error {
 	_, err := c.Call("get_status", mode, c.Token)
