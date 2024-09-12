@@ -392,25 +392,57 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 	method := fmt.Sprintf("modify_%s", what)
 	typeOfT := item.Type()
 
-	// In Cobbler v3.3.0, if profile name isn't created first, an empty child gets written to the distro, which causes
-	// a ValueError: "calling find with no arguments"  TO-DO: figure a more efficient way of targeting name.
+	// Update embedded Item struct
 	for i := 0; i < item.NumField(); i++ {
 		v := item.Field(i)
 		fieldType := v.Type().Name()
-		tag := typeOfT.Field(i).Tag
-		field := tag.Get("mapstructure")
 
 		if fieldType == "Item" {
-			// Update embedded Item struct if present (should be present once on all items)
 			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
 			if err != nil {
 				return err
 			}
-			continue
+			break
+		}
+	}
+
+	// Fields that can inherit from other items can only be set after the parent is set.
+	// Fields that inherit from settings can be modified without this constraint.
+	if method == "modify_profile" {
+		// In Cobbler v3.3.0, if profile name isn't created first, an empty child gets written to the distro, which
+		// causes a ValueError: "calling find with no arguments"
+		nameField := item.FieldByName("Name")
+		_, err := c.Call(method, id, "name", nameField.String(), c.Token)
+		if err != nil {
+			return err
 		}
 
-		if method == "modify_profile" && field == "name" {
-			_, err := c.Call(method, id, field, v.Interface(), c.Token)
+		parentField := item.FieldByName("Parent")
+		if parentField != (reflect.Value{}) {
+			err = c.updateSingleField(method, id, "parent", parentField.String(), "")
+			if err != nil {
+				return err
+			}
+		}
+		distroField := item.FieldByName("Distro")
+		if distroField != (reflect.Value{}) {
+			err = c.updateSingleField(method, id, "distro", distroField.String(), "")
+			if err != nil {
+				return err
+			}
+		}
+	}
+	if method == "modify_system" {
+		profileField := item.FieldByName("Profile")
+		if profileField != (reflect.Value{}) {
+			err := c.updateSingleField(method, id, "profile", profileField.String(), "")
+			if err != nil {
+				return err
+			}
+		}
+		imageField := item.FieldByName("Image")
+		if imageField != (reflect.Value{}) {
+			err := c.updateSingleField(method, id, "image", imageField.String(), "")
 			if err != nil {
 				return err
 			}
@@ -424,13 +456,20 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		field := tag.Get("mapstructure")
 		cobblerTag := tag.Get("cobbler")
 
-		if cobblerTag == "noupdate" || fieldType == "Item" {
+		if cobblerTag == "noupdate" || fieldType == "Item" || fieldType == "Meta" {
 			continue
 		}
 
-		if field == "" {
+		if field == "" || field == "parent" || field == "distro" || field == "profile" || field == "image" {
+			// Skip fields that are empty or have been set previously
 			continue
 		}
+
+		if method == "modify_profile" && field == "name" {
+			// Field set above
+			continue
+		}
+
 		fieldValue := v.Interface()
 		if strings.HasPrefix(fieldType, "Value") {
 			if v.FieldByName("IsInherited").Interface().(bool) == true {
@@ -440,17 +479,24 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 			}
 		}
 
-		if result, err := c.Call(method, id, field, fieldValue, c.Token); err != nil {
+		err := c.updateSingleField(method, id, field, fieldValue, cobblerTag)
+		if err != nil {
 			return err
-		} else {
-			if result.(bool) == false && v.Interface() != false {
-				// It's possible this is a new field that isn't available on
-				// older versions.
-				if cobblerTag == "newfield" {
-					continue
-				}
-				return fmt.Errorf("error updating %s to %s", field, v.Interface())
+		}
+	}
+	return nil
+}
+
+func (c *Client) updateSingleField(method, id, field string, fieldValue interface{}, cobblerTag string) error {
+	if result, err := c.Call(method, id, field, fieldValue, c.Token); err != nil {
+		return err
+	} else {
+		if !result.(bool) && fieldValue != false {
+			// It's possible this is a new field that isn't available on older versions.
+			if cobblerTag == "newfield" {
+				return nil
 			}
+			return fmt.Errorf("error updating %s to %s", field, fieldValue)
 		}
 	}
 	return nil
