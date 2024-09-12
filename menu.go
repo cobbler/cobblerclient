@@ -33,7 +33,42 @@ func convertRawMenu(name string, xmlrpcResult interface{}) (*Menu, error) {
 		return nil, err
 	}
 
-	return decodeResult.(*Menu), nil
+	// Now clean the Value structs
+	decodedMenu := decodeResult.(*Menu)
+	err = sanitizeValueMapStruct(&decodedMenu.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMenu.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMenu.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMenu.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMenu.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMenu.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMenu.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedMenu.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedMenu.MgmtClasses)
+	return decodedMenu, nil
 }
 
 func convertRawMenusList(xmlrpcResult interface{}) ([]*Menu, error) {

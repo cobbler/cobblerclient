@@ -196,6 +196,44 @@ func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*Syste
 	s := decodeResult.(*System)
 	s.Client = *c
 
+	// Now clean the Value structs
+	err = sanitizeValueMapStruct(&s.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&s.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&s.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&s.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&s.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&s.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&s.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&s.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&s.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&s.BootLoaders)
 	return s, nil
 }
 

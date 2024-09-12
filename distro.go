@@ -66,7 +66,102 @@ func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 		return nil, err
 	}
 
-	return decodeResult.(*Distro), nil
+	// Now clean the Value structs
+	decodedDistro := decodeResult.(*Distro)
+	err = sanitizeValueMapStruct(&decodedDistro.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedDistro.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedDistro.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedDistro.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedDistro.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedDistro.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedDistro.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedDistro.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedDistro.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedDistro.BootLoaders)
+	return &distro, nil
+}
+
+func sanitizeValueSliceStruct(value *Value[[]string]) error {
+	if value.IsInherited {
+		value.Data = make([]string, 0)
+		value.FlattenedValue = ""
+		value.RawData = make([]string, 0)
+	} else {
+		kopts, err := returnStringSlice(value.RawData, nil)
+		if err == nil {
+			value.Data = kopts
+		} else {
+			kopts, ok := value.RawData.(string)
+			if ok {
+				value.Data = make([]string, 0)
+				value.FlattenedValue = kopts
+			} else {
+				if value.RawData == nil {
+					value.Data = make([]string, 0)
+					value.FlattenedValue = ""
+					value.RawData = make([]string, 0)
+				} else {
+					return fmt.Errorf("error converting raw list value")
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func sanitizeValueMapStruct(value *Value[map[string]interface{}]) error {
+	if value.IsInherited {
+		value.Data = make(map[string]interface{})
+		value.FlattenedValue = ""
+		value.RawData = make(map[string]interface{})
+	} else {
+		kopts, ok := value.RawData.(map[string]interface{})
+		if ok {
+			value.Data = kopts
+		} else {
+			kopts, ok := value.RawData.(string)
+			if ok {
+				value.Data = make(map[string]interface{})
+				value.FlattenedValue = kopts
+			} else {
+				if value.RawData == nil {
+					value.Data = make(map[string]interface{})
+					value.FlattenedValue = ""
+					value.RawData = make(map[string]interface{})
+				} else {
+					return fmt.Errorf("error converting raw map value")
+				}
+			}
+		}
+	}
+	return nil
 }
 
 // convertRawDistrosList...

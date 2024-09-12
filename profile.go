@@ -135,7 +135,54 @@ func convertRawProfile(name string, xmlrpcResult interface{}) (*Profile, error) 
 		return nil, err
 	}
 
-	return decodeResult.(*Profile), nil
+	// Now clean the Value structs
+	decodedProfile := decodeResult.(*Profile)
+	err = sanitizeValueMapStruct(&decodedProfile.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedProfile.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedProfile.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedProfile.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedProfile.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedProfile.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedProfile.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedProfile.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedProfile.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedProfile.BootLoaders)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedProfile.NameServers)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedProfile.NameServersSearch)
+	return decodedProfile, nil
 }
 
 func convertRawProfilesList(xmlrpcResult interface{}) ([]*Profile, error) {
@@ -197,9 +244,6 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		return nil, fmt.Errorf("a profile must have a distro set")
 	}
 
-	if profile.MgmtParameters.RawData.(string) == "" {
-		profile.MgmtParameters.IsInherited = true
-	}
 	if profile.VirtType == "" {
 		profile.VirtType = inherit
 	}

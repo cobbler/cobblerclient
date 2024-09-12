@@ -204,7 +204,42 @@ func convertRawImage(name string, xmlrpcResult interface{}) (*Image, error) {
 		return nil, err
 	}
 
-	return decodeResult.(*Image), nil
+	// Now clean the Value structs
+	decodedImage := decodeResult.(*Image)
+	err = sanitizeValueMapStruct(&decodedImage.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedImage.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedImage.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedImage.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedImage.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedImage.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedImage.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedImage.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedImage.MgmtClasses)
+	return decodedImage, nil
 }
 
 func convertRawImagesList(xmlrpcResult interface{}) ([]*Image, error) {

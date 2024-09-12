@@ -26,6 +26,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"sort"
 	"strings"
 )
 
@@ -295,48 +296,71 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 		return convertXmlRpcBool(dataVal.Interface())
 	}
 
-	if fromType == reflect.String && targetType == reflect.Struct {
-		// Inherit or Flattened
-		// We can only safely tell if it is inherited but not if it is flattened
-		valueStruct := Value[interface{}]{}
-		valueStruct.IsInherited = dataVal.String() == inherit
-		valueStruct.RawData = data
-		return valueStruct, nil
-	}
+	if targetType == reflect.Struct {
+		// This must be a value that may or may not be inherited or flattened (dual-homed types)
 
-	if fromType == reflect.Slice && targetType == reflect.Struct {
-		// Slice that may or may not be inherited
-		valueStruct := Value[[]interface{}]{}
-		valueStruct.RawData = data
-		return valueStruct, nil
-	}
-
-	if fromType == reflect.Int64 && targetType == reflect.Struct {
-		// Slice that may or may not be inherited
-		valueStruct := Value[int]{}
-		integerValue, err := convertToInt(data)
-		valueStruct.Data = integerValue
-		valueStruct.RawData = data
-		if err == nil {
-			return Value[int]{}, err
+		switch fromType {
+		case reflect.String:
+			valueStruct := Value[interface{}]{}
+			valueStruct.IsInherited = dataVal.String() == inherit
+			valueStruct.RawData = data
+			return valueStruct, nil
+		case reflect.Slice:
+			// Slice that may or may not be inherited
+			valueStruct := Value[[]interface{}]{}
+			valueStruct.RawData = data
+			return valueStruct, nil
+		case reflect.Map:
+			// This can be: Top-level Map, paged search results, page-info struct or an inherited struct
+			mapKeys := dataVal.MapKeys()
+			sort.SliceStable(mapKeys, func(i, j int) bool {
+				return mapKeys[i].String() < mapKeys[j].String()
+			})
+			if len(mapKeys) == 2 && mapKeys[0].String() == "items" && mapKeys[1].String() == "pageinfo" {
+				// Paged search results
+				return data, nil
+			}
+			if len(mapKeys) == 10 && mapKeys[0].String() == "end_item" {
+				// Page-Info struct
+				return data, nil
+			}
+			for _, key := range mapKeys {
+				// If the uid key is in the map then it is the top level Map
+				if key.String() == "uid" {
+					return data, nil
+				}
+			}
+			valueStruct := Value[map[string]interface{}]{}
+			valueStruct.Data = make(map[string]interface{})
+			valueStruct.RawData = data
+			return valueStruct, nil
+		case reflect.Int64:
+			// Int that may or may not be inherited
+			valueStruct := Value[int]{}
+			integerValue, err := convertToInt(data)
+			valueStruct.Data = integerValue
+			valueStruct.RawData = data
+			if err == nil {
+				return Value[int]{}, err
+			}
+			return valueStruct, nil
+		case reflect.Bool:
+			// Bool that may or may not be inherited
+			valueStruct := Value[bool]{}
+			integerBoolean, err := convertToInt(data)
+			if err == nil {
+				return Value[bool]{}, err
+			}
+			boolValue, err := convertIntBool(integerBoolean)
+			valueStruct.Data = boolValue
+			valueStruct.RawData = data
+			if err == nil {
+				return Value[bool]{}, err
+			}
+			return valueStruct, nil
+		default:
+			return nil, fmt.Errorf("unknown type %s fromType for Inherited or Flattened Value", fromType)
 		}
-		return valueStruct, nil
-	}
-
-	if fromType == reflect.Bool && targetType == reflect.Struct {
-		// Slice that may or may not be inherited
-		valueStruct := Value[bool]{}
-		integerBoolean, err := convertToInt(data)
-		if err == nil {
-			return Value[bool]{}, err
-		}
-		boolValue, err := convertIntBool(integerBoolean)
-		valueStruct.Data = boolValue
-		valueStruct.RawData = data
-		if err == nil {
-			return Value[bool]{}, err
-		}
-		return valueStruct, nil
 	}
 
 	return data, nil
