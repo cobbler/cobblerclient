@@ -8,16 +8,26 @@ import (
 const inherit string = "<<inherit>>"
 const none string = "none"
 
+// Value is a helper struct that wraps the multi-typed values being returned from the Cobbler API.
 type Value[T any] struct {
-	Data           T
+	// Data contains the unresolved or resolved data of the attribute. This is not set in case the value is flattened.
+	Data T
+	// FlattenedValue contains the unresolved or resolved flattened data of the Attribute. This is not set in case the
+	// value is not flattened.
 	FlattenedValue string
-	IsInherited    bool
-	RawData        interface{}
+	// IsInherited is a flag that signals if the attribute is inherited or not. If this flag is true then both Data and
+	// FlattenedValue are not set.
+	IsInherited bool
+	// RawData contains the data as received by the API. This field is not evaluated when updating an Item via the
+	// API.
+	RawData interface{}
 }
 
 type ItemMeta struct {
 	IsFlattened bool
 	IsResolved  bool
+	// This flag signals if the item was modified by a called method server-side.
+	IsDirty bool
 }
 
 // Item general fields
@@ -101,7 +111,7 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 		"params",
 	}
 	if !stringInSlice(attribute, itemKey) {
-		return errors.New("invalid attribute")
+		return errors.New("invalid attribute for in-place modification")
 	}
 	rawItem, err := c.GetItem(what, name, false, false)
 	if err != nil {

@@ -13,17 +13,17 @@ func returnString(res interface{}, err error) (string, error) {
 }
 
 func returnStringSlice(res interface{}, err error) ([]string, error) {
-	var result []string
-
 	if err != nil {
 		return nil, err
 	}
 
-	for _, name := range res.([]interface{}) {
-		result = append(result, name.(string))
+	resConverted, ok := res.([]interface{})
+
+	if !ok {
+		return nil, errors.New("result is not a slice")
 	}
 
-	return result, nil
+	return convertToStringSlice(resConverted)
 }
 
 func returnIntSlice(res interface{}, err error) ([]int, error) {
@@ -49,6 +49,32 @@ func returnBool(res interface{}, err error) (bool, error) {
 		return false, err
 	} else {
 		return res.(bool), err
+	}
+}
+
+func convertToStringSlice(data []interface{}) ([]string, error) {
+	result := make([]string, 0)
+	for _, name := range data {
+		convertedData, ok := name.(string)
+		if !ok {
+			return nil, errors.New("convertToStringSlice: data is not a string")
+		}
+		result = append(result, convertedData)
+	}
+	return result, nil
+}
+
+func convertXmlRpcBool(data interface{}) (bool, error) {
+	convertedData, ok := data.(int)
+	if !ok {
+		return false, errors.New("convertXmlRpcBool: data is not a number")
+	}
+	if convertedData == 1 {
+		return true, nil
+	} else if convertedData == 0 {
+		return false, nil
+	} else {
+		return false, errors.New("boolean needs to be 0 or 1 according to XML-RPC spec")
 	}
 }
 

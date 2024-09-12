@@ -80,7 +80,42 @@ func convertRawRepo(name string, xmlrpcResult interface{}) (*Repo, error) {
 		return nil, err
 	}
 
-	return decodeResult.(*Repo), nil
+	// Now clean the Value structs
+	decodedRepo := decodeResult.(*Repo)
+	err = sanitizeValueMapStruct(&decodedRepo.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedRepo.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedRepo.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedRepo.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedRepo.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedRepo.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedRepo.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedRepo.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedRepo.MgmtClasses)
+	return decodedRepo, nil
 }
 
 func convertRawReposList(xmlrpcResult interface{}) ([]*Repo, error) {

@@ -248,7 +248,7 @@
                     <member>
                         <name>virt_pxe_boot</name>
                         <value>
-                            <int>0</int>
+                            <boolean>0</boolean>
                         </value>
                     </member>
                     <member>

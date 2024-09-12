@@ -26,6 +26,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"sort"
 	"strings"
 )
 
@@ -232,13 +233,6 @@ func (c *Client) GetRandomMac() error {
 	return err
 }
 
-// XmlRpcHacks is an internal endpoint that doesn't make sense to be called externally.
-func (c *Client) XmlRpcHacks(data interface{}) error {
-	// FIXME: Make private server-side and remove from here.
-	_, err := c.Call("xmlrpc_hacks", data)
-	return err
-}
-
 // GetStatus retrieves the current status of installation progress that has been reported to Cobbler.
 func (c *Client) GetStatus(mode string) error {
 	_, err := c.Call("get_status", mode, c.Token)
@@ -299,57 +293,74 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 
 	if fromType == reflect.Int64 && targetType == reflect.Bool {
 		// XML-RPC Integer Booleans
-		if dataVal.Int() == 1 {
-			return true, nil
-		} else if dataVal.Int() == 0 {
-			return false, nil
-		} else {
-			return nil, errors.New("boolean needs to be 0 or 1 according to XML-RPC spec")
-		}
+		return convertXmlRpcBool(dataVal.Interface())
 	}
 
-	if fromType == reflect.String && targetType == reflect.Struct {
-		// Inherit or Flattened
-		// We can only safely tell if it is inherited but not if it is flattened
-		valueStruct := Value[interface{}]{}
-		valueStruct.IsInherited = dataVal.String() == inherit
-		valueStruct.RawData = data
-		return valueStruct, nil
-	}
+	if targetType == reflect.Struct {
+		// This must be a value that may or may not be inherited or flattened (dual-homed types)
 
-	if fromType == reflect.Slice && targetType == reflect.Struct {
-		// Slice that may or may not be inherited
-		valueStruct := Value[[]interface{}]{}
-		valueStruct.RawData = data
-		return valueStruct, nil
-	}
-
-	if fromType == reflect.Int64 && targetType == reflect.Struct {
-		// Slice that may or may not be inherited
-		valueStruct := Value[int]{}
-		integerValue, err := convertToInt(data)
-		valueStruct.Data = integerValue
-		valueStruct.RawData = data
-		if err == nil {
-			return Value[int]{}, err
+		switch fromType {
+		case reflect.String:
+			valueStruct := Value[interface{}]{}
+			valueStruct.IsInherited = dataVal.String() == inherit
+			valueStruct.RawData = data
+			return valueStruct, nil
+		case reflect.Slice:
+			// Slice that may or may not be inherited
+			valueStruct := Value[[]interface{}]{}
+			valueStruct.RawData = data
+			return valueStruct, nil
+		case reflect.Map:
+			// This can be: Top-level Map, paged search results, page-info struct or an inherited struct
+			mapKeys := dataVal.MapKeys()
+			sort.SliceStable(mapKeys, func(i, j int) bool {
+				return mapKeys[i].String() < mapKeys[j].String()
+			})
+			if len(mapKeys) == 2 && mapKeys[0].String() == "items" && mapKeys[1].String() == "pageinfo" {
+				// Paged search results
+				return data, nil
+			}
+			if len(mapKeys) == 10 && mapKeys[0].String() == "end_item" {
+				// Page-Info struct
+				return data, nil
+			}
+			for _, key := range mapKeys {
+				// If the uid key is in the map then it is the top level Map
+				if key.String() == "uid" {
+					return data, nil
+				}
+			}
+			valueStruct := Value[map[string]interface{}]{}
+			valueStruct.Data = make(map[string]interface{})
+			valueStruct.RawData = data
+			return valueStruct, nil
+		case reflect.Int64:
+			// Int that may or may not be inherited
+			valueStruct := Value[int]{}
+			integerValue, err := convertToInt(data)
+			valueStruct.Data = integerValue
+			valueStruct.RawData = data
+			if err == nil {
+				return Value[int]{}, err
+			}
+			return valueStruct, nil
+		case reflect.Bool:
+			// Bool that may or may not be inherited
+			valueStruct := Value[bool]{}
+			integerBoolean, err := convertToInt(data)
+			if err == nil {
+				return Value[bool]{}, err
+			}
+			boolValue, err := convertIntBool(integerBoolean)
+			valueStruct.Data = boolValue
+			valueStruct.RawData = data
+			if err == nil {
+				return Value[bool]{}, err
+			}
+			return valueStruct, nil
+		default:
+			return nil, fmt.Errorf("unknown type %s fromType for Inherited or Flattened Value", fromType)
 		}
-		return valueStruct, nil
-	}
-
-	if fromType == reflect.Bool && targetType == reflect.Struct {
-		// Slice that may or may not be inherited
-		valueStruct := Value[bool]{}
-		integerBoolean, err := convertToInt(data)
-		if err == nil {
-			return Value[bool]{}, err
-		}
-		boolValue, err := convertIntBool(integerBoolean)
-		valueStruct.Data = boolValue
-		valueStruct.RawData = data
-		if err == nil {
-			return Value[bool]{}, err
-		}
-		return valueStruct, nil
 	}
 
 	return data, nil
@@ -381,25 +392,57 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 	method := fmt.Sprintf("modify_%s", what)
 	typeOfT := item.Type()
 
-	// In Cobbler v3.3.0, if profile name isn't created first, an empty child gets written to the distro, which causes
-	// a ValueError: "calling find with no arguments"  TO-DO: figure a more efficient way of targeting name.
+	// Update embedded Item struct
 	for i := 0; i < item.NumField(); i++ {
 		v := item.Field(i)
 		fieldType := v.Type().Name()
-		tag := typeOfT.Field(i).Tag
-		field := tag.Get("mapstructure")
 
 		if fieldType == "Item" {
-			// Update embedded Item struct if present (should be present once on all items)
 			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
 			if err != nil {
 				return err
 			}
-			continue
+			break
+		}
+	}
+
+	// Fields that can inherit from other items can only be set after the parent is set.
+	// Fields that inherit from settings can be modified without this constraint.
+	if method == "modify_profile" {
+		// In Cobbler v3.3.0, if profile name isn't created first, an empty child gets written to the distro, which
+		// causes a ValueError: "calling find with no arguments"
+		nameField := item.FieldByName("Name")
+		_, err := c.Call(method, id, "name", nameField.String(), c.Token)
+		if err != nil {
+			return err
 		}
 
-		if method == "modify_profile" && field == "name" {
-			_, err := c.Call(method, id, field, v.Interface(), c.Token)
+		parentField := item.FieldByName("Parent")
+		if parentField != (reflect.Value{}) {
+			err = c.updateSingleField(method, id, "parent", parentField.String(), "")
+			if err != nil {
+				return err
+			}
+		}
+		distroField := item.FieldByName("Distro")
+		if distroField != (reflect.Value{}) {
+			err = c.updateSingleField(method, id, "distro", distroField.String(), "")
+			if err != nil {
+				return err
+			}
+		}
+	}
+	if method == "modify_system" {
+		profileField := item.FieldByName("Profile")
+		if profileField != (reflect.Value{}) {
+			err := c.updateSingleField(method, id, "profile", profileField.String(), "")
+			if err != nil {
+				return err
+			}
+		}
+		imageField := item.FieldByName("Image")
+		if imageField != (reflect.Value{}) {
+			err := c.updateSingleField(method, id, "image", imageField.String(), "")
 			if err != nil {
 				return err
 			}
@@ -413,13 +456,20 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		field := tag.Get("mapstructure")
 		cobblerTag := tag.Get("cobbler")
 
-		if cobblerTag == "noupdate" || fieldType == "Item" {
+		if cobblerTag == "noupdate" || fieldType == "Item" || fieldType == "Meta" {
 			continue
 		}
 
-		if field == "" {
+		if field == "" || field == "parent" || field == "distro" || field == "profile" || field == "image" {
+			// Skip fields that are empty or have been set previously
 			continue
 		}
+
+		if method == "modify_profile" && field == "name" {
+			// Field set above
+			continue
+		}
+
 		fieldValue := v.Interface()
 		if strings.HasPrefix(fieldType, "Value") {
 			if v.FieldByName("IsInherited").Interface().(bool) == true {
@@ -429,17 +479,24 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 			}
 		}
 
-		if result, err := c.Call(method, id, field, fieldValue, c.Token); err != nil {
+		err := c.updateSingleField(method, id, field, fieldValue, cobblerTag)
+		if err != nil {
 			return err
-		} else {
-			if result.(bool) == false && v.Interface() != false {
-				// It's possible this is a new field that isn't available on
-				// older versions.
-				if cobblerTag == "newfield" {
-					continue
-				}
-				return fmt.Errorf("error updating %s to %s", field, v.Interface())
+		}
+	}
+	return nil
+}
+
+func (c *Client) updateSingleField(method, id, field string, fieldValue interface{}, cobblerTag string) error {
+	if result, err := c.Call(method, id, field, fieldValue, c.Token); err != nil {
+		return err
+	} else {
+		if !result.(bool) && fieldValue != false {
+			// It's possible this is a new field that isn't available on older versions.
+			if cobblerTag == "newfield" {
+				return nil
 			}
+			return fmt.Errorf("error updating %s to %s", field, fieldValue)
 		}
 	}
 	return nil

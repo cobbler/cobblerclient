@@ -34,7 +34,42 @@ func convertRawLinuxPackage(name string, xmlrpcResult interface{}) (*Package, er
 		return nil, err
 	}
 
-	return decodeResult.(*Package), nil
+	// Now clean the Value structs
+	decodedPackage := decodeResult.(*Package)
+	err = sanitizeValueMapStruct(&decodedPackage.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedPackage.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedPackage.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedPackage.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedPackage.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedPackage.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedPackage.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedPackage.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedPackage.MgmtClasses)
+	return decodedPackage, nil
 }
 
 func convertRawLinuxPackageList(xmlrpcResult interface{}) ([]*Package, error) {

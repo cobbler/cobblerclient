@@ -38,7 +38,42 @@ func convertRawMgmtClass(name string, xmlrpcResult interface{}) (*MgmtClass, err
 		return nil, err
 	}
 
-	return decodeResult.(*MgmtClass), nil
+	// Now clean the Value structs
+	decodedMgmtClass := decodeResult.(*MgmtClass)
+	err = sanitizeValueMapStruct(&decodedMgmtClass.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMgmtClass.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMgmtClass.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMgmtClass.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMgmtClass.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMgmtClass.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedMgmtClass.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedMgmtClass.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedMgmtClass.MgmtClasses)
+	return decodedMgmtClass, nil
 }
 
 func convertRawMgmtClassList(xmlrpcResult interface{}) ([]*MgmtClass, error) {

@@ -33,7 +33,42 @@ func convertRawFile(name string, xmlrpcResult interface{}) (*File, error) {
 		return nil, err
 	}
 
-	return decodeResult.(*File), nil
+	// Now clean the Value structs
+	decodedFile := decodeResult.(*File)
+	err = sanitizeValueMapStruct(&decodedFile.KernelOptions)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedFile.KernelOptionsPost)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedFile.AutoinstallMeta)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedFile.FetchableFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedFile.BootFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedFile.TemplateFiles)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueMapStruct(&decodedFile.MgmtParameters)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedFile.Owners)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&decodedFile.MgmtClasses)
+	return decodedFile, nil
 }
 
 func convertRawFilesList(xmlrpcResult interface{}) ([]*File, error) {
