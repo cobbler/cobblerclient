@@ -191,6 +191,10 @@ func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*Syste
 	s := decodeResult.(*System)
 	s.Client = *c
 
+	// Now clean the network interface struct
+	if s.Interfaces == nil {
+		s.Interfaces = make(map[string]Interface)
+	}
 	// Now clean the Value structs
 	err = sanitizeValueMapStruct(&s.KernelOptions)
 	if err != nil {
@@ -229,7 +233,7 @@ func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*Syste
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&s.BootLoaders)
-	return s, nil
+	return s, err
 }
 
 func (c *Client) convertRawSystemsList(xmlrpcResult interface{}) ([]*System, error) {
@@ -383,8 +387,7 @@ func (c *Client) DeleteSystemRecursive(name string, recursive bool) error {
 	return err
 }
 
-// CreateInterface creates network interfaces in Cobbler
-func (s *System) CreateInterface(name string, iface Interface) error {
+func makeInterfaceOptionsMap(name string, iface Interface) map[string]interface{} {
 	i := structs.Map(iface)
 	nic := make(map[string]interface{})
 	for key, value := range i {
@@ -392,13 +395,34 @@ func (s *System) CreateInterface(name string, iface Interface) error {
 		log.Printf("[DEBUG] Cobblerclient: setting interface attr %s to %s", attrName, value)
 		nic[attrName] = value
 	}
+	return nic
+}
+
+func (c *Client) ModifyInterface(systemID string, nic map[string]interface{}) error {
+	editUncasted, err := c.Call("modify_system", systemID, "modify_interface", nic, c.Token)
+	if err != nil {
+		return err
+	}
+	ok, editSuccessful := editUncasted.(bool)
+	if !ok {
+		return fmt.Errorf("editing interfaces of system %s failed due to an invalid return value of the server", systemID)
+	}
+	if !editSuccessful {
+		return fmt.Errorf("editing interface of system %s failed", systemID)
+	}
+	return nil
+}
+
+// CreateInterface creates network interfaces in Cobbler
+func (s *System) CreateInterface(name string, iface Interface) error {
+	nic := makeInterfaceOptionsMap(name, iface)
 
 	systemID, err := s.Client.GetItemHandle("system", s.Name)
 	if err != nil {
 		return err
 	}
 
-	_, err = s.Client.Call("modify_system", systemID, "modify_interface", nic, s.Client.Token)
+	err = s.Client.ModifyInterface(systemID, nic)
 	if err != nil {
 		return err
 	}
@@ -410,6 +434,11 @@ func (s *System) CreateInterface(name string, iface Interface) error {
 	}
 
 	return nil
+}
+
+// ModifyNetworkInterface updates the attributes of an existing interface
+func (s *System) ModifyNetworkInterface(name string, iface Interface) error {
+	return s.CreateInterface(name, iface)
 }
 
 // GetInterfaces returns all interfaces in a System.
@@ -445,6 +474,21 @@ func (s *System) GetInterface(name string) (Interface, error) {
 	}
 }
 
+func (c *Client) DeleteNetworkInterface(systemID, name string) error {
+	editUncasted, err := c.Call("modify_system", systemID, "delete_interface", name, c.Token)
+	if err != nil {
+		return err
+	}
+	ok, editSuccessful := editUncasted.(bool)
+	if !ok {
+		return fmt.Errorf("deleting interfaces of system %s failed due to an invalid return value of the server", systemID)
+	}
+	if !editSuccessful {
+		return fmt.Errorf("deleting interface of system %s failed", systemID)
+	}
+	return nil
+}
+
 // DeleteInterface deletes a single interface in a System.
 func (s *System) DeleteInterface(name string) error {
 	if _, err := s.GetInterface(name); err != nil {
@@ -456,15 +500,49 @@ func (s *System) DeleteInterface(name string) error {
 		return err
 	}
 
-	if _, err := s.Client.Call("modify_system", systemID, "delete_interface", name, s.Client.Token); err != nil {
+	if err = s.Client.DeleteNetworkInterface(systemID, name); err != nil {
 		return err
 	}
 
 	// Save the final system
-	if err := s.Client.SaveSystem(systemID, "bypass"); err != nil {
+	if err = s.Client.SaveSystem(systemID, "bypass"); err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func (c *Client) RenameNetworkInterface(systemName, oldName, newName string) error {
+	systemID, err := c.GetItemHandle("system", systemName)
+	if err != nil {
+		return err
+	}
+	args := make(map[string]string)
+	args["interface"] = oldName
+	args["rename_interface"] = newName
+	unparsedOk, err := c.Call("modify_system", systemID, "rename_interface", args, c.Token)
+	if err != nil {
+		return err
+	}
+	conversionSuccess, ok := unparsedOk.(bool)
+	if !conversionSuccess {
+		return fmt.Errorf("failed to convert return value of interface rename")
+	}
+	if !ok {
+		return fmt.Errorf("failed to rename interface %s to %s", oldName, newName)
+	}
+	return nil
+}
+
+// RenameInterface renames an Interface.
+func (s *System) RenameInterface(name string, newName string) error {
+	err := s.Client.RenameNetworkInterface(s.Name, name, newName)
+	if err != nil {
+		return err
+	}
+	iface := s.Interfaces[name]
+	delete(s.Interfaces, name)
+	s.Interfaces[newName] = iface
 	return nil
 }
 

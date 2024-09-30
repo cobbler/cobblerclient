@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>modify_system</methodName>
+    <params>
+        <param>
+            <value>
+                <string>system::testsys</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>rename_interface</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <struct>
+                    <member>
+                        <name>interface</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>rename_interface</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                </struct>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

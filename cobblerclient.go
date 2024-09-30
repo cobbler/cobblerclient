@@ -447,6 +447,13 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 				return err
 			}
 		}
+		interfaceField := item.FieldByName("Interfaces")
+		if interfaceField != (reflect.Value{}) {
+			err := c.updateInterfaces(id, interfaceField.Interface())
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	for i := 0; i < item.NumField(); i++ {
@@ -460,7 +467,7 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 			continue
 		}
 
-		if field == "" || field == "parent" || field == "distro" || field == "profile" || field == "image" {
+		if field == "" || field == "parent" || field == "distro" || field == "profile" || field == "image" || field == "interfaces" {
 			// Skip fields that are empty or have been set previously
 			continue
 		}
@@ -472,7 +479,7 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 
 		fieldValue := v.Interface()
 		if strings.HasPrefix(fieldType, "Value") {
-			if v.FieldByName("IsInherited").Interface().(bool) == true {
+			if v.FieldByName("IsInherited").Bool() {
 				fieldValue = inherit
 			} else {
 				fieldValue = v.FieldByName("Data").Interface()
@@ -496,7 +503,22 @@ func (c *Client) updateSingleField(method, id, field string, fieldValue interfac
 			if cobblerTag == "newfield" {
 				return nil
 			}
-			return fmt.Errorf("error updating %s to %s", field, fieldValue)
+			return fmt.Errorf("error updating field \"%s\" to \"%s\"", field, fieldValue)
+		}
+	}
+	return nil
+}
+
+// updateInterfaces takes care of pushing interface modifications. Since interfaces don't have unique identifiers in
+// Cobbler 3.3.x. As such no reliable tracking of operations can be done when interfaces are renamed. As such this only
+// handles modification and creation of interfaces.
+func (c *Client) updateInterfaces(systemId string, interfaceData interface{}) error {
+	interfaceMap := interfaceData.(Interfaces)
+	for name, iface := range interfaceMap {
+		res := makeInterfaceOptionsMap(name, iface)
+		err := c.ModifyInterface(systemId, res)
+		if err != nil {
+			return err
 		}
 	}
 	return nil

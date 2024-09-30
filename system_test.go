@@ -17,6 +17,7 @@ limitations under the License.
 package cobblerclient
 
 import (
+	"github.com/go-test/deep"
 	"testing"
 	"time"
 )
@@ -210,4 +211,116 @@ func TestGetSystemHandle(t *testing.T) {
 	if res != "system::testsys" {
 		t.Error("Wrong object id returned.")
 	}
+}
+
+func TestCreateInterface(t *testing.T) {
+	// Arrange
+	t.Skip("we cannot compare maps since they are not ordered in XML")
+	c := createStubHTTPClient(t, []string{
+		"extended-version",
+		"get-interfaces-get-system",
+		"delete-interface-get-system-handle",
+		"create-interface-create-interface",
+		"delete-interface-save-system",
+	})
+	testsys, err := c.GetSystem("testsys", false, false)
+	FailOnError(t, err)
+	testinterface := NewInterface()
+
+	// Act
+	err = testsys.CreateInterface("eth0", testinterface)
+
+	// Assert
+	FailOnError(t, err)
+}
+
+func TestModifyInterface(t *testing.T) {
+	// Arrange
+	t.Skip("we cannot compare maps since they are not ordered in XML")
+	c := createStubHTTPClientSingle(t, "modify-interface")
+	testnic := NewInterface()
+	testnic.IPAddress = "10.168.0.5"
+	testnicmap := makeInterfaceOptionsMap("testsys", testnic)
+
+	// Act
+	err := c.ModifyInterface("system::testsys", testnicmap)
+
+	// Assert
+	FailOnError(t, err)
+}
+
+func TestGetInterfaces(t *testing.T) {
+	// Arrange
+	c := createStubHTTPClient(t, []string{
+		"extended-version",
+		"get-interfaces-get-system",
+	})
+	testsys, err := c.GetSystem("testsys", false, false)
+	FailOnError(t, err)
+
+	// Act
+	interfaces, err := testsys.GetInterfaces()
+
+	// Assert
+	if len(interfaces) < 1 {
+		t.Fatal("there should be at least one interface")
+	}
+	FailOnError(t, err)
+}
+
+func TestGetInterface(t *testing.T) {
+	// Arrange
+	c := createStubHTTPClient(t, []string{
+		"extended-version",
+		"get-interfaces-get-system",
+	})
+	testsys, err := c.GetSystem("testsys", false, false)
+	FailOnError(t, err)
+
+	// Act
+	nic, err := testsys.GetInterface("default")
+
+	// Assert
+	if len(deep.Equal(nic, Interface{})) > 0 {
+		t.Fatal("interfaces non-equal")
+	}
+	FailOnError(t, err)
+}
+
+func TestDeleteInterface(t *testing.T) {
+	// Arrange
+	c := createStubHTTPClient(t, []string{
+		"extended-version",
+		"get-interfaces-get-system",
+		"delete-interface-get-system-handle",
+		"delete-interface-delete-interface",
+		"delete-interface-save-system",
+	})
+	testsys, err := c.GetSystem("testsys", false, false)
+	FailOnError(t, err)
+
+	// Act
+	err = testsys.DeleteInterface("default")
+
+	// Assert
+	FailOnError(t, err)
+}
+
+func TestRenameInterface(t *testing.T) {
+	// Arrange
+	t.Skip("we cannot compare maps since they are not ordered in XML")
+	c := createStubHTTPClient(t, []string{
+		"extended-version",
+		"get-interfaces-get-system",
+		"delete-interface-get-system-handle",
+		"rename-interface-rename-interface",
+	})
+	testsys, err := c.GetSystem("testsys", false, false)
+	FailOnError(t, err)
+
+	// Act
+	err = testsys.RenameInterface("", "")
+
+	// Assert
+	FailOnError(t, err)
 }
