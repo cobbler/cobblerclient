@@ -36,14 +36,12 @@ type System struct {
 	Autoinstall           string          `mapstructure:"autoinstall"`
 	BootLoaders           Value[[]string] `mapstructure:"boot_loaders"`
 	EnableIPXE            Value[bool]     `mapstructure:"enable_ipxe"`
-	EnableMenu            Value[bool]     `mapstructure:"enable_menu"`
 	Filename              string          `mapstructure:"filename"`
 	Gateway               string          `mapstructure:"gateway"`
 	Hostname              string          `mapstructure:"hostname"`
 	IPv6DefaultDevice     string          `mapstructure:"ipv6_default_device"`
 	Image                 string          `mapstructure:"image"`
 	Interfaces            Interfaces      `mapstructure:"interfaces" cobbler:"noupdate"`
-	Menu                  string          `mapstructure:"menu"`
 	NameServers           []string        `mapstructure:"name_servers"`
 	NameServersSearch     []string        `mapstructure:"name_servers_search"`
 	NetbootEnabled        bool            `mapstructure:"netboot_enabled"`
@@ -113,9 +111,6 @@ func NewSystem() System {
 			IsInherited: true,
 		},
 		EnableIPXE: Value[bool]{
-			IsInherited: true,
-		},
-		EnableMenu: Value[bool]{
 			IsInherited: true,
 		},
 		Filename:            inherit,
