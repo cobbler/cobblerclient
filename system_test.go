@@ -215,7 +215,6 @@ func TestGetSystemHandle(t *testing.T) {
 
 func TestCreateInterface(t *testing.T) {
 	// Arrange
-	t.Skip("we cannot compare maps since they are not ordered in XML")
 	c := createStubHTTPClient(t, []string{
 		"extended-version",
 		"get-interfaces-get-system",
@@ -236,7 +235,6 @@ func TestCreateInterface(t *testing.T) {
 
 func TestModifyInterface(t *testing.T) {
 	// Arrange
-	t.Skip("we cannot compare maps since they are not ordered in XML")
 	c := createStubHTTPClientSingle(t, "modify-interface")
 	testnic := NewInterface()
 	testnic.IPAddress = "10.168.0.5"
@@ -308,7 +306,6 @@ func TestDeleteInterface(t *testing.T) {
 
 func TestRenameInterface(t *testing.T) {
 	// Arrange
-	t.Skip("we cannot compare maps since they are not ordered in XML")
 	c := createStubHTTPClient(t, []string{
 		"extended-version",
 		"get-interfaces-get-system",
