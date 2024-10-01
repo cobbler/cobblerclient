@@ -5,13 +5,14 @@ package cobblerclient
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
+	"github.com/go-test/deep"
 	"io"
 	"net/http"
 	"os"
 	"regexp"
-	"runtime"
-	"strings"
+	"sort"
 	"testing"
 )
 
@@ -52,20 +53,29 @@ func NewStubHTTPClient(t *testing.T) *StubHTTPClient {
 	return &s
 }
 
-func removeLineBreaks(input []byte) []byte {
-	return []byte(strings.Replace(string(input), "\r", "", -1))
-}
-
 func (s *StubHTTPClient) Verify() {
 	a := s.answers[s.requestCounter]
-	if runtime.GOOS == "windows" {
-		a.Expected = removeLineBreaks(a.Expected)
-		a.Actual = removeLineBreaks(a.Actual)
+	var expec XMLRPCMethodCall
+	var obt XMLRPCMethodCall
+	var err error
+
+	err = xml.NewDecoder(bytes.NewReader(a.Expected)).Decode(&expec)
+	if err != nil {
+		s.t.Fatal(err)
 	}
-	if !bytes.Equal(a.Expected, a.Actual) {
-		spit("/tmp/expected", a.Expected)
-		spit("/tmp/actual", a.Actual)
-		s.t.Errorf("expected:\n%sgot:\n%s", a.Expected, a.Actual)
+	err = xml.NewDecoder(bytes.NewReader(a.Actual)).Decode(&obt)
+	if err != nil {
+		s.t.Fatal(err)
+	}
+
+	sortMethodCall(expec)
+	sortMethodCall(obt)
+	comparison := deep.Equal(expec, obt)
+	fmt.Println(expec)
+	fmt.Println(obt)
+	fmt.Println(comparison)
+	if len(comparison) > 0 {
+		s.t.Fatal(comparison)
 	}
 }
 
@@ -87,20 +97,6 @@ func (s *StubHTTPClient) Post(uri, bodyType string, req io.Reader) (*http.Respon
 	res := &http.Response{Body: io.NopCloser(bytes.NewBuffer(a.Response))}
 	s.requestCounter++
 	return res, nil
-}
-
-func spit(path string, b []byte) {
-	file, err := os.Create(path)
-	if err != nil {
-		return
-	}
-
-	n, err := file.Write(b)
-	if err != nil {
-		return
-	}
-
-	fmt.Printf("%v bytes written to %s\n", n, path)
 }
 
 // createStubHTTPClient ...
@@ -132,4 +128,59 @@ func createStubHTTPClient(t *testing.T, fixtures []string) Client {
 // createStubHTTPClientSingle ...
 func createStubHTTPClientSingle(t *testing.T, fixture string) Client {
 	return createStubHTTPClient(t, []string{fixture})
+}
+
+func sortMethodCall(methodCall XMLRPCMethodCall) {
+	for _, param := range methodCall.Params {
+		value := param.Value
+		if len(value.Struct.Members) > 0 {
+			sortStruct(value.Struct)
+		}
+		// Arrays should already be correctly handled since they are insertion ordered.
+	}
+}
+
+func sortStruct(xmlrpcStruct XMLRPCStruct) {
+	sort.Slice(xmlrpcStruct.Members, func(i, j int) bool {
+		return xmlrpcStruct.Members[i].Name < xmlrpcStruct.Members[j].Name
+	})
+	for _, value := range xmlrpcStruct.Members {
+		if len(value.StructValue.Struct.Members) > 0 {
+			sortStruct(value.StructValue.Struct)
+		}
+	}
+}
+
+type XMLRPCStructMember struct {
+	Name        string      `xml:"name"`
+	StructValue XMLRPCValue `xml:"value"`
+}
+
+type XMLRPCStruct struct {
+	Members []XMLRPCStructMember `xml:"member"`
+}
+
+type XMLRPCArray struct {
+	ArrayValues []XMLRPCValue `xml:"data>value"`
+}
+
+// XMLRPCValue is a wrapper struct where only one of the fields will be set for a single instance of this struct.
+type XMLRPCValue struct {
+	XMLType string
+	Int     int          `xml:"int"`
+	String  string       `xml:"string"`
+	Boolean bool         `xml:"boolean"`
+	Double  float64      `xml:"double"`
+	Base64  string       `xml:"base64"`
+	Struct  XMLRPCStruct `xml:"struct"`
+	Array   XMLRPCArray  `xml:"array"`
+}
+
+type XMLRPCParam struct {
+	Value XMLRPCValue `xml:"value"`
+}
+
+type XMLRPCMethodCall struct {
+	MethodName string        `xml:"methodName"`
+	Params     []XMLRPCParam `xml:"params>param"`
 }

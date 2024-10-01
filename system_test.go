@@ -240,7 +240,7 @@ func TestModifyInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "modify-interface")
 	testnic := NewInterface()
 	testnic.IPAddress = "10.168.0.5"
-	testnicmap := makeInterfaceOptionsMap("testsys", testnic)
+	testnicmap := makeInterfaceOptionsMap("eth0", testnic)
 
 	// Act
 	err := c.ModifyInterface("system::testsys", testnicmap)

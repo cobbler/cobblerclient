@@ -16,13 +16,13 @@
             <value>
                 <struct>
                     <member>
-                        <name>management-testsys</name>
+                        <name>management-eth0</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>cnames-testsys</name>
+                        <name>cnames-eth0</name>
                         <value>
                             <array>
                                 <data></data>
@@ -30,7 +30,7 @@
                         </value>
                     </member>
                     <member>
-                        <name>ipv6_secondaries-testsys</name>
+                        <name>ipv6_secondaries-eth0</name>
                         <value>
                             <array>
                                 <data></data>
@@ -38,67 +38,67 @@
                         </value>
                     </member>
                     <member>
-                        <name>ConnectedMode-testsys</name>
+                        <name>ConnectedMode-eth0</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>bonding_opts-testsys</name>
+                        <name>bonding_opts-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>ipv6_prefix-testsys</name>
+                        <name>ipv6_prefix-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>ip_address-testsys</name>
+                        <name>ip_address-eth0</name>
                         <value>
                             <string>10.168.0.5</string>
                         </value>
                     </member>
                     <member>
-                        <name>mac_address-testsys</name>
+                        <name>mac_address-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>if_gateway-testsys</name>
+                        <name>if_gateway-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>ipv6_default_gateway-testsys</name>
+                        <name>ipv6_default_gateway-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>interface_type-testsys</name>
+                        <name>interface_type-eth0</name>
                         <value>
                             <string>na</string>
                         </value>
                     </member>
                     <member>
-                        <name>mtu-testsys</name>
+                        <name>mtu-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>dhcp_tag-testsys</name>
+                        <name>dhcp_tag-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>ipv6_static_routes-testsys</name>
+                        <name>ipv6_static_routes-eth0</name>
                         <value>
                             <array>
                                 <data></data>
@@ -106,19 +106,19 @@
                         </value>
                     </member>
                     <member>
-                        <name>ipv6_mtu-testsys</name>
+                        <name>ipv6_mtu-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>static-testsys</name>
+                        <name>static-eth0</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>static_routes-testsys</name>
+                        <name>static_routes-eth0</name>
                         <value>
                             <array>
                                 <data></data>
@@ -126,37 +126,37 @@
                         </value>
                     </member>
                     <member>
-                        <name>virt_bridge-testsys</name>
+                        <name>virt_bridge-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>netmask-testsys</name>
+                        <name>netmask-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>dns_name-testsys</name>
+                        <name>dns_name-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>interface_master-testsys</name>
+                        <name>interface_master-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>bridge_opts-testsys</name>
+                        <name>bridge_opts-eth0</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>ipv6_address-testsys</name>
+                        <name>ipv6_address-eth0</name>
                         <value>
                             <string></string>
                         </value>
