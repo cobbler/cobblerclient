@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>modify_system</methodName>
+    <methodName>get_item_handle</methodName>
     <params>
         <param>
             <value>
-                <string>___NEW___system::abc123==</string>
+                <string>system</string>
             </value>
         </param>
         <param>
             <value>
-                <string>enable_menu</string>
-            </value>
-        </param>
-        <param>
-            <value>
-                <string>&lt;&lt;inherit&gt;&gt;</string>
+                <string>testsys</string>
             </value>
         </param>
         <param>

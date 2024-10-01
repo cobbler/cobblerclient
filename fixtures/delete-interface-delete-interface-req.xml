@@ -4,17 +4,17 @@
     <params>
         <param>
             <value>
-                <string>___NEW___system::abc123==</string>
+                <string>system::testsys</string>
             </value>
         </param>
         <param>
             <value>
-                <string>menu</string>
+                <string>delete_interface</string>
             </value>
         </param>
         <param>
             <value>
-                <string></string>
+                <string>default</string>
             </value>
         </param>
         <param>
