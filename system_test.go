@@ -17,6 +17,7 @@ limitations under the License.
 package cobblerclient
 
 import (
+	"fmt"
 	"github.com/go-test/deep"
 	"testing"
 	"time"
@@ -263,6 +264,9 @@ func TestGetInterfaces(t *testing.T) {
 	if len(interfaces) < 1 {
 		t.Fatal("there should be at least one interface")
 	}
+	if interfaces["default"].IPAddress != "10.1.0.1" {
+		t.Fatal("incorrect IP address")
+	}
 	FailOnError(t, err)
 }
 
@@ -279,7 +283,11 @@ func TestGetInterface(t *testing.T) {
 	nic, err := testsys.GetInterface("default")
 
 	// Assert
-	if len(deep.Equal(nic, Interface{})) > 0 {
+	expectedInterface := NewInterface()
+	expectedInterface.IPAddress = "10.1.0.1"
+	differences := deep.Equal(nic, expectedInterface)
+	if len(differences) > 0 {
+		fmt.Println(differences)
 		t.Fatal("interfaces non-equal")
 	}
 	FailOnError(t, err)

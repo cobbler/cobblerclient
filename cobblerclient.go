@@ -311,7 +311,7 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 			valueStruct.RawData = data
 			return valueStruct, nil
 		case reflect.Map:
-			// This can be: Top-level Map, paged search results, page-info struct or an inherited struct
+			// This can be: Top-level Map, paged search results, page-info struct, network interface or an inherited struct
 			mapKeys := dataVal.MapKeys()
 			sort.SliceStable(mapKeys, func(i, j int) bool {
 				return mapKeys[i].String() < mapKeys[j].String()
@@ -322,6 +322,10 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 			}
 			if len(mapKeys) == 10 && mapKeys[0].String() == "end_item" {
 				// Page-Info struct
+				return data, nil
+			}
+			if len(mapKeys) == 23 && mapKeys[0].String() == "bonding_opts" {
+				// Network Interface struct
 				return data, nil
 			}
 			for _, key := range mapKeys {
@@ -340,23 +344,25 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 			integerValue, err := convertToInt(data)
 			valueStruct.Data = integerValue
 			valueStruct.RawData = data
-			if err == nil {
+			if err != nil {
 				return Value[int]{}, err
+			}
+			return valueStruct, nil
+		case reflect.Float64:
+			// Float that may or may not be inherited
+			valueStruct := Value[float64]{}
+			floatValue, err := convertToFloat(data)
+			valueStruct.Data = floatValue
+			valueStruct.RawData = data
+			if err != nil {
+				return Value[float64]{}, err
 			}
 			return valueStruct, nil
 		case reflect.Bool:
 			// Bool that may or may not be inherited
 			valueStruct := Value[bool]{}
-			integerBoolean, err := convertToInt(data)
-			if err == nil {
-				return Value[bool]{}, err
-			}
-			boolValue, err := convertIntBool(integerBoolean)
-			valueStruct.Data = boolValue
+			valueStruct.Data = data.(bool)
 			valueStruct.RawData = data
-			if err == nil {
-				return Value[bool]{}, err
-			}
 			return valueStruct, nil
 		default:
 			return nil, fmt.Errorf("unknown type %s fromType for Inherited or Flattened Value", fromType)
@@ -380,7 +386,7 @@ func decodeCobblerItem(raw interface{}, result interface{}) (interface{}, error)
 		return nil, err
 	}
 
-	if err := decoder.Decode(raw); err != nil {
+	if err = decoder.Decode(raw); err != nil {
 		return nil, err
 	}
 
