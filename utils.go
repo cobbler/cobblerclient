@@ -88,6 +88,17 @@ func convertIntBool(integer int) (bool, error) {
 	return false, errors.New("integer was neither 0 nor 1")
 }
 
+func convertToFloat(float interface{}) (float64, error) {
+	switch v := float.(type) {
+	case float64:
+		return v, nil
+	case float32:
+		return float64(v), nil
+	default:
+		return -1, errors.New("float could not be converted")
+	}
+}
+
 func convertToInt(integer interface{}) (int, error) {
 	switch integer.(type) {
 	case int8:

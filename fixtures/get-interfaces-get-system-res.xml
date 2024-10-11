@@ -175,7 +175,7 @@
                                             <member>
                                                 <name>ip_address</name>
                                                 <value>
-                                                    <string></string>
+                                                    <string>10.1.0.1</string>
                                                 </value>
                                             </member>
                                             <member>
