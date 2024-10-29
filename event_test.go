@@ -8,11 +8,11 @@ import (
 func TestGetTaskStatus(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-task-status")
 	expectedResult := CobblerEvent{
-		id:        "2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6",
-		statetime: 1664568243.5196018,
-		name:      "Updating Signatures",
-		state:     "complete",
-		readByWho: []string{},
+		ID:        "2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6",
+		StateTime: 1664568243.5196018,
+		Name:      "Updating Signatures",
+		State:     "complete",
+		ReadByWho: []string{},
 	}
 
 	result, err := c.GetTaskStatus("2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6")

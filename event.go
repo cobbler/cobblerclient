@@ -1,19 +1,19 @@
 package cobblerclient
 
 type CobblerEvent struct {
-	id        string
-	statetime float64
-	name      string
-	state     string
-	readByWho []string
+	ID        string
+	StateTime float64
+	Name      string
+	State     string
+	ReadByWho []string
 }
 
 var EMPTYEVENT = CobblerEvent{
-	id:        "",
-	statetime: 0.0,
-	name:      "empty",
-	state:     "invalid",
-	readByWho: nil,
+	ID:        "",
+	StateTime: 0.0,
+	Name:      "empty",
+	State:     "invalid",
+	ReadByWho: nil,
 }
 
 func unmarshalEvent(eventId string, data interface{}) *CobblerEvent {
@@ -23,11 +23,11 @@ func unmarshalEvent(eventId string, data interface{}) *CobblerEvent {
 		readByWho = append(readByWho, user.(string))
 	}
 	return &CobblerEvent{
-		id:        eventId,
-		statetime: eventData[0].(float64),
-		name:      eventData[1].(string),
-		state:     eventData[2].(string),
-		readByWho: readByWho,
+		ID:        eventId,
+		StateTime: eventData[0].(float64),
+		Name:      eventData[1].(string),
+		State:     eventData[2].(string),
+		ReadByWho: readByWho,
 	}
 }
 

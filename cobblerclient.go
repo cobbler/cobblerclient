@@ -23,7 +23,6 @@ import (
 	"github.com/go-viper/mapstructure/v2"
 	"github.com/kolo/xmlrpc"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"reflect"
 	"sort"
@@ -66,7 +65,8 @@ func NewClient(httpClient HTTPClient, c ClientConfig) Client {
 }
 
 // Call is the generic method for calling an XML-RPC endpoint in Cobbler that has no dedicated method in the client.
-// Normally there should be no need to use this if you are just using the client.
+// Normally there should be no need to use this if you are just using the client. In case there is an error closing the
+// HTTP connection, it hides all errors that occur during the rest of the method.
 func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 	var result interface{}
 
@@ -81,22 +81,27 @@ func (c *Client) Call(method string, args ...interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
+	defer func() {
+		if closeErr := res.Body.Close(); closeErr != nil {
+			err = closeErr
+		}
+	}()
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	resp := xmlrpc.Response(body)
-	if err := resp.Unmarshal(&result); err != nil {
+	if err = resp.Unmarshal(&result); err != nil {
 		return nil, err
 	}
 
-	if err := resp.Err(); err != nil {
+	if err = resp.Err(); err != nil {
 		return nil, err
 	}
 
-	return result, nil
+	// Return err because the deferred function may set it to non-nil
+	return result, err
 }
 
 func (c *Client) setCachedVersion() error {
