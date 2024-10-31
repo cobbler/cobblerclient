@@ -78,7 +78,7 @@ type Interface struct {
 	BondingOpts        string   `mapstructure:"bonding_opts" structs:"bonding_opts"`
 	BridgeOpts         string   `mapstructure:"bridge_opts" structs:"bridge_opts"`
 	CNAMEs             []string `mapstructure:"cnames" structs:"cnames"`
-	ConnectedMode      bool     `mapstructure:"connected_mode"`
+	ConnectedMode      bool     `mapstructure:"connected_mode" structs:"connected_mode"`
 	DHCPTag            string   `mapstructure:"dhcp_tag" structs:"dhcp_tag"`
 	DNSName            string   `mapstructure:"dns_name" structs:"dns_name"`
 	Gateway            string   `mapstructure:"if_gateway" structs:"if_gateway"`
