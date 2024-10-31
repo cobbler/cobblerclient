@@ -38,7 +38,7 @@
                         </value>
                     </member>
                     <member>
-                        <name>ConnectedMode-eth0</name>
+                        <name>connected_mode-eth0</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
