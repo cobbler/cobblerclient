@@ -167,7 +167,7 @@ type Image struct {
 	VirtPath             string         `mapstructure:"virt_path"`
 	VirtRam              Value[int]     `mapstructure:"virt_ram"`
 	VirtType             string         `mapstructure:"virt_type"`
-	SupportedBootLoaders []string       `mapstructure:"supported_boot_loaders"`
+	SupportedBootLoaders []string       `mapstructure:"supported_boot_loaders" cobbler:"noupdate"`
 
 	Client
 }
