@@ -415,6 +415,14 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 			}
 			break
 		}
+
+		if fieldType == "Resource" {
+			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
+			if err != nil {
+				return err
+			}
+			break
+		}
 	}
 
 	// Fields that can inherit from other items can only be set after the parent is set.
@@ -474,7 +482,7 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		field := tag.Get("mapstructure")
 		cobblerTag := tag.Get("cobbler")
 
-		if cobblerTag == "noupdate" || fieldType == "Item" || fieldType == "Meta" {
+		if cobblerTag == "noupdate" || fieldType == "Item" || fieldType == "Resource" || fieldType == "Meta" {
 			continue
 		}
 
