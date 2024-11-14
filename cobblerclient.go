@@ -238,10 +238,76 @@ func (c *Client) GetRandomMac() error {
 	return err
 }
 
-// GetStatus retrieves the current status of installation progress that has been reported to Cobbler.
-func (c *Client) GetStatus(mode string) error {
-	_, err := c.Call("get_status", mode, c.Token)
-	return err
+type StatusOption string
+
+const StatusNormal StatusOption = "normal"
+const StatusText StatusOption = "text"
+
+// GetStatus retrieves the current status of installation progress that has been reported to Cobbler. This can be called
+// with two modes: "normal" or "text. In case this is called in mode "normal" you might want to use ParseStatus to
+// get a parsed version of the data. For mode "text" you can cast the interface to string.
+func (c *Client) GetStatus(mode StatusOption) (interface{}, error) {
+	return c.Call("get_status", mode, c.Token)
+}
+
+// InstallationStatus represents the structured return value of GetStatus.
+type InstallationStatus struct {
+	IP               string  `json:"ip"`
+	MostRecentStart  float64 `json:"most_recent_start"`
+	MostRecentStop   float64 `json:"most_recent_stop"`
+	MostRecentTarget string  `json:"most_recent_target"`
+	SeenStart        int     `json:"seen_start"`
+	SeenStop         int     `json:"seen_stop"`
+	State            string  `json:"state"`
+}
+
+// ParseStatus takes the interface returned by GetStatus and converts it into a list of well-defined structs.
+func (c *Client) ParseStatus(status interface{}) ([]InstallationStatus, error) {
+	result := make([]InstallationStatus, 0)
+	statusStruct, ok := status.(map[string]interface{})
+	if !ok {
+		return result, errors.New("cobblerclient: invalid status structure")
+	}
+	for k, v := range statusStruct {
+		installation := InstallationStatus{}
+		installation.IP = k
+		statusArray, okArray := v.([]interface{})
+		if !okArray {
+			return result, errors.New("cobblerclient: invalid status structure")
+		}
+		mostRecentStart, err := convertToFloat(statusArray[0])
+		if err != nil {
+			return result, err
+		}
+		mostRecentStop, err := convertToFloat(statusArray[1])
+		if err != nil {
+			return result, err
+		}
+		mostRecentTarget, okTarget := statusArray[2].(string)
+		if !okTarget {
+			return result, errors.New("cobblerclient: invalid status structure")
+		}
+		seenStart, err := convertToInt(statusArray[3])
+		if err != nil {
+			return result, err
+		}
+		seenStop, err := convertToInt(statusArray[4])
+		if err != nil {
+			return result, err
+		}
+		state, stateOk := statusArray[5].(string)
+		if !stateOk {
+			return result, errors.New("cobblerclient: invalid status structure")
+		}
+		installation.MostRecentStart = mostRecentStart
+		installation.MostRecentStop = mostRecentStop
+		installation.MostRecentTarget = mostRecentTarget
+		installation.SeenStart = seenStart
+		installation.SeenStop = seenStop
+		installation.State = state
+		result = append(result, installation)
+	}
+	return result, nil
 }
 
 // SyncDhcp updates the DHCP configuration synchronous.

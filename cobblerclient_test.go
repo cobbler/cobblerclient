@@ -199,11 +199,33 @@ func TestGetRandomMac(t *testing.T) {
 	FailOnError(t, err)
 }
 
-func TestGetStatus(t *testing.T) {
-	c := createStubHTTPClientSingle(t, "get-status")
+func TestGetStatusNormal(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-status-normal")
 
-	err := c.GetStatus("normal")
+	res, err := c.GetStatus(StatusNormal)
+	resParsed, err := c.ParseStatus(res)
 	FailOnError(t, err)
+	if len(resParsed) != 1 {
+		t.Fatalf("Expected a single result of 1, got %d", len(resParsed))
+	}
+	if resParsed[0].IP != "2a07:de00:a100:8:bbbb:111:ffff:aaaa" {
+		t.Fatalf("IP address not correctly parsed")
+	}
+	if resParsed[0].State != "finished" {
+		t.Fatalf("State not correctly parsed")
+	}
+}
+
+func TestGetStatusText(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-status-text")
+	expectedResult := "ip             |target              |start            |state\n2a07:de00:a100:8:bbbb:111:ffff:aaaa|system:test.example.org|Tue Jul  9 13:02:17 2024|finished         "
+
+	res, err := c.GetStatus(StatusText)
+	FailOnError(t, err)
+	if res != expectedResult {
+		t.Fatalf("Expected %s, got %s", expectedResult, res)
+	}
+
 }
 
 func TestSyncDhcp(t *testing.T) {
