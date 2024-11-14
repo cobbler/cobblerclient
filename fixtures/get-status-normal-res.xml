@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value><struct>
+                <member>
+                    <name>2a07:de00:a100:8:bbbb:111:ffff:aaaa</name>
+                    <value><array><data>
+                        <value><double>1720530137.188196</double></value>
+                        <value><double>1720530144.7982686</double></value>
+                        <value><string>system:test.example.org</string></value>
+                        <value><int>1</int></value>
+                        <value><int>1</int></value>
+                        <value><string>finished</string></value>
+                    </data></array></value>
+                </member>
+            </struct></value>
+        </param>
+    </params>
+</methodResponse>
