@@ -18,8 +18,10 @@ package cobblerclient
 
 // Snippet is a snippet file
 type Snippet struct {
-	Name string // The name the snippet file will be saved in Cobbler
-	Body string // The contents of the template file
+	// The name the snippet file will be saved in Cobbler
+	Name string `json:"name" yaml:"name"`
+	// The contents of the template file
+	Body string `json:"body" yaml:"body"`
 }
 
 // CreateSnippet creates a snippet in Cobbler.

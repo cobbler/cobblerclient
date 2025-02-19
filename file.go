@@ -12,7 +12,7 @@ type File struct {
 	Resource `mapstructure:",squash"`
 
 	// File specific fields
-	IsDir bool `mapstructure:"is_dir"`
+	IsDir bool `mapstructure:"is_dir" json:"is_dir" yaml:"is_dir"`
 }
 
 func NewFile() File {

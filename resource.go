@@ -20,16 +20,16 @@ func (r ResourceAction) String() string {
 // Resource is an abstract item type that cannot be directly instantiated.
 // Get the fields from cobbler/items/resource.py
 type Resource struct {
-	Item `mapstructure:",squash"`
+	Item `mapstructure:",squash" yaml:",inline"`
 
 	// Resource specific attributes
 	// Action   ResourceAction `mapstructure:"action"`
-	Action   string `mapstructure:"action"`
-	Mode     string `mapstructure:"mode"`
-	Owner    string `mapstructure:"owner"`
-	Group    string `mapstructure:"group"`
-	Path     string `mapstructure:"path"`
-	Template string `mapstructure:"template"`
+	Action   string `mapstructure:"action" json:"action" yaml:"action"`
+	Mode     string `mapstructure:"mode" json:"mode" yaml:"mode"`
+	Owner    string `mapstructure:"owner" json:"owner" yaml:"owner"`
+	Group    string `mapstructure:"group" json:"group" yaml:"group"`
+	Path     string `mapstructure:"path" json:"path" yaml:"path"`
+	Template string `mapstructure:"template" json:"template" yaml:"template"`
 }
 
 func NewResource() Resource {

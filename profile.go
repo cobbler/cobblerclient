@@ -25,35 +25,35 @@ import (
 // Profile is a created profile.
 // Get the fields from cobbler/items/profile.py
 type Profile struct {
-	Item `mapstructure:",squash"`
+	Item `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
 	ReposEnabled bool `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	Autoinstall         string          `mapstructure:"autoinstall"`
-	BootLoaders         Value[[]string] `mapstructure:"boot_loaders"`
-	DHCPTag             string          `mapstructure:"dhcp_tag"`
-	Distro              string          `mapstructure:"distro"`
-	EnableIPXE          Value[bool]     `mapstructure:"enable_ipxe"`
-	EnableMenu          Value[bool]     `mapstructure:"enable_menu"`
-	Filename            string          `mapstructure:"filename"`
-	Menu                string          `mapstructure:"menu"`
-	NameServers         Value[[]string] `mapstructure:"name_servers"`
-	NameServersSearch   Value[[]string] `mapstructure:"name_servers_search"`
-	NextServerv4        string          `mapstructure:"next_server_v4"`
-	NextServerv6        string          `mapstructure:"next_server_v6"`
-	Proxy               string          `mapstructure:"proxy"`
-	RedhatManagementKey string          `mapstructure:"redhat_management_key"`
-	Repos               []string        `mapstructure:"repos"`
-	Server              string          `mapstructure:"server"`
-	VirtAutoBoot        Value[bool]     `mapstructure:"virt_auto_boot"`
-	VirtBridge          string          `mapstructure:"virt_bridge"`
-	VirtCPUs            int             `mapstructure:"virt_cpus"`
-	VirtDiskDriver      string          `mapstructure:"virt_disk_driver"`
-	VirtFileSize        Value[float64]  `mapstructure:"virt_file_size"`
-	VirtPath            string          `mapstructure:"virt_path"`
-	VirtRAM             Value[int]      `mapstructure:"virt_ram"`
-	VirtType            string          `mapstructure:"virt_type"`
+	Autoinstall         string          `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	BootLoaders         Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	DHCPTag             string          `mapstructure:"dhcp_tag" json:"dhcp_tag" yaml:"dhcp_tag"`
+	Distro              string          `mapstructure:"distro" json:"distro" yaml:"distro"`
+	EnableIPXE          Value[bool]     `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe"`
+	EnableMenu          Value[bool]     `mapstructure:"enable_menu" json:"enable_menu" yaml:"enable_menu"`
+	Filename            string          `mapstructure:"filename" json:"filename" yaml:"filename"`
+	Menu                string          `mapstructure:"menu" json:"menu" yaml:"menu"`
+	NameServers         Value[[]string] `mapstructure:"name_servers" json:"name_servers" yaml:"name_servers"`
+	NameServersSearch   Value[[]string] `mapstructure:"name_servers_search" json:"name_servers_search" yaml:"name_servers_search"`
+	NextServerv4        string          `mapstructure:"next_server_v4" json:"next_server_v4" yaml:"next_server_v4"`
+	NextServerv6        string          `mapstructure:"next_server_v6" json:"next_server_v6" yaml:"next_server_v6"`
+	Proxy               string          `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
+	RedhatManagementKey string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	Repos               []string        `mapstructure:"repos" json:"repos" yaml:"repos"`
+	Server              string          `mapstructure:"server" json:"server" yaml:"server"`
+	VirtAutoBoot        Value[bool]     `mapstructure:"virt_auto_boot" json:"virt_auto_boot" yaml:"virt_auto_boot"`
+	VirtBridge          string          `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
+	VirtCPUs            int             `mapstructure:"virt_cpus" json:"virt_cpus" yaml:"virt_cpus"`
+	VirtDiskDriver      string          `mapstructure:"virt_disk_driver" json:"virt_disk_driver" yaml:"virt_disk_driver"`
+	VirtFileSize        Value[float64]  `mapstructure:"virt_file_size" json:"virt_file_size" yaml:"virt_file_size"`
+	VirtPath            string          `mapstructure:"virt_path" json:"virt_path" yaml:"virt_path"`
+	VirtRAM             Value[int]      `mapstructure:"virt_ram" json:"virt_ram" yaml:"virt_ram"`
+	VirtType            string          `mapstructure:"virt_type" json:"virt_type" yaml:"virt_type"`
 
 	Client
 }

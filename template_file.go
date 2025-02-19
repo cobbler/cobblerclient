@@ -18,8 +18,10 @@ package cobblerclient
 
 // TemplateFile is the former TemplateFile
 type TemplateFile struct {
-	Name string // The name the template file will be saved in Cobbler
-	Body string // The contents of the template file
+	// The name the template file will be saved in Cobbler
+	Name string `json:"name" yaml:"name"`
+	// The contents of the template file
+	Body string `json:"body" yaml:"body"`
 }
 
 // CreateTemplateFile to create a template file in Cobbler.

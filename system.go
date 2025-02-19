@@ -28,76 +28,76 @@ import (
 
 // System is a created system.
 type System struct {
-	Item `mapstructure:",squash"`
+	Item `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
-	IPv6Autoconfiguration bool            `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate"`
-	ReposEnabled          bool            `mapstructure:"repos_enabled"          cobbler:"noupdate"`
-	Autoinstall           string          `mapstructure:"autoinstall"`
-	BootLoaders           Value[[]string] `mapstructure:"boot_loaders"`
-	EnableIPXE            Value[bool]     `mapstructure:"enable_ipxe"`
-	Filename              string          `mapstructure:"filename"`
-	Gateway               string          `mapstructure:"gateway"`
-	Hostname              string          `mapstructure:"hostname"`
-	IPv6DefaultDevice     string          `mapstructure:"ipv6_default_device"`
-	Image                 string          `mapstructure:"image"`
-	Interfaces            Interfaces      `mapstructure:"interfaces" cobbler:"noupdate"`
-	NameServers           []string        `mapstructure:"name_servers"`
-	NameServersSearch     []string        `mapstructure:"name_servers_search"`
-	NetbootEnabled        bool            `mapstructure:"netboot_enabled"`
-	NextServerv4          string          `mapstructure:"next_server_v4"`
-	NextServerv6          string          `mapstructure:"next_server_v6"`
-	PowerAddress          string          `mapstructure:"power_address"`
-	PowerID               string          `mapstructure:"power_id"`
-	PowerIdentityFile     string          `mapstructure:"power_identity_file"`
-	PowerOptions          string          `mapstructure:"power_options"`
-	PowerPass             string          `mapstructure:"power_pass"`
-	PowerType             string          `mapstructure:"power_type"`
-	PowerUser             string          `mapstructure:"power_user"`
-	Profile               string          `mapstructure:"profile"`
-	Proxy                 string          `mapstructure:"proxy"`
-	RedhatManagementKey   string          `mapstructure:"redhat_management_key"`
-	SerialBaudRate        int             `mapstructure:"serial_baud_rate"`
-	SerialDevice          int             `mapstructure:"serial_device"`
-	Server                string          `mapstructure:"server"`
-	Status                string          `mapstructure:"status"`
-	VirtAutoBoot          Value[bool]     `mapstructure:"virt_auto_boot"`
-	VirtCPUs              Value[int]      `mapstructure:"virt_cpus"`
-	VirtDiskDriver        string          `mapstructure:"virt_disk_driver"`
-	VirtFileSize          Value[float64]  `mapstructure:"virt_file_size"`
-	VirtPXEBoot           bool            `mapstructure:"virt_pxe_boot"`
-	VirtPath              string          `mapstructure:"virt_path"`
-	VirtRAM               Value[int]      `mapstructure:"virt_ram"`
-	VirtType              string          `mapstructure:"virt_type"`
+	IPv6Autoconfiguration bool            `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate" json:"ipv6_autoconfiguration" yaml:"ipv6_autoconfiguration"`
+	ReposEnabled          bool            `mapstructure:"repos_enabled"          cobbler:"noupdate" json:"repos_enabled" yaml:"repos_enabled"`
+	Autoinstall           string          `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	BootLoaders           Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	EnableIPXE            Value[bool]     `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe"`
+	Filename              string          `mapstructure:"filename" json:"filename" yaml:"filename"`
+	Gateway               string          `mapstructure:"gateway" json:"gateway" yaml:"gateway"`
+	Hostname              string          `mapstructure:"hostname" json:"hostname" yaml:"hostname"`
+	IPv6DefaultDevice     string          `mapstructure:"ipv6_default_device" json:"ipv6_default_device" yaml:"ipv6_default_device"`
+	Image                 string          `mapstructure:"image" json:"image" yaml:"image"`
+	Interfaces            Interfaces      `mapstructure:"interfaces" cobbler:"noupdate" json:"interfaces" yaml:"interfaces"`
+	NameServers           []string        `mapstructure:"name_servers" json:"name_servers" yaml:"name_servers"`
+	NameServersSearch     []string        `mapstructure:"name_servers_search" json:"name_servers_search" yaml:"name_servers_search"`
+	NetbootEnabled        bool            `mapstructure:"netboot_enabled" json:"netboot_enabled" yaml:"netboot_enabled"`
+	NextServerv4          string          `mapstructure:"next_server_v4" json:"next_server_v4" yaml:"next_server_v4"`
+	NextServerv6          string          `mapstructure:"next_server_v6" json:"next_server_v6" yaml:"next_server_v6"`
+	PowerAddress          string          `mapstructure:"power_address" json:"power_address" yaml:"power_address"`
+	PowerID               string          `mapstructure:"power_id" json:"power_id" yaml:"power_id"`
+	PowerIdentityFile     string          `mapstructure:"power_identity_file" json:"power_identity_file" yaml:"power_identity_file"`
+	PowerOptions          string          `mapstructure:"power_options" json:"power_options" yaml:"power_options"`
+	PowerPass             string          `mapstructure:"power_pass" json:"power_pass" yaml:"power_pass"`
+	PowerType             string          `mapstructure:"power_type" json:"power_type" yaml:"power_type"`
+	PowerUser             string          `mapstructure:"power_user" json:"power_user" yaml:"power_user"`
+	Profile               string          `mapstructure:"profile" json:"profile" yaml:"profile"`
+	Proxy                 string          `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
+	RedhatManagementKey   string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	SerialBaudRate        int             `mapstructure:"serial_baud_rate" json:"serial_baud_rate" yaml:"serial_baud_rate"`
+	SerialDevice          int             `mapstructure:"serial_device" json:"serial_device" yaml:"serial_device"`
+	Server                string          `mapstructure:"server" json:"server" yaml:"server"`
+	Status                string          `mapstructure:"status" json:"status" yaml:"status"`
+	VirtAutoBoot          Value[bool]     `mapstructure:"virt_auto_boot" json:"virt_auto_boot" yaml:"virt_auto_boot"`
+	VirtCPUs              Value[int]      `mapstructure:"virt_cpus" json:"virt_cpus" yaml:"virt_cpus"`
+	VirtDiskDriver        string          `mapstructure:"virt_disk_driver" json:"virt_disk_driver" yaml:"virt_disk_driver"`
+	VirtFileSize          Value[float64]  `mapstructure:"virt_file_size" json:"virt_file_size" yaml:"virt_file_size"`
+	VirtPXEBoot           bool            `mapstructure:"virt_pxe_boot" json:"virt_pxe_boot" yaml:"virt_pxe_boot"`
+	VirtPath              string          `mapstructure:"virt_path" json:"virt_path" yaml:"virt_path"`
+	VirtRAM               Value[int]      `mapstructure:"virt_ram" json:"virt_ram" yaml:"virt_ram"`
+	VirtType              string          `mapstructure:"virt_type" json:"virt_type" yaml:"virt_type"`
 
 	Client
 }
 
 // Interface is an interface in a system.
 type Interface struct {
-	BondingOpts        string   `mapstructure:"bonding_opts" structs:"bonding_opts"`
-	BridgeOpts         string   `mapstructure:"bridge_opts" structs:"bridge_opts"`
-	CNAMEs             []string `mapstructure:"cnames" structs:"cnames"`
-	ConnectedMode      bool     `mapstructure:"connected_mode" structs:"connected_mode"`
-	DHCPTag            string   `mapstructure:"dhcp_tag" structs:"dhcp_tag"`
-	DNSName            string   `mapstructure:"dns_name" structs:"dns_name"`
-	Gateway            string   `mapstructure:"if_gateway" structs:"if_gateway"`
-	IPAddress          string   `mapstructure:"ip_address" structs:"ip_address"`
-	IPv6Address        string   `mapstructure:"ipv6_address" structs:"ipv6_address"`
-	IPv6DefaultGateway string   `mapstructure:"ipv6_default_gateway" structs:"ipv6_default_gateway"`
-	IPv6MTU            string   `mapstructure:"ipv6_mtu" structs:"ipv6_mtu"`
-	IPv6Prefix         string   `mapstructure:"ipv6_prefix" structs:"ipv6_prefix"`
-	IPv6Secondaries    []string `mapstructure:"ipv6_secondaries" structs:"ipv6_secondaries"`
-	IPv6StaticRoutes   []string `mapstructure:"ipv6_static_routes" structs:"ipv6_static_routes"`
-	InterfaceMaster    string   `mapstructure:"interface_master" structs:"interface_master"`
-	InterfaceType      string   `mapstructure:"interface_type" structs:"interface_type"`
-	MACAddress         string   `mapstructure:"mac_address" structs:"mac_address"`
-	MTU                string   `mapstructure:"mtu" structs:"mtu"`
-	Management         bool     `mapstructure:"management" structs:"management"`
-	Netmask            string   `mapstructure:"netmask" structs:"netmask"`
-	Static             bool     `mapstructure:"static" structs:"static"`
-	StaticRoutes       []string `mapstructure:"static_routes" structs:"static_routes"`
-	VirtBridge         string   `mapstructure:"virt_bridge" structs:"virt_bridge"`
+	BondingOpts        string   `mapstructure:"bonding_opts" structs:"bonding_opts" json:"bonding_opts" yaml:"bonding_opts"`
+	BridgeOpts         string   `mapstructure:"bridge_opts" structs:"bridge_opts" json:"bridge_opts" yaml:"bridge_opts"`
+	CNAMEs             []string `mapstructure:"cnames" structs:"cnames" json:"cnames" yaml:"cnames"`
+	ConnectedMode      bool     `mapstructure:"connected_mode" structs:"connected_mode" json:"connected_mode" yaml:"connected_mode"`
+	DHCPTag            string   `mapstructure:"dhcp_tag" structs:"dhcp_tag" json:"dhcp_tag" yaml:"dhcp_tag"`
+	DNSName            string   `mapstructure:"dns_name" structs:"dns_name" json:"dns_name" yaml:"dns_name"`
+	Gateway            string   `mapstructure:"if_gateway" structs:"if_gateway" json:"gateway" yaml:"gateway"`
+	IPAddress          string   `mapstructure:"ip_address" structs:"ip_address" json:"ip_address" yaml:"ip_address"`
+	IPv6Address        string   `mapstructure:"ipv6_address" structs:"ipv6_address" json:"ipv6_address" yaml:"ipv6_address"`
+	IPv6DefaultGateway string   `mapstructure:"ipv6_default_gateway" structs:"ipv6_default_gateway" json:"ipv6_default_gateway" yaml:"ipv6_default_gateway"`
+	IPv6MTU            string   `mapstructure:"ipv6_mtu" structs:"ipv6_mtu" json:"ipv6_mtu" yaml:"ipv6_mtu"`
+	IPv6Prefix         string   `mapstructure:"ipv6_prefix" structs:"ipv6_prefix" json:"ipv6_prefix" yaml:"ipv6_prefix"`
+	IPv6Secondaries    []string `mapstructure:"ipv6_secondaries" structs:"ipv6_secondaries" json:"ipv6_secondaries" yaml:"ipv6_secondaries"`
+	IPv6StaticRoutes   []string `mapstructure:"ipv6_static_routes" structs:"ipv6_static_routes" json:"ipv6_static_routes" yaml:"ipv6_static_routes"`
+	InterfaceMaster    string   `mapstructure:"interface_master" structs:"interface_master" json:"interface_master" yaml:"interface_master"`
+	InterfaceType      string   `mapstructure:"interface_type" structs:"interface_type" json:"interface_type" yaml:"interface_type"`
+	MACAddress         string   `mapstructure:"mac_address" structs:"mac_address" json:"mac_address" yaml:"mac_address"`
+	MTU                string   `mapstructure:"mtu" structs:"mtu" json:"mtu" yaml:"mtu"`
+	Management         bool     `mapstructure:"management" structs:"management" json:"management" yaml:"management"`
+	Netmask            string   `mapstructure:"netmask" structs:"netmask" json:"netmask" yaml:"netmask"`
+	Static             bool     `mapstructure:"static" structs:"static" json:"static" yaml:"static"`
+	StaticRoutes       []string `mapstructure:"static_routes" structs:"static_routes" json:"static_routes" yaml:"static_routes"`
+	VirtBridge         string   `mapstructure:"virt_bridge" structs:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
 }
 
 // Interfaces is a collection of interfaces in a system.

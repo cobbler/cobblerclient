@@ -7,26 +7,26 @@ import (
 )
 
 type OsVersion struct {
-	Signatures          []string            `json:"signatures" mapstructure:"signatures"`
-	VersionFile         string              `json:"version_file" mapstructure:"version_file"`
-	VersionFileRegex    string              `json:"version_file_regex" mapstructure:"version_file_regex"`
-	KernelArch          string              `json:"kernel_arch" mapstructure:"kernel_arch"`
-	KernelArchRegex     string              `json:"kernel_arch_regex" mapstructure:"kernel_arch_regex"`
-	SupportedArches     []string            `json:"supported_arches" mapstructure:"supported_arches"`
-	SupportedRepoBreeds []string            `json:"supported_repo_breeds" mapstructure:"supported_repo_breeds"`
-	KernelFile          string              `json:"kernel_file" mapstructure:"kernel_file"`
-	InitrdFile          string              `json:"initrd_file" mapstructure:"initrd_file"`
-	IsolinuxOk          bool                `json:"isolinux_ok" mapstructure:"isolinux_ok"`
-	DefaultAutoinstall  string              `json:"default_autoinstall" mapstructure:"default_autoinstall"`
-	KernelOptions       string              `json:"kernel_options" mapstructure:"kernel_options"`
-	KernelOptionsPost   string              `json:"kernel_options_post" mapstructure:"kernel_options_post"`
-	TemplateFiles       string              `json:"template_files" mapstructure:"template_files"`
-	BootFiles           []string            `json:"boot_files" mapstructure:"boot_files"`
-	BootLoaders         map[string][]string `json:"boot_loaders" mapstructure:"boot_loaders"`
+	Signatures          []string            `mapstructure:"signatures" json:"signatures" yaml:"signatures"`
+	VersionFile         string              `mapstructure:"version_file" json:"version_file" yaml:"version_file"`
+	VersionFileRegex    string              `mapstructure:"version_file_regex" json:"version_file_regex" yaml:"version_file_regex"`
+	KernelArch          string              `mapstructure:"kernel_arch" json:"kernel_arch" yaml:"kernel_arch"`
+	KernelArchRegex     string              `mapstructure:"kernel_arch_regex" json:"kernel_arch_regex" yaml:"kernel_arch_regex"`
+	SupportedArches     []string            `mapstructure:"supported_arches" json:"supported_arches" yaml:"supported_arches"`
+	SupportedRepoBreeds []string            `mapstructure:"supported_repo_breeds" json:"supported_repo_breeds" yaml:"supported_repo_breeds"`
+	KernelFile          string              `mapstructure:"kernel_file" json:"kernel_file" yaml:"kernel_file"`
+	InitrdFile          string              `mapstructure:"initrd_file" json:"initrd_file" yaml:"initrd_file"`
+	IsolinuxOk          bool                `mapstructure:"isolinux_ok" json:"isolinux_ok" yaml:"isolinux_ok"`
+	DefaultAutoinstall  string              `mapstructure:"default_autoinstall" json:"default_autoinstall" yaml:"default_autoinstall"`
+	KernelOptions       string              `mapstructure:"kernel_options" json:"kernel_options" yaml:"kernel_options"`
+	KernelOptionsPost   string              `mapstructure:"kernel_options_post" json:"kernel_options_post" yaml:"kernel_options_post"`
+	TemplateFiles       string              `mapstructure:"template_files" json:"template_files" yaml:"template_files"`
+	BootFiles           []string            `mapstructure:"boot_files" json:"boot_files" yaml:"boot_files"`
+	BootLoaders         map[string][]string `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
 }
 
 type DistroSignatures struct {
-	Breeds map[string]map[string]OsVersion `json:"breeds" mapstructure:"breeds"`
+	Breeds map[string]map[string]OsVersion `mapstructure:"breeds" json:"breeds" yaml:"breeds"`
 }
 
 // cobblerSignatureHacks is a hook for the mapstructure decoder. It's only used by

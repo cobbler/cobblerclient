@@ -1,17 +1,17 @@
 package cobblerclient
 
 type ExtendedVersion struct {
-	Gitdate      string
-	Gitstamp     string
-	Builddate    string
-	Version      string
-	VersionTuple []int
+	Gitdate      string `json:"gitdate" yaml:"gitdate"`
+	Gitstamp     string `json:"gitstamp" yaml:"gitstamp"`
+	Builddate    string `json:"builddate" yaml:"builddate"`
+	Version      string `json:"version" yaml:"version"`
+	VersionTuple []int  `json:"version_tuple" yaml:"version_tuple"`
 }
 
 type CobblerVersion struct {
-	Major int
-	Minor int
-	Patch int
+	Major int `json:"major" yaml:"major"`
+	Minor int `json:"minor" yaml:"minor"`
+	Patch int `json:"patch" yaml:"patch"`
 }
 
 func (cv *CobblerVersion) GreaterThan(otherVersion *CobblerVersion) bool {

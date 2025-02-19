@@ -1,11 +1,11 @@
 package cobblerclient
 
 type CobblerEvent struct {
-	ID        string
-	StateTime float64
-	Name      string
-	State     string
-	ReadByWho []string
+	ID        string   `json:"id" yaml:"id"`
+	StateTime float64  `json:"state_time" yaml:"state_time"`
+	Name      string   `json:"name" yaml:"name"`
+	State     string   `json:"state" yaml:"state"`
+	ReadByWho []string `json:"read_by_who" yaml:"read_by_who"`
 }
 
 var EMPTYEVENT = CobblerEvent{

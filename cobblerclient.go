@@ -252,13 +252,13 @@ func (c *Client) GetStatus(mode StatusOption) (interface{}, error) {
 
 // InstallationStatus represents the structured return value of GetStatus.
 type InstallationStatus struct {
-	IP               string  `json:"ip"`
-	MostRecentStart  float64 `json:"most_recent_start"`
-	MostRecentStop   float64 `json:"most_recent_stop"`
-	MostRecentTarget string  `json:"most_recent_target"`
-	SeenStart        int     `json:"seen_start"`
-	SeenStop         int     `json:"seen_stop"`
-	State            string  `json:"state"`
+	IP               string  `json:"ip" yaml:"ip"`
+	MostRecentStart  float64 `json:"most_recent_start" yaml:"most_recent_start"`
+	MostRecentStop   float64 `json:"most_recent_stop" yaml:"most_recent_stop"`
+	MostRecentTarget string  `json:"most_recent_target" yaml:"most_recent_target"`
+	SeenStart        int     `json:"seen_start" yaml:"seen_start"`
+	SeenStop         int     `json:"seen_stop" yaml:"seen_stop"`
+	State            string  `json:"state" yaml:"state"`
 }
 
 // ParseStatus takes the interface returned by GetStatus and converts it into a list of well-defined structs.

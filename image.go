@@ -143,31 +143,31 @@ func (v VirtDiskDriver) String() string {
 // Image is a created image.
 // Get the fields from cobbler/items/image.py
 type Image struct {
-	Item `mapstructure:",squash"`
+	Item `mapstructure:",squash" yaml:",inline"`
 
 	// Image specific fields
 	// Arch                 Architecture
 	// ImageType            ImageType      `mapstructure:"image_type"`
 	// VirtDiskDriver       VirtDiskDriver `mapstructure:"virt_disk_driver"`
 	// VirtType             VirtType `mapstructure:"virt_type"`
-	Arch                 string         `mapstructure:"arch"`
-	Autoinstall          string         `mapstructure:"autoinstall"`
-	Breed                string         `mapstructure:"breed"`
-	File                 string         `mapstructure:"file"`
-	ImageType            string         `mapstructure:"image_type"`
-	NetworkCount         int            `mapstructure:"network_count"`
-	OsVersion            string         `mapstructure:"os_version"`
-	BootLoaders          []string       `mapstructure:"boot_loaders"`
-	Menu                 string         `mapstructure:"menu"`
-	VirtAutoBoot         bool           `mapstructure:"virt_auto_boot"`
-	VirtBridge           string         `mapstructure:"virt_bridge"`
-	VirtCpus             int            `mapstructure:"virt_cpus"`
-	VirtDiskDriver       string         `mapstructure:"virt_disk_driver"`
-	VirtFileSize         Value[float64] `mapstructure:"virt_file_size"`
-	VirtPath             string         `mapstructure:"virt_path"`
-	VirtRam              Value[int]     `mapstructure:"virt_ram"`
-	VirtType             string         `mapstructure:"virt_type"`
-	SupportedBootLoaders []string       `mapstructure:"supported_boot_loaders" cobbler:"noupdate"`
+	Arch                 string         `mapstructure:"arch" json:"arch" yaml:"arch"`
+	Autoinstall          string         `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	Breed                string         `mapstructure:"breed" json:"breed" yaml:"breed"`
+	File                 string         `mapstructure:"file" json:"file" yaml:"file"`
+	ImageType            string         `mapstructure:"image_type" json:"image_type" yaml:"image_type"`
+	NetworkCount         int            `mapstructure:"network_count" json:"network_count" yaml:"network_count"`
+	OsVersion            string         `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
+	BootLoaders          []string       `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	Menu                 string         `mapstructure:"menu" json:"menu" yaml:"menu"`
+	VirtAutoBoot         bool           `mapstructure:"virt_auto_boot" json:"virt_auto_boot" yaml:"virt_auto_boot"`
+	VirtBridge           string         `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
+	VirtCpus             int            `mapstructure:"virt_cpus" json:"virt_cpus" yaml:"virt_cpus"`
+	VirtDiskDriver       string         `mapstructure:"virt_disk_driver" json:"virt_disk_driver" yaml:"virt_disk_driver"`
+	VirtFileSize         Value[float64] `mapstructure:"virt_file_size" json:"virt_file_size" yaml:"virt_file_size"`
+	VirtPath             string         `mapstructure:"virt_path" json:"virt_path" yaml:"virt_path"`
+	VirtRam              Value[int]     `mapstructure:"virt_ram" json:"virt_ram" yaml:"virt_ram"`
+	VirtType             string         `mapstructure:"virt_type" json:"virt_type" yaml:"virt_type"`
+	SupportedBootLoaders []string       `mapstructure:"supported_boot_loaders" cobbler:"noupdate" json:"supported_boot_loaders" yaml:"supported_boot_loaders"`
 
 	Client
 }

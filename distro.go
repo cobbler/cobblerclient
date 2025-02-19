@@ -25,20 +25,20 @@ import (
 // Distro is a created distro.
 // Get the fields from cobbler/items/distro.py
 type Distro struct {
-	Item `mapstructure:",squash"`
+	Item `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
-	SourceRepos         []string        `mapstructure:"source_repos"   cobbler:"noupdate"`
-	TreeBuildTime       string          `mapstructure:"tree_build_time" cobbler:"noupdate"`
-	Arch                string          `mapstructure:"arch"`
-	BootLoaders         Value[[]string] `mapstructure:"boot_loaders"`
-	Breed               string          `mapstructure:"breed"`
-	Initrd              string          `mapstructure:"initrd"`
-	RemoteBootInitrd    string          `mapstructure:"remote_boot_initrd"`
-	Kernel              string          `mapstructure:"kernel"`
-	RemoteBootKernel    string          `mapstructure:"remote_boot_kernel"`
-	RedhatManagementKey string          `mapstructure:"redhat_management_key"`
-	OSVersion           string          `mapstructure:"os_version"`
+	SourceRepos         []string        `mapstructure:"source_repos"   cobbler:"noupdate" json:"source_repos" yaml:"source_repos"`
+	TreeBuildTime       string          `mapstructure:"tree_build_time" cobbler:"noupdate" json:"tree_build_time" yaml:"tree_build_time"`
+	Arch                string          `mapstructure:"arch" json:"arch" yaml:"arch"`
+	BootLoaders         Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	Breed               string          `mapstructure:"breed" json:"breed" yaml:"breed"`
+	Initrd              string          `mapstructure:"initrd" json:"initrd" yaml:"initrd"`
+	RemoteBootInitrd    string          `mapstructure:"remote_boot_initrd" json:"remote_boot_initrd" yaml:"remote_boot_initrd"`
+	Kernel              string          `mapstructure:"kernel" json:"kernel" yaml:"kernel"`
+	RemoteBootKernel    string          `mapstructure:"remote_boot_kernel" json:"remote_boot_kernel" yaml:"remote_boot_kernel"`
+	RedhatManagementKey string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	OSVersion           string          `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
 }
 
 func NewDistro() Distro {
