@@ -69,6 +69,9 @@ func convertRawLinuxPackage(name string, xmlrpcResult interface{}) (*Package, er
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedPackage.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedPackage, nil
 }
 

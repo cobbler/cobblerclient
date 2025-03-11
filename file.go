@@ -68,6 +68,9 @@ func convertRawFile(name string, xmlrpcResult interface{}) (*File, error) {
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedFile.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedFile, nil
 }
 

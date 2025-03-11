@@ -233,7 +233,10 @@ func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*Syste
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&s.BootLoaders)
-	return s, err
+	if err != nil {
+		return nil, err
+	}
+	return s, nil
 }
 
 func (c *Client) convertRawSystemsList(xmlrpcResult interface{}) ([]*System, error) {

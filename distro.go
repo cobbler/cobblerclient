@@ -105,6 +105,9 @@ func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedDistro.BootLoaders)
+	if err != nil {
+		return nil, err
+	}
 	return &distro, nil
 }
 

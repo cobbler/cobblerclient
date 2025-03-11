@@ -115,6 +115,9 @@ func convertRawRepo(name string, xmlrpcResult interface{}) (*Repo, error) {
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedRepo.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedRepo, nil
 }
 

@@ -182,6 +182,9 @@ func convertRawProfile(name string, xmlrpcResult interface{}) (*Profile, error) 
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedProfile.NameServersSearch)
+	if err != nil {
+		return nil, err
+	}
 	return decodedProfile, nil
 }
 

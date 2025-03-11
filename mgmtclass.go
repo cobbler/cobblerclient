@@ -73,6 +73,9 @@ func convertRawMgmtClass(name string, xmlrpcResult interface{}) (*MgmtClass, err
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedMgmtClass.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedMgmtClass, nil
 }
 

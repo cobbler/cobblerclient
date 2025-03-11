@@ -239,6 +239,9 @@ func convertRawImage(name string, xmlrpcResult interface{}) (*Image, error) {
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedImage.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedImage, nil
 }
 
