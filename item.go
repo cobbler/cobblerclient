@@ -24,35 +24,35 @@ type Value[T any] struct {
 }
 
 type ItemMeta struct {
-	IsFlattened bool
-	IsResolved  bool
+	IsFlattened bool `json:"is_flattened" yaml:"is_flattened"`
+	IsResolved  bool `json:"is_resolved" yaml:"is_resolved"`
 	// This flag signals if the item was modified by a called method server-side.
-	IsDirty bool
+	IsDirty bool `json:"is_dirty" yaml:"is_dirty"`
 }
 
 // Item general fields
 type Item struct {
 	// Meta information about an item
-	Meta ItemMeta `cobbler:"noupdate"`
+	Meta ItemMeta `cobbler:"noupdate" json:"meta" yaml:"meta"`
 
 	// Item fields
-	Parent            string                        `mapstructure:"parent"`
-	Depth             int                           `mapstructure:"depth"          cobbler:"noupdate"`
-	Children          []string                      `mapstructure:"children"       cobbler:"noupdate"`
-	CTime             float64                       `mapstructure:"ctime"          cobbler:"noupdate"`
-	MTime             float64                       `mapstructure:"mtime"          cobbler:"noupdate"`
-	Uid               string                        `mapstructure:"uid"            cobbler:"noupdate"`
-	Name              string                        `mapstructure:"name"`
-	Comment           string                        `mapstructure:"comment"`
-	KernelOptions     Value[map[string]interface{}] `mapstructure:"kernel_options"`
-	KernelOptionsPost Value[map[string]interface{}] `mapstructure:"kernel_options_post"`
-	AutoinstallMeta   Value[map[string]interface{}] `mapstructure:"autoinstall_meta"`
-	FetchableFiles    Value[map[string]interface{}] `mapstructure:"fetchable_files"`
-	BootFiles         Value[map[string]interface{}] `mapstructure:"boot_files"`
-	TemplateFiles     Value[map[string]interface{}] `mapstructure:"template_files"`
-	Owners            Value[[]string]               `mapstructure:"owners"`
-	MgmtClasses       Value[[]string]               `mapstructure:"mgmt_classes"`
-	MgmtParameters    Value[map[string]interface{}] `mapstructure:"mgmt_parameters"`
+	Parent            string                        `mapstructure:"parent" json:"parent" yaml:"parent"`
+	Depth             int                           `mapstructure:"depth" cobbler:"noupdate" json:"depth" yaml:"depth"`
+	Children          []string                      `mapstructure:"children"       cobbler:"noupdate" json:"children" yaml:"children"`
+	CTime             float64                       `mapstructure:"ctime"          cobbler:"noupdate" json:"ctime" yaml:"ctime"`
+	MTime             float64                       `mapstructure:"mtime"          cobbler:"noupdate" json:"mtime" yaml:"mtime"`
+	Uid               string                        `mapstructure:"uid"            cobbler:"noupdate" json:"uid" yaml:"uid"`
+	Name              string                        `mapstructure:"name" json:"name" yaml:"name"`
+	Comment           string                        `mapstructure:"comment" json:"comment" yaml:"comment"`
+	KernelOptions     Value[map[string]interface{}] `mapstructure:"kernel_options" json:"kernel_options" yaml:"kernel_options"`
+	KernelOptionsPost Value[map[string]interface{}] `mapstructure:"kernel_options_post" json:"kernel_options_post" yaml:"kernel_options_post"`
+	AutoinstallMeta   Value[map[string]interface{}] `mapstructure:"autoinstall_meta" json:"autoinstall_meta" yaml:"autoinstall_meta"`
+	FetchableFiles    Value[map[string]interface{}] `mapstructure:"fetchable_files" json:"fetchable_files" yaml:"fetchable_files"`
+	BootFiles         Value[map[string]interface{}] `mapstructure:"boot_files" json:"boot_files" yaml:"boot_files"`
+	TemplateFiles     Value[map[string]interface{}] `mapstructure:"template_files" json:"template_files" yaml:"template_files"`
+	Owners            Value[[]string]               `mapstructure:"owners" json:"owners" yaml:"owners"`
+	MgmtClasses       Value[[]string]               `mapstructure:"mgmt_classes" json:"mgmt_classes" yaml:"mgmt_classes"`
+	MgmtParameters    Value[map[string]interface{}] `mapstructure:"mgmt_parameters" json:"mgmt_parameters" yaml:"mgmt_parameters"`
 }
 
 // NewItem is a method to initialize the struct with the values that the server-side would internally use. Using this is

@@ -12,8 +12,8 @@ type Package struct {
 	Resource `mapstructure:",squash"`
 
 	// Package specific attributes
-	Installer string `mapstructure:"installer"`
-	Version   string `mapstructure:"version"`
+	Installer string `mapstructure:"installer" json:"installer" yaml:"installer"`
+	Version   string `mapstructure:"version" json:"version" yaml:"version"`
 }
 
 func NewPackage() Package {
@@ -69,6 +69,9 @@ func convertRawLinuxPackage(name string, xmlrpcResult interface{}) (*Package, er
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedPackage.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedPackage, nil
 }
 

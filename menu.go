@@ -9,10 +9,10 @@ import (
 // Menu is a created menu.
 // Get the fields from cobbler/items/menu.py
 type Menu struct {
-	Item `mapstructure:",squash"`
+	Item `mapstructure:",squash" yaml:",inline"`
 
 	// Menu specific fields
-	DisplayName string `mapstructure:"display_name"`
+	DisplayName string `mapstructure:"display_name" json:"display_name" yaml:"display_name"`
 }
 
 func NewMenu() Menu {
@@ -68,6 +68,9 @@ func convertRawMenu(name string, xmlrpcResult interface{}) (*Menu, error) {
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedMenu.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedMenu, nil
 }
 

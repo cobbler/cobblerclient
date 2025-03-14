@@ -7,14 +7,14 @@ import (
 )
 
 type MgmtClass struct {
-	Item `mapstructure:",squash"`
+	Item `mapstructure:",squash" yaml:",inline"`
 
 	// Mgmtclass specific fields
-	IsDefiniton bool              `mapstructure:"is_definition"`
-	Params      map[string]string `mapstructure:"params"`
-	ClassName   string            `mapstructure:"class_name"`
-	Files       []string          `mapstructure:"files"`
-	Packages    []string          `mapstructure:"packages"`
+	IsDefiniton bool              `mapstructure:"is_definition" json:"is_definition" yaml:"is_definition"`
+	Params      map[string]string `mapstructure:"params" json:"params" yaml:"params"`
+	ClassName   string            `mapstructure:"class_name" json:"class_name" yaml:"class_name"`
+	Files       []string          `mapstructure:"files" json:"files" yaml:"files"`
+	Packages    []string          `mapstructure:"packages" json:"packages" yaml:"packages"`
 }
 
 func NewMgmtClass() MgmtClass {
@@ -73,6 +73,9 @@ func convertRawMgmtClass(name string, xmlrpcResult interface{}) (*MgmtClass, err
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedMgmtClass.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedMgmtClass, nil
 }
 

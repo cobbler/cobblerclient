@@ -12,7 +12,7 @@ type File struct {
 	Resource `mapstructure:",squash"`
 
 	// File specific fields
-	IsDir bool `mapstructure:"is_dir"`
+	IsDir bool `mapstructure:"is_dir" json:"is_dir" yaml:"is_dir"`
 }
 
 func NewFile() File {
@@ -68,6 +68,9 @@ func convertRawFile(name string, xmlrpcResult interface{}) (*File, error) {
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedFile.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedFile, nil
 }
 

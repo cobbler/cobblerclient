@@ -25,26 +25,26 @@ import (
 // Repo is a created repo.
 // Get the fileds from cobbler/items/repo.py
 type Repo struct {
-	Item `mapstructure:",squash"`
+	Item `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
 	TreeBuildTime string `mapstructure:"tree_build_time" cobbler:"noupdate"`
 
-	AptComponents   []string          `mapstructure:"apt_components"`
-	AptDists        []string          `mapstructure:"apt_dists"`
-	Arch            string            `mapstructure:"arch"`
-	Breed           string            `mapstructure:"breed"`
-	CreateRepoFlags Value[string]     `mapstructure:"createrepo_flags"`
-	Environment     map[string]string `mapstructure:"environment"`
-	KeepUpdated     bool              `mapstructure:"keep_updated"`
-	Mirror          string            `mapstructure:"mirror"`
-	MirrorLocally   bool              `mapstructure:"mirror_locally"`
-	MirrorType      string            `mapstructure:"mirror_type"`
-	Priority        int               `mapstructure:"priority"`
-	Proxy           Value[string]     `mapstructure:"proxy" cobbler:"newfield"`
-	RsyncOpts       map[string]string `mapstructure:"rsyncopts"`
-	RpmList         []string          `mapstructure:"rpm_list"`
-	YumOpts         map[string]string `mapstructure:"yumopts"`
+	AptComponents   []string          `mapstructure:"apt_components" json:"apt_components" yaml:"apt_components"`
+	AptDists        []string          `mapstructure:"apt_dists" json:"apt_dists" yaml:"apt_dists"`
+	Arch            string            `mapstructure:"arch" json:"arch" yaml:"arch"`
+	Breed           string            `mapstructure:"breed" json:"breed" yaml:"breed"`
+	CreateRepoFlags Value[string]     `mapstructure:"createrepo_flags" json:"createrepo_flags" yaml:"createrepo_flags"`
+	Environment     map[string]string `mapstructure:"environment" json:"environment" yaml:"environment"`
+	KeepUpdated     bool              `mapstructure:"keep_updated" json:"keep_updated" yaml:"keep_updated"`
+	Mirror          string            `mapstructure:"mirror" json:"mirror" yaml:"mirror"`
+	MirrorLocally   bool              `mapstructure:"mirror_locally" json:"mirror_locally" yaml:"mirror_locally"`
+	MirrorType      string            `mapstructure:"mirror_type" json:"mirror_type" yaml:"mirror_type"`
+	Priority        int               `mapstructure:"priority" json:"priority" yaml:"priority"`
+	Proxy           Value[string]     `mapstructure:"proxy" cobbler:"newfield" json:"proxy" yaml:"proxy"`
+	RsyncOpts       map[string]string `mapstructure:"rsyncopts" json:"rsync_opts" yaml:"rsync_opts"`
+	RpmList         []string          `mapstructure:"rpm_list" json:"rpm_list" yaml:"rpm_list"`
+	YumOpts         map[string]string `mapstructure:"yumopts" json:"yum_opts" yaml:"yum_opts"`
 }
 
 func NewRepo() Repo {
@@ -115,6 +115,9 @@ func convertRawRepo(name string, xmlrpcResult interface{}) (*Repo, error) {
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&decodedRepo.MgmtClasses)
+	if err != nil {
+		return nil, err
+	}
 	return decodedRepo, nil
 }
 
