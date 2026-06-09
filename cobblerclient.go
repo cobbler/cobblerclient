@@ -20,13 +20,14 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/go-viper/mapstructure/v2"
-	"github.com/kolo/xmlrpc"
 	"io"
 	"net/http"
 	"reflect"
 	"sort"
 	"strings"
+
+	"github.com/go-viper/mapstructure/v2"
+	"github.com/kolo/xmlrpc"
 )
 
 const bodyTypeXML = "text/xml"
@@ -157,11 +158,15 @@ func (c *Client) Ping() (bool, error) {
 	}
 }
 
-// AutoAddRepos automatically imports any repos server side that are known to the daemon. It is the responsitbility
-// of the caller to execute [Client.BackgroundReposync].
-func (c *Client) AutoAddRepos() error {
-	_, err := c.Call("auto_add_repos", c.Token)
-	return err
+// AutoAddRepos automatically imports any repos server-side that are known to the daemon.
+// Returns whether the operation succeeded. The caller is responsible for following up
+// with [Client.BackgroundReposync].
+func (c *Client) AutoAddRepos() (bool, error) {
+	result, err := c.Call("auto_add_repos", c.Token)
+	if err != nil {
+		return false, err
+	}
+	return result.(bool), nil
 }
 
 // GetAutoinstallTemplates retrieves a list of all templates that are in use by Cobbler.
@@ -176,10 +181,13 @@ func (c *Client) GetAutoinstallSnippets() error {
 	return err
 }
 
-// IsAutoinstallInUse checks if a given system has reported that it is currently installing.
-func (c *Client) IsAutoinstallInUse(name string) error {
-	_, err := c.Call("is_autoinstall_in_use", name, c.Token)
-	return err
+// IsAutoinstallInUse reports whether the named system is currently installing.
+func (c *Client) IsAutoinstallInUse(name string) (bool, error) {
+	result, err := c.Call("is_autoinstall_in_use", name, c.Token)
+	if err != nil {
+		return false, err
+	}
+	return result.(bool), nil
 }
 
 // GenerateIPxe generates the iPXE (formerly gPXE) configuration data.
@@ -206,36 +214,82 @@ func (c *Client) GetBlendedData(profile, system string) (map[string]interface{},
 	return result.(map[string]interface{}), err
 }
 
-// RegisterNewSystem registers a new system without a Cobbler token. This is normally called
-// during unattended installation by a script.
-func (c *Client) RegisterNewSystem(info map[string]interface{}) error {
-	_, err := c.Call("register_new_system", info, c.Token)
-	return err
+// RegisterNewSystem registers a new system without a Cobbler token. Normally
+// called during unattended installation by a script. Returns the backend's
+// status code (0 on success).
+func (c *Client) RegisterNewSystem(info map[string]interface{}) (int, error) {
+	result, err := c.Call("register_new_system", info, c.Token)
+	if err != nil {
+		return -1, err
+	}
+	return convertToInt(result)
 }
 
-// RunInstallTriggers runs installation triggers for a given object. This is normally called during
-// unattended installation.
-func (c *Client) RunInstallTriggers(mode string, objtype string, name string, ip string) error {
-	_, err := c.Call("run_install_triggers", mode, objtype, name, ip, c.Token)
-	return err
+// RunInstallTriggers runs installation triggers for a given object. Normally
+// called during unattended installation. mode is "pre", "post", or "firstboot";
+// objtype is "system" or "profile". Returns whether the trigger ran successfully.
+func (c *Client) RunInstallTriggers(mode, objtype, name, ip string) (bool, error) {
+	result, err := c.Call("run_install_triggers", mode, objtype, name, ip, c.Token)
+	if err != nil {
+		return false, err
+	}
+	return result.(bool), nil
 }
 
-// GetReposCompatibleWithProfile returns all repositories that can be potentially assigned to a given profile.
-func (c *Client) GetReposCompatibleWithProfile(profile_name string) error {
-	_, err := c.Call("get_repos_compatible_with_profile", profile_name, c.Token)
-	return err
+// GetReposCompatibleWithProfile returns all repositories that can be assigned
+// to the named profile (filtered by arch compatibility with the profile's distro).
+func (c *Client) GetReposCompatibleWithProfile(profileName string) ([]map[string]interface{}, error) {
+	result, err := c.Call("get_repos_compatible_with_profile", profileName, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	raw, ok := result.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("get_repos_compatible_with_profile returned %T, want list", result)
+	}
+	out := make([]map[string]interface{}, 0, len(raw))
+	for _, v := range raw {
+		if m, ok := v.(map[string]interface{}); ok {
+			out = append(out, m)
+		}
+	}
+	return out, nil
 }
 
-// FindSystemByDnsName searches for a system with a given DNS name.
-func (c *Client) FindSystemByDnsName(dns_name string) error {
-	_, err := c.Call("find_system_by_dns_name", dns_name)
-	return err
+// FindSystemByDnsName searches for a system by DNS name. Returns the rendered
+// system dict or an empty map if not found.
+func (c *Client) FindSystemByDnsName(dnsName string) (map[string]interface{}, error) {
+	result, err := c.Call("find_system_by_dns_name", dnsName)
+	if err != nil {
+		return nil, err
+	}
+	if m, ok := result.(map[string]interface{}); ok {
+		return m, nil
+	}
+	return map[string]interface{}{}, nil
+}
+
+// GetRandomMacFor returns a random MAC address tailored for the given virt_type.
+// Valid values per Python signature: "qemu", "kvm", "xenpv", "xenfv", "vmware",
+// "vmwarew", "openvz", "auto".
+func (c *Client) GetRandomMacFor(virtType string) (string, error) {
+	if virtType == "" {
+		virtType = "kvm"
+	}
+	result, err := c.Call("get_random_mac", virtType, c.Token)
+	if err != nil {
+		return "", err
+	}
+	s, ok := result.(string)
+	if !ok {
+		return "", fmt.Errorf("get_random_mac returned %T, want string", result)
+	}
+	return s, nil
 }
 
 // GetRandomMac generates a random MAC address for use with a virtualized system.
-func (c *Client) GetRandomMac() error {
-	_, err := c.Call("get_random_mac")
-	return err
+func (c *Client) GetRandomMac() (string, error) {
+	return c.GetRandomMacFor("xenpv")
 }
 
 type StatusOption string

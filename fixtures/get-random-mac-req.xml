@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
     <methodName>get_random_mac</methodName>
+    <params>
+      <param><value><string>xenpv</string></value></param>
+      <param><value><string>securetoken99</string></value></param>
+    </params>
 </methodCall>
