@@ -374,6 +374,9 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 		case reflect.String:
 			valueStruct := Value[interface{}]{}
 			valueStruct.IsInherited = dataVal.String() == inherit
+			if !valueStruct.IsInherited {
+				valueStruct.Data = data
+			}
 			valueStruct.RawData = data
 			return valueStruct, nil
 		case reflect.Slice:

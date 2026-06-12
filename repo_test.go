@@ -48,6 +48,37 @@ func TestGetRepo(t *testing.T) {
 	if repo.Name != "rhel-7-x86_64" {
 		t.Errorf("Wrong repo returned.")
 	}
+	if !repo.CreateRepoFlags.IsInherited {
+		t.Errorf("Expected CreateRepoFlags.IsInherited to be true, got false")
+	}
+}
+
+// TestGetRepoExplicitStringValue verifies that a non-inherited Value[string] field (e.g.
+// CreateRepoFlags, Proxy) is decoded with Data set to the actual string — not left as the
+// zero value "". This is a regression test for the cobblerDataHacks bug where the string
+// case set RawData but omitted Data for non-inherited values.
+func TestGetRepoExplicitStringValue(t *testing.T) {
+	// Arrange
+	c := createStubHTTPClientSingle(t, "get-repo-explicit-string")
+	c.CachedVersion = CobblerVersion{3, 3, 2}
+
+	// Act
+	repo, err := c.GetRepo("rhel-7-x86_64", false, false)
+
+	// Assert
+	FailOnError(t, err)
+	if repo.CreateRepoFlags.IsInherited {
+		t.Errorf("Expected CreateRepoFlags.IsInherited to be false")
+	}
+	if repo.CreateRepoFlags.Data != "--no-database" {
+		t.Errorf("Expected CreateRepoFlags.Data to be \"--no-database\", got %q", repo.CreateRepoFlags.Data)
+	}
+	if repo.Proxy.IsInherited {
+		t.Errorf("Expected Proxy.IsInherited to be false")
+	}
+	if repo.Proxy.Data != "http://proxy.example.com:8080" {
+		t.Errorf("Expected Proxy.Data to be \"http://proxy.example.com:8080\", got %q", repo.Proxy.Data)
+	}
 }
 
 func TestDeleteRepo(t *testing.T) {

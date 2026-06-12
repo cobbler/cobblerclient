@@ -55,7 +55,7 @@
           <member>
             <name>autoinstall_meta</name>
             <value>
-              <string>tree=http://@@http_server@@/cblr/links/Ubuntu-20.04-x86_64 </string>
+              <struct><member><name>tree</name><value><string>http://@@http_server@@/cblr/links/Ubuntu-20.04-x86_64</string></value></member></struct>
             </value>
           </member>
           <member>
