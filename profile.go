@@ -34,8 +34,8 @@ type Profile struct {
 	BootLoaders         Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
 	DHCPTag             string          `mapstructure:"dhcp_tag" json:"dhcp_tag" yaml:"dhcp_tag"`
 	Distro              string          `mapstructure:"distro" json:"distro" yaml:"distro"`
-	EnableIPXE          Value[bool]     `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe"`
-	EnableMenu          Value[bool]     `mapstructure:"enable_menu" json:"enable_menu" yaml:"enable_menu"`
+	EnableIPXE          Value[bool]     `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe" cobbler_min_inherit:"3.3.5"`
+	EnableMenu          Value[bool]     `mapstructure:"enable_menu" json:"enable_menu" yaml:"enable_menu" cobbler_min_inherit:"3.3.5"`
 	Filename            string          `mapstructure:"filename" json:"filename" yaml:"filename"`
 	Menu                string          `mapstructure:"menu" json:"menu" yaml:"menu"`
 	NameServers         Value[[]string] `mapstructure:"name_servers" json:"name_servers" yaml:"name_servers"`
