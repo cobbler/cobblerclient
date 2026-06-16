@@ -28,15 +28,15 @@
                 <member>
                   <name>kernel_options_post</name>
                   <value>
-                    <string>
-</string>
+                    <struct>
+</struct>
                   </value>
                 </member>
                 <member>
                   <name>kernel_options</name>
                   <value>
-                    <string>
-</string>
+                    <struct>
+</struct>
                   </value>
                 </member>
                 <member>
@@ -54,8 +54,8 @@
                 <member>
                   <name>template_files</name>
                   <value>
-                    <string>
-</string>
+                    <struct>
+</struct>
                   </value>
                 </member>
                 <member>
@@ -74,8 +74,8 @@
                 <member>
                   <name>boot_files</name>
                   <value>
-                    <string>
-</string>
+                    <struct>
+</struct>
                   </value>
                 </member>
                 <member>
@@ -102,8 +102,8 @@
                 <member>
                   <name>fetchable_files</name>
                   <value>
-                    <string>
-</string>
+                    <struct>
+</struct>
                   </value>
                 </member>
                 <member>

@@ -374,6 +374,9 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 		case reflect.String:
 			valueStruct := Value[interface{}]{}
 			valueStruct.IsInherited = dataVal.String() == inherit
+			if !valueStruct.IsInherited {
+				valueStruct.Data = data
+			}
 			valueStruct.RawData = data
 			return valueStruct, nil
 		case reflect.Slice:
@@ -466,6 +469,10 @@ func decodeCobblerItem(raw interface{}, result interface{}) (interface{}, error)
 
 // updateCobblerFields updates all fields in a Cobbler Item structure.
 func (c *Client) updateCobblerFields(what string, item reflect.Value, id string) error {
+	if err := c.setCachedVersion(); err != nil {
+		return err
+	}
+
 	method := fmt.Sprintf("modify_%s", what)
 	typeOfT := item.Type()
 
@@ -565,6 +572,19 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		fieldValue := v.Interface()
 		if strings.HasPrefix(fieldType, "Value") {
 			if v.FieldByName("IsInherited").Bool() {
+				if minVer := typeOfT.Field(i).Tag.Get("cobbler_min_inherit"); minVer != "" {
+					required, err := parseCobblerVersion(minVer)
+					if err != nil {
+						return fmt.Errorf("invalid cobbler_min_inherit tag on field %s: %w", field, err)
+					}
+					if c.CachedVersion.LessThan(required) {
+						return &InheritanceUnsupportedError{
+							Field:          field,
+							ServerVersion:  c.CachedVersion,
+							MinimumVersion: *required,
+						}
+					}
+				}
 				fieldValue = inherit
 			} else {
 				fieldValue = v.FieldByName("Data").Interface()

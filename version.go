@@ -1,5 +1,32 @@
 package cobblerclient
 
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
+
+// parseCobblerVersion parses a "MAJOR.MINOR.PATCH" version string into a CobblerVersion.
+func parseCobblerVersion(s string) (*CobblerVersion, error) {
+	parts := strings.SplitN(s, ".", 3)
+	if len(parts) != 3 {
+		return nil, fmt.Errorf("expected MAJOR.MINOR.PATCH, got %q", s)
+	}
+	major, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return nil, fmt.Errorf("invalid major version in %q: %w", s, err)
+	}
+	minor, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return nil, fmt.Errorf("invalid minor version in %q: %w", s, err)
+	}
+	patch, err := strconv.Atoi(parts[2])
+	if err != nil {
+		return nil, fmt.Errorf("invalid patch version in %q: %w", s, err)
+	}
+	return &CobblerVersion{Major: major, Minor: minor, Patch: patch}, nil
+}
+
 type ExtendedVersion struct {
 	Gitdate      string `json:"gitdate" yaml:"gitdate"`
 	Gitstamp     string `json:"gitstamp" yaml:"gitstamp"`
@@ -43,6 +70,10 @@ func (cv *CobblerVersion) Equal(otherVersion *CobblerVersion) bool {
 
 func (cv *CobblerVersion) NotEqual(otherVersion *CobblerVersion) bool {
 	return !cv.Equal(otherVersion)
+}
+
+func (cv *CobblerVersion) String() string {
+	return fmt.Sprintf("%d.%d.%d", cv.Major, cv.Minor, cv.Patch)
 }
 
 // Version is a shorter and easier version representation. Normally you want to call [Client.ExtendedVersion].
