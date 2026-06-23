@@ -93,13 +93,13 @@ func convertRawMenusList(xmlrpcResult interface{}) ([]*Menu, error) {
 }
 
 // GetMenus returns all menus in Cobbler.
-func (c *Client) GetMenus() ([]*Distro, error) {
+func (c *Client) GetMenus() ([]*Menu, error) {
 	result, err := c.Call("get_menus", "-1", c.Token)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertRawDistrosList(result)
+	return convertRawMenusList(result)
 }
 
 // GetMenu returns a single menu obtained by its name.
