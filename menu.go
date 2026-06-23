@@ -234,9 +234,12 @@ func (c *Client) GetMenusSince(mtime time.Time) ([]*Menu, error) {
 }
 
 // GetMenuAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
-func (c *Client) GetMenuAsRendered() error {
-	_, err := c.Call("get_menu_as_rendered")
-	return err
+func (c *Client) GetMenuAsRendered(name string) (map[string]interface{}, error) {
+	result, err := c.Call("get_menu_as_rendered", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
 }
 
 // SaveMenu saves all changes performed via XML-RPC to disk on the server side.
