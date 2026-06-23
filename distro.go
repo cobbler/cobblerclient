@@ -347,3 +347,12 @@ func (c *Client) GetDistroHandle(name string) (string, error) {
 	res, err := c.Call("get_distro_handle", name, c.Token)
 	return returnString(res, err)
 }
+
+// GetDistroAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
+func (c *Client) GetDistroAsRendered(name string) (map[string]interface{}, error) {
+	result, err := c.Call("get_distro_as_rendered", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
+}

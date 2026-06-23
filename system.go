@@ -591,3 +591,12 @@ func (c *Client) GetSystemHandle(name string) (string, error) {
 	res, err := c.Call("get_system_handle", name, c.Token)
 	return returnString(res, err)
 }
+
+// GetSystemAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
+func (c *Client) GetSystemAsRendered(name string) (map[string]interface{}, error) {
+	result, err := c.Call("get_system_as_rendered", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
+}

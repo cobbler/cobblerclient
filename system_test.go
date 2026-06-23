@@ -248,6 +248,16 @@ func TestModifyInterface(t *testing.T) {
 	FailOnError(t, err)
 }
 
+func TestGetSystemAsRendered(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-system-as-rendered")
+	res, err := c.GetSystemAsRendered("test")
+	FailOnError(t, err)
+
+	if res["name"] != "test" {
+		t.Errorf("Wrong system name returned: %v", res["name"])
+	}
+}
+
 func TestGetInterfaces(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{

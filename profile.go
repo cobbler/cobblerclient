@@ -355,3 +355,12 @@ func (c *Client) GetProfileHandle(name string) (string, error) {
 	res, err := c.Call("get_profile_handle", name, c.Token)
 	return returnString(res, err)
 }
+
+// GetProfileAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
+func (c *Client) GetProfileAsRendered(name string) (map[string]interface{}, error) {
+	result, err := c.Call("get_profile_as_rendered", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
+}

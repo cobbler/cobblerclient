@@ -131,6 +131,16 @@ func TestGetDistroHandle(t *testing.T) {
 	}
 }
 
+func TestGetDistroAsRendered(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-distro-as-rendered")
+	res, err := c.GetDistroAsRendered("Ubuntu-20.04-x86_64")
+	FailOnError(t, err)
+
+	if res["name"] != "Ubuntu-20.04-x86_64" {
+		t.Errorf("Wrong distro name returned: %v", res["name"])
+	}
+}
+
 /*
  * NOTE: We're skipping the testing of CREATE, UPDATE, DELETE methods for now because
  *       the current implementation of the StubHTTPClient does not allow

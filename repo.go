@@ -270,3 +270,12 @@ func (c *Client) GetRepoHandle(name string) (string, error) {
 	res, err := c.Call("get_repo_handle", name, c.Token)
 	return returnString(res, err)
 }
+
+// GetRepoAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
+func (c *Client) GetRepoAsRendered(name string) (map[string]interface{}, error) {
+	result, err := c.Call("get_repo_as_rendered", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
+}

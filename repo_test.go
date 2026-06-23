@@ -165,6 +165,16 @@ func TestGetRepoHandle(t *testing.T) {
 	}
 }
 
+func TestGetRepoAsRendered(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-repo-as-rendered")
+	res, err := c.GetRepoAsRendered("rhel-7-x86_64")
+	FailOnError(t, err)
+
+	if res["name"] != "rhel-7-x86_64" {
+		t.Errorf("Wrong repo name returned: %v", res["name"])
+	}
+}
+
 /*
  * NOTE: We're skipping the testing of CREATE, UPDATE, DELETE methods for now because
  *       the current implementation of the StubHTTPClient does not allow
