@@ -248,6 +248,16 @@ func TestModifyInterface(t *testing.T) {
 	FailOnError(t, err)
 }
 
+func TestGetValidSystemBootLoaders(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-valid-system-boot-loaders")
+	res, err := c.GetValidSystemBootLoaders("test")
+	FailOnError(t, err)
+
+	if len(res) < 1 {
+		t.Error("Expected at least one boot loader.")
+	}
+}
+
 func TestGetSystemAsRendered(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-system-as-rendered")
 	res, err := c.GetSystemAsRendered("test")

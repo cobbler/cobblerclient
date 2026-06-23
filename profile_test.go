@@ -135,6 +135,16 @@ func TestGetProfileHandle(t *testing.T) {
 	}
 }
 
+func TestGetValidProfileBootLoaders(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-valid-profile-boot-loaders")
+	res, err := c.GetValidProfileBootLoaders("Ubuntu-20.04-x86_64")
+	FailOnError(t, err)
+
+	if len(res) < 1 {
+		t.Error("Expected at least one boot loader.")
+	}
+}
+
 func TestGetProfileAsRendered(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-profile-as-rendered")
 	res, err := c.GetProfileAsRendered("Ubuntu-20.04-x86_64")

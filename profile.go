@@ -356,6 +356,12 @@ func (c *Client) GetProfileHandle(name string) (string, error) {
 	return returnString(res, err)
 }
 
+// GetValidProfileBootLoaders retrieves the list of bootloaders that can be assigned to a profile.
+func (c *Client) GetValidProfileBootLoaders(profileName string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_profile_boot_loaders", profileName, c.Token)
+	return returnStringSlice(resultUnmarshalled, err)
+}
+
 // GetProfileAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetProfileAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_profile_as_rendered", name, c.Token)

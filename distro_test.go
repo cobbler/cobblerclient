@@ -131,6 +131,16 @@ func TestGetDistroHandle(t *testing.T) {
 	}
 }
 
+func TestGetValidDistroBootLoaders(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-valid-distro-boot-loaders")
+	res, err := c.GetValidDistroBootLoaders("Ubuntu-20.04-x86_64")
+	FailOnError(t, err)
+
+	if len(res) < 1 {
+		t.Error("Expected at least one boot loader.")
+	}
+}
+
 func TestGetDistroAsRendered(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distro-as-rendered")
 	res, err := c.GetDistroAsRendered("Ubuntu-20.04-x86_64")

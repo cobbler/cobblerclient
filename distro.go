@@ -348,6 +348,12 @@ func (c *Client) GetDistroHandle(name string) (string, error) {
 	return returnString(res, err)
 }
 
+// GetValidDistroBootLoaders retrieves the list of bootloaders that can be assigned to a distro.
+func (c *Client) GetValidDistroBootLoaders(distroName string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_distro_boot_loaders", distroName, c.Token)
+	return returnStringSlice(resultUnmarshalled, err)
+}
+
 // GetDistroAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetDistroAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_distro_as_rendered", name, c.Token)

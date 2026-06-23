@@ -592,6 +592,12 @@ func (c *Client) GetSystemHandle(name string) (string, error) {
 	return returnString(res, err)
 }
 
+// GetValidSystemBootLoaders retrieves the list of bootloaders that can be assigned to a system.
+func (c *Client) GetValidSystemBootLoaders(systemName string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_system_boot_loaders", systemName, c.Token)
+	return returnStringSlice(resultUnmarshalled, err)
+}
+
 // GetSystemAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetSystemAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_system_as_rendered", name, c.Token)
