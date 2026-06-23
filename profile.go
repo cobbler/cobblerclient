@@ -370,3 +370,10 @@ func (c *Client) GetProfileAsRendered(name string) (map[string]interface{}, erro
 	}
 	return result.(map[string]interface{}), nil
 }
+
+// NewSubprofile creates a new blank sub-profile on the server and returns its object ID.
+// A sub-profile inherits from another profile (rather than a distro).
+func (c *Client) NewSubprofile() (string, error) {
+	result, err := c.Call("new_subprofile", c.Token)
+	return returnString(result, err)
+}

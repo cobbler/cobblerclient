@@ -154,3 +154,12 @@ func TestGetProfileAsRendered(t *testing.T) {
 		t.Errorf("Wrong profile name returned: %v", res["name"])
 	}
 }
+
+func TestNewSubprofile(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "new-subprofile")
+	res, err := c.NewSubprofile()
+	FailOnError(t, err)
+	if res == "" {
+		t.Error("Expected a non-empty object ID from NewSubprofile.")
+	}
+}
