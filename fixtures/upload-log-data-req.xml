@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>upload_log_data</methodName>
+    <params>
+        <param>
+            <value>
+                <string>testsys</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>/var/log/cobbler/testsys.log</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <int>12</int>
+            </value>
+        </param>
+        <param>
+            <value>
+                <int>0</int>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>hello world!</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

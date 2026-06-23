@@ -349,3 +349,27 @@ func TestRenameInterface(t *testing.T) {
 	// Assert
 	FailOnError(t, err)
 }
+
+func TestDisableNetboot(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "disable-netboot")
+	err := c.DisableNetboot("testsys")
+	FailOnError(t, err)
+}
+
+func TestUploadLogData(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "upload-log-data")
+	res, err := c.UploadLogData("testsys", "/var/log/cobbler/testsys.log", 12, 0, "hello world!")
+	FailOnError(t, err)
+	if !res {
+		t.Error("Expected true result from UploadLogData.")
+	}
+}
+
+func TestClearSystemLogs(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "clear-system-logs")
+	res, err := c.ClearSystemLogs("system::testsys")
+	FailOnError(t, err)
+	if !res {
+		t.Error("Expected true result from ClearSystemLogs.")
+	}
+}
