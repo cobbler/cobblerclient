@@ -165,6 +165,26 @@ func TestGetRepoHandle(t *testing.T) {
 	}
 }
 
+func TestGetRepoConfigForProfile(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-repo-config-for-profile")
+	res, err := c.GetRepoConfigForProfile("testprof")
+	FailOnError(t, err)
+
+	if res == "" {
+		t.Error("Expected a non-empty repo config.")
+	}
+}
+
+func TestGetRepoConfigForSystem(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-repo-config-for-system")
+	res, err := c.GetRepoConfigForSystem("testsys")
+	FailOnError(t, err)
+
+	if res == "" {
+		t.Error("Expected a non-empty repo config.")
+	}
+}
+
 func TestGetRepoAsRendered(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-repo-as-rendered")
 	res, err := c.GetRepoAsRendered("rhel-7-x86_64")

@@ -271,6 +271,18 @@ func (c *Client) GetRepoHandle(name string) (string, error) {
 	return returnString(res, err)
 }
 
+// GetRepoConfigForProfile returns the rendered repository configuration for a profile.
+func (c *Client) GetRepoConfigForProfile(profileName string) (string, error) {
+	result, err := c.Call("get_repo_config_for_profile", profileName)
+	return returnString(result, err)
+}
+
+// GetRepoConfigForSystem returns the rendered repository configuration for a system.
+func (c *Client) GetRepoConfigForSystem(systemName string) (string, error) {
+	result, err := c.Call("get_repo_config_for_system", systemName)
+	return returnString(result, err)
+}
+
 // GetRepoAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
 func (c *Client) GetRepoAsRendered(name string) (map[string]interface{}, error) {
 	result, err := c.Call("get_repo_as_rendered", name, c.Token)
