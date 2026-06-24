@@ -248,6 +248,26 @@ func TestModifyInterface(t *testing.T) {
 	FailOnError(t, err)
 }
 
+func TestGetValidSystemBootLoaders(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-valid-system-boot-loaders")
+	res, err := c.GetValidSystemBootLoaders("test")
+	FailOnError(t, err)
+
+	if len(res) < 1 {
+		t.Error("Expected at least one boot loader.")
+	}
+}
+
+func TestGetSystemAsRendered(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-system-as-rendered")
+	res, err := c.GetSystemAsRendered("test")
+	FailOnError(t, err)
+
+	if res["name"] != "test" {
+		t.Errorf("Wrong system name returned: %v", res["name"])
+	}
+}
+
 func TestGetInterfaces(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
@@ -328,4 +348,28 @@ func TestRenameInterface(t *testing.T) {
 
 	// Assert
 	FailOnError(t, err)
+}
+
+func TestDisableNetboot(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "disable-netboot")
+	err := c.DisableNetboot("testsys")
+	FailOnError(t, err)
+}
+
+func TestUploadLogData(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "upload-log-data")
+	res, err := c.UploadLogData("testsys", "/var/log/cobbler/testsys.log", 12, 0, "hello world!")
+	FailOnError(t, err)
+	if !res {
+		t.Error("Expected true result from UploadLogData.")
+	}
+}
+
+func TestClearSystemLogs(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "clear-system-logs")
+	res, err := c.ClearSystemLogs("system::testsys")
+	FailOnError(t, err)
+	if !res {
+		t.Error("Expected true result from ClearSystemLogs.")
+	}
 }

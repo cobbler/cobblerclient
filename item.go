@@ -149,10 +149,19 @@ func (c *Client) GetItemNames(what string) ([]string, error) {
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
-// GetItemResolvedValue retrieves the value of a single attribute of a single item which was passed through the
-// inheritance chain of Cobbler.
-func (c *Client) GetItemResolvedValue(itemUuid string, attribute string) error {
-	_, err := c.Call("get_item_resolved_value", itemUuid, attribute)
+// GetItemResolvedValue returns the value of a single attribute of a single
+// item with the inheritance chain applied. attribute is the dotted path to
+// the property (e.g. []string{"ipv4", "address"} for a NetworkInterface).
+// Cobbler 4.0.0 returns Union[str, int, float, List, dict].
+func (c *Client) GetItemResolvedValue(itemUuid string, attribute []string) (interface{}, error) {
+	return c.Call("get_item_resolved_value", itemUuid, attribute)
+}
+
+// SetItemResolvedValue sets a single attribute on an item with inheritance
+// rules applied. attribute is the dotted path; value is the desired value.
+// Added in Cobbler 4.0.0.
+func (c *Client) SetItemResolvedValue(itemUuid string, attribute []string, value interface{}) error {
+	_, err := c.Call("set_item_resolved_value", itemUuid, attribute, value, c.Token)
 	return err
 }
 

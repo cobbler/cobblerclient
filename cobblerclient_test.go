@@ -83,7 +83,7 @@ func TestPing(t *testing.T) {
 func TestAutoAddRepos(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "auto-add-repos")
 
-	err := c.AutoAddRepos()
+	_, err := c.AutoAddRepos()
 	FailOnError(t, err)
 }
 
@@ -110,7 +110,7 @@ func TestGetAutoinstallSnippets(t *testing.T) {
 func TestIsAutoinstallInUse(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "is-autoinstall-in-use")
 
-	err := c.IsAutoinstallInUse("")
+	_, err := c.IsAutoinstallInUse("")
 	FailOnError(t, err)
 }
 
@@ -151,7 +151,7 @@ func TestRegisterNewSystem(t *testing.T) {
 
 	c := createStubHTTPClientSingle(t, "register-new-system")
 
-	err := c.RegisterNewSystem(
+	_, err := c.RegisterNewSystem(
 		map[string]interface{}{
 			"name":    "test",
 			"profile": "testprof",
@@ -168,7 +168,7 @@ func TestRegisterNewSystem(t *testing.T) {
 func TestRunInstallTriggers(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "run-install-triggers")
 
-	err := c.RunInstallTriggers("", "", "", "")
+	_, err := c.RunInstallTriggers("", "", "", "")
 	FailOnError(t, err)
 }
 
@@ -178,7 +178,7 @@ func TestGetReposCompatibleWithProfile(t *testing.T) {
 		"get-repos-compatible-with-profile",
 	)
 
-	err := c.GetReposCompatibleWithProfile("testprof")
+	_, err := c.GetReposCompatibleWithProfile("testprof")
 	FailOnError(t, err)
 }
 
@@ -188,14 +188,14 @@ func TestFindSystemByDnsName(t *testing.T) {
 		"find-system-by-dns-name",
 	)
 
-	err := c.FindSystemByDnsName("testname")
+	_, err := c.FindSystemByDnsName("testname")
 	FailOnError(t, err)
 }
 
 func TestGetRandomMac(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-random-mac")
 
-	err := c.GetRandomMac()
+	_, err := c.GetRandomMac()
 	FailOnError(t, err)
 }
 

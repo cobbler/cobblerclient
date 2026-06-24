@@ -135,6 +135,16 @@ func TestGetMenuHandle(t *testing.T) {
 	}
 }
 
+func TestGetMenuAsRendered(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-menu-as-rendered")
+	res, err := c.GetMenuAsRendered("testmenu")
+	FailOnError(t, err)
+
+	if res["name"] != "testmenu" {
+		t.Errorf("Wrong menu name returned: %v", res["name"])
+	}
+}
+
 /*
  * NOTE: We're skipping the testing of CREATE, UPDATE, DELETE methods for now because
  *       the current implementation of the StubHTTPClient does not allow

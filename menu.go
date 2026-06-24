@@ -93,13 +93,13 @@ func convertRawMenusList(xmlrpcResult interface{}) ([]*Menu, error) {
 }
 
 // GetMenus returns all menus in Cobbler.
-func (c *Client) GetMenus() ([]*Distro, error) {
+func (c *Client) GetMenus() ([]*Menu, error) {
 	result, err := c.Call("get_menus", "-1", c.Token)
 	if err != nil {
 		return nil, err
 	}
 
-	return convertRawDistrosList(result)
+	return convertRawMenusList(result)
 }
 
 // GetMenu returns a single menu obtained by its name.
@@ -234,9 +234,12 @@ func (c *Client) GetMenusSince(mtime time.Time) ([]*Menu, error) {
 }
 
 // GetMenuAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
-func (c *Client) GetMenuAsRendered() error {
-	_, err := c.Call("get_menu_as_rendered")
-	return err
+func (c *Client) GetMenuAsRendered(name string) (map[string]interface{}, error) {
+	result, err := c.Call("get_menu_as_rendered", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
 }
 
 // SaveMenu saves all changes performed via XML-RPC to disk on the server side.

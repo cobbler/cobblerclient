@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value><string>[testrepo]
+name=testrepo
+baseurl=http://cobbler.example.com/cobbler/repo_mirror/testrepo
+enabled=1
+gpgcheck=0
+</string></value>
+        </param>
+    </params>
+</methodResponse>

@@ -355,3 +355,25 @@ func (c *Client) GetProfileHandle(name string) (string, error) {
 	res, err := c.Call("get_profile_handle", name, c.Token)
 	return returnString(res, err)
 }
+
+// GetValidProfileBootLoaders retrieves the list of bootloaders that can be assigned to a profile.
+func (c *Client) GetValidProfileBootLoaders(profileName string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_profile_boot_loaders", profileName, c.Token)
+	return returnStringSlice(resultUnmarshalled, err)
+}
+
+// GetProfileAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
+func (c *Client) GetProfileAsRendered(name string) (map[string]interface{}, error) {
+	result, err := c.Call("get_profile_as_rendered", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
+}
+
+// NewSubprofile creates a new blank sub-profile on the server and returns its object ID.
+// A sub-profile inherits from another profile (rather than a distro).
+func (c *Client) NewSubprofile() (string, error) {
+	result, err := c.Call("new_subprofile", c.Token)
+	return returnString(result, err)
+}

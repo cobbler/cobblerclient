@@ -134,3 +134,32 @@ func TestGetProfileHandle(t *testing.T) {
 		t.Error("Wrong object id returned.")
 	}
 }
+
+func TestGetValidProfileBootLoaders(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-valid-profile-boot-loaders")
+	res, err := c.GetValidProfileBootLoaders("Ubuntu-20.04-x86_64")
+	FailOnError(t, err)
+
+	if len(res) < 1 {
+		t.Error("Expected at least one boot loader.")
+	}
+}
+
+func TestGetProfileAsRendered(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-profile-as-rendered")
+	res, err := c.GetProfileAsRendered("Ubuntu-20.04-x86_64")
+	FailOnError(t, err)
+
+	if res["name"] != "Ubuntu-20.04-x86_64" {
+		t.Errorf("Wrong profile name returned: %v", res["name"])
+	}
+}
+
+func TestNewSubprofile(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "new-subprofile")
+	res, err := c.NewSubprofile()
+	FailOnError(t, err)
+	if res == "" {
+		t.Error("Expected a non-empty object ID from NewSubprofile.")
+	}
+}

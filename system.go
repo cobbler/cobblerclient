@@ -591,3 +591,36 @@ func (c *Client) GetSystemHandle(name string) (string, error) {
 	res, err := c.Call("get_system_handle", name, c.Token)
 	return returnString(res, err)
 }
+
+// DisableNetboot disables PXE booting for the named system (pxe_just_once feature).
+func (c *Client) DisableNetboot(name string) error {
+	_, err := c.Call("disable_netboot", name, c.Token)
+	return err
+}
+
+// UploadLogData uploads Anaconda log data for the named system (anamon logging).
+func (c *Client) UploadLogData(sysName, file string, size, offset int, data string) (bool, error) {
+	result, err := c.Call("upload_log_data", sysName, file, size, offset, data, c.Token)
+	return returnBool(result, err)
+}
+
+// ClearSystemLogs clears the console logs for the system identified by its object ID.
+func (c *Client) ClearSystemLogs(objectId string) (bool, error) {
+	result, err := c.Call("clear_system_logs", objectId, c.Token)
+	return returnBool(result, err)
+}
+
+// GetValidSystemBootLoaders retrieves the list of bootloaders that can be assigned to a system.
+func (c *Client) GetValidSystemBootLoaders(systemName string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_system_boot_loaders", systemName, c.Token)
+	return returnStringSlice(resultUnmarshalled, err)
+}
+
+// GetSystemAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
+func (c *Client) GetSystemAsRendered(name string) (map[string]interface{}, error) {
+	result, err := c.Call("get_system_as_rendered", name, c.Token)
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
+}
