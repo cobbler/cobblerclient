@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>input_boolean</methodName>
+    <params>
+        <param>
+            <value>
+                <string>yes</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

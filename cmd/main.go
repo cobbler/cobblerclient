@@ -420,6 +420,14 @@ var fixtureSequence = []string{
 	"transaction-commit",
 	"transaction-abort",
 
+	// ── INPUT HELPERS ──────────────────────────────────────────────────────
+	"input-boolean",
+	"input-int",
+	"input-string-or-list",
+	"input-string-or-list-no-inherit",
+	"input-string-or-dict",
+	"input-string-or-dict-no-inherit",
+
 	// ── LOGOUT ─────────────────────────────────────────────────────────────
 	"logout",
 }
@@ -1711,6 +1719,21 @@ func main() {
 		_ = silent.TransactionBegin()
 	}
 	err = c.TransactionAbort()
+	warn(err)
+
+	// ── INPUT HELPERS ─────────────────────────────────────────────────────
+	fmt.Println("=== input helpers ===")
+	_, _, err = c.InputBoolean("yes")
+	warn(err)
+	_, _, err = c.InputInt("42")
+	warn(err)
+	_, _, err = c.InputStringOrList("a,b,c")
+	warn(err)
+	_, _, err = c.InputStringOrListNoInherit("a,b,c")
+	warn(err)
+	_, _, err = c.InputStringOrDict("k1=v1 k2=v2")
+	warn(err)
+	_, _, err = c.InputStringOrDictNoInherit("k1=v1 k2=v2")
 	warn(err)
 
 	// ── LOGOUT ────────────────────────────────────────────────────────────
