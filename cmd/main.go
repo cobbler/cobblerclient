@@ -184,6 +184,7 @@ var fixtureSequence = []string{
 	"version",
 
 	// ── CLIENT MISC ────────────────────────────────────────────────────────
+	"get-tftp-file",
 	"last-modified-time",
 	"ping",
 	"auto-add-repos",
@@ -501,6 +502,8 @@ func main() {
 
 	// ── CLIENT MISC ───────────────────────────────────────────────────────
 	fmt.Println("=== client misc ===")
+	_, _, err = c.GetTftpFile("/pxelinux.cfg/default", 0, 0)
+	warn(err)
 	_, err = c.LastModifiedTime()
 	warn(err)
 	_, err = c.Ping()

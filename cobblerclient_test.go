@@ -62,6 +62,19 @@ func TestGenerateAutoinstall(t *testing.T) {
 	}
 }
 
+func TestGetTftpFile(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-tftp-file")
+	// size=0 is a probe call: it legitimately returns zero bytes of data, just the total file length.
+	data, totalLen, err := c.GetTftpFile("/pxelinux.cfg/default", 0, 0)
+	FailOnError(t, err)
+	if len(data) != 0 {
+		t.Fatalf("Expected no file data for a size=0 probe request, got %d bytes.", len(data))
+	}
+	if totalLen <= 0 {
+		t.Fatalf("Expected positive total file length, got %d.", totalLen)
+	}
+}
+
 func TestLastModifiedTime(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "last-modified-time")
 

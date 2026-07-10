@@ -141,6 +141,37 @@ func (c *Client) GenerateAutoinstall(profile string, system string) (string, err
 	}
 }
 
+// GetTftpFile retrieves a file from the Cobbler TFTP server. path is the server-side
+// path; offset and size control the byte range to return (set both to 0 for the full file).
+// Returns the requested chunk as bytes and the total file length.
+func (c *Client) GetTftpFile(path string, offset, size int) ([]byte, int, error) {
+	result, err := c.Call("get_tftp_file", path, offset, size, c.Token)
+	if err != nil {
+		return nil, 0, err
+	}
+	arr, ok := result.([]interface{})
+	if !ok || len(arr) != 2 {
+		return nil, 0, fmt.Errorf("get_tftp_file: unexpected response type %T", result)
+	}
+	var data []byte
+	switch v := arr[0].(type) {
+	case []byte:
+		data = v
+	case string:
+		data = []byte(v)
+	case nil:
+		// A zero-length chunk (e.g. offset/size both 0) decodes to a bare nil rather than an empty []byte/string.
+		data = nil
+	default:
+		return nil, 0, fmt.Errorf("get_tftp_file: unexpected data type %T", arr[0])
+	}
+	totalLen, err := convertToInt(arr[1])
+	if err != nil {
+		return nil, 0, err
+	}
+	return data, totalLen, nil
+}
+
 // LastModifiedTime retrieves the timestamp when any object in Cobbler was last modified.
 func (c *Client) LastModifiedTime() (float64, error) {
 	result, err := c.Call("last_modified_time")
