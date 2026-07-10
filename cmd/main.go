@@ -982,6 +982,8 @@ func main() {
 	warn(err)
 	_, err = c.FindSystem(map[string]interface{}{"name": "test"}) // find-system-names fixture
 	warn(err)
+	_, err = c.DumpVars(systemHandle, false, true)
+	warn(err)
 	_, err = c.GetBlendedData("testprof", "")
 	warn(err)
 	err = c.GetConfigData("testsys")

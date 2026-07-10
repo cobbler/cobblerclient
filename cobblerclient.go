@@ -230,10 +230,35 @@ func (c *Client) GenerateScript(profile, system, name string) error {
 	return err
 }
 
-// GetBlendedData passes a profile or system through Cobblers inheritance chain and returns the result.
+// GetBlendedData passes a profile or system through Cobbler's inheritance
+// chain and returns the result.
+//
+// Deprecated: get_blended_data is soft-deprecated in the Cobbler backend as
+// of 4.0.0 in favor of dump_vars, but remains available server-side. This
+// wrapper is kept for transitional callers but will be removed in a future
+// release. Use [Client.DumpVars] instead.
 func (c *Client) GetBlendedData(profile, system string) (map[string]interface{}, error) {
 	result, err := c.Call("get_blended_data", profile, system)
-	return result.(map[string]interface{}), err
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
+}
+
+// DumpVars returns all variables (inherited and local) for the item identified
+// by itemUuid. formattedOutput requests a human-readable rendering; removeDicts
+// strips nested dicts from the output. Replaces [Client.GetBlendedData] in
+// Cobbler 4.0.0.
+func (c *Client) DumpVars(itemUuid string, formattedOutput, removeDicts bool) (map[string]interface{}, error) {
+	result, err := c.Call("dump_vars", itemUuid, formattedOutput, removeDicts)
+	if err != nil {
+		return nil, err
+	}
+	m, ok := result.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("dump_vars returned %T, want map", result)
+	}
+	return m, nil
 }
 
 // RegisterNewSystem registers a new system without a Cobbler token. Normally

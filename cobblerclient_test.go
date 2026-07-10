@@ -130,6 +130,15 @@ func TestGenerateScript(t *testing.T) {
 	FailOnError(t, err)
 }
 
+func TestDumpVars(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "dump-vars")
+	m, err := c.DumpVars("item-uid-1", false, true)
+	FailOnError(t, err)
+	if m["name"] != "testitem" {
+		t.Errorf("unexpected name: %v", m["name"])
+	}
+}
+
 func TestGetBlendedData(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-blended-data")
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+  <methodName>dump_vars</methodName>
+  <params>
+    <param><value><string>item-uid-1</string></value></param>
+    <param><value><boolean>0</boolean></value></param>
+    <param><value><boolean>1</boolean></value></param>
+  </params>
+</methodCall>

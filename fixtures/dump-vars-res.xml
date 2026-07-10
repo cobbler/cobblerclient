@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<methodResponse>
+  <params><param><value><struct>
+    <member><name>name</name><value><string>testitem</string></value></member>
+    <member><name>kernel</name><value><string>/var/www/cobbler/distro_mirror/foo/vmlinuz</string></value></member>
+  </struct></value></param></params>
+</methodResponse>
