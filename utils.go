@@ -24,9 +24,13 @@ func matchesKeySet(mapKeys []reflect.Value, expected ...string) bool {
 func returnString(res interface{}, err error) (string, error) {
 	if err != nil {
 		return "", err
-	} else {
-		return res.(string), err
 	}
+	// Some calls (e.g. get_repo_config_for_profile with nothing to render) legitimately return None/nil rather
+	// than an empty string.
+	if res == nil {
+		return "", nil
+	}
+	return res.(string), err
 }
 
 func returnStringSlice(res interface{}, err error) ([]string, error) {

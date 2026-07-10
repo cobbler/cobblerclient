@@ -181,14 +181,7 @@ func (c *Client) ListTemplateNames() ([]string, error) {
 // GetTemplateContent returns the in-memory rendered content of a Template by UID.
 func (c *Client) GetTemplateContent(uid string) (string, error) {
 	result, err := c.Call("get_template_content", uid, c.Token)
-	if err != nil {
-		return "", err
-	}
-	s, ok := result.(string)
-	if !ok {
-		return "", fmt.Errorf("get_template_content returned %T, want string", result)
-	}
-	return s, nil
+	return returnString(result, err)
 }
 
 // TemplatesRefreshContent forces a synchronous reload of the listed templates'
