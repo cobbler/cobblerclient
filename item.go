@@ -180,24 +180,13 @@ func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[
 	return marshalledResult, nil
 }
 
+// getConcreteItem dispatches the get_<item> XML-RPC call. Cobbler 4.0.0 always
+// supports the `resolved` parameter (added in 3.3.3); the v1.x client targets
+// 4.0.0+ only and so always sends it. The CachedVersion field on Client is
+// kept around for compatibility with [Client.ExtendedVersion] consumers but
+// no longer gates parameter shape.
 func (c *Client) getConcreteItem(method, name string, flattened, resolved bool) (interface{}, error) {
-	// Verify CachedVersion is set
-	err := c.setCachedVersion()
-	if err != nil {
-		return nil, err
-	}
-
-	// resolved was added with 3.3.3
-	var result interface{}
-	if c.CachedVersion.GreaterThan(&CobblerVersion{3, 3, 3}) {
-		// name, flatten, resolved, token
-		result, err = c.Call(method, name, flattened, resolved, c.Token)
-	} else {
-		// name, flatten, token
-		result, err = c.Call(method, name, flattened, c.Token)
-	}
-
-	return result, err
+	return c.Call(method, name, flattened, resolved, c.Token)
 }
 
 // FindItems searches for one or more items by any of its attributes.

@@ -42,7 +42,6 @@ func TestNewNetworkInterface(t *testing.T) {
 
 func TestGetNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-network-interface")
-	c.CachedVersion = CobblerVersion{4, 0, 0} // wire shape: name, flatten, resolved, token
 	ni, err := c.GetNetworkInterface("eth0@server1", false, false)
 	FailOnError(t, err)
 

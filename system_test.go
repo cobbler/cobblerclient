@@ -41,7 +41,6 @@ func TestGetSystems(t *testing.T) {
 func TestGetSystem(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClientSingle(t, "get-system")
-	c.CachedVersion = CobblerVersion{3, 3, 2}
 
 	// Act
 	system, err := c.GetSystem("test", false, false)
@@ -105,7 +104,6 @@ func TestSystemCreate(t *testing.T) {
 		"new-system-save",
 		"new-system-get",
 	})
-	c.CachedVersion = CobblerVersion{3, 3, 2}
 	sys := NewSystem()
 	sys.Name = "mytestsystem"
 	sys.Hostname = "blahhost"
