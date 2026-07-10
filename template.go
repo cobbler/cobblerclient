@@ -101,7 +101,7 @@ func (c *Client) GetTemplatesSince(mtime time.Time) ([]*Template, error) {
 }
 
 func (c *Client) FindTemplate(criteria map[string]interface{}) ([]*Template, error) {
-	result, err := c.Call("find_template", criteria, true, c.Token)
+	result, err := c.Call("find_template", criteria, true, false, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +109,7 @@ func (c *Client) FindTemplate(criteria map[string]interface{}) ([]*Template, err
 }
 
 func (c *Client) FindTemplateNames(criteria map[string]interface{}) ([]string, error) {
-	result, err := c.Call("find_template", criteria, false, c.Token)
+	result, err := c.Call("find_template", criteria, false, false, c.Token)
 	if err != nil {
 		return nil, err
 	}

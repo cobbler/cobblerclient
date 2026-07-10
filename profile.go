@@ -265,7 +265,7 @@ func (c *Client) ListProfileNames() ([]string, error) {
 
 // FindProfile searches for one or more profiles by any of its attributes.
 func (c *Client) FindProfile(criteria map[string]interface{}) ([]*Profile, error) {
-	result, err := c.Call("find_profile", criteria, true, c.Token)
+	result, err := c.Call("find_profile", criteria, true, false, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -274,7 +274,7 @@ func (c *Client) FindProfile(criteria map[string]interface{}) ([]*Profile, error
 
 // FindProfileNames searches for one or more profiles by any of its attributes.
 func (c *Client) FindProfileNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_profile", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_profile", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 

@@ -215,7 +215,7 @@ func (c *Client) ListRepoNames() ([]string, error) {
 
 // FindRepo searches for one or more repositories by any of its attributes.
 func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
-	result, err := c.Call("find_repo", criteria, true, c.Token)
+	result, err := c.Call("find_repo", criteria, true, false, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -224,7 +224,7 @@ func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
 
 // FindRepoNames searches for one or more repositories by any of its attributes.
 func (c *Client) FindRepoNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_repo", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_repo", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 

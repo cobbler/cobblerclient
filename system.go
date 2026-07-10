@@ -300,7 +300,7 @@ func (c *Client) ListSystemNames() ([]string, error) {
 
 // FindSystem searches for one or more systems by any of its attributes.
 func (c *Client) FindSystem(criteria map[string]interface{}) ([]*System, error) {
-	result, err := c.Call("find_system", criteria, true, c.Token)
+	result, err := c.Call("find_system", criteria, true, false, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -310,7 +310,7 @@ func (c *Client) FindSystem(criteria map[string]interface{}) ([]*System, error) 
 
 // FindSystemNames searches for one or more systems by any of its attributes.
 func (c *Client) FindSystemNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_system", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_system", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 

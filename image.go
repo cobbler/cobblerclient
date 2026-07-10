@@ -312,7 +312,7 @@ func (c *Client) DeleteImageRecursive(name string, recursive bool) error {
 
 // FindImage searches for one or more images by any of its attributes.
 func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
-	result, err := c.Call("find_image", criteria, true, c.Token)
+	result, err := c.Call("find_image", criteria, true, false, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -322,7 +322,7 @@ func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
 
 // FindImageNames searches for one or more distros by any of its attributes.
 func (c *Client) FindImageNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_image", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_image", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 

@@ -181,12 +181,12 @@ func (c *Client) getConcreteItem(method, name string, flattened, resolved bool) 
 
 // FindItems searches for one or more items by any of its attributes.
 func (c *Client) FindItems(what string, criteria map[string]interface{}, sortField string, expand bool) ([]interface{}, error) {
-	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, expand)
+	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, expand, false, c.Token)
 	return unmarshalledResult.([]interface{}), err
 }
 
 func (c *Client) FindItemNames(what string, criteria map[string]interface{}, sortField string) ([]string, error) {
-	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, false)
+	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, false, false, c.Token)
 	return returnStringSlice(unmarshalledResult, err)
 }
 

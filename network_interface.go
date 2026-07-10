@@ -138,7 +138,7 @@ func (c *Client) GetNetworkInterfacesSince(mtime time.Time) ([]*NetworkInterface
 
 // FindNetworkInterface searches for network interfaces matching the criteria.
 func (c *Client) FindNetworkInterface(criteria map[string]interface{}) ([]*NetworkInterface, error) {
-	result, err := c.Call("find_network_interface", criteria, true, c.Token)
+	result, err := c.Call("find_network_interface", criteria, true, false, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func (c *Client) FindNetworkInterface(criteria map[string]interface{}) ([]*Netwo
 
 // FindNetworkInterfaceNames returns the names of network interfaces matching the criteria.
 func (c *Client) FindNetworkInterfaceNames(criteria map[string]interface{}) ([]string, error) {
-	result, err := c.Call("find_network_interface", criteria, false, c.Token)
+	result, err := c.Call("find_network_interface", criteria, false, false, c.Token)
 	if err != nil {
 		return nil, err
 	}

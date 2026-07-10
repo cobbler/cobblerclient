@@ -164,7 +164,7 @@ func (c *Client) ListMenuNames() ([]string, error) {
 func (c *Client) FindMenu(criteria map[string]interface{}) ([]*Menu, error) {
 	var menus []*Menu
 
-	result, err := c.Call("find_menu", criteria, true, c.Token)
+	result, err := c.Call("find_menu", criteria, true, false, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +184,7 @@ func (c *Client) FindMenu(criteria map[string]interface{}) ([]*Menu, error) {
 
 // FindMenuNames searches for one or more menus by any of its attributes.
 func (c *Client) FindMenuNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_menu", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_menu", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
