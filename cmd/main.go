@@ -278,6 +278,24 @@ var fixtureSequence = []string{
 	"delete-profile",
 	"delete-distro",
 
+	// ── TEMPLATES (Save, Copy, Rename, Read, Find, Delete — Create/Update are sub-recorders) ──
+	"get-template-handle",
+	"save-template",
+	"copy-template",
+	"rename-template",
+	"get-template-file-for-profile",
+	"get-template-file-for-system",
+	"get-templates",
+	"get-template",
+	"get-templates-since",
+	"get-item-names-template",
+	"get-template-content",
+	"templates-refresh-content",
+	"background-templates-refresh-content",
+	"find-template",
+	"find-template-names",
+	"delete-template",
+
 	// ── REPOS (Save, Copy, Rename, Read, Find, Delete — Create/Update are sub-recorders) ──
 	"get-repo-handle",
 	"save-repo",
@@ -904,6 +922,98 @@ func main() {
 	err = c.DeleteProfile("test")
 	warn(err)
 	err = c.DeleteDistro("test")
+	warn(err)
+
+	// ── TEMPLATES ─────────────────────────────────────────────────────────
+	fmt.Println("=== template create ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"new-template",
+				"new-template-modify-name",
+				"new-template-modify-comment",
+				"new-template-modify-kernel-options",
+				"new-template-modify-kernel-options-post",
+				"new-template-modify-autoinstall-meta",
+				"new-template-modify-fetchable-files",
+				"new-template-modify-boot-files",
+				"new-template-modify-template-files",
+				"new-template-modify-owners",
+				"new-template-modify-template-type",
+				"new-template-modify-uri",
+				"new-template-modify-tags",
+				"new-template-modify-content",
+				"new-template-save",
+				"new-template-get",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		tpl := cobbler.NewTemplate()
+		tpl.Name = "testtemplate"
+		_, err = sub.CreateTemplate(tpl)
+		warn(err)
+	}
+
+	fmt.Println("=== template update ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"update-template-handle",
+				"update-template-modify-name",
+				"update-template-modify-comment",
+				"update-template-modify-kernel-options",
+				"update-template-modify-kernel-options-post",
+				"update-template-modify-autoinstall-meta",
+				"update-template-modify-fetchable-files",
+				"update-template-modify-boot-files",
+				"update-template-modify-template-files",
+				"update-template-modify-owners",
+				"update-template-modify-template-type",
+				"update-template-modify-uri",
+				"update-template-modify-tags",
+				"update-template-modify-content",
+				"update-template-save",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		tpl := cobbler.NewTemplate()
+		tpl.Name = "testtemplate"
+		warn(sub.UpdateTemplate(&tpl))
+	}
+
+	fmt.Println("=== templates ===")
+	tplHandle, err := c.GetTemplateHandle("testtemplate")
+	warn(err)
+	err = c.SaveTemplate(tplHandle, "bypass")
+	warn(err)
+	err = c.CopyTemplate(tplHandle, "testtemplate-copy")
+	warn(err)
+	// Renames the copy (not tplHandle's original) so "testtemplate" survives for the Read/Find calls below.
+	err = c.RenameTemplate("template::testtemplate-copy", "testtemplate-new")
+	warn(err)
+	_, err = c.GetTemplateFileForProfile("testprof", "/etc/motd")
+	warn(err)
+	_, err = c.GetTemplateFileForSystem("testsys", "/etc/motd")
+	warn(err)
+	_, err = c.GetTemplates()
+	warn(err)
+	_, err = c.GetTemplate("testtemplate", false, false)
+	warn(err)
+	_, err = c.GetTemplatesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
+	warn(err)
+	_, err = c.ListTemplateNames()
+	warn(err)
+	_, err = c.GetTemplateContent("template-uid-1")
+	warn(err)
+	err = c.TemplatesRefreshContent(nil)
+	warn(err)
+	_, err = c.BackgroundTemplatesRefreshContent(nil)
+	warn(err)
+	_, err = c.FindTemplate(map[string]interface{}{"name": "testtemplate"})
+	warn(err)
+	_, err = c.FindTemplateNames(map[string]interface{}{"name": "testtemplate"})
+	warn(err)
+	err = c.DeleteTemplate("testtemplate")
 	warn(err)
 
 	// ── REPOS ─────────────────────────────────────────────────────────────

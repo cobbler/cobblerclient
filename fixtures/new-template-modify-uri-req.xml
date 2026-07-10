@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+  <methodName>modify_template</methodName>
+  <params>
+    <param><value><string>___NEW___template::test123==</string></value></param>
+    <param><value><string>uri</string></value></param>
+    <param><value><struct>
+      <member><name>Path</name><value><string></string></value></member>
+      <member><name>Schema</name><value><string>file</string></value></member>
+    </struct></value></param>
+    <param><value><string>securetoken99</string></value></param>
+  </params>
+</methodCall>
