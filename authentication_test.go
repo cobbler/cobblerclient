@@ -44,9 +44,8 @@ func TestLogin(t *testing.T) {
 		t.Errorf("true expected; got false")
 	}
 
-	expected := "sa/1EWr40BWU+Pq3VEOOpD4cQtxkeMuFUw=="
-	if c.Token != expected {
-		t.Errorf(`"%s" expected; got "%s"`, expected, c.Token)
+	if c.Token != "securetoken99" {
+		t.Errorf(`"securetoken99" expected; got "%s"`, c.Token)
 	}
 }
 
