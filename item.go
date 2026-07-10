@@ -117,6 +117,10 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 	if !castSuccessful {
 		return errors.New("failed to cast to map[string]interface{}")
 	}
+	if newMap == nil {
+		// An empty XML-RPC struct decodes to a nil map rather than an empty one.
+		newMap = map[string]interface{}{}
+	}
 	for key, mapValue := range value {
 		if strings.HasPrefix(key, "~") && len(key) > 1 {
 			delete(newMap, key[1:])

@@ -185,3 +185,54 @@ func TestFindItemNames(t *testing.T) {
 		t.Error(diff)
 	}
 }
+
+func TestModifyItem(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "modify-item")
+	err := c.ModifyItem("distro_group", "distro_group::webservers", "comment", "hello")
+	FailOnError(t, err)
+}
+
+func TestModifyItemInPlace(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"modify-item-in-place-get",
+		"modify-item-in-place-handle",
+		"modify-item-in-place-modify",
+		"modify-item-in-place-save",
+	})
+	err := c.ModifyItemInPlace("profile", "testprof", "kernel_options", map[string]interface{}{"test": "1"})
+	FailOnError(t, err)
+}
+
+func TestGetItemResolvedValue(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-item-resolved-value")
+	result, err := c.GetItemResolvedValue("some-uuid", []string{"kernel_options"})
+	FailOnError(t, err)
+	if result == nil {
+		t.Error("Expected non-nil result.")
+	}
+}
+
+func TestSetItemResolvedValue(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "set-item-resolved-value")
+	err := c.SetItemResolvedValue("some-uuid", []string{"comment"}, "hello")
+	FailOnError(t, err)
+}
+
+func TestHasItem(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "has-item")
+	// The fixture's server response is "false": the "testtemplate" template was
+	// deleted earlier in the recording sequence and a recent server-side fix
+	// (template deletion / URI schema comparison) means it is no longer found here,
+	// as it might have been with the old, buggy comparison.
+	exists, err := c.HasItem("template", "testtemplate")
+	FailOnError(t, err)
+	if exists {
+		t.Error("Expected item to not exist.")
+	}
+}
+
+func TestNewItemClient(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "new-item-client")
+	err := c.NewItem("template", false)
+	FailOnError(t, err)
+}

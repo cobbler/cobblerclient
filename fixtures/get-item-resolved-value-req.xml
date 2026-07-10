@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>get_item_resolved_value</methodName>
+    <params>
+        <param>
+            <value>
+                <string>some-uuid</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <array>
+                    <data>
+                        <value>
+                            <string>kernel_options</string>
+                        </value>
+                    </data>
+                </array>
+            </value>
+        </param>
+    </params>
+</methodCall>
