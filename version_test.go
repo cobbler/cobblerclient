@@ -21,8 +21,8 @@ func TestExtendedVersion(t *testing.T) {
 		Gitdate:      "Mon Jun 13 16:13:33 2022 +0200",
 		Gitstamp:     "0e20f01b",
 		Builddate:    "Mon Jun 27 06:34:23 2022",
-		Version:      "3.4.0",
-		VersionTuple: []int{3, 4, 0},
+		Version:      "4.0.0",
+		VersionTuple: []int{4, 0, 0},
 	}
 
 	result, err := c.ExtendedVersion()

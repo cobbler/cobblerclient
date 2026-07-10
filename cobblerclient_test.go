@@ -24,9 +24,10 @@ import (
 func TestSetCachedVersion(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClientSingle(t, "extended-version")
+	c.CachedVersion = CobblerVersion{} // allow setCachedVersion to fetch from server
 	expectedVersion := CobblerVersion{
-		Major: 3,
-		Minor: 4,
+		Major: 4,
+		Minor: 0,
 		Patch: 0,
 	}
 
@@ -41,6 +42,7 @@ func TestSetCachedVersion(t *testing.T) {
 func TestInvalidateCachedVersion(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClientSingle(t, "extended-version")
+	c.CachedVersion = CobblerVersion{} // allow setCachedVersion to fetch from server
 	_ = c.setCachedVersion()
 
 	// Act

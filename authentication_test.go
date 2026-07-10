@@ -1,6 +1,7 @@
 package cobblerclient
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -36,7 +37,8 @@ func TestGetAuthnModuleName(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	c := createStubHTTPClientSingle(t, "login")
+	c := createStubHTTPClient(t, []string{"login", "extended-version"})
+	c.CachedVersion = CobblerVersion{} // allow Login to fetch and validate the server version
 	ok, err := c.Login()
 	FailOnError(t, err)
 
@@ -60,6 +62,23 @@ func TestLoginWithError(t *testing.T) {
 
 	if err == nil || err.Error() != expected {
 		t.Errorf("%s expected; got %s", expected, err)
+	}
+}
+
+func TestLoginWithOldServerVersion(t *testing.T) {
+	c := createStubHTTPClient(t, []string{"login", "extended-version-old"})
+	c.CachedVersion = CobblerVersion{} // allow Login to fetch and validate the server version
+
+	ok, err := c.Login()
+	if ok {
+		t.Errorf("false expected; got true")
+	}
+	if err == nil {
+		t.Fatal("expected an error for server version < 4, got nil")
+	}
+	var versionErr *UnsupportedServerVersionError
+	if !errors.As(err, &versionErr) {
+		t.Errorf("expected UnsupportedServerVersionError, got %T: %v", err, err)
 	}
 }
 

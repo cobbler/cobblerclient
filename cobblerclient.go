@@ -121,6 +121,9 @@ func (c *Client) setCachedVersion() error {
 		Minor: extendedVersion.VersionTuple[1],
 		Patch: extendedVersion.VersionTuple[2],
 	}
+	if c.CachedVersion.Major < 4 {
+		return &UnsupportedServerVersionError{ServerVersion: c.CachedVersion}
+	}
 	return nil
 }
 

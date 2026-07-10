@@ -17,13 +17,13 @@
                 </member>
                 <member>
                     <name>version</name>
-                    <value><string>4.0.0</string></value>
+                    <value><string>3.4.0</string></value>
                 </member>
                 <member>
                     <name>version_tuple</name>
                     <value><array><data>
+                        <value><int>3</int></value>
                         <value><int>4</int></value>
-                        <value><int>0</int></value>
                         <value><int>0</int></value>
                     </data></array></value>
                 </member>

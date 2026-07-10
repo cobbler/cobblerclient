@@ -217,7 +217,6 @@ func TestGetSystemHandle(t *testing.T) {
 func TestCreateInterface(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
-		"extended-version",
 		"get-interfaces-get-system",
 		"delete-interface-get-system-handle",
 		"create-interface-create-interface",
@@ -271,7 +270,6 @@ func TestGetSystemAsRendered(t *testing.T) {
 func TestGetInterfaces(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
-		"extended-version",
 		"get-interfaces-get-system",
 	})
 	testsys, err := c.GetSystem("testsys", false, false)
@@ -293,7 +291,6 @@ func TestGetInterfaces(t *testing.T) {
 func TestGetInterface(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
-		"extended-version",
 		"get-interfaces-get-system",
 	})
 	testsys, err := c.GetSystem("testsys", false, false)
@@ -316,7 +313,6 @@ func TestGetInterface(t *testing.T) {
 func TestDeleteInterface(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
-		"extended-version",
 		"get-interfaces-get-system",
 		"delete-interface-get-system-handle",
 		"delete-interface-delete-interface",
@@ -335,7 +331,6 @@ func TestDeleteInterface(t *testing.T) {
 func TestRenameInterface(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
-		"extended-version",
 		"get-interfaces-get-system",
 		"delete-interface-get-system-handle",
 		"rename-interface-rename-interface",

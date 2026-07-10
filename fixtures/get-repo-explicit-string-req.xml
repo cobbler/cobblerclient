@@ -14,6 +14,11 @@
         </param>
         <param>
             <value>
+                <boolean>0</boolean>
+            </value>
+        </param>
+        <param>
+            <value>
                 <string>securetoken99</string>
             </value>
         </param>

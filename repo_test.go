@@ -60,7 +60,6 @@ func TestGetRepo(t *testing.T) {
 func TestGetRepoExplicitStringValue(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClientSingle(t, "get-repo-explicit-string")
-	c.CachedVersion = CobblerVersion{3, 3, 2}
 
 	// Act
 	repo, err := c.GetRepo("rhel-7-x86_64", false, false)
