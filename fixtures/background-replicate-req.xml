@@ -48,24 +48,6 @@
                         </value>
                     </member>
                     <member>
-                        <name>MgmtclassPatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>PackagePatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>FilePatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
                         <name>Prune</name>
                         <value>
                             <boolean>0</boolean>

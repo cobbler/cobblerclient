@@ -89,26 +89,6 @@ func TestAutoAddRepos(t *testing.T) {
 	FailOnError(t, err)
 }
 
-func TestGetAutoinstallTemplates(t *testing.T) {
-	c := createStubHTTPClientSingle(
-		t,
-		"get-autoinstall-templates",
-	)
-
-	err := c.GetAutoinstallTemplates()
-	FailOnError(t, err)
-}
-
-func TestGetAutoinstallSnippets(t *testing.T) {
-	c := createStubHTTPClientSingle(
-		t,
-		"get-autoinstall-snippets",
-	)
-
-	err := c.GetAutoinstallSnippets()
-	FailOnError(t, err)
-}
-
 func TestIsAutoinstallInUse(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "is-autoinstall-in-use")
 

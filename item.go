@@ -51,8 +51,6 @@ type Item struct {
 	BootFiles         Value[map[string]interface{}] `mapstructure:"boot_files" json:"boot_files" yaml:"boot_files"`
 	TemplateFiles     Value[map[string]interface{}] `mapstructure:"template_files" json:"template_files" yaml:"template_files"`
 	Owners            Value[[]string]               `mapstructure:"owners" json:"owners" yaml:"owners"`
-	MgmtClasses       Value[[]string]               `mapstructure:"mgmt_classes" json:"mgmt_classes" yaml:"mgmt_classes"`
-	MgmtParameters    Value[map[string]interface{}] `mapstructure:"mgmt_parameters" json:"mgmt_parameters" yaml:"mgmt_parameters"`
 }
 
 // NewItem is a method to initialize the struct with the values that the server-side would internally use. Using this is
@@ -77,12 +75,6 @@ func NewItem() Item {
 		},
 		Owners: Value[[]string]{
 			Data:        make([]string, 0),
-			IsInherited: true,
-		},
-		MgmtClasses: Value[[]string]{
-			Data: make([]string, 0),
-		},
-		MgmtParameters: Value[map[string]interface{}]{
 			IsInherited: true,
 		},
 		TemplateFiles: Value[map[string]interface{}]{

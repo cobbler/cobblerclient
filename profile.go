@@ -117,9 +117,6 @@ func NewProfile() Profile {
 	profile.KernelOptionsPost = Value[map[string]interface{}]{
 		IsInherited: true,
 	}
-	profile.MgmtClasses = Value[[]string]{
-		IsInherited: true,
-	}
 	return profile
 }
 
@@ -161,15 +158,7 @@ func convertRawProfile(name string, xmlrpcResult interface{}) (*Profile, error) 
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedProfile.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedProfile.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedProfile.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}

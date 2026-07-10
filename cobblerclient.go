@@ -172,18 +172,6 @@ func (c *Client) AutoAddRepos() (bool, error) {
 	return result.(bool), nil
 }
 
-// GetAutoinstallTemplates retrieves a list of all templates that are in use by Cobbler.
-func (c *Client) GetAutoinstallTemplates() error {
-	_, err := c.Call("get_autoinstall_templates", c.Token)
-	return err
-}
-
-// GetAutoinstallSnippets retrieves a list of all snippets that are in use by Cobbler.
-func (c *Client) GetAutoinstallSnippets() error {
-	_, err := c.Call("get_autoinstall_snippets", c.Token)
-	return err
-}
-
 // IsAutoinstallInUse reports whether the named system is currently installing.
 func (c *Client) IsAutoinstallInUse(name string) (bool, error) {
 	result, err := c.Call("is_autoinstall_in_use", name, c.Token)

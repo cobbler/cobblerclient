@@ -102,19 +102,6 @@
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>mgmt_classes</name>
-                                                <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mgmt_parameters</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
                                                 <name>is_subobject</name>
                                                 <value>
                                                     <boolean>0</boolean>
@@ -218,19 +205,6 @@
                                                 <name>owners</name>
                                                 <value>
                                                     <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mgmt_classes</name>
-                                                <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mgmt_parameters</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
                                                 </value>
                                             </member>
                                             <member>
@@ -340,19 +314,6 @@
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>mgmt_classes</name>
-                                                <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mgmt_parameters</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
                                                 <name>is_subobject</name>
                                                 <value>
                                                     <boolean>0</boolean>
@@ -459,19 +420,6 @@
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>mgmt_classes</name>
-                                                <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mgmt_parameters</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
                                                 <name>is_subobject</name>
                                                 <value>
                                                     <boolean>0</boolean>
@@ -575,19 +523,6 @@
                                                 <name>owners</name>
                                                 <value>
                                                     <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mgmt_classes</name>
-                                                <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mgmt_parameters</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
                                                 </value>
                                             </member>
                                             <member>

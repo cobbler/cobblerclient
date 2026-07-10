@@ -160,9 +160,6 @@ func NewSystem() System {
 	system.KernelOptionsPost = Value[map[string]interface{}]{
 		IsInherited: true,
 	}
-	system.MgmtClasses = Value[[]string]{
-		IsInherited: true,
-	}
 	return system
 }
 
@@ -220,15 +217,7 @@ func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*Syste
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&s.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&s.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&s.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}
@@ -309,10 +298,6 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 
 	if len(system.FetchableFiles.Data) == 0 {
 		system.FetchableFiles.IsInherited = true
-	}
-
-	if len(system.MgmtParameters.Data) == 0 {
-		system.MgmtParameters.IsInherited = true
 	}
 
 	if system.PowerType == "" {

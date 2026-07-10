@@ -1,8 +1,9 @@
 package cobblerclient
 
 import (
-	"github.com/go-test/deep"
 	"testing"
+
+	"github.com/go-test/deep"
 )
 
 func TestFindItemsPaged(t *testing.T) {
@@ -20,8 +21,6 @@ func TestFindItemsPaged(t *testing.T) {
 		"is_subobject":        false,
 		"kernel_options":      nilMap,
 		"kernel_options_post": nilMap,
-		"mgmt_classes":        "<<inherit>>",
-		"mgmt_parameters":     nilMap,
 		"mtime":               1722927169.2400115,
 		"name":                "testmenu",
 		"owners":              "<<inherit>>",
@@ -40,8 +39,6 @@ func TestFindItemsPaged(t *testing.T) {
 		"is_subobject":        false,
 		"kernel_options":      nilMap,
 		"kernel_options_post": nilMap,
-		"mgmt_classes":        "<<inherit>>",
-		"mgmt_parameters":     nilMap,
 		"mtime":               1722932798.1049085,
 		"name":                "testmenu1",
 		"owners":              "<<inherit>>",
@@ -60,8 +57,6 @@ func TestFindItemsPaged(t *testing.T) {
 		"is_subobject":        false,
 		"kernel_options":      nilMap,
 		"kernel_options_post": nilMap,
-		"mgmt_classes":        "<<inherit>>",
-		"mgmt_parameters":     nilMap,
 		"mtime":               1722932811.623434,
 		"name":                "testmenu10",
 		"owners":              "<<inherit>>",
@@ -80,8 +75,6 @@ func TestFindItemsPaged(t *testing.T) {
 		"is_subobject":        false,
 		"kernel_options":      nilMap,
 		"kernel_options_post": nilMap,
-		"mgmt_classes":        "<<inherit>>",
-		"mgmt_parameters":     nilMap,
 		"mtime":               1722932799.4978173,
 		"name":                "testmenu2",
 		"owners":              "<<inherit>>",
@@ -100,8 +93,6 @@ func TestFindItemsPaged(t *testing.T) {
 		"is_subobject":        false,
 		"kernel_options":      nilMap,
 		"kernel_options_post": nilMap,
-		"mgmt_classes":        "<<inherit>>",
-		"mgmt_parameters":     nilMap,
 		"mtime":               1722932801.1373043,
 		"name":                "testmenu3",
 		"owners":              "<<inherit>>",

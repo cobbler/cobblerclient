@@ -106,15 +106,7 @@ func convertRawRepo(name string, xmlrpcResult interface{}) (*Repo, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedRepo.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedRepo.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedRepo.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}

@@ -24,20 +24,17 @@ type AclSetupOptions struct {
 
 // ReplicateOptions is a struct which descibres the options one can set for the replicate action of Cobbler.
 type ReplicateOptions struct {
-	Master            string `mapstructure:"master"`
-	Port              string `mapstructure:"port"`
-	DistroPatterns    string `mapstructure:"distro_patterns"`
-	ProfilePatterns   string `mapstructure:"profile_patterns"`
-	SystemPatterns    string `mapstructure:"system_patterns"`
-	RepoPatterns      string `mapstructure:"repo_patterns"`
-	Imagepatterns     string `mapstructure:"image_patterns"`
-	MgmtclassPatterns string `mapstructure:"mgmtclass_patterns"`
-	PackagePatterns   string `mapstructure:"package_patterns"`
-	FilePatterns      string `mapstructure:"file_patterns"`
-	Prune             bool   `mapstructure:"prune"`
-	OmitData          bool   `mapstructure:"omit_data"`
-	SyncAll           bool   `mapstructure:"sync_all"`
-	UseSsl            bool   `mapstructure:"use_ssl"`
+	Master          string `mapstructure:"master"`
+	Port            string `mapstructure:"port"`
+	DistroPatterns  string `mapstructure:"distro_patterns"`
+	ProfilePatterns string `mapstructure:"profile_patterns"`
+	SystemPatterns  string `mapstructure:"system_patterns"`
+	RepoPatterns    string `mapstructure:"repo_patterns"`
+	Imagepatterns   string `mapstructure:"image_patterns"`
+	Prune           bool   `mapstructure:"prune"`
+	OmitData        bool   `mapstructure:"omit_data"`
+	SyncAll         bool   `mapstructure:"sync_all"`
+	UseSsl          bool   `mapstructure:"use_ssl"`
 }
 
 type BackgroundSyncOptions struct {

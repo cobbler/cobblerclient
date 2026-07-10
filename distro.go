@@ -92,15 +92,7 @@ func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedDistro.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedDistro.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedDistro.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}

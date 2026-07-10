@@ -18,9 +18,10 @@ package cobblerclient
 
 import (
 	"fmt"
-	"github.com/go-test/deep"
 	"testing"
 	"time"
+
+	"github.com/go-test/deep"
 )
 
 func TestNewSystem(t *testing.T) {
@@ -72,8 +73,6 @@ func TestSystemCreate(t *testing.T) {
 		"new-system-modify-boot-files",
 		"new-system-modify-template-files",
 		"new-system-modify-owners",
-		"new-system-modify-mgmt-classes",
-		"new-system-modify-mgmt-parameters",
 		"set-system-profile",
 		"new-system-modify-image",
 		"new-system-modify-autoinstall",
