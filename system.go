@@ -23,50 +23,38 @@ import (
 )
 
 // System is a created system.
+// Get the fields from cobbler/items/system.py
 type System struct {
 	Item `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
-	IPv6Autoconfiguration bool                         `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate" json:"ipv6_autoconfiguration" yaml:"ipv6_autoconfiguration"`
-	ReposEnabled          bool                         `mapstructure:"repos_enabled"          cobbler:"noupdate" json:"repos_enabled" yaml:"repos_enabled"`
-	Autoinstall           string                       `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
-	BootLoaders           Value[[]string]              `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
-	EnableIPXE            Value[bool]                  `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe"`
-	Filename              string                       `mapstructure:"filename" json:"filename" yaml:"filename"`
-	Gateway               string                       `mapstructure:"gateway" json:"gateway" yaml:"gateway"`
-	Hostname              string                       `mapstructure:"hostname" json:"hostname" yaml:"hostname"`
-	IPv6DefaultDevice     string                       `mapstructure:"ipv6_default_device" json:"ipv6_default_device" yaml:"ipv6_default_device"`
-	Image                 string                       `mapstructure:"image" json:"image" yaml:"image"`
-	Interfaces            map[string]*NetworkInterface `mapstructure:"interfaces" cobbler:"noupdate" json:"interfaces" yaml:"interfaces"`
-	NameServers           []string                     `mapstructure:"name_servers" json:"name_servers" yaml:"name_servers"`
-	NameServersSearch     []string                     `mapstructure:"name_servers_search" json:"name_servers_search" yaml:"name_servers_search"`
-	NetbootEnabled        bool                         `mapstructure:"netboot_enabled" json:"netboot_enabled" yaml:"netboot_enabled"`
-	NextServerv4          string                       `mapstructure:"next_server_v4" json:"next_server_v4" yaml:"next_server_v4"`
-	NextServerv6          string                       `mapstructure:"next_server_v6" json:"next_server_v6" yaml:"next_server_v6"`
-	PowerAddress          string                       `mapstructure:"power_address" json:"power_address" yaml:"power_address"`
-	PowerID               string                       `mapstructure:"power_id" json:"power_id" yaml:"power_id"`
-	PowerIdentityFile     string                       `mapstructure:"power_identity_file" json:"power_identity_file" yaml:"power_identity_file"`
-	PowerOptions          string                       `mapstructure:"power_options" json:"power_options" yaml:"power_options"`
-	PowerPass             string                       `mapstructure:"power_pass" json:"power_pass" yaml:"power_pass"`
-	PowerType             string                       `mapstructure:"power_type" json:"power_type" yaml:"power_type"`
-	PowerUser             string                       `mapstructure:"power_user" json:"power_user" yaml:"power_user"`
-	Profile               string                       `mapstructure:"profile" json:"profile" yaml:"profile"`
-	Proxy                 string                       `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
-	RedhatManagementKey   string                       `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
-	SerialBaudRate        int                          `mapstructure:"serial_baud_rate" json:"serial_baud_rate" yaml:"serial_baud_rate"`
-	SerialDevice          int                          `mapstructure:"serial_device" json:"serial_device" yaml:"serial_device"`
-	Server                string                       `mapstructure:"server" json:"server" yaml:"server"`
-	Status                string                       `mapstructure:"status" json:"status" yaml:"status"`
-	VirtAutoBoot          Value[bool]                  `mapstructure:"virt_auto_boot" json:"virt_auto_boot" yaml:"virt_auto_boot"`
-	VirtCPUs              Value[int]                   `mapstructure:"virt_cpus" json:"virt_cpus" yaml:"virt_cpus"`
-	VirtDiskDriver        string                       `mapstructure:"virt_disk_driver" json:"virt_disk_driver" yaml:"virt_disk_driver"`
-	VirtFileSize          Value[float64]               `mapstructure:"virt_file_size" json:"virt_file_size" yaml:"virt_file_size"`
-	VirtPXEBoot           bool                         `mapstructure:"virt_pxe_boot" json:"virt_pxe_boot" yaml:"virt_pxe_boot"`
-	VirtPath              string                       `mapstructure:"virt_path" json:"virt_path" yaml:"virt_path"`
-	VirtRAM               Value[int]                   `mapstructure:"virt_ram" json:"virt_ram" yaml:"virt_ram"`
-	VirtType              string                       `mapstructure:"virt_type" json:"virt_type" yaml:"virt_type"`
-
-	Client
+	IPv6Autoconfiguration    bool                         `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate" json:"ipv6_autoconfiguration" yaml:"ipv6_autoconfiguration"`
+	ReposEnabled             bool                         `mapstructure:"repos_enabled"          cobbler:"noupdate" json:"repos_enabled" yaml:"repos_enabled"`
+	Autoinstall              string                       `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	BootLoaders              Value[[]string]              `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	DNS                      DNSOptions                   `mapstructure:"dns" json:"dns" yaml:"dns"`
+	EnableIPXE               Value[bool]                  `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe"`
+	Filename                 string                       `mapstructure:"filename" json:"filename" yaml:"filename"`
+	Gateway                  string                       `mapstructure:"gateway" json:"gateway" yaml:"gateway"`
+	Hostname                 string                       `mapstructure:"hostname" json:"hostname" yaml:"hostname"`
+	IPv6DefaultDevice        string                       `mapstructure:"ipv6_default_device" json:"ipv6_default_device" yaml:"ipv6_default_device"`
+	Image                    string                       `mapstructure:"image" json:"image" yaml:"image"`
+	Interfaces               map[string]*NetworkInterface `mapstructure:"interfaces" cobbler:"noupdate" json:"interfaces" yaml:"interfaces"`
+	NetbootEnabled           bool                         `mapstructure:"netboot_enabled" json:"netboot_enabled" yaml:"netboot_enabled"`
+	Power                    PowerOptions                 `mapstructure:"power" json:"power" yaml:"power"`
+	Profile                  string                       `mapstructure:"profile" json:"profile" yaml:"profile"`
+	Proxy                    string                       `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
+	RedhatManagementKey      string                       `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	RedhatManagementOrg      string                       `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
+	RedhatManagementUser     string                       `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
+	RedhatManagementPassword string                       `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
+	SerialBaudRate           int                          `mapstructure:"serial_baud_rate" json:"serial_baud_rate" yaml:"serial_baud_rate"`
+	SerialDevice             int                          `mapstructure:"serial_device" json:"serial_device" yaml:"serial_device"`
+	Server                   string                       `mapstructure:"server" json:"server" yaml:"server"`
+	Status                   string                       `mapstructure:"status" json:"status" yaml:"status"`
+	TFTP                     TFTPOptions                  `mapstructure:"tftp" json:"tftp" yaml:"tftp"`
+	Virt                     VirtOptions                  `mapstructure:"virt" json:"virt" yaml:"virt"`
+	VirtPXEBoot              bool                         `mapstructure:"virt_pxe_boot" json:"virt_pxe_boot" yaml:"virt_pxe_boot"`
 }
 
 // Interface type removed in 4.0.0 - network interfaces are now first-class items.
@@ -83,42 +71,23 @@ func NewSystem() System {
 		EnableIPXE: Value[bool]{
 			IsInherited: true,
 		},
-		Filename:            inherit,
-		Interfaces:          make(map[string]*NetworkInterface),
-		NameServers:         make([]string, 0),
-		NameServersSearch:   make([]string, 0),
-		NetbootEnabled:      false,
-		NextServerv4:        inherit,
-		NextServerv6:        inherit,
-		Proxy:               inherit,
-		RedhatManagementKey: inherit,
-		SerialBaudRate:      -1,
-		SerialDevice:        -1,
-		Server:              inherit,
-		VirtAutoBoot: Value[bool]{
-			IsInherited: true,
-		},
-		VirtCPUs: Value[int]{
-			IsInherited: true,
-		},
-		VirtDiskDriver: inherit,
-		VirtFileSize: Value[float64]{
-			IsInherited: true,
-		},
-		VirtPath: inherit,
-		VirtRAM: Value[int]{
-			IsInherited: true,
-		},
-		VirtType: inherit,
+		DNS:                      newDNSOptions(),
+		Filename:                 inherit,
+		Interfaces:               make(map[string]*NetworkInterface),
+		NetbootEnabled:           false,
+		Proxy:                    inherit,
+		RedhatManagementKey:      inherit,
+		RedhatManagementOrg:      inherit,
+		RedhatManagementUser:     inherit,
+		RedhatManagementPassword: inherit,
+		SerialBaudRate:           -1,
+		SerialDevice:             -1,
+		Server:                   inherit,
+		TFTP:                     newTFTPOptions(),
+		Virt:                     newVirtOptions(),
 	}
 	// Overwrite defaults from Item
 	system.Owners = Value[[]string]{
-		IsInherited: true,
-	}
-	system.BootFiles = Value[map[string]interface{}]{
-		IsInherited: true,
-	}
-	system.FetchableFiles = Value[map[string]interface{}]{
 		IsInherited: true,
 	}
 	system.AutoinstallMeta = Value[map[string]interface{}]{
@@ -148,7 +117,6 @@ func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*Syste
 	}
 
 	s := decodeResult.(*System)
-	s.Client = *c
 
 	// Now clean the network interface struct
 	if s.Interfaces == nil {
@@ -167,23 +135,15 @@ func (c *Client) convertRawSystem(name string, xmlrpcResult interface{}) (*Syste
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&s.FetchableFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&s.BootFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&s.TemplateFiles)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&s.Owners)
 	if err != nil {
 		return nil, err
 	}
 	err = sanitizeValueSliceStruct(&s.BootLoaders)
+	if err != nil {
+		return nil, err
+	}
+	err = sanitizeValueSliceStruct(&s.DNS.NameServers)
 	if err != nil {
 		return nil, err
 	}
@@ -250,36 +210,28 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	}
 
 	// Set default values. I guess these aren't taken care of by Cobbler?
-	if len(system.BootFiles.Data) == 0 {
-		system.BootFiles.IsInherited = true
-	}
-
 	if len(system.BootLoaders.Data) == 0 {
 		system.BootLoaders.IsInherited = true
 	}
 
-	if len(system.FetchableFiles.Data) == 0 {
-		system.FetchableFiles.IsInherited = true
-	}
-
-	if system.PowerType == "" {
-		system.PowerType = "ipmilanplus"
+	if system.Power.Type == "" {
+		system.Power.Type = "ipmilanplus"
 	}
 
 	if system.Status == "" {
 		system.Status = "production"
 	}
 
-	if system.VirtDiskDriver == "" {
-		system.VirtDiskDriver = inherit
+	if system.Virt.DiskDriver == "" {
+		system.Virt.DiskDriver = inherit
 	}
 
-	if system.VirtPath == "" {
-		system.VirtPath = inherit
+	if system.Virt.Path == "" {
+		system.Virt.Path = inherit
 	}
 
-	if system.VirtType == "" {
-		system.VirtType = inherit
+	if system.Virt.Type == "" {
+		system.Virt.Type = inherit
 	}
 
 	// To create a system via the Cobbler API, first call new_system to obtain an ID

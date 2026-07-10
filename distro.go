@@ -28,17 +28,20 @@ type Distro struct {
 	Item `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
-	SourceRepos         []string        `mapstructure:"source_repos"   cobbler:"noupdate" json:"source_repos" yaml:"source_repos"`
-	TreeBuildTime       string          `mapstructure:"tree_build_time" cobbler:"noupdate" json:"tree_build_time" yaml:"tree_build_time"`
-	Arch                string          `mapstructure:"arch" json:"arch" yaml:"arch"`
-	BootLoaders         Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
-	Breed               string          `mapstructure:"breed" json:"breed" yaml:"breed"`
-	Initrd              string          `mapstructure:"initrd" json:"initrd" yaml:"initrd"`
-	RemoteBootInitrd    string          `mapstructure:"remote_boot_initrd" json:"remote_boot_initrd" yaml:"remote_boot_initrd"`
-	Kernel              string          `mapstructure:"kernel" json:"kernel" yaml:"kernel"`
-	RemoteBootKernel    string          `mapstructure:"remote_boot_kernel" json:"remote_boot_kernel" yaml:"remote_boot_kernel"`
-	RedhatManagementKey string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
-	OSVersion           string          `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
+	SourceRepos              []string        `mapstructure:"source_repos"   cobbler:"noupdate" json:"source_repos" yaml:"source_repos"`
+	TreeBuildTime            string          `mapstructure:"tree_build_time" cobbler:"noupdate" json:"tree_build_time" yaml:"tree_build_time"`
+	Arch                     string          `mapstructure:"arch" json:"arch" yaml:"arch"`
+	BootLoaders              Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	Breed                    string          `mapstructure:"breed" json:"breed" yaml:"breed"`
+	Initrd                   string          `mapstructure:"initrd" json:"initrd" yaml:"initrd"`
+	RemoteBootInitrd         string          `mapstructure:"remote_boot_initrd" json:"remote_boot_initrd" yaml:"remote_boot_initrd"`
+	Kernel                   string          `mapstructure:"kernel" json:"kernel" yaml:"kernel"`
+	RemoteBootKernel         string          `mapstructure:"remote_boot_kernel" json:"remote_boot_kernel" yaml:"remote_boot_kernel"`
+	RedhatManagementKey      string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	RedhatManagementOrg      string          `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
+	RedhatManagementUser     string          `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
+	RedhatManagementPassword string          `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
+	OSVersion                string          `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
 }
 
 func NewDistro() Distro {
@@ -49,7 +52,10 @@ func NewDistro() Distro {
 			Data:        make([]string, 0),
 			IsInherited: true,
 		},
-		RedhatManagementKey: inherit,
+		RedhatManagementKey:      inherit,
+		RedhatManagementOrg:      inherit,
+		RedhatManagementUser:     inherit,
+		RedhatManagementPassword: inherit,
 	}
 }
 
@@ -77,18 +83,6 @@ func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 		return nil, err
 	}
 	err = sanitizeValueMapStruct(&decodedDistro.AutoinstallMeta)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedDistro.FetchableFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedDistro.BootFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedDistro.TemplateFiles)
 	if err != nil {
 		return nil, err
 	}

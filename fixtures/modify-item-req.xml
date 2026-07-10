@@ -14,7 +14,13 @@
         </param>
         <param>
             <value>
-                <string>comment</string>
+                <array>
+                    <data>
+                        <value>
+                            <string>comment</string>
+                        </value>
+                    </data>
+                </array>
             </value>
         </param>
         <param>

@@ -57,57 +57,59 @@ func TestSystemCreate(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-system-name-check",
 		"new-system",
+		"set-system-profile",
+		"new-system-modify-image",
 		"set-system-name",
 		"new-system-modify-comment",
 		"new-system-modify-kernel-options",
 		"new-system-modify-kernel-options-post",
 		"new-system-modify-autoinstall-meta",
-		"new-system-modify-fetchable-files",
-		"new-system-modify-boot-files",
 		"new-system-modify-template-files",
 		"new-system-modify-owners",
-		"set-system-profile",
-		"new-system-modify-image",
 		"new-system-modify-autoinstall",
 		"new-system-modify-boot-loaders",
+		"set-system-nameservers",
+		"new-system-modify-name-servers-search",
 		"new-system-modify-enable-ipxe",
 		"new-system-modify-filename",
 		"new-system-modify-gateway",
 		"set-system-hostname",
 		"new-system-modify-ipv6-default-device",
-		"set-system-nameservers",
-		"new-system-modify-name-servers-search",
 		"new-system-modify-netboot-enabled",
-		"new-system-modify-next-server-v4",
-		"new-system-modify-next-server-v6",
-		"new-system-modify-power-address",
-		"new-system-modify-power-id",
+		"new-system-modify-power-type",
 		"new-system-modify-power-identity-file",
 		"new-system-modify-power-options",
-		"new-system-modify-power-pass",
-		"new-system-modify-power-type",
 		"new-system-modify-power-user",
+		"new-system-modify-power-password",
+		"new-system-modify-power-address",
+		"new-system-modify-power-id",
 		"new-system-modify-proxy",
 		"new-system-modify-redhat-management-key",
+		"new-system-modify-redhat-management-org",
+		"new-system-modify-redhat-management-user",
+		"new-system-modify-redhat-management-password",
 		"new-system-modify-serial-baud-rate",
 		"new-system-modify-serial-device",
 		"new-system-modify-server",
 		"new-system-modify-status",
+		"new-system-modify-next-server-v4",
+		"new-system-modify-next-server-v6",
 		"new-system-modify-virt-auto-boot",
 		"new-system-modify-virt-cpus",
 		"new-system-modify-virt-disk-driver",
 		"new-system-modify-virt-file-size",
-		"new-system-modify-virt-pxe-boot",
 		"new-system-modify-virt-path",
+		"new-system-modify-virt-pxe-boot",
 		"new-system-modify-virt-ram",
 		"new-system-modify-virt-type",
+		"new-system-modify-virt-pxe-boot-flag",
 		"new-system-save",
 		"new-system-get",
 	})
 	sys := NewSystem()
 	sys.Name = "mytestsystem"
 	sys.Hostname = "blahhost"
-	sys.NameServers = []string{"8.8.8.8", "8.8.4.4"}
+	sys.DNS.NameServers.Data = []string{"8.8.8.8", "8.8.4.4"}
 	sys.Profile = "centos7-x86_64"
 
 	// Act
@@ -121,7 +123,7 @@ func TestSystemCreate(t *testing.T) {
 	if newSys.Hostname != "blahhost" {
 		t.Errorf("Wrong system hostname returned.")
 	}
-	if len(newSys.NameServers) != 2 || newSys.NameServers[0] != "8.8.8.8" {
+	if len(newSys.DNS.NameServers.Data) != 2 || newSys.DNS.NameServers.Data[0] != "8.8.8.8" {
 		t.Errorf("Wrong system name servers returned.")
 	}
 	if newSys.Profile != "centos7-x86_64" {

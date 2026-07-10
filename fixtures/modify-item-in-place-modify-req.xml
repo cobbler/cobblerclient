@@ -14,7 +14,13 @@
         </param>
         <param>
             <value>
-                <string>kernel_options</string>
+                <array>
+                    <data>
+                        <value>
+                            <string>kernel_options</string>
+                        </value>
+                    </data>
+                </array>
             </value>
         </param>
         <param>

@@ -234,6 +234,36 @@
                         </value>
                     </member>
                     <member>
+                        <name>dns</name>
+                        <value>
+                            <struct>
+                                <member>
+                                    <name>name_servers</name>
+                                    <value>
+                                        <array>
+                                            <data>
+                                                <value>
+                                                    <string>8.8.8.8</string>
+                                                </value>
+                                                <value>
+                                                    <string>8.8.4.4</string>
+                                                </value>
+                                            </data>
+                                        </array>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>name_servers_search</name>
+                                    <value>
+                                        <array>
+                                            <data></data>
+                                        </array>
+                                    </value>
+                                </member>
+                            </struct>
+                        </value>
+                    </member>
+                    <member>
                         <name>ldap_enabled</name>
                         <value>
                             <boolean>0</boolean>

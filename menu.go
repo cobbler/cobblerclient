@@ -47,18 +47,6 @@ func convertRawMenu(name string, xmlrpcResult interface{}) (*Menu, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedMenu.FetchableFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedMenu.BootFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedMenu.TemplateFiles)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedMenu.Owners)
 	if err != nil {
 		return nil, err

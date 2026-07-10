@@ -29,6 +29,7 @@ func TestNetworkInterfaceTypeString(t *testing.T) {
 		{NetworkInterfaceTypeBridge, "bridge"},
 		{NetworkInterfaceTypeBridgeSlave, "bridge_slave"},
 		{NetworkInterfaceTypeBondedBridgeSlave, "bonded_bridge_slave"},
+		{NetworkInterfaceTypeBmc, "bmc"},
 		{NetworkInterfaceTypeInfiniband, "infiniband"},
 	}
 	for _, tc := range cases {
@@ -42,7 +43,6 @@ func TestIPv4OptionRoundtrip(t *testing.T) {
 	o := IPv4Option{
 		Address:      "192.168.1.10",
 		Netmask:      "255.255.255.0",
-		Gateway:      "192.168.1.1",
 		StaticRoutes: []string{"10.0.0.0/8 via 192.168.1.1"},
 	}
 	if len(o.StaticRoutes) != 1 {

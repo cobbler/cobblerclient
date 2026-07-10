@@ -47,10 +47,10 @@ type Item struct {
 	KernelOptions     Value[map[string]interface{}] `mapstructure:"kernel_options" json:"kernel_options" yaml:"kernel_options"`
 	KernelOptionsPost Value[map[string]interface{}] `mapstructure:"kernel_options_post" json:"kernel_options_post" yaml:"kernel_options_post"`
 	AutoinstallMeta   Value[map[string]interface{}] `mapstructure:"autoinstall_meta" json:"autoinstall_meta" yaml:"autoinstall_meta"`
-	FetchableFiles    Value[map[string]interface{}] `mapstructure:"fetchable_files" json:"fetchable_files" yaml:"fetchable_files"`
-	BootFiles         Value[map[string]interface{}] `mapstructure:"boot_files" json:"boot_files" yaml:"boot_files"`
-	TemplateFiles     Value[map[string]interface{}] `mapstructure:"template_files" json:"template_files" yaml:"template_files"`
-	Owners            Value[[]string]               `mapstructure:"owners" json:"owners" yaml:"owners"`
+	// TemplateFiles is not inheritable (cobbler/items/abstract/bootable_item.py: template_files is a plain
+	// @LazyProperty, unlike kernel_options/kernel_options_post/autoinstall_meta).
+	TemplateFiles map[string]string `mapstructure:"template_files" json:"template_files" yaml:"template_files"`
+	Owners        Value[[]string]   `mapstructure:"owners" json:"owners" yaml:"owners"`
 }
 
 // NewItem is a method to initialize the struct with the values that the server-side would internally use. Using this is
@@ -60,13 +60,7 @@ func NewItem() Item {
 		AutoinstallMeta: Value[map[string]interface{}]{
 			Data: make(map[string]interface{}),
 		},
-		BootFiles: Value[map[string]interface{}]{
-			Data: make(map[string]interface{}),
-		},
 		Children: make([]string, 0),
-		FetchableFiles: Value[map[string]interface{}]{
-			Data: make(map[string]interface{}),
-		},
 		KernelOptions: Value[map[string]interface{}]{
 			Data: make(map[string]interface{}),
 		},
@@ -77,15 +71,13 @@ func NewItem() Item {
 			Data:        make([]string, 0),
 			IsInherited: true,
 		},
-		TemplateFiles: Value[map[string]interface{}]{
-			Data: make(map[string]interface{}),
-		},
+		TemplateFiles: make(map[string]string),
 	}
 }
 
 // ModifyItem is a generic method to modify items. Changes made with this method are not persisted until a call to
 // SaveItem or one of its other concrete methods.
-func (c *Client) ModifyItem(what, objectId, attribute string, arg interface{}) error {
+func (c *Client) ModifyItem(what, objectId string, attribute []string, arg interface{}) error {
 	_, err := c.Call("modify_item", what, objectId, attribute, arg, c.Token)
 	return err
 }
@@ -98,8 +90,6 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 		"kernel_options",
 		"kernel_options_post",
 		"template_files",
-		"boot_files",
-		"fetchable_files",
 		"params",
 	}
 	if !stringInSlice(attribute, itemKey) {
@@ -132,7 +122,7 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 	if err != nil {
 		return err
 	}
-	err = c.ModifyItem(what, itemHandle, attribute, newMap)
+	err = c.ModifyItem(what, itemHandle, []string{attribute}, newMap)
 	if err != nil {
 		return err
 	}

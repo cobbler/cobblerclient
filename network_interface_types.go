@@ -27,6 +27,7 @@ const (
 	NetworkInterfaceTypeBridge
 	NetworkInterfaceTypeBridgeSlave
 	NetworkInterfaceTypeBondedBridgeSlave
+	NetworkInterfaceTypeBmc
 	NetworkInterfaceTypeInfiniband
 )
 
@@ -44,28 +45,33 @@ func (t NetworkInterfaceType) String() string {
 		return "bridge_slave"
 	case NetworkInterfaceTypeBondedBridgeSlave:
 		return "bonded_bridge_slave"
+	case NetworkInterfaceTypeBmc:
+		return "bmc"
 	case NetworkInterfaceTypeInfiniband:
 		return "infiniband"
 	}
 	return "na"
 }
 
-// IPv4Option models the per-interface IPv4 configuration.
+// IPv4Option models the per-interface IPv4 configuration. There is no
+// "gateway" field here — the real field is NetworkInterface.IfGateway
+// (cobbler/items/network_interface.py: if_gateway).
 type IPv4Option struct {
 	Address      string   `mapstructure:"address" json:"address" yaml:"address"`
 	Netmask      string   `mapstructure:"netmask" json:"netmask" yaml:"netmask"`
-	Gateway      string   `mapstructure:"gateway" json:"gateway" yaml:"gateway"`
 	StaticRoutes []string `mapstructure:"static_routes" json:"static_routes" yaml:"static_routes"`
 }
 
-// IPv6Option models the per-interface IPv6 configuration.
+// IPv6Option models the per-interface IPv6 configuration. There is no
+// "default_gateway" field here — the real field is
+// NetworkInterface.Ipv6DefaultGateway (cobbler/items/network_interface.py:
+// ipv6_default_gateway), which is a separate, independently backed property.
 type IPv6Option struct {
-	Address        string   `mapstructure:"address" json:"address" yaml:"address"`
-	Prefix         string   `mapstructure:"prefix" json:"prefix" yaml:"prefix"`
-	Secondaries    []string `mapstructure:"secondaries" json:"secondaries" yaml:"secondaries"`
-	MTU            string   `mapstructure:"mtu" json:"mtu" yaml:"mtu"`
-	StaticRoutes   []string `mapstructure:"static_routes" json:"static_routes" yaml:"static_routes"`
-	DefaultGateway string   `mapstructure:"default_gateway" json:"default_gateway" yaml:"default_gateway"`
+	Address      string   `mapstructure:"address" json:"address" yaml:"address"`
+	Prefix       string   `mapstructure:"prefix" json:"prefix" yaml:"prefix"`
+	Secondaries  []string `mapstructure:"secondaries" json:"secondaries" yaml:"secondaries"`
+	MTU          string   `mapstructure:"mtu" json:"mtu" yaml:"mtu"`
+	StaticRoutes []string `mapstructure:"static_routes" json:"static_routes" yaml:"static_routes"`
 }
 
 // DNSInterfaceOption models the per-interface DNS configuration.

@@ -517,6 +517,11 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				// DNSInterfaceOption nested in NetworkInterface (Cobbler 4.0.0+)
 				return data, nil
 			}
+			if matchesKeySet(mapKeys, "name_servers", "name_servers_search") {
+				// DNSOptions nested in Profile/System (distinct from the network-interface-level
+				// DNSInterfaceOption above, which uses "cnames"/"name" instead)
+				return data, nil
+			}
 			for _, key := range mapKeys {
 				// If the uid key is in the map then it is the top level Map
 				if key.String() == "uid" {
@@ -582,6 +587,20 @@ func decodeCobblerItem(raw interface{}, result interface{}) (interface{}, error)
 	return result, nil
 }
 
+// isOptionStructType reports whether fieldType is one of the nested "option"
+// structs (mirroring cobbler.items.options.*.ItemOption subclasses). Cobbler
+// 4.0.0 serializes and accepts these as a nested object rather than flat
+// fields, so modify_<what> must be called with a two-segment attribute path
+// (e.g. []string{"virt", "cpus"}) instead of a single one.
+func isOptionStructType(fieldType string) bool {
+	switch fieldType {
+	case "VirtOptions", "PowerOptions", "DNSOptions", "TFTPOptions", "APTOptions",
+		"IPv4Option", "IPv6Option", "DNSInterfaceOption", "URIOption":
+		return true
+	}
+	return false
+}
+
 // updateCobblerFields updates all fields in a Cobbler Item structure.
 func (c *Client) updateCobblerFields(what string, item reflect.Value, id string) error {
 	if err := c.setCachedVersion(); err != nil {
@@ -589,29 +608,6 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 	}
 
 	method := fmt.Sprintf("modify_%s", what)
-	typeOfT := item.Type()
-
-	// Update embedded Item struct
-	for i := 0; i < item.NumField(); i++ {
-		v := item.Field(i)
-		fieldType := v.Type().Name()
-
-		if fieldType == "Item" || fieldType == "Group" {
-			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
-			if err != nil {
-				return err
-			}
-			break
-		}
-
-		if fieldType == "Resource" {
-			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
-			if err != nil {
-				return err
-			}
-			break
-		}
-	}
 
 	// Fields that can inherit from other items can only be set after the parent is set.
 	// Fields that inherit from settings can be modified without this constraint.
@@ -619,21 +615,21 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		// In Cobbler v3.3.0, if profile name isn't created first, an empty child gets written to the distro, which
 		// causes a ValueError: "calling find with no arguments"
 		nameField := item.FieldByName("Name")
-		_, err := c.Call(method, id, "name", nameField.String(), c.Token)
+		_, err := c.Call(method, id, []string{"name"}, nameField.String(), c.Token)
 		if err != nil {
 			return err
 		}
 
 		parentField := item.FieldByName("Parent")
 		if parentField != (reflect.Value{}) {
-			err = c.updateSingleField(method, id, "parent", parentField.String(), "")
+			err = c.updateSingleField(method, id, []string{"parent"}, parentField.String(), "")
 			if err != nil {
 				return err
 			}
 		}
 		distroField := item.FieldByName("Distro")
 		if distroField != (reflect.Value{}) {
-			err = c.updateSingleField(method, id, "distro", distroField.String(), "")
+			err = c.updateSingleField(method, id, []string{"distro"}, distroField.String(), "")
 			if err != nil {
 				return err
 			}
@@ -642,14 +638,14 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 	if method == "modify_system" {
 		profileField := item.FieldByName("Profile")
 		if profileField != (reflect.Value{}) {
-			err := c.updateSingleField(method, id, "profile", profileField.String(), "")
+			err := c.updateSingleField(method, id, []string{"profile"}, profileField.String(), "")
 			if err != nil {
 				return err
 			}
 		}
 		imageField := item.FieldByName("Image")
 		if imageField != (reflect.Value{}) {
-			err := c.updateSingleField(method, id, "image", imageField.String(), "")
+			err := c.updateSingleField(method, id, []string{"image"}, imageField.String(), "")
 			if err != nil {
 				return err
 			}
@@ -659,6 +655,20 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		// manage interfaces via Client.{Create,Update,Delete}NetworkInterface.
 	}
 
+	return c.updateFields(method, id, nil, item)
+}
+
+// updateFields walks item's fields and pushes each one to the server via
+// modify_<what>. pathPrefix is the attribute path accumulated so far (nil at
+// the top level). Fields embedding Item/Group are squashed onto the same
+// wire object as their parent, so they recurse without extending the path.
+// Fields whose type is a nested "option" struct (see isOptionStructType)
+// recurse with their own mapstructure tag appended to pathPrefix, matching
+// the nested attribute paths Cobbler 4.0.0 expects, e.g.
+// modify_profile(id, []string{"virt", "cpus"}, ...).
+func (c *Client) updateFields(method, id string, pathPrefix []string, item reflect.Value) error {
+	typeOfT := item.Type()
+
 	for i := 0; i < item.NumField(); i++ {
 		v := item.Field(i)
 		tag := typeOfT.Field(i).Tag
@@ -666,24 +676,45 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		field := tag.Get("mapstructure")
 		cobblerTag := tag.Get("cobbler")
 
-		if cobblerTag == "noupdate" || fieldType == "Item" || fieldType == "Group" || fieldType == "Resource" || fieldType == "Meta" {
+		if cobblerTag == "noupdate" || fieldType == "Meta" {
 			continue
 		}
 
-		if field == "" || field == "parent" || field == "distro" || field == "profile" || field == "image" || field == "interfaces" {
-			// Skip fields that are empty or have been set previously
+		if fieldType == "Item" || fieldType == "Group" {
+			if err := c.updateFields(method, id, pathPrefix, v); err != nil {
+				return err
+			}
 			continue
 		}
 
-		if method == "modify_profile" && field == "name" {
-			// Field set above
+		if field == "" {
 			continue
+		}
+
+		if isOptionStructType(fieldType) {
+			nestedPath := append(append([]string{}, pathPrefix...), field)
+			if err := c.updateFields(method, id, nestedPath, v); err != nil {
+				return err
+			}
+			continue
+		}
+
+		if len(pathPrefix) == 0 {
+			if field == "parent" || field == "distro" || field == "profile" || field == "image" || field == "interfaces" {
+				// Skip fields that are empty or have been set previously
+				continue
+			}
+
+			if method == "modify_profile" && field == "name" {
+				// Field set above
+				continue
+			}
 		}
 
 		fieldValue := v.Interface()
 		if strings.HasPrefix(fieldType, "Value") {
 			if v.FieldByName("IsInherited").Bool() {
-				if minVer := typeOfT.Field(i).Tag.Get("cobbler_min_inherit"); minVer != "" {
+				if minVer := tag.Get("cobbler_min_inherit"); minVer != "" {
 					required, err := parseCobblerVersion(minVer)
 					if err != nil {
 						return fmt.Errorf("invalid cobbler_min_inherit tag on field %s: %w", field, err)
@@ -702,15 +733,15 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 			}
 		}
 
-		err := c.updateSingleField(method, id, field, fieldValue, cobblerTag)
-		if err != nil {
+		path := append(append([]string{}, pathPrefix...), field)
+		if err := c.updateSingleField(method, id, path, fieldValue, cobblerTag); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *Client) updateSingleField(method, id, field string, fieldValue interface{}, cobblerTag string) error {
+func (c *Client) updateSingleField(method, id string, field []string, fieldValue interface{}, cobblerTag string) error {
 	if result, err := c.Call(method, id, field, fieldValue, c.Token); err != nil {
 		return err
 	} else {

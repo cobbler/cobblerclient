@@ -188,7 +188,7 @@ func TestFindItemNames(t *testing.T) {
 
 func TestModifyItem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "modify-item")
-	err := c.ModifyItem("distro_group", "distro_group::webservers", "comment", "hello")
+	err := c.ModifyItem("distro_group", "distro_group::webservers", []string{"comment"}, "hello")
 	FailOnError(t, err)
 }
 
