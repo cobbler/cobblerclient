@@ -415,6 +415,11 @@ var fixtureSequence = []string{
 	"get-events",
 	"get-event-log",
 
+	// ── TRANSACTIONS ───────────────────────────────────────────────────────
+	"transaction-begin",
+	"transaction-commit",
+	"transaction-abort",
+
 	// ── LOGOUT ─────────────────────────────────────────────────────────────
 	"logout",
 }
@@ -1689,6 +1694,23 @@ func main() {
 	_, err = c.GetEvents("")
 	warn(err)
 	_, err = c.GetEventLog(bgTaskID)
+	warn(err)
+
+	// ── TRANSACTIONS ──────────────────────────────────────────────────────
+	fmt.Println("=== transactions ===")
+	err = c.TransactionBegin()
+	warn(err)
+	err = c.TransactionCommit()
+	warn(err)
+	// Begin a new transaction silently (not recorded) so that the following
+	// TransactionAbort call has an active transaction to abort.
+	{
+		silent := cobbler.NewClient(&silentHTTPClient{}, config)
+		silent.Token = c.Token
+		silent.CachedVersion = c.CachedVersion
+		_ = silent.TransactionBegin()
+	}
+	err = c.TransactionAbort()
 	warn(err)
 
 	// ── LOGOUT ────────────────────────────────────────────────────────────
