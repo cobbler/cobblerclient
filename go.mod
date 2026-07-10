@@ -1,11 +1,10 @@
 module github.com/cobbler/cobblerclient
 
-go 1.18
+go 1.22
 
 require (
 	github.com/fatih/structs v1.1.0
 	github.com/go-test/deep v1.1.1
-	github.com/go-viper/mapstructure/v2 v2.0.0
-	github.com/kolo/xmlrpc v0.0.0-20190909154602-56d5ec7c422e
-	golang.org/x/text v0.3.8 // indirect
+	github.com/go-viper/mapstructure/v2 v2.5.0
+	github.com/kolo/xmlrpc v0.0.0-20220921171641-a4b6fa1dd06b
 )
