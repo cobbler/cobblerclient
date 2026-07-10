@@ -535,7 +535,7 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		v := item.Field(i)
 		fieldType := v.Type().Name()
 
-		if fieldType == "Item" {
+		if fieldType == "Item" || fieldType == "Group" {
 			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
 			if err != nil {
 				return err
@@ -605,7 +605,7 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		field := tag.Get("mapstructure")
 		cobblerTag := tag.Get("cobbler")
 
-		if cobblerTag == "noupdate" || fieldType == "Item" || fieldType == "Resource" || fieldType == "Meta" {
+		if cobblerTag == "noupdate" || fieldType == "Item" || fieldType == "Group" || fieldType == "Resource" || fieldType == "Meta" {
 			continue
 		}
 

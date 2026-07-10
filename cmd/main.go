@@ -353,6 +353,45 @@ var fixtureSequence = []string{
 	"find-network-interface-names",
 	"delete-network-interface",
 
+	// ── DISTRO GROUP (Save, Copy, Rename, Read, Find, Delete — Create/Update are sub-recorders) ──
+	"get-distro-group-handle",
+	"save-distro-group",
+	"copy-distro-group",
+	"rename-distro-group",
+	"get-distro-group",
+	"get-distro-groups",
+	"get-item-names-distro-group",
+	"get-distro-groups-since",
+	"get-distro-group-as-rendered",
+	"find-distro-group",
+	"delete-distro-group",
+
+	// ── PROFILE GROUP (Save, Copy, Rename, Read, Find, Delete — Create/Update are sub-recorders) ──
+	"get-profile-group-handle",
+	"save-profile-group",
+	"copy-profile-group",
+	"rename-profile-group",
+	"get-profile-group",
+	"get-profile-groups",
+	"get-item-names-profile-group",
+	"get-profile-groups-since",
+	"get-profile-group-as-rendered",
+	"find-profile-group",
+	"delete-profile-group",
+
+	// ── SYSTEM GROUP (Save, Copy, Rename, Read, Find, Delete — Create/Update are sub-recorders) ──
+	"get-system-group-handle",
+	"save-system-group",
+	"copy-system-group",
+	"rename-system-group",
+	"get-system-group",
+	"get-system-groups",
+	"get-item-names-system-group",
+	"get-system-groups-since",
+	"get-system-group-as-rendered",
+	"find-system-group",
+	"delete-system-group",
+
 	// ── ITEMS (generic, single-step) ───────────────────────────────────────
 	// Note: ModifyItemInPlace (4 calls) uses its own sub-recorder.
 	"find-items-paged",
@@ -1349,6 +1388,237 @@ func main() {
 	_, err = c.FindNetworkInterfaceNames(map[string]interface{}{"mac_address": "00:11:22:33:44:55"})
 	warn(err)
 	err = c.DeleteNetworkInterface("eth0@server1")
+	warn(err)
+
+	// ── DISTRO GROUP ──────────────────────────────────────────────────────
+	fmt.Println("=== distro group create ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"new-distro-group",
+				"new-distro-group-modify-name",
+				"new-distro-group-modify-comment",
+				"new-distro-group-modify-kernel-options",
+				"new-distro-group-modify-kernel-options-post",
+				"new-distro-group-modify-autoinstall-meta",
+				"new-distro-group-modify-fetchable-files",
+				"new-distro-group-modify-boot-files",
+				"new-distro-group-modify-template-files",
+				"new-distro-group-modify-owners",
+				"new-distro-group-modify-items",
+				"new-distro-group-save",
+				"new-distro-group-get",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		dg := cobbler.NewDistroGroup()
+		dg.Name = "webservers"
+		dg.Members = []string{"member-a"}
+		_, err = sub.CreateDistroGroup(dg)
+		warn(err)
+	}
+
+	fmt.Println("=== distro group update ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"update-distro-group-handle",
+				"update-distro-group-modify-name",
+				"update-distro-group-modify-comment",
+				"update-distro-group-modify-kernel-options",
+				"update-distro-group-modify-kernel-options-post",
+				"update-distro-group-modify-autoinstall-meta",
+				"update-distro-group-modify-fetchable-files",
+				"update-distro-group-modify-boot-files",
+				"update-distro-group-modify-template-files",
+				"update-distro-group-modify-owners",
+				"update-distro-group-modify-items",
+				"update-distro-group-save",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		dg := cobbler.NewDistroGroup()
+		dg.Name = "webservers"
+		dg.Members = []string{"member-a"}
+		warn(sub.UpdateDistroGroup(&dg))
+	}
+
+	fmt.Println("=== distro groups ===")
+	dgh, err := c.GetDistroGroupHandle("webservers")
+	warn(err)
+	err = c.SaveDistroGroup(dgh, true, true, "bypass")
+	warn(err)
+	err = c.CopyDistroGroup(dgh, "webservers2")
+	warn(err)
+	err = c.RenameDistroGroup("distro_group::webservers2", "webservers-new")
+	warn(err)
+	_, err = c.GetDistroGroup("webservers", false, false)
+	warn(err)
+	_, err = c.GetDistroGroups()
+	warn(err)
+	_, err = c.ListDistroGroupNames()
+	warn(err)
+	_, err = c.GetDistroGroupsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
+	warn(err)
+	_, err = c.GetDistroGroupAsRendered("webservers")
+	warn(err)
+	_, err = c.FindDistroGroup(map[string]interface{}{"name": "webservers"})
+	warn(err)
+	err = c.DeleteDistroGroup("webservers")
+	warn(err)
+
+	// ── PROFILE GROUP ─────────────────────────────────────────────────────
+	fmt.Println("=== profile group create ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"new-profile-group",
+				"new-profile-group-modify-name",
+				"new-profile-group-modify-comment",
+				"new-profile-group-modify-kernel-options",
+				"new-profile-group-modify-kernel-options-post",
+				"new-profile-group-modify-autoinstall-meta",
+				"new-profile-group-modify-fetchable-files",
+				"new-profile-group-modify-boot-files",
+				"new-profile-group-modify-template-files",
+				"new-profile-group-modify-owners",
+				"new-profile-group-modify-items",
+				"new-profile-group-save",
+				"new-profile-group-get",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		pg := cobbler.NewProfileGroup()
+		pg.Name = "webservers"
+		pg.Members = []string{"member-a"}
+		_, err = sub.CreateProfileGroup(pg)
+		warn(err)
+	}
+
+	fmt.Println("=== profile group update ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"update-profile-group-handle",
+				"update-profile-group-modify-name",
+				"update-profile-group-modify-comment",
+				"update-profile-group-modify-kernel-options",
+				"update-profile-group-modify-kernel-options-post",
+				"update-profile-group-modify-autoinstall-meta",
+				"update-profile-group-modify-fetchable-files",
+				"update-profile-group-modify-boot-files",
+				"update-profile-group-modify-template-files",
+				"update-profile-group-modify-owners",
+				"update-profile-group-modify-items",
+				"update-profile-group-save",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		pg := cobbler.NewProfileGroup()
+		pg.Name = "webservers"
+		pg.Members = []string{"member-a"}
+		warn(sub.UpdateProfileGroup(&pg))
+	}
+
+	fmt.Println("=== profile groups ===")
+	pgh, err := c.GetProfileGroupHandle("webservers")
+	warn(err)
+	err = c.SaveProfileGroup(pgh, true, true, "bypass")
+	warn(err)
+	err = c.CopyProfileGroup(pgh, "webservers2")
+	warn(err)
+	err = c.RenameProfileGroup("profile_group::webservers2", "webservers-new")
+	warn(err)
+	_, err = c.GetProfileGroup("webservers", false, false)
+	warn(err)
+	_, err = c.GetProfileGroups()
+	warn(err)
+	_, err = c.ListProfileGroupNames()
+	warn(err)
+	_, err = c.GetProfileGroupsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
+	warn(err)
+	_, err = c.GetProfileGroupAsRendered("webservers")
+	warn(err)
+	_, err = c.FindProfileGroup(map[string]interface{}{"name": "webservers"})
+	warn(err)
+	err = c.DeleteProfileGroup("webservers")
+	warn(err)
+
+	// ── SYSTEM GROUP ──────────────────────────────────────────────────────
+	fmt.Println("=== system group create ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"new-system-group",
+				"new-system-group-modify-name",
+				"new-system-group-modify-comment",
+				"new-system-group-modify-kernel-options",
+				"new-system-group-modify-kernel-options-post",
+				"new-system-group-modify-autoinstall-meta",
+				"new-system-group-modify-fetchable-files",
+				"new-system-group-modify-boot-files",
+				"new-system-group-modify-template-files",
+				"new-system-group-modify-owners",
+				"new-system-group-modify-items",
+				"new-system-group-save",
+				"new-system-group-get",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		sg := cobbler.NewSystemGroup()
+		sg.Name = "webservers"
+		sg.Members = []string{"member-a"}
+		_, err = sub.CreateSystemGroup(sg)
+		warn(err)
+	}
+
+	fmt.Println("=== system group update ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"update-system-group-handle",
+				"update-system-group-modify-name",
+				"update-system-group-modify-comment",
+				"update-system-group-modify-kernel-options",
+				"update-system-group-modify-kernel-options-post",
+				"update-system-group-modify-autoinstall-meta",
+				"update-system-group-modify-fetchable-files",
+				"update-system-group-modify-boot-files",
+				"update-system-group-modify-template-files",
+				"update-system-group-modify-owners",
+				"update-system-group-modify-items",
+				"update-system-group-save",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		sg := cobbler.NewSystemGroup()
+		sg.Name = "webservers"
+		sg.Members = []string{"member-a"}
+		warn(sub.UpdateSystemGroup(&sg))
+	}
+
+	fmt.Println("=== system groups ===")
+	sgh, err := c.GetSystemGroupHandle("webservers")
+	warn(err)
+	err = c.SaveSystemGroup(sgh, true, true, "bypass")
+	warn(err)
+	err = c.CopySystemGroup(sgh, "webservers2")
+	warn(err)
+	err = c.RenameSystemGroup("system_group::webservers2", "webservers-new")
+	warn(err)
+	_, err = c.GetSystemGroup("webservers", false, false)
+	warn(err)
+	_, err = c.GetSystemGroups()
+	warn(err)
+	_, err = c.ListSystemGroupNames()
+	warn(err)
+	_, err = c.GetSystemGroupsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
+	warn(err)
+	_, err = c.GetSystemGroupAsRendered("webservers")
+	warn(err)
+	_, err = c.FindSystemGroup(map[string]interface{}{"name": "webservers"})
+	warn(err)
+	err = c.DeleteSystemGroup("webservers")
 	warn(err)
 
 	// ── ITEMS (generic) ───────────────────────────────────────────────────
