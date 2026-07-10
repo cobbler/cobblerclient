@@ -101,7 +101,7 @@ func (c *Client) CreateDistroGroup(g DistroGroup) (*DistroGroup, error) {
 	if err := c.updateCobblerFields("distro_group", reflect.ValueOf(&g).Elem(), objectID); err != nil {
 		return nil, err
 	}
-	if err := c.SaveDistroGroup(objectID, c.Token, "new"); err != nil {
+	if err := c.SaveDistroGroup(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
 	return c.GetDistroGroup(g.Name, false, false)
@@ -116,7 +116,7 @@ func (c *Client) UpdateDistroGroup(g *DistroGroup) error {
 	if err := c.updateCobblerFields("distro_group", reflect.ValueOf(g).Elem(), objectID); err != nil {
 		return err
 	}
-	return c.SaveDistroGroup(objectID, c.Token, "bypass")
+	return c.SaveDistroGroup(objectID, true, true, "bypass")
 }
 
 // SaveDistroGroup saves all changes performed via XML-RPC to disk on the server side.
@@ -203,7 +203,7 @@ func (c *Client) CreateProfileGroup(g ProfileGroup) (*ProfileGroup, error) {
 	if err := c.updateCobblerFields("profile_group", reflect.ValueOf(&g).Elem(), objectID); err != nil {
 		return nil, err
 	}
-	if err := c.SaveProfileGroup(objectID, c.Token, "new"); err != nil {
+	if err := c.SaveProfileGroup(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
 	return c.GetProfileGroup(g.Name, false, false)
@@ -217,7 +217,7 @@ func (c *Client) UpdateProfileGroup(g *ProfileGroup) error {
 	if err := c.updateCobblerFields("profile_group", reflect.ValueOf(g).Elem(), objectID); err != nil {
 		return err
 	}
-	return c.SaveProfileGroup(objectID, c.Token, "bypass")
+	return c.SaveProfileGroup(objectID, true, true, "bypass")
 }
 
 // SaveProfileGroup saves all changes performed via XML-RPC to disk on the server side.
@@ -308,7 +308,7 @@ func (c *Client) CreateSystemGroup(g SystemGroup) (*SystemGroup, error) {
 	if err := c.updateCobblerFields("system_group", reflect.ValueOf(&g).Elem(), objectID); err != nil {
 		return nil, err
 	}
-	if err := c.SaveSystemGroup(objectID, c.Token, "new"); err != nil {
+	if err := c.SaveSystemGroup(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
 	return c.GetSystemGroup(g.Name, false, false)
@@ -322,7 +322,7 @@ func (c *Client) UpdateSystemGroup(g *SystemGroup) error {
 	if err := c.updateCobblerFields("system_group", reflect.ValueOf(g).Elem(), objectID); err != nil {
 		return err
 	}
-	return c.SaveSystemGroup(objectID, c.Token, "bypass")
+	return c.SaveSystemGroup(objectID, true, true, "bypass")
 }
 
 // SaveSystemGroup saves all changes performed via XML-RPC to disk on the server side.

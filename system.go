@@ -296,7 +296,7 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	}
 
 	// Save the final system
-	if err := c.SaveSystem(newID, "new"); err != nil {
+	if err := c.SaveSystem(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -315,8 +315,8 @@ func (c *Client) UpdateSystem(system *System) error {
 }
 
 // SaveSystem saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveSystem(objectId, editmode string) error {
-	_, err := c.Call("save_system", objectId, c.Token, editmode)
+func (c *Client) SaveSystem(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_system", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

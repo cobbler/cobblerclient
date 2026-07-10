@@ -108,7 +108,7 @@ func TestFindMenuNames(t *testing.T) {
 
 func TestSaveMenu(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-menu")
-	err := c.SaveMenu("menu::testmenu", "bypass")
+	err := c.SaveMenu("menu::testmenu", true, true, "bypass")
 	FailOnError(t, err)
 }
 

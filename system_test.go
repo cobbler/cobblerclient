@@ -179,7 +179,7 @@ func TestFindSystemNames(t *testing.T) {
 
 func TestSaveSystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-system")
-	err := c.SaveSystem("___NEW___system::abc123==", "bypass")
+	err := c.SaveSystem("___NEW___system::abc123==", true, true, "bypass")
 	FailOnError(t, err)
 }
 

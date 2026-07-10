@@ -256,7 +256,7 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	}
 
 	// Save the final profile
-	err = c.SaveProfile(newID, "bypass")
+	err = c.SaveProfile(newID, true, true, "bypass")
 	if err != nil {
 		return nil, err
 	}
@@ -277,12 +277,12 @@ func (c *Client) UpdateProfile(profile *Profile) error {
 		return err
 	}
 
-	return c.SaveProfile(id, "bypass")
+	return c.SaveProfile(id, true, true, "bypass")
 }
 
 // SaveProfile saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveProfile(objectId, editmode string) error {
-	_, err := c.Call("save_profile", objectId, c.Token, editmode)
+func (c *Client) SaveProfile(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_profile", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

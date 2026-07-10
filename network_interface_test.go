@@ -131,7 +131,7 @@ func TestFindNetworkInterfaceNames(t *testing.T) {
 
 func TestSaveNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-network-interface")
-	err := c.SaveNetworkInterface("network_interface::eth0@server1", "bypass")
+	err := c.SaveNetworkInterface("network_interface::eth0@server1", true, true, "bypass")
 	FailOnError(t, err)
 }
 

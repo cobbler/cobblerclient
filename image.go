@@ -303,7 +303,7 @@ func (c *Client) CreateImage(image Image) (*Image, error) {
 	}
 
 	// Save the final image
-	if err = c.SaveImage(newID, "new"); err != nil {
+	if err = c.SaveImage(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -324,7 +324,7 @@ func (c *Client) UpdateImage(image *Image) error {
 	}
 
 	// Save the final image
-	if err := c.SaveImage(id, "bypass"); err != nil {
+	if err := c.SaveImage(id, true, true, "bypass"); err != nil {
 		return err
 	}
 
@@ -396,8 +396,8 @@ func (c *Client) GetImageAsRendered(name string) (map[string]interface{}, error)
 }
 
 // SaveImage saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveImage(objectId, editmode string) error {
-	_, err := c.Call("save_image", objectId, c.Token, editmode)
+func (c *Client) SaveImage(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_image", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

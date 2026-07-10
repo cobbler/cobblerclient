@@ -132,7 +132,7 @@ func (c *Client) CreateTemplate(tpl Template) (*Template, error) {
 	if err := c.updateCobblerFields("template", reflect.ValueOf(&tpl).Elem(), objectID); err != nil {
 		return nil, err
 	}
-	if err := c.SaveTemplate(objectID, "new"); err != nil {
+	if err := c.SaveTemplate(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
 	return c.GetTemplate(tpl.Name, false, false)
@@ -146,12 +146,12 @@ func (c *Client) UpdateTemplate(tpl *Template) error {
 	if err := c.updateCobblerFields("template", reflect.ValueOf(tpl).Elem(), objectID); err != nil {
 		return err
 	}
-	return c.SaveTemplate(objectID, "bypass")
+	return c.SaveTemplate(objectID, true, true, "bypass")
 }
 
 // SaveTemplate saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveTemplate(objectId, editmode string) error {
-	_, err := c.Call("save_template", objectId, c.Token, editmode, c.Token)
+func (c *Client) SaveTemplate(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_template", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

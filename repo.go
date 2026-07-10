@@ -177,7 +177,7 @@ func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 		return nil, err
 	}
 
-	if err := c.SaveRepo(newID, "new"); err != nil {
+	if err := c.SaveRepo(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -196,12 +196,12 @@ func (c *Client) UpdateRepo(repo *Repo) error {
 		return err
 	}
 
-	return c.SaveRepo(id, "bypass")
+	return c.SaveRepo(id, true, true, "bypass")
 }
 
 // SaveRepo saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveRepo(objectId, editmode string) error {
-	_, err := c.Call("save_repo", objectId, c.Token, editmode)
+func (c *Client) SaveRepo(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_repo", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

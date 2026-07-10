@@ -108,7 +108,7 @@ func TestFindImageNames(t *testing.T) {
 
 func TestSaveImage(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-image")
-	err := c.SaveImage("image::testimage", "bypass")
+	err := c.SaveImage("image::testimage", true, true, "bypass")
 	FailOnError(t, err)
 }
 

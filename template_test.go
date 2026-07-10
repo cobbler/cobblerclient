@@ -161,7 +161,7 @@ func TestBackgroundTemplatesRefreshContent(t *testing.T) {
 
 func TestSaveTemplate(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-template")
-	err := c.SaveTemplate("template::testtemplate", "bypass")
+	err := c.SaveTemplate("template::testtemplate", true, true, "bypass")
 	FailOnError(t, err)
 }
 

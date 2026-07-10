@@ -108,7 +108,7 @@ func TestFindProfileNames(t *testing.T) {
 
 func TestSaveProfile(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-profile")
-	err := c.SaveProfile("profile::testprof", "bypass")
+	err := c.SaveProfile("profile::testprof", true, true, "bypass")
 	FailOnError(t, err)
 }
 

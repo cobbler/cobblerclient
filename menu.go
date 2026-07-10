@@ -130,7 +130,7 @@ func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 		return nil, err
 	}
 
-	if err = c.SaveMenu(newID, "new"); err != nil {
+	if err = c.SaveMenu(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -149,7 +149,7 @@ func (c *Client) UpdateMenu(menu *Menu) error {
 		return err
 	}
 
-	if err = c.SaveMenu(id, "bypass"); err != nil {
+	if err = c.SaveMenu(id, true, true, "bypass"); err != nil {
 		return err
 	}
 
@@ -235,8 +235,8 @@ func (c *Client) GetMenuAsRendered(name string) (map[string]interface{}, error) 
 }
 
 // SaveMenu saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveMenu(objectId, editmode string) error {
-	_, err := c.Call("save_menu", objectId, c.Token, editmode)
+func (c *Client) SaveMenu(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_menu", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

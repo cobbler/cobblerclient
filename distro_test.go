@@ -104,7 +104,7 @@ func TestFindDistroNames(t *testing.T) {
 
 func TestSaveDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-distro")
-	err := c.SaveDistro("distro::test", "bypass")
+	err := c.SaveDistro("distro::test", true, true, "bypass")
 	FailOnError(t, err)
 }
 

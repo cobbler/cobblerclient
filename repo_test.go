@@ -137,7 +137,7 @@ func TestFindRepoNames(t *testing.T) {
 
 func TestSaveRepo(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-repo")
-	err := c.SaveRepo("repo::testrepo", "bypass")
+	err := c.SaveRepo("repo::testrepo", true, true, "bypass")
 	FailOnError(t, err)
 }
 

@@ -224,7 +224,7 @@ func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 		return nil, err
 	}
 
-	if _, err := c.Call("save_distro", newID, c.Token); err != nil {
+	if err := c.SaveDistro(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -243,7 +243,7 @@ func (c *Client) UpdateDistro(distro *Distro) error {
 		return err
 	}
 
-	if _, err := c.Call("save_distro", id, c.Token); err != nil {
+	if err := c.SaveDistro(id, true, true, "bypass"); err != nil {
 		return err
 	}
 
@@ -251,8 +251,8 @@ func (c *Client) UpdateDistro(distro *Distro) error {
 }
 
 // SaveDistro saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveDistro(objectId, editmode string) error {
-	_, err := c.Call("save_distro", objectId, c.Token, editmode)
+func (c *Client) SaveDistro(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_distro", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

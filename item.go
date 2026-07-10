@@ -136,7 +136,7 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 	if err != nil {
 		return err
 	}
-	return c.SaveItem(what, itemHandle, c.Token, "bypass")
+	return c.SaveItem(what, itemHandle, true, true, "bypass")
 }
 
 // GetItemNames returns the list of names for a specified object type present inside Cobbler.
@@ -261,8 +261,8 @@ func (c *Client) NewItem(what string, isSubobject bool) error {
 }
 
 // SaveItem saves the changes done via XML-RPC.
-func (c *Client) SaveItem(what, objectId, token, editmode string) error {
-	_, err := c.Call("save_item", what, objectId, token, editmode)
+func (c *Client) SaveItem(what, objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_item", what, objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

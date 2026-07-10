@@ -164,7 +164,7 @@ func (c *Client) CreateNetworkInterface(systemUid string, iface NetworkInterface
 	if err := c.updateCobblerFields("network_interface", reflect.ValueOf(&iface).Elem(), objectID); err != nil {
 		return nil, err
 	}
-	if err := c.SaveNetworkInterface(objectID, "new"); err != nil {
+	if err := c.SaveNetworkInterface(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
 	return c.GetNetworkInterface(iface.Name, false, false)
@@ -179,12 +179,12 @@ func (c *Client) UpdateNetworkInterface(iface *NetworkInterface) error {
 	if err := c.updateCobblerFields("network_interface", reflect.ValueOf(iface).Elem(), objectID); err != nil {
 		return err
 	}
-	return c.SaveNetworkInterface(objectID, "bypass")
+	return c.SaveNetworkInterface(objectID, true, true, "bypass")
 }
 
 // SaveNetworkInterface flushes in-memory changes to the backend.
-func (c *Client) SaveNetworkInterface(objectId, editmode string) error {
-	_, err := c.Call("save_network_interface", objectId, c.Token, editmode, c.Token)
+func (c *Client) SaveNetworkInterface(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_network_interface", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 
