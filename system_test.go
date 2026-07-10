@@ -17,11 +17,8 @@ limitations under the License.
 package cobblerclient
 
 import (
-	"fmt"
 	"testing"
 	"time"
-
-	"github.com/go-test/deep"
 )
 
 func TestNewSystem(t *testing.T) {
@@ -29,10 +26,7 @@ func TestNewSystem(t *testing.T) {
 	_ = NewSystem()
 }
 
-func TestNewInterface(t *testing.T) {
-	// Arrange, Act & Assert
-	_ = NewInterface()
-}
+// TestNewInterface removed - use TestNewNetworkInterface instead (4.0.0)
 
 func TestGetSystems(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-systems")
@@ -213,39 +207,6 @@ func TestGetSystemHandle(t *testing.T) {
 	}
 }
 
-func TestCreateInterface(t *testing.T) {
-	// Arrange
-	c := createStubHTTPClient(t, []string{
-		"get-interfaces-get-system",
-		"delete-interface-get-system-handle",
-		"create-interface-create-interface",
-		"delete-interface-save-system",
-	})
-	testsys, err := c.GetSystem("testsys", false, false)
-	FailOnError(t, err)
-	testinterface := NewInterface()
-
-	// Act
-	err = testsys.CreateInterface("eth0", testinterface)
-
-	// Assert
-	FailOnError(t, err)
-}
-
-func TestModifyInterface(t *testing.T) {
-	// Arrange
-	c := createStubHTTPClientSingle(t, "modify-interface")
-	testnic := NewInterface()
-	testnic.IPAddress = "10.168.0.5"
-	testnicmap := makeInterfaceOptionsMap("eth0", testnic)
-
-	// Act
-	err := c.ModifyInterface("system::testsys", testnicmap)
-
-	// Assert
-	FailOnError(t, err)
-}
-
 func TestGetValidSystemBootLoaders(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-valid-system-boot-loaders")
 	res, err := c.GetValidSystemBootLoaders("test")
@@ -274,17 +235,16 @@ func TestGetInterfaces(t *testing.T) {
 	testsys, err := c.GetSystem("testsys", false, false)
 	FailOnError(t, err)
 
-	// Act
-	interfaces, err := testsys.GetInterfaces()
-
-	// Assert
-	if len(interfaces) < 1 {
+	// Assert - access Interfaces directly
+	if len(testsys.Interfaces) < 1 {
 		t.Fatal("there should be at least one interface")
 	}
-	if interfaces["default"].IPAddress != "10.1.0.1" {
-		t.Fatal("incorrect IP address")
+	if testsys.Interfaces["default"] == nil {
+		t.Fatal("default interface should exist")
 	}
-	FailOnError(t, err)
+	if testsys.Interfaces["default"].IPv4.Address != "10.1.0.1" {
+		t.Fatalf("incorrect IP address: got %q, want 10.1.0.1", testsys.Interfaces["default"].IPv4.Address)
+	}
 }
 
 func TestGetInterface(t *testing.T) {
@@ -295,53 +255,14 @@ func TestGetInterface(t *testing.T) {
 	testsys, err := c.GetSystem("testsys", false, false)
 	FailOnError(t, err)
 
-	// Act
-	nic, err := testsys.GetInterface("default")
-
-	// Assert
-	expectedInterface := NewInterface()
-	expectedInterface.IPAddress = "10.1.0.1"
-	differences := deep.Equal(nic, expectedInterface)
-	if len(differences) > 0 {
-		fmt.Println(differences)
-		t.Fatal("interfaces non-equal")
+	// Assert - access Interfaces map directly
+	nic, ok := testsys.Interfaces["default"]
+	if !ok {
+		t.Fatal("default interface not found")
 	}
-	FailOnError(t, err)
-}
-
-func TestDeleteInterface(t *testing.T) {
-	// Arrange
-	c := createStubHTTPClient(t, []string{
-		"get-interfaces-get-system",
-		"delete-interface-get-system-handle",
-		"delete-interface-delete-interface",
-		"delete-interface-save-system",
-	})
-	testsys, err := c.GetSystem("testsys", false, false)
-	FailOnError(t, err)
-
-	// Act
-	err = testsys.DeleteInterface("default")
-
-	// Assert
-	FailOnError(t, err)
-}
-
-func TestRenameInterface(t *testing.T) {
-	// Arrange
-	c := createStubHTTPClient(t, []string{
-		"get-interfaces-get-system",
-		"delete-interface-get-system-handle",
-		"rename-interface-rename-interface",
-	})
-	testsys, err := c.GetSystem("testsys", false, false)
-	FailOnError(t, err)
-
-	// Act
-	err = testsys.RenameInterface("", "")
-
-	// Assert
-	FailOnError(t, err)
+	if nic.IPv4.Address != "10.1.0.1" {
+		t.Fatalf("incorrect IP address: got %q, want 10.1.0.1", nic.IPv4.Address)
+	}
 }
 
 func TestDisableNetboot(t *testing.T) {

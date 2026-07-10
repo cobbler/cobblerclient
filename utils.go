@@ -2,7 +2,24 @@ package cobblerclient
 
 import (
 	"errors"
+	"reflect"
 )
+
+// matchesKeySet returns true iff mapKeys contains exactly the given names
+// (no more, no less). mapKeys is the result of reflect.Value.MapKeys() from
+// the decoder hook and must already be sorted alphabetically when expected
+// is given in alphabetical order.
+func matchesKeySet(mapKeys []reflect.Value, expected ...string) bool {
+	if len(mapKeys) != len(expected) {
+		return false
+	}
+	for i, want := range expected {
+		if mapKeys[i].String() != want {
+			return false
+		}
+	}
+	return true
+}
 
 func returnString(res interface{}, err error) (string, error) {
 	if err != nil {

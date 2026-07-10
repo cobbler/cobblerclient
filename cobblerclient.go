@@ -443,8 +443,17 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				// Page-Info struct
 				return data, nil
 			}
-			if len(mapKeys) == 23 && mapKeys[0].String() == "bonding_opts" {
-				// Network Interface struct
+			// Legacy flat Interface detection removed - 4.0.0+ uses NetworkInterface with nested structs
+			if matchesKeySet(mapKeys, "address", "gateway", "netmask", "static_routes") {
+				// IPv4Option nested in NetworkInterface (Cobbler 4.0.0+)
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "address", "default_gateway", "mtu", "prefix", "secondaries", "static_routes") {
+				// IPv6Option nested in NetworkInterface (Cobbler 4.0.0+)
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "cnames", "name") {
+				// DNSInterfaceOption nested in NetworkInterface (Cobbler 4.0.0+)
 				return data, nil
 			}
 			for _, key := range mapKeys {
@@ -584,13 +593,9 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 				return err
 			}
 		}
-		interfaceField := item.FieldByName("Interfaces")
-		if interfaceField != (reflect.Value{}) {
-			err := c.updateInterfaces(id, interfaceField.Interface())
-			if err != nil {
-				return err
-			}
-		}
+		// Interface updates are no longer pushed through modify_system in
+		// Cobbler 4.0.0. The Interfaces field is marked noupdate; callers
+		// manage interfaces via Client.{Create,Update,Delete}NetworkInterface.
 	}
 
 	for i := 0; i < item.NumField(); i++ {
@@ -654,21 +659,6 @@ func (c *Client) updateSingleField(method, id, field string, fieldValue interfac
 				return nil
 			}
 			return fmt.Errorf("error updating field \"%s\" to \"%s\"", field, fieldValue)
-		}
-	}
-	return nil
-}
-
-// updateInterfaces takes care of pushing interface modifications. Since interfaces don't have unique identifiers in
-// Cobbler 3.3.x. As such no reliable tracking of operations can be done when interfaces are renamed. As such this only
-// handles modification and creation of interfaces.
-func (c *Client) updateInterfaces(systemId string, interfaceData interface{}) error {
-	interfaceMap := interfaceData.(Interfaces)
-	for name, iface := range interfaceMap {
-		res := makeInterfaceOptionsMap(name, iface)
-		err := c.ModifyInterface(systemId, res)
-		if err != nil {
-			return err
 		}
 	}
 	return nil

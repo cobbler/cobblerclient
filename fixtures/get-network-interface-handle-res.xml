@@ -2,9 +2,7 @@
 <methodResponse>
     <params>
         <param>
-            <value>
-                <boolean>1</boolean>
-            </value>
+            <value><string>network_interface::eth0@server1</string></value>
         </param>
     </params>
 </methodResponse>

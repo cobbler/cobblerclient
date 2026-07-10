@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>copy_network_interface</methodName>
+    <params>
+        <param>
+            <value>
+                <string>network_interface::eth0@server1</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>eth1@server1</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

@@ -340,6 +340,19 @@ var fixtureSequence = []string{
 	"find-menu-names",
 	"delete-menu",
 
+	// ── NETWORK INTERFACES (Save, Copy, Rename, Read, Find, Delete — Create/Update are sub-recorders) ──
+	"get-network-interface-handle",
+	"save-network-interface",
+	"copy-network-interface",
+	"rename-network-interface",
+	"get-network-interface",
+	"get-network-interfaces",
+	"get-item-names-network-interface",
+	"get-network-interfaces-since",
+	"find-network-interface",
+	"find-network-interface-names",
+	"delete-network-interface",
+
 	// ── ITEMS (generic, single-step) ───────────────────────────────────────
 	// Note: ModifyItemInPlace (4 calls) uses its own sub-recorder.
 	"find-items-paged",
@@ -1311,6 +1324,31 @@ func main() {
 	_, err = c.FindMenuNames(map[string]interface{}{"name": "testmenu"})
 	warn(err)
 	err = c.DeleteMenu("test")
+	warn(err)
+
+	// ── NETWORK INTERFACES ────────────────────────────────────────────────
+	fmt.Println("=== network interfaces ===")
+	niHandle, err := c.GetNetworkInterfaceHandle("eth0@server1")
+	warn(err)
+	err = c.SaveNetworkInterface(niHandle, "bypass")
+	warn(err)
+	err = c.CopyNetworkInterface(niHandle, "eth1@server1")
+	warn(err)
+	err = c.RenameNetworkInterface("network_interface::eth1@server1", "eth2@server1")
+	warn(err)
+	_, err = c.GetNetworkInterface("eth0@server1", false, false)
+	warn(err)
+	_, err = c.GetNetworkInterfaces()
+	warn(err)
+	_, err = c.ListNetworkInterfaceNames()
+	warn(err)
+	_, err = c.GetNetworkInterfacesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
+	warn(err)
+	_, err = c.FindNetworkInterface(map[string]interface{}{"mac_address": "00:11:22:33:44:55"})
+	warn(err)
+	_, err = c.FindNetworkInterfaceNames(map[string]interface{}{"mac_address": "00:11:22:33:44:55"})
+	warn(err)
+	err = c.DeleteNetworkInterface("eth0@server1")
 	warn(err)
 
 	// ── ITEMS (generic) ───────────────────────────────────────────────────
