@@ -360,7 +360,7 @@ func (c *Client) FindImageNames(criteria map[string]interface{}) ([]string, erro
 
 // GetImageHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetImageHandle(name string) (string, error) {
-	res, err := c.Call("get_image_handle", name, c.Token)
+	res, err := c.Call("get_image_handle", name)
 	return returnString(res, err)
 }
 

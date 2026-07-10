@@ -202,7 +202,7 @@ func (c *Client) FindMenuNames(criteria map[string]interface{}) ([]string, error
 
 // GetMenuHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetMenuHandle(name string) (string, error) {
-	result, err := c.Call("get_menu_handle", name, c.Token)
+	result, err := c.Call("get_menu_handle", name)
 	if err != nil {
 		return "", err
 	}

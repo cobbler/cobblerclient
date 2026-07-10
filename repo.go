@@ -259,7 +259,7 @@ func (c *Client) RenameRepo(objectId, newName string) error {
 
 // GetRepoHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetRepoHandle(name string) (string, error) {
-	res, err := c.Call("get_repo_handle", name, c.Token)
+	res, err := c.Call("get_repo_handle", name)
 	return returnString(res, err)
 }
 

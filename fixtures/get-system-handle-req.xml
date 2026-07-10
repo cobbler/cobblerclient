@@ -7,10 +7,5 @@
                 <string>testsys</string>
             </value>
         </param>
-        <param>
-            <value>
-                <string>securetoken99</string>
-            </value>
-        </param>
     </params>
 </methodCall>

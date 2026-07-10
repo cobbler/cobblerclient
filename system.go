@@ -380,7 +380,7 @@ func (c *Client) RenameSystem(objectId, newName string) error {
 
 // GetSystemHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetSystemHandle(name string) (string, error) {
-	res, err := c.Call("get_system_handle", name, c.Token)
+	res, err := c.Call("get_system_handle", name)
 	return returnString(res, err)
 }
 

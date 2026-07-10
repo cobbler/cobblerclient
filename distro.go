@@ -336,7 +336,7 @@ func (c *Client) RenameDistro(objectId, newName string) error {
 
 // GetDistroHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetDistroHandle(name string) (string, error) {
-	res, err := c.Call("get_distro_handle", name, c.Token)
+	res, err := c.Call("get_distro_handle", name)
 	return returnString(res, err)
 }
 
