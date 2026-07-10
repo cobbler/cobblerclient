@@ -6,37 +6,7 @@
             <value>
                 <struct>
                     <member>
-                        <name>Master</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Port</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
                         <name>DistroPatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>ProfilePatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>SystemPatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>RepoPatterns</name>
                         <value>
                             <string></string>
                         </value>
@@ -48,9 +18,9 @@
                         </value>
                     </member>
                     <member>
-                        <name>Prune</name>
+                        <name>Master</name>
                         <value>
-                            <boolean>0</boolean>
+                            <string></string>
                         </value>
                     </member>
                     <member>
@@ -60,9 +30,39 @@
                         </value>
                     </member>
                     <member>
+                        <name>Port</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>ProfilePatterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>Prune</name>
+                        <value>
+                            <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>RepoPatterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
                         <name>SyncAll</name>
                         <value>
                             <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>SystemPatterns</name>
+                        <value>
+                            <string></string>
                         </value>
                     </member>
                     <member>

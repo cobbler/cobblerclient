@@ -1,8 +1,10 @@
 <?xml version='1.0'?>
 <methodResponse>
-<params>
-<param>
-<value><string>2023-01-24_075801_Replicate_ea7a003a81264039b4277ac55664661a</string></value>
-</param>
-</params>
+    <params>
+        <param>
+            <value>
+                <string>2000-01-01_000000_Replicate_00000000000000000000000000000006</string>
+            </value>
+        </param>
+    </params>
 </methodResponse>

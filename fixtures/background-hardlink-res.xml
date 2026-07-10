@@ -2,7 +2,9 @@
 <methodResponse>
     <params>
         <param>
-            <value><string>2022-09-30_203004_Hardlink_800c38f4e0424187aed6a6ffb6553ef8</string></value>
+            <value>
+                <string>2000-01-01_000000_Hardlink_00000000000000000000000000000004</string>
+            </value>
         </param>
     </params>
 </methodResponse>

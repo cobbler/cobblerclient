@@ -5,9 +5,9 @@
             <value>
                 <string>bootstate=0
 title=Loading ESXi installer
-prefix=/images/test
-kernel=kernel
-kernelopt=runweasel
+prefix=/images/testprof-distro
+kernel=vmlinuz
+kernelopt=runweasel 
 modules=$esx_modules
 build=
 updated=0

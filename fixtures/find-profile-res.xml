@@ -8,9 +8,47 @@
                         <value>
                             <struct>
                                 <member>
-                                    <name>parent</name>
+                                    <name>autoinstall</name>
+                                    <value>
+                                        <string>&lt;&lt;inherit&gt;&gt;</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>autoinstall_meta</name>
+                                    <value>
+                                        <string>&lt;&lt;inherit&gt;&gt;</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>boot_loaders</name>
+                                    <value>
+                                        <array>
+                                            <data>
+                                                <value>
+                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </data>
+                                        </array>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>children</name>
+                                    <value>
+                                        <array>
+                                            <data></data>
+                                        </array>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>comment</name>
                                     <value>
                                         <string></string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>ctime</name>
+                                    <value>
+                                        <double>0.0</double>
                                     </value>
                                 </member>
                                 <member>
@@ -20,42 +58,68 @@
                                     </value>
                                 </member>
                                 <member>
-                                    <name>children</name>
-                                    <value>
-                                        <array>
-                                            <data>
-</data>
-                                        </array>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>ctime</name>
-                                    <value>
-                                        <double>1715779419.2634635</double>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>mtime</name>
-                                    <value>
-                                        <double>1715779419.2634635</double>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>uid</name>
-                                    <value>
-                                        <string>38d836f05db24e53b0896d68f8aca59c</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>name</name>
-                                    <value>
-                                        <string>test</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>comment</name>
+                                    <name>dhcp_tag</name>
                                     <value>
                                         <string></string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>display_name</name>
+                                    <value>
+                                        <string></string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>distro</name>
+                                    <value>
+                                        <string>0000000000000000000000000000000f</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>dns</name>
+                                    <value>
+                                        <struct>
+                                            <member>
+                                                <name>name_servers</name>
+                                                <value>
+                                                    <array>
+                                                        <data></data>
+                                                    </array>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>name_servers_search</name>
+                                                <value>
+                                                    <array>
+                                                        <data></data>
+                                                    </array>
+                                                </value>
+                                            </member>
+                                        </struct>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>enable_ipxe</name>
+                                    <value>
+                                        <string>&lt;&lt;inherit&gt;&gt;</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>enable_menu</name>
+                                    <value>
+                                        <string>&lt;&lt;inherit&gt;&gt;</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>filename</name>
+                                    <value>
+                                        <string></string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>is_subobject</name>
+                                    <value>
+                                        <boolean>0</boolean>
                                     </value>
                                 </member>
                                 <member>
@@ -71,28 +135,33 @@
                                     </value>
                                 </member>
                                 <member>
-                                    <name>autoinstall_meta</name>
+                                    <name>kickstart</name>
                                     <value>
                                         <string>&lt;&lt;inherit&gt;&gt;</string>
                                     </value>
                                 </member>
                                 <member>
-                                    <name>fetchable_files</name>
+                                    <name>ks_meta</name>
                                     <value>
                                         <string>&lt;&lt;inherit&gt;&gt;</string>
                                     </value>
                                 </member>
                                 <member>
-                                    <name>boot_files</name>
+                                    <name>menu</name>
                                     <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
+                                        <string></string>
                                     </value>
                                 </member>
                                 <member>
-                                    <name>template_files</name>
+                                    <name>mtime</name>
                                     <value>
-                                        <struct>
-</struct>
+                                        <double>0.0</double>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>name</name>
+                                    <value>
+                                        <string>test</string>
                                     </value>
                                 </member>
                                 <member>
@@ -102,91 +171,7 @@
                                     </value>
                                 </member>
                                 <member>
-                                    <name>mgmt_classes</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>mgmt_parameters</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>is_subobject</name>
-                                    <value>
-                                        <boolean>0</boolean>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>autoinstall</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>boot_loaders</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>dhcp_tag</name>
-                                    <value>
-                                        <string></string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>distro</name>
-                                    <value>
-                                        <string>test</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>enable_ipxe</name>
-                                    <value>
-                                        <boolean>0</boolean>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>enable_menu</name>
-                                    <value>
-                                        <boolean>1</boolean>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>name_servers</name>
-                                    <value>
-                                        <array>
-                                            <data>
-</data>
-                                        </array>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>name_servers_search</name>
-                                    <value>
-                                        <array>
-                                            <data>
-</data>
-                                        </array>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>next_server_v4</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>next_server_v6</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>filename</name>
+                                    <name>parent</name>
                                     <value>
                                         <string></string>
                                     </value>
@@ -204,11 +189,28 @@
                                     </value>
                                 </member>
                                 <member>
+                                    <name>redhat_management_org</name>
+                                    <value>
+                                        <string>&lt;&lt;inherit&gt;&gt;</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>redhat_management_password</name>
+                                    <value>
+                                        <string>&lt;&lt;inherit&gt;&gt;</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>redhat_management_user</name>
+                                    <value>
+                                        <string>&lt;&lt;inherit&gt;&gt;</string>
+                                    </value>
+                                </member>
+                                <member>
                                     <name>repos</name>
                                     <value>
                                         <array>
-                                            <data>
-</data>
+                                            <data></data>
                                         </array>
                                     </value>
                                 </member>
@@ -219,67 +221,93 @@
                                     </value>
                                 </member>
                                 <member>
-                                    <name>menu</name>
+                                    <name>template_files</name>
                                     <value>
-                                        <string></string>
+                                        <struct></struct>
                                     </value>
                                 </member>
                                 <member>
-                                    <name>virt_auto_boot</name>
+                                    <name>tftp</name>
                                     <value>
-                                        <boolean>1</boolean>
+                                        <struct>
+                                            <member>
+                                                <name>next_server_v4</name>
+                                                <value>
+                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>next_server_v6</name>
+                                                <value>
+                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                        </struct>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>uid</name>
+                                    <value>
+                                        <string>00000000000000000000000000000015</string>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>virt</name>
+                                    <value>
+                                        <struct>
+                                            <member>
+                                                <name>auto_boot</name>
+                                                <value>
+                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>cpus</name>
+                                                <value>
+                                                    <int>2</int>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>disk_driver</name>
+                                                <value>
+                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>file_size</name>
+                                                <value>
+                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>path</name>
+                                                <value>
+                                                    <string>/var/lib/libvirt/images</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>pxe_boot</name>
+                                                <value>
+                                                    <boolean>0</boolean>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>ram</name>
+                                                <value>
+                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>type</name>
+                                                <value>
+                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                        </struct>
                                     </value>
                                 </member>
                                 <member>
                                     <name>virt_bridge</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>virt_cpus</name>
-                                    <value>
-                                        <int>1</int>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>virt_disk_driver</name>
-                                    <value>
-                                        <string>raw</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>virt_file_size</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>virt_path</name>
-                                    <value>
-                                        <string></string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>virt_ram</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>virt_type</name>
-                                    <value>
-                                        <string>xenpv</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>kickstart</name>
-                                    <value>
-                                        <string>&lt;&lt;inherit&gt;&gt;</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>ks_meta</name>
                                     <value>
                                         <string>&lt;&lt;inherit&gt;&gt;</string>
                                     </value>

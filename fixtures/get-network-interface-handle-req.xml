@@ -9,7 +9,7 @@
         </param>
         <param>
             <value>
-                <string>eth0@server1</string>
+                <string>eth0-server1</string>
             </value>
         </param>
         <param>

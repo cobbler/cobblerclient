@@ -6,19 +6,7 @@
             <value>
                 <struct>
                     <member>
-                        <name>Path</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Name</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>AvailableAs</name>
+                        <name>Arch</name>
                         <value>
                             <string></string>
                         </value>
@@ -30,13 +18,7 @@
                         </value>
                     </member>
                     <member>
-                        <name>RsyncFlags</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Arch</name>
+                        <name>AvailableAs</name>
                         <value>
                             <string></string>
                         </value>
@@ -48,7 +30,25 @@
                         </value>
                     </member>
                     <member>
+                        <name>Name</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
                         <name>OsVersion</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>Path</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>RsyncFlags</name>
                         <value>
                             <string></string>
                         </value>

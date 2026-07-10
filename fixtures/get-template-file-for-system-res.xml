@@ -2,7 +2,9 @@
 <methodResponse>
     <params>
         <param>
-            <value><string>Welcome to the system.</string></value>
+            <value>
+                <string># template path not found for specified system</string>
+            </value>
         </param>
     </params>
 </methodResponse>

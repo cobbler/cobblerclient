@@ -2,10 +2,21 @@
 <methodResponse>
     <params>
         <param>
-            <value><array><data>
-                <value><string>grub</string></value>
-                <value><string>pxelinux</string></value>
-            </data></array></value>
+            <value>
+                <array>
+                    <data>
+                        <value>
+                            <string>grub</string>
+                        </value>
+                        <value>
+                            <string>pxe</string>
+                        </value>
+                        <value>
+                            <string>ipxe</string>
+                        </value>
+                    </data>
+                </array>
+            </value>
         </param>
     </params>
 </methodResponse>

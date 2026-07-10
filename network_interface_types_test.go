@@ -19,6 +19,9 @@ package cobblerclient
 import "testing"
 
 func TestNetworkInterfaceTypeString(t *testing.T) {
+	// NetworkInterfaceType is a plain string alias (see network_interface_types.go) so that the XML-RPC codec,
+	// which picks its wire representation from reflect.Kind, sends these as <string> rather than <int> — this just
+	// pins the wire values the constants must keep sending.
 	cases := []struct {
 		input    NetworkInterfaceType
 		expected string
@@ -33,8 +36,8 @@ func TestNetworkInterfaceTypeString(t *testing.T) {
 		{NetworkInterfaceTypeInfiniband, "infiniband"},
 	}
 	for _, tc := range cases {
-		if got := tc.input.String(); got != tc.expected {
-			t.Errorf("NetworkInterfaceType(%d).String() = %q, want %q", tc.input, got, tc.expected)
+		if tc.input != tc.expected {
+			t.Errorf("NetworkInterfaceType = %q, want %q", tc.input, tc.expected)
 		}
 	}
 }

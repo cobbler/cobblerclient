@@ -3,7 +3,10 @@
     <params>
         <param>
             <value>
-                <int>0</int>
+                <string>{
+    &#34;repo_data&#34;: &#34;&#34;,
+    &#34;repos_enabled&#34;: false
+}</string>
             </value>
         </param>
     </params>

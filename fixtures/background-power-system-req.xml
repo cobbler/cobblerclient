@@ -6,6 +6,12 @@
             <value>
                 <struct>
                     <member>
+                        <name>Power</name>
+                        <value>
+                            <string>off</string>
+                        </value>
+                    </member>
+                    <member>
                         <name>Systems</name>
                         <value>
                             <array>
@@ -15,12 +21,6 @@
                                     </value>
                                 </data>
                             </array>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Power</name>
-                        <value>
-                            <string>off</string>
                         </value>
                     </member>
                 </struct>

@@ -10,7 +10,7 @@ func TestVersion(t *testing.T) {
 
 	res, err := c.Version()
 	FailOnError(t, err)
-	if res != 3.4 {
+	if res != 4.0 {
 		t.Errorf("Wrong version returned.")
 	}
 }
@@ -18,10 +18,10 @@ func TestVersion(t *testing.T) {
 func TestExtendedVersion(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "extended-version")
 	expectedResult := ExtendedVersion{
-		Gitdate:      "Mon Jun 13 16:13:33 2022 +0200",
-		Gitstamp:     "0e20f01b",
-		Builddate:    "Mon Jun 27 06:34:23 2022",
-		Version:      "4.0.0",
+		Gitdate:      "2026-07-09",
+		Gitstamp:     "g00000000000000000000000000000000b1163148",
+		Builddate:    "2026-07-09 16:13:45.942852+00:00",
+		Version:      "4.0.0a3.dev8",
 		VersionTuple: []int{4, 0, 0},
 	}
 

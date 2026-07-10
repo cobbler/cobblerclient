@@ -2,7 +2,9 @@
 <methodResponse>
     <params>
         <param>
-            <value><double>3.4</double></value>
+            <value>
+                <double>4.0</double>
+            </value>
         </param>
     </params>
 </methodResponse>

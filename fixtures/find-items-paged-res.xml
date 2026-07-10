@@ -12,9 +12,29 @@
                                     <value>
                                         <struct>
                                             <member>
-                                                <name>parent</name>
+                                                <name>autoinstall_meta</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>children</name>
+                                                <value>
+                                                    <array>
+                                                        <data></data>
+                                                    </array>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>comment</name>
                                                 <value>
                                                     <string></string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>ctime</name>
+                                                <value>
+                                                    <double>0.0</double>
                                                 </value>
                                             </member>
                                             <member>
@@ -24,21 +44,147 @@
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>ctime</name>
+                                                <name>display_name</name>
                                                 <value>
-                                                    <double>1722927169.2400115</double>
+                                                    <string></string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>is_subobject</name>
+                                                <value>
+                                                    <boolean>0</boolean>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>kernel_options</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>kernel_options_post</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>ks_meta</name>
+                                                <value>
+                                                    <struct></struct>
                                                 </value>
                                             </member>
                                             <member>
                                                 <name>mtime</name>
                                                 <value>
-                                                    <double>1722927169.2400115</double>
+                                                    <double>0.0</double>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>name</name>
+                                                <value>
+                                                    <string>grub-menu</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>owners</name>
+                                                <value>
+                                                    <array>
+                                                        <data>
+                                                            <value>
+                                                                <string>admin</string>
+                                                            </value>
+                                                        </data>
+                                                    </array>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>parent</name>
+                                                <value>
+                                                    <string></string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>template_files</name>
+                                                <value>
+                                                    <struct></struct>
                                                 </value>
                                             </member>
                                             <member>
                                                 <name>uid</name>
                                                 <value>
-                                                    <string>191d3a7a7dea425a9e0e5b8b51ddafab</string>
+                                                    <string>000000000000000000000000000000d1</string>
+                                                </value>
+                                            </member>
+                                        </struct>
+                                    </value>
+                                    <value>
+                                        <struct>
+                                            <member>
+                                                <name>autoinstall_meta</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>children</name>
+                                                <value>
+                                                    <array>
+                                                        <data></data>
+                                                    </array>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>comment</name>
+                                                <value>
+                                                    <string></string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>ctime</name>
+                                                <value>
+                                                    <double>0.0</double>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>depth</name>
+                                                <value>
+                                                    <int>0</int>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>display_name</name>
+                                                <value>
+                                                    <string></string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>is_subobject</name>
+                                                <value>
+                                                    <boolean>0</boolean>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>kernel_options</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>kernel_options_post</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>ks_meta</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>mtime</name>
+                                                <value>
+                                                    <double>0.0</double>
                                                 </value>
                                             </member>
                                             <member>
@@ -48,69 +194,33 @@
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>comment</name>
+                                                <name>owners</name>
+                                                <value>
+                                                    <array>
+                                                        <data>
+                                                            <value>
+                                                                <string>admin</string>
+                                                            </value>
+                                                        </data>
+                                                    </array>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>parent</name>
                                                 <value>
                                                     <string></string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options_post</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>autoinstall_meta</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>fetchable_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>boot_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
                                                 </value>
                                             </member>
                                             <member>
                                                 <name>template_files</name>
                                                 <value>
-                                                    <struct>
-                                                    </struct>
+                                                    <struct></struct>
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>owners</name>
+                                                <name>uid</name>
                                                 <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>is_subobject</name>
-                                                <value>
-                                                    <boolean>0</boolean>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>display_name</name>
-                                                <value>
-                                                    <string></string>
+                                                    <string>000000000000000000000000000000d2</string>
                                                 </value>
                                             </member>
                                         </struct>
@@ -118,9 +228,29 @@
                                     <value>
                                         <struct>
                                             <member>
-                                                <name>parent</name>
+                                                <name>autoinstall_meta</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>children</name>
+                                                <value>
+                                                    <array>
+                                                        <data></data>
+                                                    </array>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>comment</name>
                                                 <value>
                                                     <string></string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>ctime</name>
+                                                <value>
+                                                    <double>0.0</double>
                                                 </value>
                                             </member>
                                             <member>
@@ -130,21 +260,39 @@
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>ctime</name>
+                                                <name>display_name</name>
                                                 <value>
-                                                    <double>1722932798.1049085</double>
+                                                    <string></string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>is_subobject</name>
+                                                <value>
+                                                    <boolean>0</boolean>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>kernel_options</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>kernel_options_post</name>
+                                                <value>
+                                                    <struct></struct>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>ks_meta</name>
+                                                <value>
+                                                    <struct></struct>
                                                 </value>
                                             </member>
                                             <member>
                                                 <name>mtime</name>
                                                 <value>
-                                                    <double>1722932798.1049085</double>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>uid</name>
-                                                <value>
-                                                    <string>f42a34f1f5564de49beba9e7a8fcd58f</string>
+                                                    <double>0.0</double>
                                                 </value>
                                             </member>
                                             <member>
@@ -154,75 +302,17 @@
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>comment</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options_post</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>autoinstall_meta</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>fetchable_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>boot_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>template_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
                                                 <name>owners</name>
                                                 <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                    <array>
+                                                        <data>
+                                                            <value>
+                                                                <string>admin</string>
+                                                            </value>
+                                                        </data>
+                                                    </array>
                                                 </value>
                                             </member>
-                                            <member>
-                                                <name>is_subobject</name>
-                                                <value>
-                                                    <boolean>0</boolean>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>display_name</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                        </struct>
-                                    </value>
-                                    <value>
-                                        <struct>
                                             <member>
                                                 <name>parent</name>
                                                 <value>
@@ -230,311 +320,15 @@
                                                 </value>
                                             </member>
                                             <member>
-                                                <name>depth</name>
+                                                <name>template_files</name>
                                                 <value>
-                                                    <int>0</int>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>ctime</name>
-                                                <value>
-                                                    <double>1722932811.623434</double>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mtime</name>
-                                                <value>
-                                                    <double>1722932811.623434</double>
+                                                    <struct></struct>
                                                 </value>
                                             </member>
                                             <member>
                                                 <name>uid</name>
                                                 <value>
-                                                    <string>80c03370ae9941928f2a64346f21a6ec</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>name</name>
-                                                <value>
-                                                    <string>testmenu10</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>comment</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options_post</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>autoinstall_meta</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>fetchable_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>boot_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>template_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>owners</name>
-                                                <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>is_subobject</name>
-                                                <value>
-                                                    <boolean>0</boolean>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>display_name</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                        </struct>
-                                    </value>
-                                    <value>
-                                        <struct>
-                                            <member>
-                                                <name>parent</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>depth</name>
-                                                <value>
-                                                    <int>0</int>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>ctime</name>
-                                                <value>
-                                                    <double>1722932799.4978173</double>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mtime</name>
-                                                <value>
-                                                    <double>1722932799.4978173</double>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>uid</name>
-                                                <value>
-                                                    <string>b63f624dcc8a42b19dae51f46c01bd91</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>name</name>
-                                                <value>
-                                                    <string>testmenu2</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>comment</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options_post</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>autoinstall_meta</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>fetchable_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>boot_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>template_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>owners</name>
-                                                <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>is_subobject</name>
-                                                <value>
-                                                    <boolean>0</boolean>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>display_name</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                        </struct>
-                                    </value>
-                                    <value>
-                                        <struct>
-                                            <member>
-                                                <name>parent</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>depth</name>
-                                                <value>
-                                                    <int>0</int>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>ctime</name>
-                                                <value>
-                                                    <double>1722932801.1373043</double>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>mtime</name>
-                                                <value>
-                                                    <double>1722932801.1373043</double>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>uid</name>
-                                                <value>
-                                                    <string>14b33123dc0b4a34af3eb83ad4344f27</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>name</name>
-                                                <value>
-                                                    <string>testmenu3</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>comment</name>
-                                                <value>
-                                                    <string></string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>kernel_options_post</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>autoinstall_meta</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>fetchable_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>boot_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>template_files</name>
-                                                <value>
-                                                    <struct>
-                                                    </struct>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>owners</name>
-                                                <value>
-                                                    <string>&lt;&lt;inherit&gt;&gt;</string>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>is_subobject</name>
-                                                <value>
-                                                    <boolean>0</boolean>
-                                                </value>
-                                            </member>
-                                            <member>
-                                                <name>display_name</name>
-                                                <value>
-                                                    <string></string>
+                                                    <string>000000000000000000000000000000d3</string>
                                                 </value>
                                             </member>
                                         </struct>
@@ -548,63 +342,9 @@
                         <value>
                             <struct>
                                 <member>
-                                    <name>page</name>
-                                    <value>
-                                        <int>1</int>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>prev_page</name>
-                                    <value>
-                                        <string>~</string>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>next_page</name>
-                                    <value>
-                                        <int>2</int>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>pages</name>
-                                    <value>
-                                        <array>
-                                            <data>
-                                                <value>
-                                                    <int>1</int>
-                                                </value>
-                                                <value>
-                                                    <int>2</int>
-                                                </value>
-                                                <value>
-                                                    <int>3</int>
-                                                </value>
-                                            </data>
-                                        </array>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>num_pages</name>
-                                    <value>
-                                        <int>3</int>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>num_items</name>
-                                    <value>
-                                        <int>11</int>
-                                    </value>
-                                </member>
-                                <member>
-                                    <name>start_item</name>
-                                    <value>
-                                        <int>0</int>
-                                    </value>
-                                </member>
-                                <member>
                                     <name>end_item</name>
                                     <value>
-                                        <int>5</int>
+                                        <int>3</int>
                                     </value>
                                 </member>
                                 <member>
@@ -638,6 +378,54 @@
                                                 </value>
                                             </data>
                                         </array>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>next_page</name>
+                                    <value>
+                                        <int>-1</int>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>num_items</name>
+                                    <value>
+                                        <int>3</int>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>num_pages</name>
+                                    <value>
+                                        <int>1</int>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>page</name>
+                                    <value>
+                                        <int>1</int>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>pages</name>
+                                    <value>
+                                        <array>
+                                            <data>
+                                                <value>
+                                                    <int>1</int>
+                                                </value>
+                                            </data>
+                                        </array>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>prev_page</name>
+                                    <value>
+                                        <int>-1</int>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>start_item</name>
+                                    <value>
+                                        <int>0</int>
                                     </value>
                                 </member>
                             </struct>

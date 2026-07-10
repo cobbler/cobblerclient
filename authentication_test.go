@@ -53,7 +53,9 @@ func TestLogin(t *testing.T) {
 
 func TestLoginWithError(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "login-err")
-	expected := `Fault(1): <class 'cobbler.cexceptions.CX'>:'login failed (cobbler)'`
+	c.config.Username = "wrong"
+	c.config.Password = "wrong"
+	expected := `Fault(1): <class 'ValueError'>:login failed (wrong)`
 
 	ok, err := c.Login()
 	if ok {
@@ -84,7 +86,7 @@ func TestLoginWithOldServerVersion(t *testing.T) {
 
 func TestLogout(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "logout")
-	var expected = false
+	var expected = true
 
 	res, err := c.Logout()
 	FailOnError(t, err)
@@ -99,14 +101,14 @@ func TestTokenCheck(t *testing.T) {
 
 	res, err := c.TokenCheck("my_fake_token")
 	FailOnError(t, err)
-	if res == expected {
+	if res != expected {
 		t.Errorf(`"%t" expected; got "%t"`, expected, res)
 	}
 }
 
 func TestGetUserFromToken(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-user-from-token")
-	var expected = "testuser"
+	var expected = "cobbler"
 
 	res, err := c.GetUserFromToken("securetoken99")
 	FailOnError(t, err)

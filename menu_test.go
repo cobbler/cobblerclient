@@ -31,7 +31,7 @@ func TestGetMenus(t *testing.T) {
 	menus, err := c.GetMenus()
 	FailOnError(t, err)
 
-	if len(menus) != 1 {
+	if len(menus) != 4 {
 		t.Errorf("Wrong number of menus returned.")
 	}
 }
@@ -67,7 +67,7 @@ func TestListMenuNames(t *testing.T) {
 	menus, err := c.ListMenuNames()
 	FailOnError(t, err)
 
-	if len(menus) != 1 {
+	if len(menus) != 4 {
 		t.Errorf("Wrong number of menus returned.")
 	}
 }
@@ -77,7 +77,7 @@ func TestGetMenusSince(t *testing.T) {
 	menus, err := c.GetMenusSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
-	if len(menus) != 1 {
+	if len(menus) != 4 {
 		t.Errorf("Wrong number of menus returned.")
 	}
 }
@@ -108,19 +108,19 @@ func TestFindMenuNames(t *testing.T) {
 
 func TestSaveMenu(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-menu")
-	err := c.SaveMenu("menu::testmenu", true, true, "bypass")
+	err := c.SaveMenu("000000000000000000000000000000d2", true, true, "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyMenu(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "copy-menu")
-	err := c.CopyMenu("menu::testmenu", "testmenu2")
+	err := c.CopyMenu("000000000000000000000000000000d2", "testmenu2")
 	FailOnError(t, err)
 }
 
 func TestRenameMenu(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "rename-menu")
-	err := c.RenameMenu("menu::testmenu2", "testmenu1")
+	err := c.RenameMenu("000000000000000000000000000000d3", "testmenu1")
 	FailOnError(t, err)
 }
 
@@ -129,7 +129,7 @@ func TestGetMenuHandle(t *testing.T) {
 	res, err := c.GetMenuHandle("testmenu")
 	FailOnError(t, err)
 
-	if res != "menu::testmenu" {
+	if res != "000000000000000000000000000000d2" {
 		t.Error("Wrong object id returned.")
 	}
 }
@@ -144,11 +144,47 @@ func TestGetMenuAsRendered(t *testing.T) {
 	}
 }
 
-/*
- * NOTE: We're skipping the testing of CREATE, UPDATE, DELETE methods for now because
- *       the current implementation of the StubHTTPClient does not allow
- *       buffered mock responses so as soon as the method makes the second
- *       call to Cobbler it'll fail.
- *       This is a system test, so perhaps we can run Cobbler in a Docker container
- *       and take it from there.
- */
+func TestCreateMenu(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"create-menu-name-check",
+		"new-menu",
+		"new-menu-modify-name",
+		"new-menu-modify-comment",
+		"new-menu-modify-kernel-options",
+		"new-menu-modify-kernel-options-post",
+		"new-menu-modify-autoinstall-meta",
+		"new-menu-modify-template-files",
+		"new-menu-modify-owners",
+		"new-menu-modify-display-name",
+		"new-menu-save",
+		"new-menu-get",
+	})
+	menu := NewMenu()
+	menu.Name = "grub-menu"
+
+	result, err := c.CreateMenu(menu)
+	FailOnError(t, err)
+	if result.Name != "grub-menu" {
+		t.Errorf("Wrong menu name returned: %v", result.Name)
+	}
+}
+
+func TestUpdateMenu(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"update-menu-handle",
+		"update-menu-modify-name",
+		"update-menu-modify-comment",
+		"update-menu-modify-kernel-options",
+		"update-menu-modify-kernel-options-post",
+		"update-menu-modify-autoinstall-meta",
+		"update-menu-modify-template-files",
+		"update-menu-modify-owners",
+		"update-menu-modify-display-name",
+		"update-menu-save",
+	})
+	menu := NewMenu()
+	menu.Name = "grub-menu"
+
+	err := c.UpdateMenu(&menu)
+	FailOnError(t, err)
+}

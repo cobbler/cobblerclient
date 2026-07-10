@@ -6,7 +6,19 @@
                 <array>
                     <data>
                         <value>
-                            <string>testprofile</string>
+                            <string>test</string>
+                        </value>
+                        <value>
+                            <string>testprof</string>
+                        </value>
+                        <value>
+                            <string>centos7-x86_64</string>
+                        </value>
+                        <value>
+                            <string>Ubuntu-20.04-x86_64</string>
+                        </value>
+                        <value>
+                            <string>testprof1</string>
                         </value>
                     </data>
                 </array>

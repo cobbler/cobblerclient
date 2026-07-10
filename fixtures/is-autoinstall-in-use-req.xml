@@ -4,7 +4,7 @@
     <params>
         <param>
             <value>
-                <string></string>
+                <string>built-in-default.ks</string>
             </value>
         </param>
         <param>

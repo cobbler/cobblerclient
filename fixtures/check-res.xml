@@ -6,7 +6,28 @@
                 <array>
                     <data>
                         <value>
-                            <string>reposync not installed, install yum-utils</string>
+                            <string>The &#39;server&#39; field in /etc/cobbler/settings.yaml must be set to something other than localhost, or automatic installation features will not work.  This should be a resolvable hostname or IP for the boot server as reachable by all machines that will use it.</string>
+                        </value>
+                        <value>
+                            <string>For PXE to be functional, the &#39;next_server_v4&#39; field in /etc/cobbler/settings.yaml must be set to something other than 127.0.0.1, and should match the IP of the boot server on the PXE network.</string>
+                        </value>
+                        <value>
+                            <string>For PXE to be functional, the &#39;next_server_v6&#39; field in /etc/cobbler/settings.yaml must be set to something other than ::1, and should match the IP of the boot server on the PXE network.</string>
+                        </value>
+                        <value>
+                            <string>some network boot-loaders are missing from /var/lib/cobbler/loaders. If you only want to handle x86/x86_64 netbooting, you may ensure that you have installed a *recent* version of the syslinux package installed and can ignore this message entirely. Files in this directory, should you want to support all architectures, should include pxelinux.0, andmenu.c32.</string>
+                        </value>
+                        <value>
+                            <string>enable and start rsyncd.service with systemctl</string>
+                        </value>
+                        <value>
+                            <string>reposync is not installed, install yum-utils or dnf-plugins-core</string>
+                        </value>
+                        <value>
+                            <string>yumdownloader is not installed, install yum-utils or dnf-plugins-core</string>
+                        </value>
+                        <value>
+                            <string>The default password used by the sample templates for newly installed machines (default_password_crypted in /etc/cobbler/settings.yaml) is still set to &#39;cobbler&#39; and should be changed, try: &#34;openssl passwd -1 -salt &#39;random-phrase-here&#39; &#39;your-password-here&#39;&#34; to generate new one</string>
                         </value>
                     </data>
                 </array>

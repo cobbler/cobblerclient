@@ -6,7 +6,16 @@
                 <array>
                     <data>
                         <value>
+                            <string>test</string>
+                        </value>
+                        <value>
                             <string>testmenu</string>
+                        </value>
+                        <value>
+                            <string>grub-menu</string>
+                        </value>
+                        <value>
+                            <string>testmenu1</string>
                         </value>
                     </data>
                 </array>

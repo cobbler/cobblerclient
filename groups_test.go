@@ -24,19 +24,19 @@ import (
 func TestNewDistroGroup(t *testing.T) {
 	g := NewDistroGroup()
 	if g.Members == nil {
-		t.Error("Members should not be nil")
+		t.Error("Items should not be nil")
 	}
 }
 func TestNewProfileGroup(t *testing.T) {
 	g := NewProfileGroup()
 	if g.Members == nil {
-		t.Error("Members should not be nil")
+		t.Error("Items should not be nil")
 	}
 }
 func TestNewSystemGroup(t *testing.T) {
 	g := NewSystemGroup()
 	if g.Members == nil {
-		t.Error("Members should not be nil")
+		t.Error("Items should not be nil")
 	}
 }
 
@@ -47,8 +47,8 @@ func TestGetDistroGroup(t *testing.T) {
 	if g.Name != "webservers" {
 		t.Errorf("wrong name %q", g.Name)
 	}
-	if len(g.Members) != 2 {
-		t.Errorf("expected 2 members, got %d", len(g.Members))
+	if len(g.Members) != 1 {
+		t.Errorf("expected 1 member, got %d", len(g.Members))
 	}
 }
 
@@ -74,7 +74,7 @@ func TestGetDistroGroupHandle(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distro-group-handle")
 	handle, err := c.GetDistroGroupHandle("webservers")
 	FailOnError(t, err)
-	if handle != "distro_group::webservers" {
+	if handle != "000000000000000000000000000000d9" {
 		t.Errorf("wrong handle: %q", handle)
 	}
 }
@@ -102,19 +102,19 @@ func TestDeleteDistroGroupRecursive(t *testing.T) {
 
 func TestCopyDistroGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "copy-distro-group")
-	err := c.CopyDistroGroup("distro_group::webservers", "webservers2")
+	err := c.CopyDistroGroup("000000000000000000000000000000d9", "webservers2")
 	FailOnError(t, err)
 }
 
 func TestRenameDistroGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "rename-distro-group")
-	err := c.RenameDistroGroup("distro_group::webservers", "webservers-new")
+	err := c.RenameDistroGroup("000000000000000000000000000000da", "webservers-new")
 	FailOnError(t, err)
 }
 
 func TestSaveDistroGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-distro-group")
-	err := c.SaveDistroGroup("distro_group::webservers", true, true, "bypass")
+	err := c.SaveDistroGroup("000000000000000000000000000000d9", true, true, "bypass")
 	FailOnError(t, err)
 }
 
@@ -122,7 +122,7 @@ func TestGetProfileGroupHandle(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-profile-group-handle")
 	handle, err := c.GetProfileGroupHandle("webservers")
 	FailOnError(t, err)
-	if handle != "profile_group::webservers" {
+	if handle != "000000000000000000000000000000db" {
 		t.Errorf("wrong handle: %q", handle)
 	}
 }
@@ -150,19 +150,19 @@ func TestDeleteProfileGroupRecursive(t *testing.T) {
 
 func TestCopyProfileGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "copy-profile-group")
-	err := c.CopyProfileGroup("profile_group::webservers", "webservers2")
+	err := c.CopyProfileGroup("000000000000000000000000000000db", "webservers2")
 	FailOnError(t, err)
 }
 
 func TestRenameProfileGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "rename-profile-group")
-	err := c.RenameProfileGroup("profile_group::webservers", "webservers-new")
+	err := c.RenameProfileGroup("000000000000000000000000000000dc", "webservers-new")
 	FailOnError(t, err)
 }
 
 func TestSaveProfileGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-profile-group")
-	err := c.SaveProfileGroup("profile_group::webservers", true, true, "bypass")
+	err := c.SaveProfileGroup("000000000000000000000000000000db", true, true, "bypass")
 	FailOnError(t, err)
 }
 
@@ -170,7 +170,7 @@ func TestGetSystemGroupHandle(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-system-group-handle")
 	handle, err := c.GetSystemGroupHandle("webservers")
 	FailOnError(t, err)
-	if handle != "system_group::webservers" {
+	if handle != "000000000000000000000000000000dd" {
 		t.Errorf("wrong handle: %q", handle)
 	}
 }
@@ -198,19 +198,19 @@ func TestDeleteSystemGroupRecursive(t *testing.T) {
 
 func TestCopySystemGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "copy-system-group")
-	err := c.CopySystemGroup("system_group::webservers", "webservers2")
+	err := c.CopySystemGroup("000000000000000000000000000000dd", "webservers2")
 	FailOnError(t, err)
 }
 
 func TestRenameSystemGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "rename-system-group")
-	err := c.RenameSystemGroup("system_group::webservers", "webservers-new")
+	err := c.RenameSystemGroup("000000000000000000000000000000de", "webservers-new")
 	FailOnError(t, err)
 }
 
 func TestSaveSystemGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-system-group")
-	err := c.SaveSystemGroup("system_group::webservers", true, true, "bypass")
+	err := c.SaveSystemGroup("000000000000000000000000000000dd", true, true, "bypass")
 	FailOnError(t, err)
 }
 
@@ -278,8 +278,8 @@ func TestGetDistroGroups(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distro-groups")
 	groups, err := c.GetDistroGroups()
 	FailOnError(t, err)
-	if len(groups) != 1 {
-		t.Errorf("Expected 1 distro group, got %d.", len(groups))
+	if len(groups) != 2 {
+		t.Errorf("Expected 2 distro groups, got %d.", len(groups))
 	}
 }
 
@@ -287,8 +287,8 @@ func TestGetDistroGroupsSince(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distro-groups-since")
 	groups, err := c.GetDistroGroupsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
-	if len(groups) != 1 {
-		t.Errorf("Expected 1 distro group, got %d.", len(groups))
+	if len(groups) != 2 {
+		t.Errorf("Expected 2 distro groups, got %d.", len(groups))
 	}
 }
 
@@ -296,8 +296,8 @@ func TestGetProfileGroups(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-profile-groups")
 	groups, err := c.GetProfileGroups()
 	FailOnError(t, err)
-	if len(groups) != 1 {
-		t.Errorf("Expected 1 profile group, got %d.", len(groups))
+	if len(groups) != 2 {
+		t.Errorf("Expected 2 profile groups, got %d.", len(groups))
 	}
 }
 
@@ -305,8 +305,8 @@ func TestGetProfileGroupsSince(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-profile-groups-since")
 	groups, err := c.GetProfileGroupsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
-	if len(groups) != 1 {
-		t.Errorf("Expected 1 profile group, got %d.", len(groups))
+	if len(groups) != 2 {
+		t.Errorf("Expected 2 profile groups, got %d.", len(groups))
 	}
 }
 
@@ -314,8 +314,8 @@ func TestGetSystemGroups(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-system-groups")
 	groups, err := c.GetSystemGroups()
 	FailOnError(t, err)
-	if len(groups) != 1 {
-		t.Errorf("Expected 1 system group, got %d.", len(groups))
+	if len(groups) != 2 {
+		t.Errorf("Expected 2 system groups, got %d.", len(groups))
 	}
 }
 
@@ -323,8 +323,8 @@ func TestGetSystemGroupsSince(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-system-groups-since")
 	groups, err := c.GetSystemGroupsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
-	if len(groups) != 1 {
-		t.Errorf("Expected 1 system group, got %d.", len(groups))
+	if len(groups) != 2 {
+		t.Errorf("Expected 2 system groups, got %d.", len(groups))
 	}
 }
 

@@ -6,7 +6,16 @@
                 <array>
                     <data>
                         <value>
-                            <string>testdistro</string>
+                            <string>test</string>
+                        </value>
+                        <value>
+                            <string>testprof-distro</string>
+                        </value>
+                        <value>
+                            <string>Ubuntu-20.04-x86_64</string>
+                        </value>
+                        <value>
+                            <string>test1</string>
                         </value>
                     </data>
                 </array>

@@ -2,7 +2,9 @@
 <methodResponse>
     <params>
         <param>
-            <value><string>network_interface::eth0@server1</string></value>
+            <value>
+                <string>000000000000000000000000000000d6</string>
+            </value>
         </param>
     </params>
 </methodResponse>

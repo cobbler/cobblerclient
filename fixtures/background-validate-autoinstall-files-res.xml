@@ -2,7 +2,9 @@
 <methodResponse>
     <params>
         <param>
-            <value><string>2022-09-30_203505_Automated installation files validation_487b1a5d1d914c62834126391ac2b601</string></value>
+            <value>
+                <string>2000-01-01_000000_Automated installation files validation_00000000000000000000000000000005</string>
+            </value>
         </param>
     </params>
 </methodResponse>

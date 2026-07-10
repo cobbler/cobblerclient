@@ -1,4 +1,10 @@
-<?xml version="1.0"?>
+<?xml version='1.0'?>
 <methodResponse>
-  <params><param><value><string>___NEW___template::test123==</string></value></param></params>
+    <params>
+        <param>
+            <value>
+                <string>0000000000000000000000000000001f</string>
+            </value>
+        </param>
+    </params>
 </methodResponse>

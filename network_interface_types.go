@@ -16,42 +16,24 @@ limitations under the License.
 
 package cobblerclient
 
-// NetworkInterfaceType enumerates the kinds of interface configurations
-// supported by Cobbler. Mirrors cobbler.enums.NetworkInterfaceType.
-type NetworkInterfaceType int
+// NetworkInterfaceType enumerates the kinds of interface configurations supported by Cobbler. Mirrors
+// cobbler.enums.NetworkInterfaceType. This is a plain string (not a Go int-backed enum) because the XML-RPC codec
+// (kolo/xmlrpc) picks the wire representation purely from reflect.Kind — an int-kind type is always encoded as
+// <int>, which cobbler/items/network_interface.py's interface_type setter rejects (it only accepts a string name
+// or an enum instance, never a raw int). Every other Cobbler enum-like field in this client (VirtType, PowerType,
+// ...) is a plain string for the same reason.
+type NetworkInterfaceType = string
 
 const (
-	NetworkInterfaceTypeNA NetworkInterfaceType = iota
-	NetworkInterfaceTypeBond
-	NetworkInterfaceTypeBondSlave
-	NetworkInterfaceTypeBridge
-	NetworkInterfaceTypeBridgeSlave
-	NetworkInterfaceTypeBondedBridgeSlave
-	NetworkInterfaceTypeBmc
-	NetworkInterfaceTypeInfiniband
+	NetworkInterfaceTypeNA                = "na"
+	NetworkInterfaceTypeBond              = "bond"
+	NetworkInterfaceTypeBondSlave         = "bond_slave"
+	NetworkInterfaceTypeBridge            = "bridge"
+	NetworkInterfaceTypeBridgeSlave       = "bridge_slave"
+	NetworkInterfaceTypeBondedBridgeSlave = "bonded_bridge_slave"
+	NetworkInterfaceTypeBmc               = "bmc"
+	NetworkInterfaceTypeInfiniband        = "infiniband"
 )
-
-func (t NetworkInterfaceType) String() string {
-	switch t {
-	case NetworkInterfaceTypeNA:
-		return "na"
-	case NetworkInterfaceTypeBond:
-		return "bond"
-	case NetworkInterfaceTypeBondSlave:
-		return "bond_slave"
-	case NetworkInterfaceTypeBridge:
-		return "bridge"
-	case NetworkInterfaceTypeBridgeSlave:
-		return "bridge_slave"
-	case NetworkInterfaceTypeBondedBridgeSlave:
-		return "bonded_bridge_slave"
-	case NetworkInterfaceTypeBmc:
-		return "bmc"
-	case NetworkInterfaceTypeInfiniband:
-		return "infiniband"
-	}
-	return "na"
-}
 
 // IPv4Option models the per-interface IPv4 configuration. There is no
 // "gateway" field here — the real field is NetworkInterface.IfGateway

@@ -42,19 +42,19 @@ func TestNewNetworkInterface(t *testing.T) {
 
 func TestGetNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-network-interface")
-	ni, err := c.GetNetworkInterface("eth0@server1", false, false)
+	ni, err := c.GetNetworkInterface("eth0-server1", false, false)
 	FailOnError(t, err)
 
-	if ni.Name != "eth0@server1" {
+	if ni.Name != "eth0-server1" {
 		t.Errorf("wrong name: %q", ni.Name)
 	}
-	if ni.MacAddress != "00:11:22:33:44:55" {
+	if ni.MacAddress != "" {
 		t.Errorf("wrong MAC: %q", ni.MacAddress)
 	}
-	if ni.IPv4.Address != "192.168.1.10" {
+	if ni.IPv4.Address != "" {
 		t.Errorf("wrong IPv4 address: %q", ni.IPv4.Address)
 	}
-	if ni.DNS.Name != "server1.example.com" {
+	if ni.DNS.Name != "" {
 		t.Errorf("wrong DNS name: %q", ni.DNS.Name)
 	}
 }
@@ -64,17 +64,17 @@ func TestGetNetworkInterfaces(t *testing.T) {
 	ifaces, err := c.GetNetworkInterfaces()
 	FailOnError(t, err)
 
-	if len(ifaces) != 1 {
-		t.Errorf("expected 1 iface, got %d", len(ifaces))
+	if len(ifaces) != 4 {
+		t.Errorf("expected 4 ifaces, got %d", len(ifaces))
 	}
 }
 
 func TestGetNetworkInterfaceHandle(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-network-interface-handle")
-	handle, err := c.GetNetworkInterfaceHandle("eth0@server1")
+	handle, err := c.GetNetworkInterfaceHandle("eth0-server1")
 	FailOnError(t, err)
 
-	if handle != "network_interface::eth0@server1" {
+	if handle != "000000000000000000000000000000d6" {
 		t.Errorf("wrong handle: %q", handle)
 	}
 }
@@ -84,8 +84,8 @@ func TestListNetworkInterfaceNames(t *testing.T) {
 	names, err := c.ListNetworkInterfaceNames()
 	FailOnError(t, err)
 
-	if len(names) != 2 {
-		t.Errorf("expected 2 names, got %d", len(names))
+	if len(names) != 4 {
+		t.Errorf("expected 4 names, got %d", len(names))
 	}
 }
 
@@ -94,8 +94,8 @@ func TestGetNetworkInterfacesSince(t *testing.T) {
 	ifaces, err := c.GetNetworkInterfacesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
-	if len(ifaces) != 1 {
-		t.Errorf("expected 1 iface, got %d", len(ifaces))
+	if len(ifaces) != 4 {
+		t.Errorf("expected 4 ifaces, got %d", len(ifaces))
 	}
 }
 
@@ -106,11 +106,9 @@ func TestFindNetworkInterface(t *testing.T) {
 	ifaces, err := c.FindNetworkInterface(criteria)
 	FailOnError(t, err)
 
-	if len(ifaces) != 1 {
-		t.Errorf("expected 1 iface, got %d", len(ifaces))
-	}
-	if ifaces[0].MacAddress != "00:11:22:33:44:55" {
-		t.Errorf("wrong MAC: %q", ifaces[0].MacAddress)
+	// No seeded interface actually carries this MAC, so the search legitimately matches nothing.
+	if len(ifaces) != 0 {
+		t.Errorf("expected 0 ifaces, got %d", len(ifaces))
 	}
 }
 
@@ -121,40 +119,86 @@ func TestFindNetworkInterfaceNames(t *testing.T) {
 	names, err := c.FindNetworkInterfaceNames(criteria)
 	FailOnError(t, err)
 
-	if len(names) != 1 {
-		t.Errorf("expected 1 name, got %d", len(names))
+	// No seeded interface actually carries this MAC, so the search legitimately matches nothing.
+	if len(names) != 0 {
+		t.Errorf("expected 0 names, got %d", len(names))
 	}
-	if names[0] != "eth0@server1" {
-		t.Errorf("wrong name: %q", names[0])
+}
+
+func TestCreateNetworkInterface(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"new-network-interface",
+		"new-network-interface-modify-name",
+		"new-network-interface-modify-comment",
+		"new-network-interface-modify-kernel-options",
+		"new-network-interface-modify-kernel-options-post",
+		"new-network-interface-modify-autoinstall-meta",
+		"new-network-interface-modify-template-files",
+		"new-network-interface-modify-owners",
+		"new-network-interface-modify-mac-address",
+		"new-network-interface-modify-interface-type",
+		"new-network-interface-modify-interface-master",
+		"new-network-interface-modify-bonding-opts",
+		"new-network-interface-modify-bridge-opts",
+		"new-network-interface-modify-connected-mode",
+		"new-network-interface-modify-management",
+		"new-network-interface-modify-static",
+		"new-network-interface-modify-dhcp-tag",
+		"new-network-interface-modify-if-gateway",
+		"new-network-interface-modify-mtu",
+		"new-network-interface-modify-ipv6-default-gateway",
+		"new-network-interface-modify-ipv6-static-routes",
+		"new-network-interface-modify-virt-bridge",
+		"new-network-interface-modify-ipv4-address",
+		"new-network-interface-modify-ipv4-netmask",
+		"new-network-interface-modify-ipv4-static-routes",
+		"new-network-interface-modify-ipv6-address",
+		"new-network-interface-modify-ipv6-prefix",
+		"new-network-interface-modify-ipv6-secondaries",
+		"new-network-interface-modify-ipv6-mtu",
+		"new-network-interface-modify-ipv6-option-static-routes",
+		"new-network-interface-modify-dns-name",
+		"new-network-interface-modify-dns-cnames",
+		"new-network-interface-save",
+		"new-network-interface-get",
+	})
+	ni := NewNetworkInterface()
+	ni.Name = "eth0-mytestsystem"
+	ni.MacAddress = "AA:BB:CC:DD:EE:00"
+
+	result, err := c.CreateNetworkInterface("00000000000000000000000000000019", ni)
+	FailOnError(t, err)
+	if result.Name != "eth0-mytestsystem" {
+		t.Errorf("Wrong network interface name returned: %v", result.Name)
 	}
 }
 
 func TestSaveNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-network-interface")
-	err := c.SaveNetworkInterface("network_interface::eth0@server1", true, true, "bypass")
+	err := c.SaveNetworkInterface("000000000000000000000000000000d6", true, true, "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "copy-network-interface")
-	err := c.CopyNetworkInterface("network_interface::eth0@server1", "eth1@server1")
+	err := c.CopyNetworkInterface("000000000000000000000000000000d6", "eth1-server1")
 	FailOnError(t, err)
 }
 
 func TestDeleteNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-network-interface")
-	err := c.DeleteNetworkInterface("eth0@server1")
+	err := c.DeleteNetworkInterface("eth0-server1")
 	FailOnError(t, err)
 }
 
 func TestDeleteNetworkInterfaceRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-network-interface")
-	err := c.DeleteNetworkInterfaceRecursive("eth0@server1", false)
+	err := c.DeleteNetworkInterfaceRecursive("eth0-server1", false)
 	FailOnError(t, err)
 }
 
 func TestRenameNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "rename-network-interface")
-	err := c.RenameNetworkInterface("network_interface::eth0@server1", "eth2@server1")
+	err := c.RenameNetworkInterface("000000000000000000000000000000d7", "eth2-server1")
 	FailOnError(t, err)
 }

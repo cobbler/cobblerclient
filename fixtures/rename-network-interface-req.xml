@@ -4,12 +4,12 @@
     <params>
         <param>
             <value>
-                <string>network_interface::eth0@server1</string>
+                <string>000000000000000000000000000000d7</string>
             </value>
         </param>
         <param>
             <value>
-                <string>eth2@server1</string>
+                <string>eth2-server1</string>
             </value>
         </param>
         <param>

@@ -31,7 +31,7 @@ func TestGetImages(t *testing.T) {
 	images, err := c.GetImages()
 	FailOnError(t, err)
 
-	if len(images) != 1 {
+	if len(images) != 3 {
 		t.Errorf("Wrong number of images returned.")
 	}
 }
@@ -67,7 +67,7 @@ func TestListImageNames(t *testing.T) {
 	images, err := c.ListImageNames()
 	FailOnError(t, err)
 
-	if len(images) != 1 {
+	if len(images) != 3 {
 		t.Errorf("Wrong number of images returned.")
 	}
 }
@@ -77,7 +77,7 @@ func TestGetImagesSince(t *testing.T) {
 	images, err := c.GetImagesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
-	if len(images) != 1 {
+	if len(images) != 3 {
 		t.Errorf("Wrong number of images returned.")
 	}
 }
@@ -108,19 +108,19 @@ func TestFindImageNames(t *testing.T) {
 
 func TestSaveImage(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-image")
-	err := c.SaveImage("image::testimage", true, true, "bypass")
+	err := c.SaveImage("000000000000000000000000000000ce", true, true, "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyImage(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "copy-image")
-	err := c.CopyImage("image::testimage", "testimage2")
+	err := c.CopyImage("000000000000000000000000000000ce", "testimage2")
 	FailOnError(t, err)
 }
 
 func TestRenameImage(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "rename-image")
-	err := c.RenameImage("image::testimage2", "testimage1")
+	err := c.RenameImage("000000000000000000000000000000cf", "testimage1")
 	FailOnError(t, err)
 }
 
@@ -129,16 +129,89 @@ func TestGetImageHandle(t *testing.T) {
 	res, err := c.GetImageHandle("testimage")
 	FailOnError(t, err)
 
-	if res != "image::testimage" {
+	if res != "000000000000000000000000000000ce" {
 		t.Error("Wrong object id returned.")
 	}
 }
 
-/*
- * NOTE: We're skipping the testing of CREATE, UPDATE, DELETE methods for now because
- *       the current implementation of the StubHTTPClient does not allow
- *       buffered mock responses so as soon as the method makes the second
- *       call to Cobbler it'll fail.
- *       This is a system test, so perhaps we can run Cobbler in a Docker container
- *       and take it from there.
- */
+func TestCreateImage(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"new-image",
+		"new-image-modify-name",
+		"new-image-modify-comment",
+		"new-image-modify-kernel-options",
+		"new-image-modify-kernel-options-post",
+		"new-image-modify-autoinstall-meta",
+		"new-image-modify-template-files",
+		"new-image-modify-owners",
+		"new-image-modify-arch",
+		"new-image-modify-autoinstall",
+		"new-image-modify-breed",
+		"new-image-modify-file",
+		"new-image-modify-image-type",
+		"new-image-modify-network-count",
+		"new-image-modify-os-version",
+		"new-image-modify-boot-loaders",
+		"new-image-modify-menu",
+		"new-image-modify-virt-auto-boot",
+		"new-image-modify-virt-cpus",
+		"new-image-modify-virt-disk-driver",
+		"new-image-modify-virt-file-size",
+		"new-image-modify-virt-path",
+		"new-image-modify-virt-pxe-boot",
+		"new-image-modify-virt-ram",
+		"new-image-modify-virt-type",
+		"new-image-modify-virt-bridge",
+		"new-image-save",
+		"new-image-get",
+	})
+	image := NewImage()
+	image.Name = "testimage"
+	image.Virt.Path = "/var/lib/libvirt/images"
+	image.Virt.Cpus = Value[int]{Data: 2}
+
+	result, err := c.CreateImage(image)
+	FailOnError(t, err)
+	if result.Name != "testimage" {
+		t.Errorf("Wrong image name returned: %v", result.Name)
+	}
+}
+
+func TestUpdateImage(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"update-image-handle",
+		"update-image-modify-name",
+		"update-image-modify-comment",
+		"update-image-modify-kernel-options",
+		"update-image-modify-kernel-options-post",
+		"update-image-modify-autoinstall-meta",
+		"update-image-modify-template-files",
+		"update-image-modify-owners",
+		"update-image-modify-arch",
+		"update-image-modify-autoinstall",
+		"update-image-modify-breed",
+		"update-image-modify-file",
+		"update-image-modify-image-type",
+		"update-image-modify-network-count",
+		"update-image-modify-os-version",
+		"update-image-modify-boot-loaders",
+		"update-image-modify-menu",
+		"update-image-modify-virt-auto-boot",
+		"update-image-modify-virt-cpus",
+		"update-image-modify-virt-disk-driver",
+		"update-image-modify-virt-file-size",
+		"update-image-modify-virt-path",
+		"update-image-modify-virt-pxe-boot",
+		"update-image-modify-virt-ram",
+		"update-image-modify-virt-type",
+		"update-image-modify-virt-bridge",
+		"update-image-save",
+	})
+	image := NewImage()
+	image.Name = "testimage"
+	image.Virt.Path = "/var/lib/libvirt/images"
+	image.Virt.Cpus = Value[int]{Data: 2}
+
+	err := c.UpdateImage(&image)
+	FailOnError(t, err)
+}

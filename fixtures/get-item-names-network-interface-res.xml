@@ -6,10 +6,16 @@
                 <array>
                     <data>
                         <value>
-                            <string>eth0@server1</string>
+                            <string>eth0-server1</string>
                         </value>
                         <value>
-                            <string>eth1@server1</string>
+                            <string>default</string>
+                        </value>
+                        <value>
+                            <string>eth0-mytestsystem</string>
+                        </value>
+                        <value>
+                            <string>eth2-server1</string>
                         </value>
                     </data>
                 </array>

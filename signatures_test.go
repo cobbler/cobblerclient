@@ -65,7 +65,7 @@ func TestBackgroundSignatureUpdate(t *testing.T) {
 
 	res, err := c.BackgroundSignatureUpdate()
 	FailOnError(t, err)
-	if res != "2022-09-30_195846_Updating Signatures_6c5300d51c224984b4319fb536cc21d0" {
+	if res != "2000-01-01_000000_Updating Signatures_0000000000000000000000000000000c" {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }

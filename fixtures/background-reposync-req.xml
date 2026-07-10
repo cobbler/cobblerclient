@@ -6,11 +6,9 @@
             <value>
                 <struct>
                     <member>
-                        <name>Repos</name>
+                        <name>Nofail</name>
                         <value>
-                            <array>
-                                <data></data>
-                            </array>
+                            <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
@@ -20,9 +18,11 @@
                         </value>
                     </member>
                     <member>
-                        <name>Nofail</name>
+                        <name>Repos</name>
                         <value>
-                            <boolean>0</boolean>
+                            <array>
+                                <data></data>
+                            </array>
                         </value>
                     </member>
                     <member>

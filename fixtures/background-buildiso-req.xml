@@ -6,25 +6,9 @@
             <value>
                 <struct>
                     <member>
-                        <name>Iso</name>
+                        <name>Airgapped</name>
                         <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Profiles</name>
-                        <value>
-                            <array>
-                                <data></data>
-                            </array>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Systems</name>
-                        <value>
-                            <array>
-                                <data></data>
-                            </array>
+                            <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
@@ -40,15 +24,23 @@
                         </value>
                     </member>
                     <member>
-                        <name>Standalone</name>
+                        <name>ExcludeDns</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>Airgapped</name>
+                        <name>Iso</name>
                         <value>
-                            <boolean>0</boolean>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>Profiles</name>
+                        <value>
+                            <array>
+                                <data></data>
+                            </array>
                         </value>
                     </member>
                     <member>
@@ -58,9 +50,17 @@
                         </value>
                     </member>
                     <member>
-                        <name>ExcludeDns</name>
+                        <name>Standalone</name>
                         <value>
                             <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>Systems</name>
+                        <value>
+                            <array>
+                                <data></data>
+                            </array>
                         </value>
                     </member>
                     <member>

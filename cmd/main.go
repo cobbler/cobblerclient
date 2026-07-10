@@ -1,13 +1,29 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: Copyright SUSE LLC
 
-// Run this program against a live Cobbler server to refresh all XML-RPC fixture files under ../fixtures/. The session
-// token is normalised to "securetoken99" in every saved file.
+// Run this program against a live Cobbler server to refresh all XML-RPC fixture files under ../fixtures/. To keep
+// re-recordings byte-identical, every saved file is normalised: the session token becomes "securetoken99", any
+// epoch-timestamp double (ctime/mtime/event timestamps) becomes 0.0, any "YYYY-MM-DD_HHMMSS_" event-id timestamp
+// prefix becomes a fixed constant, every 32-char lowercase hex id (uid, system_uid, and similar references) is
+// replaced with a deterministic placeholder assigned in order of first appearance, and every <struct>'s <member>
+// elements are sorted by name (Go's XML-RPC library builds struct members from map[string]interface{}, whose key
+// order Go randomizes on every iteration — see sortStructMembers).
+//
+// Known residual, non-deterministic fixtures this does NOT fully stabilise (unrelated to the above): get-event-log
+// (a raw per-task log with real timestamps/thread names/durations and possible concurrent-task interleaving),
+// get-random-mac (the call is intentionally random), and any fixture touching Template.tags (a Python set, whose
+// iteration order Cobbler's server randomizes per process — cobbler/items/template.py).
 //
 // Usage: go run ./cmd/
 //
-// Prerequisites: the Cobbler server must be set up with specific test data (distros, profiles, systems, repos, images,
-// menus) matching the names and values used in the *_test.go files.
+// Prerequisites:
+//   - The Cobbler server's collections must be empty before each run (this tool creates all the baseline test data
+//     it needs itself, via seedBaselineData and the per-item-type create blocks below):
+//     docker exec cobbler-dev bash -c "shopt -s globstar; rm -f /var/lib/cobbler/collections/**/*.json && supervisorctl restart cobblerd"
+//   - A real (can be empty) file must exist on the server for the Template create/update flow to point its
+//     uri.path at (cobbler/items/template.py requires a template's autoinstall path to already exist as a file —
+//     it never creates one):
+//     docker exec cobbler-dev touch /var/lib/cobbler/templates/testtemplate.template
 package main
 
 import (
@@ -17,6 +33,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -33,10 +51,34 @@ type RecordingHTTPClient struct {
 	realToken string
 	names     []string
 	idx       int
+	ids       *idRemapper
 }
 
-func newRecordingHTTPClient(names []string) *RecordingHTTPClient {
-	return &RecordingHTTPClient{inner: http.DefaultClient, names: names}
+func newRecordingHTTPClient(names []string, ids *idRemapper) *RecordingHTTPClient {
+	return &RecordingHTTPClient{inner: http.DefaultClient, names: names, ids: ids}
+}
+
+// idRemapper assigns each distinct 32-char lowercase hex id (uid, system_uid, and similar references, as well as
+// the uuid segment of event/task ids) a deterministic placeholder the first time it's seen, and reuses that mapping
+// on every subsequent occurrence. Shared across the main recorder and all sub-recorders (see makeSubClient) so that
+// a value recorded by one and echoed back through another still maps to the same placeholder.
+type idRemapper struct {
+	seen  map[string]string
+	count int
+}
+
+func newIDRemapper() *idRemapper {
+	return &idRemapper{seen: make(map[string]string)}
+}
+
+func (m *idRemapper) sub(real string) string {
+	if placeholder, ok := m.seen[real]; ok {
+		return placeholder
+	}
+	placeholder := fmt.Sprintf("%032x", m.count)
+	m.count++
+	m.seen[real] = placeholder
+	return placeholder
 }
 
 // RealToken returns the live session token used for normalisation.
@@ -54,7 +96,7 @@ func (r *RecordingHTTPClient) Post(uri, bodyType string, req io.Reader) (*http.R
 	name := r.names[r.idx]
 	r.idx++
 
-	saveFixture(name+"-req.xml", prettyXML(normalize(body, r.realToken)))
+	saveFixture(name+"-req.xml", prettyXML(normalize(body, r.realToken, r.ids)))
 
 	resp, err := r.inner.Post(uri, bodyType, bytes.NewReader(body))
 	if err != nil {
@@ -66,7 +108,7 @@ func (r *RecordingHTTPClient) Post(uri, bodyType string, req io.Reader) (*http.R
 		return nil, fmt.Errorf("recorder: reading response: %w", err)
 	}
 
-	saveFixture(name+"-res.xml", prettyXML(normalize(respBody, r.realToken)))
+	saveFixture(name+"-res.xml", prettyXML(normalize(respBody, r.realToken, r.ids)))
 
 	// Return unmodified response so the Go client can use the real token.
 	resp.Body = io.NopCloser(bytes.NewReader(respBody))
@@ -87,19 +129,134 @@ func (r *RecordingHTTPClient) SetRealToken(token string) {
 			if err != nil || !bytes.Contains(data, []byte(token)) {
 				continue
 			}
-			saveFixture(r.names[i]+suffix, prettyXML(normalize(data, token)))
+			saveFixture(r.names[i]+suffix, prettyXML(normalize(data, token, r.ids)))
 		}
 	}
 }
 
-func normalize(data []byte, token string) []byte {
-	if token == "" {
-		return data
+var (
+	// epochDoubleRe matches an XML-RPC <double> holding a Unix epoch timestamp (ctime, mtime, or an event's
+	// state-time), recognised by its 10-digit integer part. No other <double> value in the fixture corpus falls in
+	// this range.
+	epochDoubleRe = regexp.MustCompile(`<double>1\d{9}(\.\d+)?</double>`)
+	// eventTimestampPrefixRe matches the "YYYY-MM-DD_HHMMSS_" prefix Cobbler embeds in every event/task id
+	// (CobblerEvent.__generate_event_id), wherever it occurs — as an XML-RPC string value or as a struct member name.
+	eventTimestampPrefixRe = regexp.MustCompile(`\d{4}-\d{2}-\d{2}_\d{6}_`)
+	// hexIDRe matches a uuid4-hex id (uid, system_uid, and similar uid-valued references, plus the uuid segment of
+	// event/task ids), wherever it occurs — as a struct member value or a positional method-call parameter.
+	hexIDRe = regexp.MustCompile(`[0-9a-f]{32}`)
+)
+
+// normalize replaces every source of run-to-run drift in a recorded XML-RPC payload with a deterministic
+// placeholder: the live session token, epoch timestamps (ctime/mtime/event state-time), the timestamp prefix of
+// event/task ids, and uuid4-hex ids (uid, system_uid, and similar references). ids must be shared across every
+// recorder that can see the same underlying value (see makeSubClient) so a value recorded by one and echoed back
+// through another still maps to the same placeholder.
+func normalize(data []byte, token string, ids *idRemapper) []byte {
+	if token != "" {
+		data = bytes.ReplaceAll(data, []byte(token), []byte("securetoken99"))
 	}
-	return bytes.ReplaceAll(data, []byte(token), []byte("securetoken99"))
+	data = epochDoubleRe.ReplaceAll(data, []byte("<double>0.0</double>"))
+	data = eventTimestampPrefixRe.ReplaceAll(data, []byte("2000-01-01_000000_"))
+	data = hexIDRe.ReplaceAllFunc(data, func(match []byte) []byte {
+		return []byte(ids.sub(string(match)))
+	})
+	return data
 }
 
-// prettyXML reformats XML with 4-space indentation, preserving the original XML declaration.
+// xmlNode is a minimal generic XML tree, used only to canonicalize <struct> member order (see sortStructMembers)
+// before re-serializing. Go's XML-RPC client library (kolo/xmlrpc) builds <struct> elements from map[string]interface{}
+// values, whose key order Go deliberately randomizes on every iteration — so requests built from a multi-key map
+// (e.g. register_new_system) otherwise vary byte-for-byte between recorder runs even though member order is not
+// semantically significant (cobblerclient's own test harness already sorts struct members before comparing request
+// fixtures against what the client actually sends, for exactly this reason — see sortStruct in testing.go).
+type xmlNode struct {
+	xml.StartElement
+	children []*xmlNode
+	text     string
+}
+
+func parseXMLTree(dec *xml.Decoder) (*xmlNode, error) {
+	for {
+		tok, err := dec.Token()
+		if err != nil {
+			return nil, err
+		}
+		if start, ok := tok.(xml.StartElement); ok {
+			return buildXMLNode(dec, start.Copy())
+		}
+	}
+}
+
+func buildXMLNode(dec *xml.Decoder, start xml.StartElement) (*xmlNode, error) {
+	n := &xmlNode{StartElement: start}
+	for {
+		tok, err := dec.Token()
+		if err != nil {
+			return nil, err
+		}
+		switch t := tok.(type) {
+		case xml.StartElement:
+			child, err := buildXMLNode(dec, t.Copy())
+			if err != nil {
+				return nil, err
+			}
+			n.children = append(n.children, child)
+		case xml.EndElement:
+			return n, nil
+		case xml.CharData:
+			// Skip whitespace-only text nodes; the encoder adds its own indentation. This also matters when
+			// re-normalizing an already pretty-printed fixture (see SetRealToken), whose indentation would
+			// otherwise show up here as text content.
+			if len(bytes.TrimSpace(t)) > 0 {
+				n.text += string(t)
+			}
+		}
+	}
+}
+
+// sortStructMembers recursively sorts the <member> children of every <struct> element by their <name> child's text,
+// mirroring testing.go's sortStruct so that struct-member order is canonicalized the same way the test harness
+// already treats it: insignificant.
+func sortStructMembers(n *xmlNode) {
+	for _, c := range n.children {
+		sortStructMembers(c)
+	}
+	if n.Name.Local == "struct" {
+		sort.SliceStable(n.children, func(i, j int) bool {
+			return memberName(n.children[i]) < memberName(n.children[j])
+		})
+	}
+}
+
+func memberName(member *xmlNode) string {
+	for _, c := range member.children {
+		if c.Name.Local == "name" {
+			return c.text
+		}
+	}
+	return ""
+}
+
+func encodeXMLNode(e *xml.Encoder, n *xmlNode) error {
+	if err := e.EncodeToken(n.StartElement); err != nil {
+		return err
+	}
+	if len(n.children) == 0 && n.text != "" {
+		if err := e.EncodeToken(xml.CharData(n.text)); err != nil {
+			return err
+		}
+	}
+	for _, c := range n.children {
+		if err := encodeXMLNode(e, c); err != nil {
+			return err
+		}
+	}
+	return e.EncodeToken(n.StartElement.End())
+}
+
+// prettyXML reformats XML with 4-space indentation, preserving the original XML declaration, and canonicalizes
+// <struct> member order (see sortStructMembers).
 func prettyXML(data []byte) []byte {
 	s := strings.TrimSpace(string(data))
 
@@ -112,26 +269,17 @@ func prettyXML(data []byte) []byte {
 		}
 	}
 
+	root, err := parseXMLTree(xml.NewDecoder(strings.NewReader(body)))
+	if err != nil {
+		return data // fallback: return original bytes
+	}
+	sortStructMembers(root)
+
 	var enc bytes.Buffer
 	e := xml.NewEncoder(&enc)
 	e.Indent("", "    ")
-	dec := xml.NewDecoder(strings.NewReader(body))
-	for {
-		tok, err := dec.Token()
-		if err != nil {
-			break
-		}
-		// Skip any nested ProcInst (shouldn't appear in the body, but guard anyway).
-		if _, ok := tok.(xml.ProcInst); ok {
-			continue
-		}
-		// Skip whitespace-only text nodes; the encoder adds its own indentation.
-		if cd, ok := tok.(xml.CharData); ok && len(bytes.TrimSpace(cd)) == 0 {
-			continue
-		}
-		if err2 := e.EncodeToken(tok); err2 != nil {
-			return data // fallback: return original bytes
-		}
+	if err := encodeXMLNode(e, root); err != nil {
+		return data // fallback: return original bytes
 	}
 	if err := e.Flush(); err != nil {
 		return data
@@ -163,6 +311,19 @@ var config = cobbler.ClientConfig{
 	Username: "cobbler",
 	Password: "cobbler",
 }
+
+// Paths that exist on the cobbler-dev container's filesystem, used to satisfy Cobbler's requirement that a distro's
+// kernel (and, for realism, initrd) resolve to a real file. Cobbler's own system-tests ship these as empty
+// placeholder files precisely for this purpose.
+const (
+	fakeKernel   = "/code/system-tests/images/fake/vmlinuz"
+	fakeInitrd   = "/code/system-tests/images/fake/initramfs"
+	fakeVirtPath = "/var/lib/libvirt/images"
+	// fakeVirtCpus is required alongside fakeVirtPath: cobbler/settings has no default_virt_cpus fallback (unlike
+	// default_virt_ram/type/bridge/disk_driver/file_size), so any profile/image without a parent to inherit from
+	// must set virt.cpus to a concrete value or every subsequent read raises AttributeError trying to resolve it.
+	fakeVirtCpus = 2
+)
 
 // fixtureSequence lists every fixture name in the exact order that the corresponding HTTP calls are made by main().
 // Each entry maps 1-to-1 to one XML-RPC POST. Per item type, calls are ordered Create, Update, Save, Copy, Rename,
@@ -451,7 +612,7 @@ func (s *silentHTTPClient) Post(uri, bodyType string, req io.Reader) (*http.Resp
 // makeSubClient creates an isolated recording client for a multi-step operation. Failures in the operation only corrupt
 // that operation's own fixture slots, not the main recorder's sequence.
 func makeSubClient(names []string, mainRec *RecordingHTTPClient, token string, version cobbler.CobblerVersion) (cobbler.Client, *RecordingHTTPClient) {
-	sub := newRecordingHTTPClient(names)
+	sub := newRecordingHTTPClient(names, mainRec.ids)
 	sub.SetRealToken(mainRec.RealToken())
 	c := cobbler.NewClient(sub, config)
 	c.Token = token
@@ -459,10 +620,130 @@ func makeSubClient(names []string, mainRec *RecordingHTTPClient, token string, v
 	return c, sub
 }
 
+// newSilentClient returns a client that talks to the real server without recording any fixtures. Used for lookups
+// and setup calls that must not consume a slot in the main recorder's fixed sequence — e.g. resolving the real
+// object id a Copy* call produced before it can be passed to Rename*, which (like modify_item and friends) requires
+// a genuine uid rather than a "type::name" string.
+func newSilentClient(token string, version cobbler.CobblerVersion) cobbler.Client {
+	cl := cobbler.NewClient(&silentHTTPClient{}, config)
+	cl.Token = token
+	cl.CachedVersion = version
+	return cl
+}
+
+// seedBaselineData creates the baseline distros/profiles/systems/repos/menus/images/network interfaces that the
+// fixture calls below reference by a hard-coded name (e.g. "test", "testprof", "testsys", "centos7-x86_64") but
+// never create themselves — mirroring the server-side test data the *_test.go fixtures assume already exists.
+// Uses the silent client so no fixture slots are consumed.
+func seedBaselineData(token string, version cobbler.CobblerVersion) {
+	silent := newSilentClient(token, version)
+
+	d := cobbler.NewDistro()
+	d.Name = "test"
+	d.Kernel = fakeKernel
+	d.Initrd = fakeInitrd
+	_, err := silent.CreateDistro(d)
+	warn(err)
+
+	// testprof/centos7-x86_64 get their own distro, separate from "test": the "test" distro is deleted alongside
+	// the "test" profile at the end of the systems section below, and Cobbler refuses to delete a distro that
+	// still has profile dependents ("removal would orphan profile(s)") — testprof/centos7-x86_64 live for the
+	// entire run and must not be attached to a distro that gets torn down partway through.
+	longLivedDistro := cobbler.NewDistro()
+	longLivedDistro.Name = "testprof-distro"
+	longLivedDistro.Kernel = fakeKernel
+	longLivedDistro.Initrd = fakeInitrd
+	_, err = silent.CreateDistro(longLivedDistro)
+	warn(err)
+
+	// Profile.distro/System.profile take the referenced item's real uid, not its name — modify_profile/modify_system
+	// pass the value straight through to the Python setter, which resolves it via a strict uid-keyed dict lookup
+	// (cobbler/items/profile.py's distro setter calls self.api.distros().find(uid=...), and
+	// cobbler_collections/collection.py's fast path is `self.listing.get(uid)`, keyed by uid — not name).
+	testDistroUID, err := silent.GetDistroHandle("test")
+	warn(err)
+	longLivedDistroUID, err := silent.GetDistroHandle("testprof-distro")
+	warn(err)
+
+	testProfile := cobbler.NewProfile()
+	testProfile.Name = "test"
+	testProfile.Distro = testDistroUID
+	testProfile.Virt.Path = fakeVirtPath
+	testProfile.Virt.Cpus = cobbler.Value[int]{Data: fakeVirtCpus}
+	_, err = silent.CreateProfile(testProfile)
+	warn(err)
+
+	for _, name := range []string{"testprof", "centos7-x86_64"} {
+		p := cobbler.NewProfile()
+		p.Name = name
+		p.Distro = longLivedDistroUID
+		p.Virt.Path = fakeVirtPath
+		p.Virt.Cpus = cobbler.Value[int]{Data: fakeVirtCpus}
+		// ModifyItemInPlace needs a concrete (non-inherited) dict to merge into — NewProfile() defaults
+		// KernelOptions to inherited, which serializes as the bare "<<inherit>>" sentinel string rather than a
+		// dict, and ModifyItemInPlace's map[string]interface{} cast rejects that.
+		p.KernelOptions = cobbler.Value[map[string]interface{}]{Data: map[string]interface{}{}}
+		_, err := silent.CreateProfile(p)
+		warn(err)
+	}
+
+	testprofUID, err := silent.GetProfileHandle("testprof")
+	warn(err)
+
+	for _, name := range []string{"test", "testsys", "server1"} {
+		sys := cobbler.NewSystem()
+		sys.Name = name
+		// GetConfigData looks systems up by hostname, not name (cobbler/remote.py's get_config_data takes a
+		// hostname straight through to api.get_config_data) — keep them equal for baseline systems.
+		sys.Hostname = name
+		sys.Profile = testprofUID
+		// A concrete power type avoids an internal power-manager error when PowerSystem is later called against
+		// a system whose power.type was left at the default inherited value.
+		sys.Power.Type = "ipmilanplus"
+		_, err := silent.CreateSystem(sys)
+		warn(err)
+	}
+
+	for _, name := range []string{"test", "testrepo"} {
+		r := cobbler.NewRepo()
+		r.Name = name
+		_, err := silent.CreateRepo(r)
+		warn(err)
+	}
+
+	for _, name := range []string{"test", "testmenu"} {
+		m := cobbler.NewMenu()
+		m.Name = name
+		_, err := silent.CreateMenu(m)
+		warn(err)
+	}
+
+	img := cobbler.NewImage()
+	img.Name = "test"
+	img.Virt.Path = fakeVirtPath
+	img.Virt.Cpus = cobbler.Value[int]{Data: fakeVirtCpus}
+	_, err = silent.CreateImage(img)
+	warn(err)
+
+	serverHandle, err := silent.GetSystemHandle("server1")
+	warn(err)
+	ni := cobbler.NewNetworkInterface()
+	ni.Name = "eth0-server1"
+	// Left blank deliberately: cobbler/items/network_interface.py's mac_address setter only enforces uniqueness
+	// for a non-empty value, and this interface gets cloned by CopyNetworkInterface later, which would otherwise
+	// collide with the clone on a duplicate MAC.
+	_, err = silent.CreateNetworkInterface(serverHandle, ni)
+	warn(err)
+}
+
 func main() {
+	// ids is shared by every recorder (main and sub-clients) for the lifetime of the run, so a uid/system_uid/event-id
+	// recorded by one and echoed back through another still maps to the same placeholder.
+	ids := newIDRemapper()
+
 	// ── LOGIN-ERR: separate mini-recorder with wrong credentials ──────────
 	fmt.Println("=== login-err ===")
-	errRec := newRecordingHTTPClient([]string{"login-err"})
+	errRec := newRecordingHTTPClient([]string{"login-err"}, ids)
 	cErr := cobbler.NewClient(errRec, cobbler.ClientConfig{
 		URL:      config.URL,
 		Username: "wrong",
@@ -471,7 +752,7 @@ func main() {
 	_, _ = cErr.Login() // expected to fail; saves login-err-{req,res}.xml
 
 	// ── MAIN RECORDER ─────────────────────────────────────────────────────
-	rec := newRecordingHTTPClient(fixtureSequence)
+	rec := newRecordingHTTPClient(fixtureSequence, ids)
 	c := cobbler.NewClient(rec, config)
 
 	fmt.Println("=== login / extended-version ===")
@@ -480,6 +761,9 @@ func main() {
 		return
 	}
 	rec.SetRealToken(c.Token)
+
+	fmt.Println("=== seeding baseline test data ===")
+	seedBaselineData(c.Token, c.CachedVersion)
 
 	// ── AUTH MISC ─────────────────────────────────────────────────────────
 	fmt.Println("=== auth misc ===")
@@ -598,6 +882,9 @@ func main() {
 				"new-distro-modify-kernel",
 				"new-distro-modify-remote-boot-kernel",
 				"new-distro-modify-redhat-management-key",
+				"new-distro-modify-redhat-management-org",
+				"new-distro-modify-redhat-management-user",
+				"new-distro-modify-redhat-management-password",
 				"new-distro-modify-os-version",
 				"new-distro-save",
 				"new-distro-get",
@@ -606,6 +893,8 @@ func main() {
 		)
 		d := cobbler.NewDistro()
 		d.Name = "Ubuntu-20.04-x86_64"
+		d.Kernel = fakeKernel
+		d.Initrd = fakeInitrd
 		_, err = sub.CreateDistro(d)
 		warn(err)
 	}
@@ -630,6 +919,9 @@ func main() {
 				"update-distro-modify-kernel",
 				"update-distro-modify-remote-boot-kernel",
 				"update-distro-modify-redhat-management-key",
+				"update-distro-modify-redhat-management-org",
+				"update-distro-modify-redhat-management-user",
+				"update-distro-modify-redhat-management-password",
 				"update-distro-modify-os-version",
 				"update-distro-save",
 			},
@@ -637,6 +929,8 @@ func main() {
 		)
 		d := cobbler.NewDistro()
 		d.Name = "Ubuntu-20.04-x86_64"
+		d.Kernel = fakeKernel
+		d.Initrd = fakeInitrd
 		warn(sub.UpdateDistro(&d))
 	}
 
@@ -647,7 +941,12 @@ func main() {
 	warn(err)
 	err = c.CopyDistro(distroHandle, "test2")
 	warn(err)
-	err = c.RenameDistro("distro::test2", "test1")
+	// rename_distro resolves object_id via a uid lookup, so the copy's real handle must be fetched first.
+	// silentLookup is reused for the same purpose by every other Rename* call below.
+	silentLookup := newSilentClient(c.Token, c.CachedVersion)
+	test2Handle, err := silentLookup.GetDistroHandle("test2")
+	warn(err)
+	err = c.RenameDistro(test2Handle, "test1")
 	warn(err)
 	_, err = c.GetDistros()
 	warn(err)
@@ -675,38 +974,40 @@ func main() {
 				"new-profile",
 				"new-profile-modify-name",
 				"new-profile-modify-parent",
+				"new-profile-modify-distro",
 				"new-profile-modify-comment",
 				"new-profile-modify-kernel-options",
 				"new-profile-modify-kernel-options-post",
 				"new-profile-modify-autoinstall-meta",
 				"new-profile-modify-template-files",
 				"new-profile-modify-owners",
-				"new-profile-modify-name",
-				"new-profile-modify-parent",
-				"new-profile-modify-distro",
 				"new-profile-modify-autoinstall",
 				"new-profile-modify-boot-loaders",
 				"new-profile-modify-dhcp-tag",
+				"new-profile-modify-name-servers",
+				"new-profile-modify-name-servers-search",
 				"new-profile-modify-enable-ipxe",
 				"new-profile-modify-enable-menu",
 				"new-profile-modify-filename",
 				"new-profile-modify-menu",
-				"new-profile-modify-name-servers",
-				"new-profile-modify-name-servers-search",
-				"new-profile-modify-next-server-v4",
-				"new-profile-modify-next-server-v6",
 				"new-profile-modify-proxy",
 				"new-profile-modify-redhat-management-key",
+				"new-profile-modify-redhat-management-org",
+				"new-profile-modify-redhat-management-user",
+				"new-profile-modify-redhat-management-password",
 				"new-profile-modify-repos",
 				"new-profile-modify-server",
+				"new-profile-modify-next-server-v4",
+				"new-profile-modify-next-server-v6",
 				"new-profile-modify-virt-auto-boot",
-				"new-profile-modify-virt-bridge",
 				"new-profile-modify-virt-cpus",
 				"new-profile-modify-virt-disk-driver",
 				"new-profile-modify-virt-file-size",
 				"new-profile-modify-virt-path",
+				"new-profile-modify-virt-pxe-boot",
 				"new-profile-modify-virt-ram",
 				"new-profile-modify-virt-type",
+				"new-profile-modify-virt-bridge",
 				"new-profile-save",
 				"new-profile-get",
 			},
@@ -714,7 +1015,11 @@ func main() {
 		)
 		p := cobbler.NewProfile()
 		p.Name = "Ubuntu-20.04-x86_64"
-		p.Distro = "Ubuntu-20.04-x86_64"
+		ubuntuDistroUID, err := silentLookup.GetDistroHandle("Ubuntu-20.04-x86_64")
+		warn(err)
+		p.Distro = ubuntuDistroUID
+		p.Virt.Path = fakeVirtPath
+		p.Virt.Cpus = cobbler.Value[int]{Data: fakeVirtCpus}
 		_, err = sub.CreateProfile(p)
 		warn(err)
 	}
@@ -726,45 +1031,51 @@ func main() {
 				"update-profile-handle",
 				"update-profile-modify-name",
 				"update-profile-modify-parent",
+				"update-profile-modify-distro",
 				"update-profile-modify-comment",
 				"update-profile-modify-kernel-options",
 				"update-profile-modify-kernel-options-post",
 				"update-profile-modify-autoinstall-meta",
 				"update-profile-modify-template-files",
 				"update-profile-modify-owners",
-				"update-profile-modify-name",
-				"update-profile-modify-parent",
-				"update-profile-modify-distro",
 				"update-profile-modify-autoinstall",
 				"update-profile-modify-boot-loaders",
 				"update-profile-modify-dhcp-tag",
+				"update-profile-modify-name-servers",
+				"update-profile-modify-name-servers-search",
 				"update-profile-modify-enable-ipxe",
 				"update-profile-modify-enable-menu",
 				"update-profile-modify-filename",
 				"update-profile-modify-menu",
-				"update-profile-modify-name-servers",
-				"update-profile-modify-name-servers-search",
-				"update-profile-modify-next-server-v4",
-				"update-profile-modify-next-server-v6",
 				"update-profile-modify-proxy",
 				"update-profile-modify-redhat-management-key",
+				"update-profile-modify-redhat-management-org",
+				"update-profile-modify-redhat-management-user",
+				"update-profile-modify-redhat-management-password",
 				"update-profile-modify-repos",
 				"update-profile-modify-server",
+				"update-profile-modify-next-server-v4",
+				"update-profile-modify-next-server-v6",
 				"update-profile-modify-virt-auto-boot",
-				"update-profile-modify-virt-bridge",
 				"update-profile-modify-virt-cpus",
 				"update-profile-modify-virt-disk-driver",
 				"update-profile-modify-virt-file-size",
 				"update-profile-modify-virt-path",
+				"update-profile-modify-virt-pxe-boot",
 				"update-profile-modify-virt-ram",
 				"update-profile-modify-virt-type",
+				"update-profile-modify-virt-bridge",
 				"update-profile-save",
 			},
 			rec, c.Token, c.CachedVersion,
 		)
 		p := cobbler.NewProfile()
 		p.Name = "Ubuntu-20.04-x86_64"
-		p.Distro = "Ubuntu-20.04-x86_64"
+		ubuntuDistroUID, err := silentLookup.GetDistroHandle("Ubuntu-20.04-x86_64")
+		warn(err)
+		p.Distro = ubuntuDistroUID
+		p.Virt.Path = fakeVirtPath
+		p.Virt.Cpus = cobbler.Value[int]{Data: fakeVirtCpus}
 		warn(sub.UpdateProfile(&p))
 	}
 
@@ -775,7 +1086,9 @@ func main() {
 	warn(err)
 	err = c.CopyProfile(profileHandle, "testprof2")
 	warn(err)
-	err = c.RenameProfile("profile::testprof2", "testprof1")
+	testprof2Handle, err := silentLookup.GetProfileHandle("testprof2")
+	warn(err)
+	err = c.RenameProfile(testprof2Handle, "testprof1")
 	warn(err)
 	_, err = c.GetProfiles()
 	warn(err)
@@ -801,9 +1114,13 @@ func main() {
 	warn(err)
 	_, err = c.FindProfileNames(map[string]interface{}{"name": "test"})
 	warn(err)
+	// register_new_system passes "profile" straight to System.profile, which — like Profile.distro — requires the
+	// referenced item's real uid, not its name.
+	testprofUIDForRegister, err := silentLookup.GetProfileHandle("testprof")
+	warn(err)
 	_, err = c.RegisterNewSystem(map[string]interface{}{
-		"name":    "test",
-		"profile": "testprof",
+		"name":    "test-register",
+		"profile": testprofUIDForRegister,
 		"interfaces": map[string]interface{}{
 			"default": map[string]interface{}{
 				"mac_address": "AA:BB:CC:DD:EE:FF",
@@ -876,7 +1193,9 @@ func main() {
 		sys.Name = "mytestsystem"
 		sys.Hostname = "blahhost"
 		sys.DNS.NameServers.Data = []string{"8.8.8.8", "8.8.4.4"}
-		sys.Profile = "centos7-x86_64"
+		centosProfileUID, err := silentLookup.GetProfileHandle("centos7-x86_64")
+		warn(err)
+		sys.Profile = centosProfileUID
 		_, err = sub.CreateSystem(sys)
 		warn(err)
 	}
@@ -939,7 +1258,9 @@ func main() {
 		sys.Name = "mytestsystem"
 		sys.Hostname = "blahhost"
 		sys.DNS.NameServers.Data = []string{"8.8.8.8", "8.8.4.4"}
-		sys.Profile = "centos7-x86_64"
+		centosProfileUID, err := silentLookup.GetProfileHandle("centos7-x86_64")
+		warn(err)
+		sys.Profile = centosProfileUID
 		sys.Power.Type = "ipmilanplus"
 		sys.Status = "production"
 		warn(sub.UpdateSystem(&sys))
@@ -952,7 +1273,9 @@ func main() {
 	warn(err)
 	err = c.CopySystem(systemHandle, "testsys2")
 	warn(err)
-	err = c.RenameSystem("system::testsys2", "testsys1")
+	testsys2Handle, err := silentLookup.GetSystemHandle("testsys2")
+	warn(err)
+	err = c.RenameSystem(testsys2Handle, "testsys1")
 	warn(err)
 	_, err = c.GetSystems()
 	warn(err)
@@ -972,7 +1295,7 @@ func main() {
 	warn(err)
 	_, err = c.UploadLogData("testsys", "/var/log/cobbler/testsys.log", 12, 0, "hello world!")
 	warn(err)
-	_, err = c.ClearSystemLogs("system::testsys")
+	_, err = c.ClearSystemLogs(systemHandle)
 	warn(err)
 	_, err = c.FindSystem(map[string]interface{}{"name": "test"})
 	warn(err)
@@ -984,7 +1307,9 @@ func main() {
 	warn(err)
 	err = c.GetConfigData("testsys")
 	warn(err)
-	_, err = c.PowerSystem("system::testsys1", "status")
+	testsys1Handle, err := silentLookup.GetSystemHandle("testsys1")
+	warn(err)
+	_, err = c.PowerSystem(testsys1Handle, "status")
 	warn(err)
 	err = c.DeleteSystem("test")
 	warn(err)
@@ -1018,6 +1343,14 @@ func main() {
 		)
 		tpl := cobbler.NewTemplate()
 		tpl.Name = "testtemplate"
+		// content's setter requires a real, non-empty URI path to write to (cobbler/items/template.py rejects an
+		// empty uri.path before even looking at the content value).
+		// Must be a path relative to settings.autoinstall_templates_dir, pointing at a file that already exists on
+		// the server (cobbler/validate.py's validate_autoinstall_template_file_path requires Path.is_file() to be
+		// true before the uri.path setter allows the value at all — content.setter only writes to an existing
+		// path, it never creates one). Pre-create this file in the cobbler-dev container before running this tool:
+		//   docker exec cobbler-dev touch /var/lib/cobbler/templates/testtemplate.template
+		tpl.URI.Path = "testtemplate.template"
 		_, err = sub.CreateTemplate(tpl)
 		warn(err)
 	}
@@ -1045,6 +1378,12 @@ func main() {
 		)
 		tpl := cobbler.NewTemplate()
 		tpl.Name = "testtemplate"
+		// Must be a path relative to settings.autoinstall_templates_dir, pointing at a file that already exists on
+		// the server (cobbler/validate.py's validate_autoinstall_template_file_path requires Path.is_file() to be
+		// true before the uri.path setter allows the value at all — content.setter only writes to an existing
+		// path, it never creates one). Pre-create this file in the cobbler-dev container before running this tool:
+		//   docker exec cobbler-dev touch /var/lib/cobbler/templates/testtemplate.template
+		tpl.URI.Path = "testtemplate.template"
 		warn(sub.UpdateTemplate(&tpl))
 	}
 
@@ -1056,7 +1395,9 @@ func main() {
 	err = c.CopyTemplate(tplHandle, "testtemplate-copy")
 	warn(err)
 	// Renames the copy (not tplHandle's original) so "testtemplate" survives for the Read/Find calls below.
-	err = c.RenameTemplate("template::testtemplate-copy", "testtemplate-new")
+	testtemplateCopyHandle, err := silentLookup.GetTemplateHandle("testtemplate-copy")
+	warn(err)
+	err = c.RenameTemplate(testtemplateCopyHandle, "testtemplate-new")
 	warn(err)
 	_, err = c.GetTemplateFileForProfile("testprof", "/etc/motd")
 	warn(err)
@@ -1070,7 +1411,7 @@ func main() {
 	warn(err)
 	_, err = c.ListTemplateNames()
 	warn(err)
-	_, err = c.GetTemplateContent("template-uid-1")
+	_, err = c.GetTemplateContent(tplHandle)
 	warn(err)
 	err = c.TemplatesRefreshContent(nil)
 	warn(err)
@@ -1166,7 +1507,9 @@ func main() {
 	warn(err)
 	err = c.CopyRepo(repoHandle, "testrepo2")
 	warn(err)
-	err = c.RenameRepo("repo::testrepo2", "testrepo1")
+	testrepo2Handle, err := silentLookup.GetRepoHandle("testrepo2")
+	warn(err)
+	err = c.RenameRepo(testrepo2Handle, "testrepo1")
 	warn(err)
 	_, err = c.GetRepos()
 	warn(err)
@@ -1214,13 +1557,14 @@ func main() {
 				"new-image-modify-boot-loaders",
 				"new-image-modify-menu",
 				"new-image-modify-virt-auto-boot",
-				"new-image-modify-virt-bridge",
 				"new-image-modify-virt-cpus",
 				"new-image-modify-virt-disk-driver",
 				"new-image-modify-virt-file-size",
 				"new-image-modify-virt-path",
+				"new-image-modify-virt-pxe-boot",
 				"new-image-modify-virt-ram",
 				"new-image-modify-virt-type",
+				"new-image-modify-virt-bridge",
 				"new-image-save",
 				"new-image-get",
 			},
@@ -1228,6 +1572,8 @@ func main() {
 		)
 		image := cobbler.NewImage()
 		image.Name = "testimage"
+		image.Virt.Path = fakeVirtPath
+		image.Virt.Cpus = cobbler.Value[int]{Data: fakeVirtCpus}
 		_, err = sub.CreateImage(image)
 		warn(err)
 	}
@@ -1254,19 +1600,22 @@ func main() {
 				"update-image-modify-boot-loaders",
 				"update-image-modify-menu",
 				"update-image-modify-virt-auto-boot",
-				"update-image-modify-virt-bridge",
 				"update-image-modify-virt-cpus",
 				"update-image-modify-virt-disk-driver",
 				"update-image-modify-virt-file-size",
 				"update-image-modify-virt-path",
+				"update-image-modify-virt-pxe-boot",
 				"update-image-modify-virt-ram",
 				"update-image-modify-virt-type",
+				"update-image-modify-virt-bridge",
 				"update-image-save",
 			},
 			rec, c.Token, c.CachedVersion,
 		)
 		image := cobbler.NewImage()
 		image.Name = "testimage"
+		image.Virt.Path = fakeVirtPath
+		image.Virt.Cpus = cobbler.Value[int]{Data: fakeVirtCpus}
 		warn(sub.UpdateImage(&image))
 	}
 
@@ -1277,7 +1626,9 @@ func main() {
 	warn(err)
 	err = c.CopyImage(imageHandle, "testimage2")
 	warn(err)
-	err = c.RenameImage("image::testimage2", "testimage1")
+	testimage2Handle, err := silentLookup.GetImageHandle("testimage2")
+	warn(err)
+	err = c.RenameImage(testimage2Handle, "testimage1")
 	warn(err)
 	_, err = c.GetImages()
 	warn(err)
@@ -1349,7 +1700,9 @@ func main() {
 	warn(err)
 	err = c.CopyMenu(menuHandle, "testmenu2")
 	warn(err)
-	err = c.RenameMenu("menu::testmenu2", "testmenu1")
+	testmenu2Handle, err := silentLookup.GetMenuHandle("testmenu2")
+	warn(err)
+	err = c.RenameMenu(testmenu2Handle, "testmenu1")
 	warn(err)
 	_, err = c.GetMenus()
 	warn(err)
@@ -1369,16 +1722,121 @@ func main() {
 	warn(err)
 
 	// ── NETWORK INTERFACES ────────────────────────────────────────────────
+	fmt.Println("=== network interface create ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"new-network-interface",
+				"new-network-interface-modify-name",
+				"new-network-interface-modify-comment",
+				"new-network-interface-modify-kernel-options",
+				"new-network-interface-modify-kernel-options-post",
+				"new-network-interface-modify-autoinstall-meta",
+				"new-network-interface-modify-template-files",
+				"new-network-interface-modify-owners",
+				"new-network-interface-modify-mac-address",
+				"new-network-interface-modify-interface-type",
+				"new-network-interface-modify-interface-master",
+				"new-network-interface-modify-bonding-opts",
+				"new-network-interface-modify-bridge-opts",
+				"new-network-interface-modify-connected-mode",
+				"new-network-interface-modify-management",
+				"new-network-interface-modify-static",
+				"new-network-interface-modify-dhcp-tag",
+				"new-network-interface-modify-if-gateway",
+				"new-network-interface-modify-mtu",
+				"new-network-interface-modify-ipv6-default-gateway",
+				"new-network-interface-modify-ipv6-static-routes",
+				"new-network-interface-modify-virt-bridge",
+				"new-network-interface-modify-ipv4-address",
+				"new-network-interface-modify-ipv4-netmask",
+				"new-network-interface-modify-ipv4-static-routes",
+				"new-network-interface-modify-ipv6-address",
+				"new-network-interface-modify-ipv6-prefix",
+				"new-network-interface-modify-ipv6-secondaries",
+				"new-network-interface-modify-ipv6-mtu",
+				"new-network-interface-modify-ipv6-option-static-routes",
+				"new-network-interface-modify-dns-name",
+				"new-network-interface-modify-dns-cnames",
+				"new-network-interface-save",
+				"new-network-interface-get",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		silentLookup := newSilentClient(c.Token, c.CachedVersion)
+		sysHandle, err := silentLookup.GetSystemHandle("mytestsystem")
+		warn(err)
+		ni := cobbler.NewNetworkInterface()
+		ni.Name = "eth0-mytestsystem"
+		ni.MacAddress = "AA:BB:CC:DD:EE:00"
+		_, err = sub.CreateNetworkInterface(sysHandle, ni)
+		warn(err)
+	}
+
+	fmt.Println("=== network interface update ===")
+	{
+		sub, _ := makeSubClient(
+			[]string{
+				"update-network-interface-handle",
+				"update-network-interface-modify-name",
+				"update-network-interface-modify-comment",
+				"update-network-interface-modify-kernel-options",
+				"update-network-interface-modify-kernel-options-post",
+				"update-network-interface-modify-autoinstall-meta",
+				"update-network-interface-modify-template-files",
+				"update-network-interface-modify-owners",
+				"update-network-interface-modify-mac-address",
+				"update-network-interface-modify-interface-type",
+				"update-network-interface-modify-interface-master",
+				"update-network-interface-modify-bonding-opts",
+				"update-network-interface-modify-bridge-opts",
+				"update-network-interface-modify-connected-mode",
+				"update-network-interface-modify-management",
+				"update-network-interface-modify-static",
+				"update-network-interface-modify-dhcp-tag",
+				"update-network-interface-modify-if-gateway",
+				"update-network-interface-modify-mtu",
+				"update-network-interface-modify-ipv6-default-gateway",
+				"update-network-interface-modify-ipv6-static-routes",
+				"update-network-interface-modify-virt-bridge",
+				"update-network-interface-modify-ipv4-address",
+				"update-network-interface-modify-ipv4-netmask",
+				"update-network-interface-modify-ipv4-static-routes",
+				"update-network-interface-modify-ipv6-address",
+				"update-network-interface-modify-ipv6-prefix",
+				"update-network-interface-modify-ipv6-secondaries",
+				"update-network-interface-modify-ipv6-mtu",
+				"update-network-interface-modify-ipv6-option-static-routes",
+				"update-network-interface-modify-dns-name",
+				"update-network-interface-modify-dns-cnames",
+				"update-network-interface-save",
+			},
+			rec, c.Token, c.CachedVersion,
+		)
+		ni := cobbler.NewNetworkInterface()
+		ni.Name = "eth0-mytestsystem"
+		// Must match the case cobbler/validate.py's mac_address() normalises to (lower) exactly: the mac_address
+		// setter's "unchanged" short-circuit (`if self._mac_address == address: return`) compares the raw
+		// argument against the already-normalised stored value *before* normalising it, so a same-value update
+		// in a different case falls through to the duplicate-MAC check and conflicts with itself.
+		ni.MacAddress = "aa:bb:cc:dd:ee:00"
+		warn(sub.UpdateNetworkInterface(&ni))
+	}
+
 	fmt.Println("=== network interfaces ===")
-	niHandle, err := c.GetNetworkInterfaceHandle("eth0@server1")
+	niHandle, err := c.GetNetworkInterfaceHandle("eth0-server1")
 	warn(err)
 	err = c.SaveNetworkInterface(niHandle, true, true, "bypass")
 	warn(err)
-	err = c.CopyNetworkInterface(niHandle, "eth1@server1")
+	err = c.CopyNetworkInterface(niHandle, "eth1-server1")
 	warn(err)
-	err = c.RenameNetworkInterface("network_interface::eth1@server1", "eth2@server1")
+	// Renames the copy (not niHandle's original) so "eth0-server1" survives for the Read/Find calls below.
+	// rename_item resolves object_id via a uid lookup, so the copy's real handle must be fetched first.
+	eth1Handle, err := silentLookup.GetNetworkInterfaceHandle("eth1-server1")
 	warn(err)
-	_, err = c.GetNetworkInterface("eth0@server1", false, false)
+	err = c.RenameNetworkInterface(eth1Handle, "eth2-server1")
+	warn(err)
+	_, err = c.GetNetworkInterface("eth0-server1", false, false)
 	warn(err)
 	_, err = c.GetNetworkInterfaces()
 	warn(err)
@@ -1390,7 +1848,7 @@ func main() {
 	warn(err)
 	_, err = c.FindNetworkInterfaceNames(map[string]interface{}{"mac_address": "00:11:22:33:44:55"})
 	warn(err)
-	err = c.DeleteNetworkInterface("eth0@server1")
+	err = c.DeleteNetworkInterface("eth0-server1")
 	warn(err)
 
 	// ── DISTRO GROUP ──────────────────────────────────────────────────────
@@ -1449,7 +1907,9 @@ func main() {
 	warn(err)
 	err = c.CopyDistroGroup(dgh, "webservers2")
 	warn(err)
-	err = c.RenameDistroGroup("distro_group::webservers2", "webservers-new")
+	dgWebservers2Handle, err := silentLookup.GetDistroGroupHandle("webservers2")
+	warn(err)
+	err = c.RenameDistroGroup(dgWebservers2Handle, "webservers-new")
 	warn(err)
 	_, err = c.GetDistroGroup("webservers", false, false)
 	warn(err)
@@ -1522,7 +1982,9 @@ func main() {
 	warn(err)
 	err = c.CopyProfileGroup(pgh, "webservers2")
 	warn(err)
-	err = c.RenameProfileGroup("profile_group::webservers2", "webservers-new")
+	pgWebservers2Handle, err := silentLookup.GetProfileGroupHandle("webservers2")
+	warn(err)
+	err = c.RenameProfileGroup(pgWebservers2Handle, "webservers-new")
 	warn(err)
 	_, err = c.GetProfileGroup("webservers", false, false)
 	warn(err)
@@ -1595,7 +2057,9 @@ func main() {
 	warn(err)
 	err = c.CopySystemGroup(sgh, "webservers2")
 	warn(err)
-	err = c.RenameSystemGroup("system_group::webservers2", "webservers-new")
+	sgWebservers2Handle, err := silentLookup.GetSystemGroupHandle("webservers2")
+	warn(err)
+	err = c.RenameSystemGroup(sgWebservers2Handle, "webservers-new")
 	warn(err)
 	_, err = c.GetSystemGroup("webservers", false, false)
 	warn(err)
@@ -1612,6 +2076,23 @@ func main() {
 	err = c.DeleteSystemGroup("webservers")
 	warn(err)
 
+	// Recreate the distro_group deleted above, silently (no fixture slot consumed), so that ModifyItemInPlace and
+	// GetItemResolvedValue below have a real item UID to work with.
+	var itemUUID string
+	{
+		silent := cobbler.NewClient(&silentHTTPClient{}, config)
+		silent.Token = c.Token
+		silent.CachedVersion = c.CachedVersion
+		dg := cobbler.NewDistroGroup()
+		dg.Name = "webservers"
+		dg.Members = []string{"member-a"}
+		createdDG, createErr := silent.CreateDistroGroup(dg)
+		warn(createErr)
+		if createdDG != nil {
+			itemUUID = createdDG.Uid
+		}
+	}
+
 	// ── ITEMS (generic) ───────────────────────────────────────────────────
 	fmt.Println("=== items generic ===")
 	_, err = c.FindItemsPaged("menu", map[string]interface{}{"display_name": ""}, "", 1, 5)
@@ -1626,7 +2107,8 @@ func main() {
 	warn(err)
 	_, err = c.FindItemNames("profile", map[string]interface{}{"name": "test*"}, "name")
 	warn(err)
-	err = c.ModifyItem("profile", "profile::testprof", []string{"comment"}, "hello")
+	// modify_item resolves object_id via a uid lookup, so the recreated "webservers" group's real uid is used here.
+	err = c.ModifyItem("distro_group", itemUUID, []string{"comment"}, "hello")
 	warn(err)
 
 	// ModifyItemInPlace makes 4 HTTP calls; isolated sub-recorder prevents
@@ -1641,16 +2123,20 @@ func main() {
 			},
 			rec, c.Token, c.CachedVersion,
 		)
+		// distro_group (and the other group types) don't actually expose kernel_options/autoinstall_meta/etc. as
+		// real properties server-side — cobbler/items/abstract/item_group.py never defines them, so modify_item
+		// silently no-ops (setattr on an unknown attribute) and to_dict() never reflects it, leaving GetItem's
+		// response without a "kernel_options" key at all. Use a profile instead, which has a real one.
 		warn(sub.ModifyItemInPlace("profile", "testprof", "kernel_options", map[string]interface{}{"test": "1"}))
 	}
 
-	_, err = c.GetItemResolvedValue(profileHandle, []string{"kernel_options"})
+	_, err = c.GetItemResolvedValue(itemUUID, []string{"kernel_options"})
 	warn(err)
-	err = c.SetItemResolvedValue(profileHandle, []string{"comment"}, "hello")
+	err = c.SetItemResolvedValue(itemUUID, []string{"comment"}, "hello")
 	warn(err)
-	_, err = c.HasItem("profile", "testprof")
+	_, err = c.HasItem("template", "testtemplate")
 	warn(err)
-	err = c.NewItem("profile", false)
+	err = c.NewItem("template", false)
 	warn(err)
 
 	// ── SETTINGS ──────────────────────────────────────────────────────────
@@ -1662,13 +2148,16 @@ func main() {
 	warn(err)
 
 	// Discover a real event ID so GetTaskStatus / GetEventLog fixtures reflect
-	// an actual server event rather than a stale hard-coded ID.
+	// an actual server event rather than a stale hard-coded ID. GetEvents ranges over a map, so its result order is
+	// randomised by the Go runtime; sort by ID (which is timestamp-prefixed) to deterministically pick the
+	// earliest-created background task every run instead of a random one.
 	var bgTaskID string
 	{
 		silent := cobbler.NewClient(&silentHTTPClient{}, config)
 		silent.Token = c.Token
 		silent.CachedVersion = c.CachedVersion
 		if evts, evtErr := silent.GetEvents(""); evtErr == nil && len(evts) > 0 {
+			sort.Slice(evts, func(i, j int) bool { return evts[i].ID < evts[j].ID })
 			bgTaskID = evts[0].ID
 		}
 	}
