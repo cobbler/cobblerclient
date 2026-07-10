@@ -291,6 +291,14 @@ func (c *Client) FindSystemByDnsName(dnsName string) (map[string]interface{}, er
 	return map[string]interface{}{}, nil
 }
 
+// GetRandomMac returns a random MAC address suitable for a virtualised system.
+// In Cobbler 4.0.0 the backend default virt_type changed from "qemu" to "kvm";
+// this wrapper sends "kvm" explicitly so calls don't drift with future backend
+// changes. Use [Client.GetRandomMacFor] to pin a different virt_type.
+func (c *Client) GetRandomMac() (string, error) {
+	return c.GetRandomMacFor("kvm")
+}
+
 // GetRandomMacFor returns a random MAC address tailored for the given virt_type.
 // Valid values per Python signature: "qemu", "kvm", "xenpv", "xenfv", "vmware",
 // "vmwarew", "openvz", "auto".
@@ -307,11 +315,6 @@ func (c *Client) GetRandomMacFor(virtType string) (string, error) {
 		return "", fmt.Errorf("get_random_mac returned %T, want string", result)
 	}
 	return s, nil
-}
-
-// GetRandomMac generates a random MAC address for use with a virtualized system.
-func (c *Client) GetRandomMac() (string, error) {
-	return c.GetRandomMacFor("xenpv")
 }
 
 type StatusOption string
