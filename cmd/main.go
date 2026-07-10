@@ -219,6 +219,7 @@ var fixtureSequence = []string{
 	"get-valid-os-versions",
 	"get-valid-archs",
 	"background-signature-update",
+	"background-signature-reload",
 
 	// ── DISTROS (Save, Copy, Rename, Read, Find, Delete — Create/Update are sub-recorders) ──
 	"get-distro-handle",
@@ -568,6 +569,8 @@ func main() {
 	_, err = c.GetValidArchs()
 	warn(err)
 	_, err = c.BackgroundSignatureUpdate()
+	warn(err)
+	_, err = c.BackgroundSignatureReload()
 	warn(err)
 
 	// ── DISTROS ───────────────────────────────────────────────────────────

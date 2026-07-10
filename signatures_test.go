@@ -69,3 +69,13 @@ func TestBackgroundSignatureUpdate(t *testing.T) {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }
+
+func TestBackgroundSignatureReload(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "background-signature-reload")
+
+	res, err := c.BackgroundSignatureReload()
+	FailOnError(t, err)
+	if res != "2000-01-01_000000_Reloading Signatures_0000000000000000000000000000000d" {
+		t.Fatalf("Expected a different Event-ID!")
+	}
+}
