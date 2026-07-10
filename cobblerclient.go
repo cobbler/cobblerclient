@@ -131,14 +131,16 @@ func (c *Client) invalidateCachedVersion() {
 	c.CachedVersion = CobblerVersion{}
 }
 
-// GenerateAutoinstall generates the autoinstallation file for a given profile or system.
-func (c *Client) GenerateAutoinstall(profile string, system string) (string, error) {
-	result, err := c.Call("generate_autoinstall", profile, system)
+// GenerateAutoinstall generates the autoinstallation file for a given object.
+// objectId is the identifier value, objectType is "profile" or "system",
+// objectField is the field to match on (usually "name"), autoinstallerFile and
+// autoinstallerSubfile are optional overrides for the template files.
+func (c *Client) GenerateAutoinstall(objectId, objectType, objectField, autoinstallerFile, autoinstallerSubfile string) (string, error) {
+	result, err := c.Call("generate_autoinstall", objectId, objectType, objectField, autoinstallerFile, autoinstallerSubfile)
 	if err != nil {
 		return "", err
-	} else {
-		return result.(string), err
 	}
+	return result.(string), nil
 }
 
 // GetTftpFile retrieves a file from the Cobbler TFTP server. path is the server-side

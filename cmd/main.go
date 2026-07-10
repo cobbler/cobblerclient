@@ -799,7 +799,7 @@ func main() {
 	warn(err)
 	_, err = c.NewSubprofile()
 	warn(err)
-	_, err = c.GenerateAutoinstall("testprof", "")
+	_, err = c.GenerateAutoinstall(profileHandle, "profile", "uid", "", "")
 	warn(err)
 	err = c.GenerateBootCfg("testprof", "")
 	warn(err)

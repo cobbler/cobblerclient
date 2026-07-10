@@ -55,7 +55,7 @@ func TestInvalidateCachedVersion(t *testing.T) {
 func TestGenerateAutoinstall(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "generate-autoinstall")
 
-	res, err := c.GenerateAutoinstall("", "")
+	res, err := c.GenerateAutoinstall("00000000000000000000000000000013", "profile", "uid", "", "")
 	FailOnError(t, err)
 	if res == "" {
 		t.Fatalf("Expected a non-empty string.")
