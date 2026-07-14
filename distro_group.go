@@ -17,6 +17,7 @@ limitations under the License.
 package cobblerclient
 
 import (
+	"fmt"
 	"reflect"
 	"time"
 )
@@ -57,6 +58,13 @@ func (c *Client) GetDistroGroup(name string, flattened, resolved bool) (*DistroG
 }
 
 func (c *Client) CreateDistroGroup(g DistroGroup) (*DistroGroup, error) {
+	// Make sure a distro group with the same name does not already exist
+	if exists, err := c.HasItem("distro_group", g.Name); err != nil {
+		return nil, err
+	} else if exists {
+		return nil, fmt.Errorf("a DistroGroup with the name %s already exists", g.Name)
+	}
+
 	id, err := c.Call("new_distro_group", c.Token)
 	if err != nil {
 		return nil, err

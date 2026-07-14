@@ -4,12 +4,12 @@
     <params>
         <param>
             <value>
-                <string>distro</string>
+                <string>template</string>
             </value>
         </param>
         <param>
             <value>
-                <string>Ubuntu-20.04-x86_64</string>
+                <string>testtemplate</string>
             </value>
         </param>
         <param>

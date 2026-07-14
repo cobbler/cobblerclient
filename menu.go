@@ -103,7 +103,9 @@ func (c *Client) GetMenu(name string, flattened, resolved bool) (*Menu, error) {
 // CreateMenu creates a menu.
 func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 	// Make sure a menu with the same name does not already exist
-	if _, err := c.GetMenu(menu.Name, false, false); err == nil {
+	if exists, err := c.HasItem("menu", menu.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a Menu with the name %s already exists", menu.Name)
 	}
 

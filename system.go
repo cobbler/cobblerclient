@@ -201,7 +201,9 @@ func (c *Client) GetSystem(name string, flattened, resolved bool) (*System, erro
 // It ensures that either a Profile or Image are set and then sets other default values.
 func (c *Client) CreateSystem(system System) (*System, error) {
 	// Check if a system with the same name already exists
-	if _, err := c.GetSystem(system.Name, false, false); err == nil {
+	if exists, err := c.HasItem("system", system.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a system with the name %s already exists", system.Name)
 	}
 

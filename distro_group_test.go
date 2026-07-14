@@ -128,6 +128,7 @@ func TestGetDistroGroupsSince(t *testing.T) {
 
 func TestCreateDistroGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
+		"create-distro-group-name-check",
 		"new-distro-group",
 		"new-distro-group-modify-name",
 		"new-distro-group-modify-comment",

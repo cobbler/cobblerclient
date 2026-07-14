@@ -136,6 +136,7 @@ func TestGetImageHandle(t *testing.T) {
 
 func TestCreateImage(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
+		"create-image-name-check",
 		"new-image",
 		"new-image-modify-name",
 		"new-image-modify-comment",

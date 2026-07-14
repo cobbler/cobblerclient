@@ -17,6 +17,7 @@ limitations under the License.
 package cobblerclient
 
 import (
+	"fmt"
 	"reflect"
 	"time"
 )
@@ -57,6 +58,13 @@ func (c *Client) GetProfileGroup(name string, flattened, resolved bool) (*Profil
 }
 
 func (c *Client) CreateProfileGroup(g ProfileGroup) (*ProfileGroup, error) {
+	// Make sure a profile group with the same name does not already exist
+	if exists, err := c.HasItem("profile_group", g.Name); err != nil {
+		return nil, err
+	} else if exists {
+		return nil, fmt.Errorf("a ProfileGroup with the name %s already exists", g.Name)
+	}
+
 	id, err := c.Call("new_profile_group", c.Token)
 	if err != nil {
 		return nil, err

@@ -121,6 +121,13 @@ func (c *Client) FindTemplateNames(criteria map[string]interface{}) ([]string, e
 }
 
 func (c *Client) CreateTemplate(tpl Template) (*Template, error) {
+	// Make sure a template with the same name does not already exist
+	if exists, err := c.HasItem("template", tpl.Name); err != nil {
+		return nil, err
+	} else if exists {
+		return nil, fmt.Errorf("a Template with the name %s already exists", tpl.Name)
+	}
+
 	id, err := c.Call("new_template", c.Token)
 	if err != nil {
 		return nil, err

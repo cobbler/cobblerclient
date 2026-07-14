@@ -183,7 +183,9 @@ func (c *Client) GetProfile(name string, flattened, resolved bool) (*Profile, er
 // It ensures that a Distro is set and then sets other default values.
 func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	// Check if a profile with the same name already exists
-	if _, err := c.GetProfile(profile.Name, false, false); err == nil {
+	if exists, err := c.HasItem("profile", profile.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a profile with the name %s already exists", profile.Name)
 	}
 

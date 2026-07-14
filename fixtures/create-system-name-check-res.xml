@@ -3,7 +3,7 @@
     <params>
         <param>
             <value>
-                <string>~</string>
+                <boolean>0</boolean>
             </value>
         </param>
     </params>

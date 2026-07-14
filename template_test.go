@@ -196,6 +196,7 @@ func TestRenameTemplate(t *testing.T) {
 
 func TestCreateTemplate(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
+		"create-template-name-check",
 		"new-template",
 		"new-template-modify-name",
 		"new-template-modify-comment",

@@ -125,6 +125,7 @@ func TestGetSystemGroupsSince(t *testing.T) {
 
 func TestCreateSystemGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
+		"create-system-group-name-check",
 		"new-system-group",
 		"new-system-group-modify-name",
 		"new-system-group-modify-comment",

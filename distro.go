@@ -203,7 +203,9 @@ func (c *Client) GetDistro(name string, flattened, resolved bool) (*Distro, erro
 // CreateDistro creates a distro.
 func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 	// Make sure a distro with the same name does not already exist
-	if _, err := c.GetDistro(distro.Name, false, false); err == nil {
+	if exists, err := c.HasItem("distro", distro.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a Distro with the name %s already exists", distro.Name)
 	}
 

@@ -148,7 +148,9 @@ func (c *Client) GetRepo(name string, flattened, resolved bool) (*Repo, error) {
 // CreateRepo creates a repo.
 func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 	// Make sure a repo with the same name does not already exist
-	if _, err := c.GetRepo(repo.Name, false, false); err == nil {
+	if exists, err := c.HasItem("repo", repo.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a Repo with the name %s already exists", repo.Name)
 	}
 

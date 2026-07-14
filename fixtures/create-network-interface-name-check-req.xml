@@ -4,12 +4,12 @@
     <params>
         <param>
             <value>
-                <string>distro</string>
+                <string>network_interface</string>
             </value>
         </param>
         <param>
             <value>
-                <string>Ubuntu-20.04-x86_64</string>
+                <string>eth0-mytestsystem</string>
             </value>
         </param>
         <param>

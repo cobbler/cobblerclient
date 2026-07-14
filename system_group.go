@@ -17,6 +17,7 @@ limitations under the License.
 package cobblerclient
 
 import (
+	"fmt"
 	"reflect"
 	"time"
 )
@@ -57,6 +58,13 @@ func (c *Client) GetSystemGroup(name string, flattened, resolved bool) (*SystemG
 }
 
 func (c *Client) CreateSystemGroup(g SystemGroup) (*SystemGroup, error) {
+	// Make sure a system group with the same name does not already exist
+	if exists, err := c.HasItem("system_group", g.Name); err != nil {
+		return nil, err
+	} else if exists {
+		return nil, fmt.Errorf("a SystemGroup with the name %s already exists", g.Name)
+	}
+
 	id, err := c.Call("new_system_group", c.Token)
 	if err != nil {
 		return nil, err

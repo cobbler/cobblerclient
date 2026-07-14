@@ -258,6 +258,13 @@ func (c *Client) GetImage(name string, flattened, resolved bool) (*Image, error)
 
 // CreateImage creates an image.
 func (c *Client) CreateImage(image Image) (*Image, error) {
+	// Make sure an image with the same name does not already exist
+	if exists, err := c.HasItem("image", image.Name); err != nil {
+		return nil, err
+	} else if exists {
+		return nil, fmt.Errorf("an Image with the name %s already exists", image.Name)
+	}
+
 	// To create an image via the Cobbler API, first call new_image to obtain an ID
 	result, err := c.Call("new_image", c.Token)
 	if err != nil {

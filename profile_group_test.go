@@ -125,6 +125,7 @@ func TestGetProfileGroupsSince(t *testing.T) {
 
 func TestCreateProfileGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
+		"create-profile-group-name-check",
 		"new-profile-group",
 		"new-profile-group-modify-name",
 		"new-profile-group-modify-comment",
