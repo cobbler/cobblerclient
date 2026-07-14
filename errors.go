@@ -1,6 +1,12 @@
 package cobblerclient
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+// ErrItemNotFound is returned by [Client.GetItem] when no item with the given name exists.
+var ErrItemNotFound = errors.New("cobblerclient: item not found")
 
 // UnsupportedServerVersionError is returned when the connected Cobbler server reports a
 // version older than the minimum supported by this client (4.0.0).

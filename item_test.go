@@ -1,6 +1,7 @@
 package cobblerclient
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/go-test/deep"
@@ -95,11 +96,13 @@ func TestGetItem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-item")
 	// The fixture reflects a get_item call for a system named "test" that does not
 	// exist on the server; Cobbler returns the "~" not-found marker, which GetItem
-	// translates into an empty map.
+	// translates into ErrItemNotFound.
 	res, err := c.GetItem("system", "test", false, false)
-	FailOnError(t, err)
-	if len(res) != 0 {
-		t.Error("expected an empty result for a non-existent item")
+	if !errors.Is(err, ErrItemNotFound) {
+		t.Fatalf("expected ErrItemNotFound, got %v", err)
+	}
+	if res != nil {
+		t.Error("expected a nil result for a non-existent item")
 	}
 }
 

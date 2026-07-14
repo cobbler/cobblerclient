@@ -151,7 +151,8 @@ func (c *Client) SetItemResolvedValue(itemUuid string, attribute []string, value
 	return err
 }
 
-// GetItem retrieves a single item from the database. An empty map means that the item could not be found.
+// GetItem retrieves a single item from the database. Returns ErrItemNotFound if no item
+// with the given name exists.
 func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[string]interface{}, error) {
 	unmarshalledResult, err := c.Call("get_item", what, name, flatten, resolved)
 	if err != nil {
@@ -164,7 +165,7 @@ func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[
 			return nil, errors.New("marshall to map unsuccessful and not-found marker not detected")
 		}
 		if notFoundMarker == "~" {
-			return make(map[string]interface{}), nil
+			return nil, ErrItemNotFound
 		}
 	}
 	return marshalledResult, nil
