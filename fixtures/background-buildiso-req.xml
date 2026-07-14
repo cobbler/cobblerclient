@@ -6,37 +6,49 @@
             <value>
                 <struct>
                     <member>
-                        <name>Airgapped</name>
+                        <name>airgapped</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>BuildisoDir</name>
+                        <name>buildisodir</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Distro</name>
+                        <name>distro</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>ExcludeDns</name>
+                        <name>exclude_dns</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>Iso</name>
+                        <name>exclude_systems</name>
+                        <value>
+                            <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>esp</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Profiles</name>
+                        <name>iso</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>profiles</name>
                         <value>
                             <array>
                                 <data></data>
@@ -44,19 +56,19 @@
                         </value>
                     </member>
                     <member>
-                        <name>Source</name>
+                        <name>source</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Standalone</name>
+                        <name>standalone</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>Systems</name>
+                        <name>systems</name>
                         <value>
                             <array>
                                 <data></data>
@@ -64,7 +76,7 @@
                         </value>
                     </member>
                     <member>
-                        <name>XorrisofsOpts</name>
+                        <name>xorrisofs_opts</name>
                         <value>
                             <string></string>
                         </value>

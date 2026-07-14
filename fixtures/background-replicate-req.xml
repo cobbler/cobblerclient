@@ -6,67 +6,67 @@
             <value>
                 <struct>
                     <member>
-                        <name>DistroPatterns</name>
+                        <name>distro_patterns</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Imagepatterns</name>
+                        <name>image_patterns</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Master</name>
+                        <name>master</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>OmitData</name>
+                        <name>omit_data</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>Port</name>
+                        <name>port</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>ProfilePatterns</name>
+                        <name>profile_patterns</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Prune</name>
+                        <name>prune</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>RepoPatterns</name>
+                        <name>repo_patterns</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>SyncAll</name>
+                        <name>sync_all</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>SystemPatterns</name>
+                        <name>system_patterns</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>UseSsl</name>
+                        <name>use_ssl</name>
                         <value>
                             <boolean>0</boolean>
                         </value>

@@ -6,13 +6,13 @@
             <value>
                 <struct>
                     <member>
-                        <name>Power</name>
+                        <name>power</name>
                         <value>
                             <string>off</string>
                         </value>
                     </member>
                     <member>
-                        <name>Systems</name>
+                        <name>systems</name>
                         <value>
                             <array>
                                 <data>

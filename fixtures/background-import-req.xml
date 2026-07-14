@@ -6,49 +6,49 @@
             <value>
                 <struct>
                     <member>
-                        <name>Arch</name>
+                        <name>arch</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>AutoinstallFile</name>
+                        <name>autoinstall_file</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>AvailableAs</name>
+                        <name>available_as</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Breed</name>
+                        <name>breed</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Name</name>
+                        <name>name</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>OsVersion</name>
+                        <name>os_version</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Path</name>
+                        <name>path</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>RsyncFlags</name>
+                        <name>rsync_flags</name>
                         <value>
                             <string></string>
                         </value>

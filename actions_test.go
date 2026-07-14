@@ -58,16 +58,18 @@ func TestBackgroundBuildiso(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "background-buildiso")
 
 	res, err := c.BackgroundBuildiso(BuildisoOptions{
-		Iso:           "",
-		Profiles:      nil,
-		Systems:       nil,
-		BuildisoDir:   "",
-		Distro:        "",
-		Standalone:    false,
-		Airgapped:     false,
-		Source:        "",
-		ExcludeDns:    false,
-		XorrisofsOpts: "",
+		Iso:            "",
+		Profiles:       nil,
+		Systems:        nil,
+		BuildisoDir:    "",
+		Distro:         "",
+		Standalone:     false,
+		Airgapped:      false,
+		Source:         "",
+		ExcludeDns:     false,
+		ExcludeSystems: false,
+		XorrisofsOpts:  "",
+		Esp:            "",
 	})
 	FailOnError(t, err)
 	if res != "2000-01-01_000000_Build Iso_00000000000000000000000000000003" {

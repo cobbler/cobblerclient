@@ -6,25 +6,25 @@
             <value>
                 <struct>
                     <member>
-                        <name>AddGroup</name>
+                        <name>addgroup</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>AddUser</name>
+                        <name>adduser</name>
                         <value>
                             <string>testing</string>
                         </value>
                     </member>
                     <member>
-                        <name>RemoveGroup</name>
+                        <name>removegroup</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>RemoveUser</name>
+                        <name>removeuser</name>
                         <value>
                             <string></string>
                         </value>
