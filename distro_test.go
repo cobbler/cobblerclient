@@ -82,7 +82,7 @@ func TestFindDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-distro")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
-	distros, err := c.FindDistro(criteria)
+	distros, err := c.FindDistro(criteria, false)
 	FailOnError(t, err)
 
 	if len(distros) != 1 {

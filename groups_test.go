@@ -247,7 +247,7 @@ func TestGetSystemGroupAsRendered(t *testing.T) {
 func TestFindDistroGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-distro-group")
 	criteria := map[string]interface{}{"name": "webservers"}
-	res, err := c.FindDistroGroup(criteria)
+	res, err := c.FindDistroGroup(criteria, false)
 	FailOnError(t, err)
 	if len(res) != 1 {
 		t.Errorf("Expected 1 distro group, got %d.", len(res))
@@ -257,7 +257,7 @@ func TestFindDistroGroup(t *testing.T) {
 func TestFindProfileGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-profile-group")
 	criteria := map[string]interface{}{"name": "webservers"}
-	res, err := c.FindProfileGroup(criteria)
+	res, err := c.FindProfileGroup(criteria, false)
 	FailOnError(t, err)
 	if len(res) != 1 {
 		t.Errorf("Expected 1 profile group, got %d.", len(res))
@@ -267,7 +267,7 @@ func TestFindProfileGroup(t *testing.T) {
 func TestFindSystemGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-system-group")
 	criteria := map[string]interface{}{"name": "webservers"}
-	res, err := c.FindSystemGroup(criteria)
+	res, err := c.FindSystemGroup(criteria, false)
 	FailOnError(t, err)
 	if len(res) != 1 {
 		t.Errorf("Expected 1 system group, got %d.", len(res))

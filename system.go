@@ -299,8 +299,8 @@ func (c *Client) ListSystemNames() ([]string, error) {
 }
 
 // FindSystem searches for one or more systems by any of its attributes.
-func (c *Client) FindSystem(criteria map[string]interface{}) ([]*System, error) {
-	result, err := c.Call("find_system", criteria, true, false, c.Token)
+func (c *Client) FindSystem(criteria map[string]interface{}, resolved bool) ([]*System, error) {
+	result, err := c.Call("find_system", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}

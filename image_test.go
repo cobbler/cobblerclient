@@ -86,7 +86,7 @@ func TestFindImage(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-image")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testimage"
-	images, err := c.FindImage(criteria)
+	images, err := c.FindImage(criteria, false)
 	FailOnError(t, err)
 
 	if len(images) != 1 {

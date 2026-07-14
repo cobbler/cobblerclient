@@ -264,8 +264,8 @@ func (c *Client) ListProfileNames() ([]string, error) {
 }
 
 // FindProfile searches for one or more profiles by any of its attributes.
-func (c *Client) FindProfile(criteria map[string]interface{}) ([]*Profile, error) {
-	result, err := c.Call("find_profile", criteria, true, false, c.Token)
+func (c *Client) FindProfile(criteria map[string]interface{}, resolved bool) ([]*Profile, error) {
+	result, err := c.Call("find_profile", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}

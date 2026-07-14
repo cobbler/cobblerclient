@@ -295,10 +295,10 @@ func (c *Client) GetDistrosSince(mtime time.Time) ([]*Distro, error) {
 }
 
 // FindDistro searches for one or more distros by any of its attributes.
-func (c *Client) FindDistro(criteria map[string]interface{}) ([]*Distro, error) {
+func (c *Client) FindDistro(criteria map[string]interface{}, resolved bool) ([]*Distro, error) {
 	var distros []*Distro
 
-	result, err := c.Call("find_distro", criteria, true, false, c.Token)
+	result, err := c.Call("find_distro", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}

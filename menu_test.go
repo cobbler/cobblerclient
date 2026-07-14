@@ -86,7 +86,7 @@ func TestFindMenu(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-menu")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "testmenu"
-	menus, err := c.FindMenu(criteria)
+	menus, err := c.FindMenu(criteria, false)
 	FailOnError(t, err)
 
 	if len(menus) != 1 {

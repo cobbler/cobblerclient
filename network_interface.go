@@ -137,8 +137,8 @@ func (c *Client) GetNetworkInterfacesSince(mtime time.Time) ([]*NetworkInterface
 }
 
 // FindNetworkInterface searches for network interfaces matching the criteria.
-func (c *Client) FindNetworkInterface(criteria map[string]interface{}) ([]*NetworkInterface, error) {
-	result, err := c.Call("find_network_interface", criteria, true, false, c.Token)
+func (c *Client) FindNetworkInterface(criteria map[string]interface{}, resolved bool) ([]*NetworkInterface, error) {
+	result, err := c.Call("find_network_interface", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}

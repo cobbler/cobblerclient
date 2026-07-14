@@ -311,8 +311,8 @@ func (c *Client) DeleteImageRecursive(name string, recursive bool) error {
 }
 
 // FindImage searches for one or more images by any of its attributes.
-func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
-	result, err := c.Call("find_image", criteria, true, false, c.Token)
+func (c *Client) FindImage(criteria map[string]interface{}, resolved bool) ([]*Image, error) {
+	result, err := c.Call("find_image", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}

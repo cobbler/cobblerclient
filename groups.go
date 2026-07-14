@@ -401,8 +401,8 @@ func (c *Client) GetSystemGroupAsRendered(name string) (map[string]interface{}, 
 }
 
 // FindDistroGroup searches for distro groups matching the given criteria.
-func (c *Client) FindDistroGroup(criteria map[string]interface{}) ([]*DistroGroup, error) {
-	result, err := c.Call("find_distro_group", criteria, true, false, c.Token)
+func (c *Client) FindDistroGroup(criteria map[string]interface{}, resolved bool) ([]*DistroGroup, error) {
+	result, err := c.Call("find_distro_group", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -418,8 +418,8 @@ func (c *Client) FindDistroGroup(criteria map[string]interface{}) ([]*DistroGrou
 }
 
 // FindProfileGroup searches for profile groups matching the given criteria.
-func (c *Client) FindProfileGroup(criteria map[string]interface{}) ([]*ProfileGroup, error) {
-	result, err := c.Call("find_profile_group", criteria, true, false, c.Token)
+func (c *Client) FindProfileGroup(criteria map[string]interface{}, resolved bool) ([]*ProfileGroup, error) {
+	result, err := c.Call("find_profile_group", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -435,8 +435,8 @@ func (c *Client) FindProfileGroup(criteria map[string]interface{}) ([]*ProfileGr
 }
 
 // FindSystemGroup searches for system groups matching the given criteria.
-func (c *Client) FindSystemGroup(criteria map[string]interface{}) ([]*SystemGroup, error) {
-	result, err := c.Call("find_system_group", criteria, true, false, c.Token)
+func (c *Client) FindSystemGroup(criteria map[string]interface{}, resolved bool) ([]*SystemGroup, error) {
+	result, err := c.Call("find_system_group", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}

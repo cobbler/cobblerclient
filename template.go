@@ -100,8 +100,8 @@ func (c *Client) GetTemplatesSince(mtime time.Time) ([]*Template, error) {
 	return convertRawTemplatesList(result)
 }
 
-func (c *Client) FindTemplate(criteria map[string]interface{}) ([]*Template, error) {
-	result, err := c.Call("find_template", criteria, true, false, c.Token)
+func (c *Client) FindTemplate(criteria map[string]interface{}, resolved bool) ([]*Template, error) {
+	result, err := c.Call("find_template", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}

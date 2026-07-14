@@ -233,7 +233,7 @@ func TestFindSystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-system")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
-	_, err := c.FindSystem(criteria)
+	_, err := c.FindSystem(criteria, false)
 	FailOnError(t, err)
 }
 
@@ -241,7 +241,7 @@ func TestFindSystemNames(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-system-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
-	_, err := c.FindSystem(criteria)
+	_, err := c.FindSystem(criteria, false)
 	FailOnError(t, err)
 }
 

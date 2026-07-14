@@ -103,7 +103,7 @@ func TestFindNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-network-interface")
 	criteria := make(map[string]interface{}, 1)
 	criteria["mac_address"] = "00:11:22:33:44:55"
-	ifaces, err := c.FindNetworkInterface(criteria)
+	ifaces, err := c.FindNetworkInterface(criteria, false)
 	FailOnError(t, err)
 
 	// No seeded interface actually carries this MAC, so the search legitimately matches nothing.

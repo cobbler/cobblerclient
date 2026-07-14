@@ -116,7 +116,7 @@ func TestFindRepo(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-repo")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
-	repos, err := c.FindRepo(criteria)
+	repos, err := c.FindRepo(criteria, false)
 	FailOnError(t, err)
 
 	if len(repos) != 1 {

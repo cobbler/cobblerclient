@@ -214,8 +214,8 @@ func (c *Client) ListRepoNames() ([]string, error) {
 }
 
 // FindRepo searches for one or more repositories by any of its attributes.
-func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
-	result, err := c.Call("find_repo", criteria, true, false, c.Token)
+func (c *Client) FindRepo(criteria map[string]interface{}, resolved bool) ([]*Repo, error) {
+	result, err := c.Call("find_repo", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}

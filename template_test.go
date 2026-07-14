@@ -109,7 +109,7 @@ func TestGetTemplatesSince(t *testing.T) {
 func TestFindTemplate(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-template")
 	criteria := map[string]interface{}{"name": "testtemplate"}
-	res, err := c.FindTemplate(criteria)
+	res, err := c.FindTemplate(criteria, false)
 	FailOnError(t, err)
 	if len(res) != 1 {
 		t.Errorf("Expected 1 template, got %d.", len(res))

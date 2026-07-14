@@ -86,7 +86,7 @@ func TestFindProfile(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-profile")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
-	profiles, err := c.FindProfile(criteria)
+	profiles, err := c.FindProfile(criteria, false)
 	FailOnError(t, err)
 
 	if len(profiles) != 1 {
