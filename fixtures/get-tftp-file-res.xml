@@ -1,0 +1,19 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <array>
+                    <data>
+                        <value>
+                            <base64></base64>
+                        </value>
+                        <value>
+                            <int>207</int>
+                        </value>
+                    </data>
+                </array>
+            </value>
+        </param>
+    </params>
+</methodResponse>

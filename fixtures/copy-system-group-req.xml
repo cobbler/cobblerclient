@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>copy_system_group</methodName>
+    <params>
+        <param>
+            <value>
+                <string>000000000000000000000000000000dd</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>webservers2</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

@@ -47,12 +47,10 @@ type Item struct {
 	KernelOptions     Value[map[string]interface{}] `mapstructure:"kernel_options" json:"kernel_options" yaml:"kernel_options"`
 	KernelOptionsPost Value[map[string]interface{}] `mapstructure:"kernel_options_post" json:"kernel_options_post" yaml:"kernel_options_post"`
 	AutoinstallMeta   Value[map[string]interface{}] `mapstructure:"autoinstall_meta" json:"autoinstall_meta" yaml:"autoinstall_meta"`
-	FetchableFiles    Value[map[string]interface{}] `mapstructure:"fetchable_files" json:"fetchable_files" yaml:"fetchable_files"`
-	BootFiles         Value[map[string]interface{}] `mapstructure:"boot_files" json:"boot_files" yaml:"boot_files"`
-	TemplateFiles     Value[map[string]interface{}] `mapstructure:"template_files" json:"template_files" yaml:"template_files"`
-	Owners            Value[[]string]               `mapstructure:"owners" json:"owners" yaml:"owners"`
-	MgmtClasses       Value[[]string]               `mapstructure:"mgmt_classes" json:"mgmt_classes" yaml:"mgmt_classes"`
-	MgmtParameters    Value[map[string]interface{}] `mapstructure:"mgmt_parameters" json:"mgmt_parameters" yaml:"mgmt_parameters"`
+	// TemplateFiles is not inheritable (cobbler/items/abstract/bootable_item.py: template_files is a plain
+	// @LazyProperty, unlike kernel_options/kernel_options_post/autoinstall_meta).
+	TemplateFiles map[string]string `mapstructure:"template_files" json:"template_files" yaml:"template_files"`
+	Owners        Value[[]string]   `mapstructure:"owners" json:"owners" yaml:"owners"`
 }
 
 // NewItem is a method to initialize the struct with the values that the server-side would internally use. Using this is
@@ -62,13 +60,7 @@ func NewItem() Item {
 		AutoinstallMeta: Value[map[string]interface{}]{
 			Data: make(map[string]interface{}),
 		},
-		BootFiles: Value[map[string]interface{}]{
-			Data: make(map[string]interface{}),
-		},
 		Children: make([]string, 0),
-		FetchableFiles: Value[map[string]interface{}]{
-			Data: make(map[string]interface{}),
-		},
 		KernelOptions: Value[map[string]interface{}]{
 			Data: make(map[string]interface{}),
 		},
@@ -79,21 +71,13 @@ func NewItem() Item {
 			Data:        make([]string, 0),
 			IsInherited: true,
 		},
-		MgmtClasses: Value[[]string]{
-			Data: make([]string, 0),
-		},
-		MgmtParameters: Value[map[string]interface{}]{
-			IsInherited: true,
-		},
-		TemplateFiles: Value[map[string]interface{}]{
-			Data: make(map[string]interface{}),
-		},
+		TemplateFiles: make(map[string]string),
 	}
 }
 
 // ModifyItem is a generic method to modify items. Changes made with this method are not persisted until a call to
 // SaveItem or one of its other concrete methods.
-func (c *Client) ModifyItem(what, objectId, attribute string, arg interface{}) error {
+func (c *Client) ModifyItem(what, objectId string, attribute []string, arg interface{}) error {
 	_, err := c.Call("modify_item", what, objectId, attribute, arg, c.Token)
 	return err
 }
@@ -106,8 +90,6 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 		"kernel_options",
 		"kernel_options_post",
 		"template_files",
-		"boot_files",
-		"fetchable_files",
 		"params",
 	}
 	if !stringInSlice(attribute, itemKey) {
@@ -125,6 +107,10 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 	if !castSuccessful {
 		return errors.New("failed to cast to map[string]interface{}")
 	}
+	if newMap == nil {
+		// An empty XML-RPC struct decodes to a nil map rather than an empty one.
+		newMap = map[string]interface{}{}
+	}
 	for key, mapValue := range value {
 		if strings.HasPrefix(key, "~") && len(key) > 1 {
 			delete(newMap, key[1:])
@@ -136,11 +122,11 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 	if err != nil {
 		return err
 	}
-	err = c.ModifyItem(what, itemHandle, attribute, newMap)
+	err = c.ModifyItem(what, itemHandle, []string{attribute}, newMap)
 	if err != nil {
 		return err
 	}
-	return c.SaveItem(what, itemHandle, c.Token, "bypass")
+	return c.SaveItem(what, itemHandle, true, true, "bypass")
 }
 
 // GetItemNames returns the list of names for a specified object type present inside Cobbler.
@@ -165,7 +151,8 @@ func (c *Client) SetItemResolvedValue(itemUuid string, attribute []string, value
 	return err
 }
 
-// GetItem retrieves a single item from the database. An empty map means that the item could not be found.
+// GetItem retrieves a single item from the database. Returns ErrItemNotFound if no item
+// with the given name exists.
 func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[string]interface{}, error) {
 	unmarshalledResult, err := c.Call("get_item", what, name, flatten, resolved)
 	if err != nil {
@@ -178,40 +165,29 @@ func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[
 			return nil, errors.New("marshall to map unsuccessful and not-found marker not detected")
 		}
 		if notFoundMarker == "~" {
-			return make(map[string]interface{}), nil
+			return nil, ErrItemNotFound
 		}
 	}
 	return marshalledResult, nil
 }
 
+// getConcreteItem dispatches the get_<item> XML-RPC call. Cobbler 4.0.0 always
+// supports the `resolved` parameter (added in 3.3.3); the v1.x client targets
+// 4.0.0+ only and so always sends it. The CachedVersion field on Client is
+// kept around for compatibility with [Client.ExtendedVersion] consumers but
+// no longer gates parameter shape.
 func (c *Client) getConcreteItem(method, name string, flattened, resolved bool) (interface{}, error) {
-	// Verify CachedVersion is set
-	err := c.setCachedVersion()
-	if err != nil {
-		return nil, err
-	}
-
-	// resolved was added with 3.3.3
-	var result interface{}
-	if c.CachedVersion.GreaterThan(&CobblerVersion{3, 3, 3}) {
-		// name, flatten, resolved, token
-		result, err = c.Call(method, name, flattened, resolved, c.Token)
-	} else {
-		// name, flatten, token
-		result, err = c.Call(method, name, flattened, c.Token)
-	}
-
-	return result, err
+	return c.Call(method, name, flattened, resolved, c.Token)
 }
 
 // FindItems searches for one or more items by any of its attributes.
 func (c *Client) FindItems(what string, criteria map[string]interface{}, sortField string, expand bool) ([]interface{}, error) {
-	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, expand)
+	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, expand, false, c.Token)
 	return unmarshalledResult.([]interface{}), err
 }
 
 func (c *Client) FindItemNames(what string, criteria map[string]interface{}, sortField string) ([]string, error) {
-	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, false)
+	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, false, false, c.Token)
 	return returnStringSlice(unmarshalledResult, err)
 }
 
@@ -276,8 +252,8 @@ func (c *Client) NewItem(what string, isSubobject bool) error {
 }
 
 // SaveItem saves the changes done via XML-RPC.
-func (c *Client) SaveItem(what, objectId, token, editmode string) error {
-	_, err := c.Call("save_item", what, objectId, token, editmode)
+func (c *Client) SaveItem(what, objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_item", what, objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

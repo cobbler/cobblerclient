@@ -1,8 +1,21 @@
 <?xml version='1.0'?>
 <methodResponse>
-    <params>
-        <param>
-            <value><boolean>1</boolean></value>
-        </param>
-    </params>
+    <fault>
+        <value>
+            <struct>
+                <member>
+                    <name>faultCode</name>
+                    <value>
+                        <int>1</int>
+                    </value>
+                </member>
+                <member>
+                    <name>faultString</name>
+                    <value>
+                        <string>&lt;class &#39;cobbler.cexceptions.CX&#39;&gt;:&#39;command failed (rc=1), please validate the physical setup and cobbler config&#39;</string>
+                    </value>
+                </member>
+            </struct>
+        </value>
+    </fault>
 </methodResponse>

@@ -6,18 +6,6 @@
             <value>
                 <struct>
                     <member>
-                        <name>name</name>
-                        <value>
-                            <string>test</string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>profile</name>
-                        <value>
-                            <string>testprof</string>
-                        </value>
-                    </member>
-                    <member>
                         <name>interfaces</name>
                         <value>
                             <struct>
@@ -26,15 +14,15 @@
                                     <value>
                                         <struct>
                                             <member>
-                                                <name>mac_address</name>
-                                                <value>
-                                                    <string>AA:BB:CC:DD:EE:FF</string>
-                                                </value>
-                                            </member>
-                                            <member>
                                                 <name>ip_address</name>
                                                 <value>
                                                     <string>192.168.1.1</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>mac_address</name>
+                                                <value>
+                                                    <string>AA:BB:CC:DD:EE:FF</string>
                                                 </value>
                                             </member>
                                             <member>
@@ -47,6 +35,18 @@
                                     </value>
                                 </member>
                             </struct>
+                        </value>
+                    </member>
+                    <member>
+                        <name>name</name>
+                        <value>
+                            <string>test-register</string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>profile</name>
+                        <value>
+                            <string>00000000000000000000000000000013</string>
                         </value>
                     </member>
                 </struct>

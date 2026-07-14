@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>modify_image</methodName>
+    <params>
+        <param>
+            <value>
+                <string>000000000000000000000000000000ce</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <array>
+                    <data>
+                        <value>
+                            <string>virt</string>
+                        </value>
+                        <value>
+                            <string>auto_boot</string>
+                        </value>
+                    </data>
+                </array>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>&lt;&lt;inherit&gt;&gt;</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

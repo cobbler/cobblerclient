@@ -6,7 +6,22 @@
                 <array>
                     <data>
                         <value>
-                            <string>testsystem</string>
+                            <string>test</string>
+                        </value>
+                        <value>
+                            <string>testsys</string>
+                        </value>
+                        <value>
+                            <string>server1</string>
+                        </value>
+                        <value>
+                            <string>test-register</string>
+                        </value>
+                        <value>
+                            <string>mytestsystem</string>
+                        </value>
+                        <value>
+                            <string>testsys1</string>
                         </value>
                     </data>
                 </array>

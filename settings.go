@@ -2,8 +2,9 @@ package cobblerclient
 
 import (
 	"fmt"
-	"github.com/go-viper/mapstructure/v2"
 	"reflect"
+
+	"github.com/go-viper/mapstructure/v2"
 )
 
 type BootloaderFormatSettings struct {
@@ -94,8 +95,6 @@ type Settings struct {
 	ManageReverseZones                []string                              `json:"manage_reverse_zones" mapstructure:"manage_reverse_zones"`
 	ManageRsync                       bool                                  `json:"manage_rsync" mapstructure:"manage_rsync"`
 	ManageTftpd                       bool                                  `json:"manage_tftpd" mapstructure:"manage_tftpd"`
-	MgmtClasses                       []string                              `json:"mgmt_classes" mapstructure:"mgmt_classes"`
-	MgmtParameters                    map[string]string                     `json:"mgmt_parameters" mapstructure:"mgmt_parameters"`
 	NextServerV4                      string                                `json:"next_server_v4" mapstructure:"next_server_v4"`
 	NextServerV6                      string                                `json:"next_server_v6" mapstructure:"next_server_v6"`
 	NoPxeWithTriggers                 bool                                  `json:"nopxe_with_triggers" mapstructure:"nopxe_with_triggers"`

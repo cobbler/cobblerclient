@@ -31,14 +31,13 @@ func TestGetDistros(t *testing.T) {
 	distros, err := c.GetDistros()
 	FailOnError(t, err)
 
-	if len(distros) != 1 {
+	if len(distros) != 4 {
 		t.Errorf("Wrong number of distros returned.")
 	}
 }
 
 func TestGetDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distro")
-	c.CachedVersion = CobblerVersion{3, 3, 2}
 	distro, err := c.GetDistro("Ubuntu-20.04-x86_64", false, false)
 	FailOnError(t, err)
 
@@ -64,7 +63,7 @@ func TestListDistroNames(t *testing.T) {
 	distros, err := c.ListDistroNames()
 	FailOnError(t, err)
 
-	if len(distros) != 1 {
+	if len(distros) != 4 {
 		t.Errorf("Wrong number of distros returned.")
 	}
 }
@@ -74,7 +73,7 @@ func TestGetDistrosSince(t *testing.T) {
 	distros, err := c.GetDistrosSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
-	if len(distros) != 1 {
+	if len(distros) != 4 {
 		t.Errorf("Wrong number of distros returned.")
 	}
 }
@@ -83,7 +82,7 @@ func TestFindDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-distro")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
-	distros, err := c.FindDistro(criteria)
+	distros, err := c.FindDistro(criteria, false)
 	FailOnError(t, err)
 
 	if len(distros) != 1 {
@@ -103,21 +102,93 @@ func TestFindDistroNames(t *testing.T) {
 	}
 }
 
+func TestCreateDistro(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"create-distro-name-check",
+		"new-distro",
+		"new-distro-modify-name",
+		"new-distro-modify-comment",
+		"new-distro-modify-kernel-options",
+		"new-distro-modify-kernel-options-post",
+		"new-distro-modify-autoinstall-meta",
+		"new-distro-modify-template-files",
+		"new-distro-modify-owners",
+		"new-distro-modify-arch",
+		"new-distro-modify-boot-loaders",
+		"new-distro-modify-breed",
+		"new-distro-modify-initrd",
+		"new-distro-modify-remote-boot-initrd",
+		"new-distro-modify-kernel",
+		"new-distro-modify-remote-boot-kernel",
+		"new-distro-modify-redhat-management-key",
+		"new-distro-modify-redhat-management-org",
+		"new-distro-modify-redhat-management-user",
+		"new-distro-modify-redhat-management-password",
+		"new-distro-modify-os-version",
+		"new-distro-save",
+		"new-distro-get",
+	})
+	d := NewDistro()
+	d.Name = "Ubuntu-20.04-x86_64"
+	d.Kernel = "/code/system-tests/images/fake/vmlinuz"
+	d.Initrd = "/code/system-tests/images/fake/initramfs"
+
+	newDistro, err := c.CreateDistro(d)
+	FailOnError(t, err)
+
+	if newDistro.Name != "Ubuntu-20.04-x86_64" {
+		t.Errorf("Wrong distro name returned.")
+	}
+}
+
+func TestUpdateDistro(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"update-distro-handle",
+		"update-distro-modify-name",
+		"update-distro-modify-comment",
+		"update-distro-modify-kernel-options",
+		"update-distro-modify-kernel-options-post",
+		"update-distro-modify-autoinstall-meta",
+		"update-distro-modify-template-files",
+		"update-distro-modify-owners",
+		"update-distro-modify-arch",
+		"update-distro-modify-boot-loaders",
+		"update-distro-modify-breed",
+		"update-distro-modify-initrd",
+		"update-distro-modify-remote-boot-initrd",
+		"update-distro-modify-kernel",
+		"update-distro-modify-remote-boot-kernel",
+		"update-distro-modify-redhat-management-key",
+		"update-distro-modify-redhat-management-org",
+		"update-distro-modify-redhat-management-user",
+		"update-distro-modify-redhat-management-password",
+		"update-distro-modify-os-version",
+		"update-distro-save",
+	})
+	d := NewDistro()
+	d.Name = "Ubuntu-20.04-x86_64"
+	d.Kernel = "/code/system-tests/images/fake/vmlinuz"
+	d.Initrd = "/code/system-tests/images/fake/initramfs"
+
+	err := c.UpdateDistro(&d)
+	FailOnError(t, err)
+}
+
 func TestSaveDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-distro")
-	err := c.SaveDistro("distro::test", "bypass")
+	err := c.SaveDistro("0000000000000000000000000000000f", true, true, "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopyDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "copy-distro")
-	err := c.CopyDistro("distro::test", "test2")
+	err := c.CopyDistro("0000000000000000000000000000000f", "test2")
 	FailOnError(t, err)
 }
 
 func TestRenameDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "rename-distro")
-	err := c.RenameDistro("distro::test2", "test1")
+	err := c.RenameDistro("00000000000000000000000000000010", "test1")
 	FailOnError(t, err)
 }
 
@@ -126,7 +197,7 @@ func TestGetDistroHandle(t *testing.T) {
 	res, err := c.GetDistroHandle("test")
 	FailOnError(t, err)
 
-	if res != "distro::test" {
+	if res != "0000000000000000000000000000000f" {
 		t.Error("Wrong object id returned.")
 	}
 }
@@ -150,12 +221,3 @@ func TestGetDistroAsRendered(t *testing.T) {
 		t.Errorf("Wrong distro name returned: %v", res["name"])
 	}
 }
-
-/*
- * NOTE: We're skipping the testing of CREATE, UPDATE, DELETE methods for now because
- *       the current implementation of the StubHTTPClient does not allow
- *       buffered mock responses so as soon as the method makes the second
- *       call to Cobbler it'll fail.
- *       This is a system test, so perhaps we can run Cobbler in a Docker container
- *       and take it from there.
- */

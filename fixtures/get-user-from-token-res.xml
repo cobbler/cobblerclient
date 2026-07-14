@@ -3,7 +3,7 @@
     <params>
         <param>
             <value>
-                <string>testuser</string>
+                <string>cobbler</string>
             </value>
         </param>
     </params>

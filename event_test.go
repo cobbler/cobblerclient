@@ -8,14 +8,14 @@ import (
 func TestGetTaskStatus(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-task-status")
 	expectedResult := CobblerEvent{
-		ID:        "2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6",
-		StateTime: 1664568243.5196018,
-		Name:      "Updating Signatures",
-		State:     "complete",
+		ID:        "2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007",
+		StateTime: 0.0,
+		Name:      "(CLI) ACL Configuration",
+		State:     "failed",
 		ReadByWho: []string{},
 	}
 
-	result, err := c.GetTaskStatus("2022-09-30_200403_Updating Signatures_8f2b3c1626fb4b158636059b31242ee6")
+	result, err := c.GetTaskStatus("2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007")
 	FailOnError(t, err)
 	if !reflect.DeepEqual(result, expectedResult) {
 		t.Errorf("Result from 'get_task_status' did not match expected result.")
@@ -32,6 +32,6 @@ func TestGetEvents(t *testing.T) {
 func TestGetEventLog(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-event-log")
 
-	_, err := c.GetEventLog("2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29")
+	_, err := c.GetEventLog("2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007")
 	FailOnError(t, err)
 }

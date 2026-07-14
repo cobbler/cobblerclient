@@ -121,6 +121,9 @@ func (c *Client) setCachedVersion() error {
 		Minor: extendedVersion.VersionTuple[1],
 		Patch: extendedVersion.VersionTuple[2],
 	}
+	if c.CachedVersion.Major < 4 {
+		return &UnsupportedServerVersionError{ServerVersion: c.CachedVersion}
+	}
 	return nil
 }
 
@@ -128,14 +131,47 @@ func (c *Client) invalidateCachedVersion() {
 	c.CachedVersion = CobblerVersion{}
 }
 
-// GenerateAutoinstall generates the autoinstallation file for a given profile or system.
-func (c *Client) GenerateAutoinstall(profile string, system string) (string, error) {
-	result, err := c.Call("generate_autoinstall", profile, system)
+// GenerateAutoinstall generates the autoinstallation file for a given object.
+// objectId is the identifier value, objectType is "profile" or "system",
+// objectField is the field to match on (usually "name"), autoinstallerFile and
+// autoinstallerSubfile are optional overrides for the template files.
+func (c *Client) GenerateAutoinstall(objectId, objectType, objectField, autoinstallerFile, autoinstallerSubfile string) (string, error) {
+	result, err := c.Call("generate_autoinstall", objectId, objectType, objectField, autoinstallerFile, autoinstallerSubfile)
 	if err != nil {
 		return "", err
-	} else {
-		return result.(string), err
 	}
+	return result.(string), nil
+}
+
+// GetTftpFile retrieves a file from the Cobbler TFTP server. path is the server-side
+// path; offset and size control the byte range to return (set both to 0 for the full file).
+// Returns the requested chunk as bytes and the total file length.
+func (c *Client) GetTftpFile(path string, offset, size int) ([]byte, int, error) {
+	result, err := c.Call("get_tftp_file", path, offset, size, c.Token)
+	if err != nil {
+		return nil, 0, err
+	}
+	arr, ok := result.([]interface{})
+	if !ok || len(arr) != 2 {
+		return nil, 0, fmt.Errorf("get_tftp_file: unexpected response type %T", result)
+	}
+	var data []byte
+	switch v := arr[0].(type) {
+	case []byte:
+		data = v
+	case string:
+		data = []byte(v)
+	case nil:
+		// A zero-length chunk (e.g. offset/size both 0) decodes to a bare nil rather than an empty []byte/string.
+		data = nil
+	default:
+		return nil, 0, fmt.Errorf("get_tftp_file: unexpected data type %T", arr[0])
+	}
+	totalLen, err := convertToInt(arr[1])
+	if err != nil {
+		return nil, 0, err
+	}
+	return data, totalLen, nil
 }
 
 // LastModifiedTime retrieves the timestamp when any object in Cobbler was last modified.
@@ -169,18 +205,6 @@ func (c *Client) AutoAddRepos() (bool, error) {
 	return result.(bool), nil
 }
 
-// GetAutoinstallTemplates retrieves a list of all templates that are in use by Cobbler.
-func (c *Client) GetAutoinstallTemplates() error {
-	_, err := c.Call("get_autoinstall_templates", c.Token)
-	return err
-}
-
-// GetAutoinstallSnippets retrieves a list of all snippets that are in use by Cobbler.
-func (c *Client) GetAutoinstallSnippets() error {
-	_, err := c.Call("get_autoinstall_snippets", c.Token)
-	return err
-}
-
 // IsAutoinstallInUse reports whether the named system is currently installing.
 func (c *Client) IsAutoinstallInUse(name string) (bool, error) {
 	result, err := c.Call("is_autoinstall_in_use", name, c.Token)
@@ -208,10 +232,35 @@ func (c *Client) GenerateScript(profile, system, name string) error {
 	return err
 }
 
-// GetBlendedData passes a profile or system through Cobblers inheritance chain and returns the result.
+// GetBlendedData passes a profile or system through Cobbler's inheritance
+// chain and returns the result.
+//
+// Deprecated: get_blended_data is soft-deprecated in the Cobbler backend as
+// of 4.0.0 in favor of dump_vars, but remains available server-side. This
+// wrapper is kept for transitional callers but will be removed in a future
+// release. Use [Client.DumpVars] instead.
 func (c *Client) GetBlendedData(profile, system string) (map[string]interface{}, error) {
 	result, err := c.Call("get_blended_data", profile, system)
-	return result.(map[string]interface{}), err
+	if err != nil {
+		return nil, err
+	}
+	return result.(map[string]interface{}), nil
+}
+
+// DumpVars returns all variables (inherited and local) for the item identified
+// by itemUuid. formattedOutput requests a human-readable rendering; removeDicts
+// strips nested dicts from the output. Replaces [Client.GetBlendedData] in
+// Cobbler 4.0.0.
+func (c *Client) DumpVars(itemUuid string, formattedOutput, removeDicts bool) (map[string]interface{}, error) {
+	result, err := c.Call("dump_vars", itemUuid, formattedOutput, removeDicts)
+	if err != nil {
+		return nil, err
+	}
+	m, ok := result.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("dump_vars returned %T, want map", result)
+	}
+	return m, nil
 }
 
 // RegisterNewSystem registers a new system without a Cobbler token. Normally
@@ -269,6 +318,14 @@ func (c *Client) FindSystemByDnsName(dnsName string) (map[string]interface{}, er
 	return map[string]interface{}{}, nil
 }
 
+// GetRandomMac returns a random MAC address suitable for a virtualised system.
+// In Cobbler 4.0.0 the backend default virt_type changed from "qemu" to "kvm";
+// this wrapper sends "kvm" explicitly so calls don't drift with future backend
+// changes. Use [Client.GetRandomMacFor] to pin a different virt_type.
+func (c *Client) GetRandomMac() (string, error) {
+	return c.GetRandomMacFor("kvm")
+}
+
 // GetRandomMacFor returns a random MAC address tailored for the given virt_type.
 // Valid values per Python signature: "qemu", "kvm", "xenpv", "xenfv", "vmware",
 // "vmwarew", "openvz", "auto".
@@ -285,11 +342,6 @@ func (c *Client) GetRandomMacFor(virtType string) (string, error) {
 		return "", fmt.Errorf("get_random_mac returned %T, want string", result)
 	}
 	return s, nil
-}
-
-// GetRandomMac generates a random MAC address for use with a virtualized system.
-func (c *Client) GetRandomMac() (string, error) {
-	return c.GetRandomMacFor("xenpv")
 }
 
 type StatusOption string
@@ -452,8 +504,22 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				// Page-Info struct
 				return data, nil
 			}
-			if len(mapKeys) == 23 && mapKeys[0].String() == "bonding_opts" {
-				// Network Interface struct
+			// Legacy flat Interface detection removed - 4.0.0+ uses NetworkInterface with nested structs
+			if matchesKeySet(mapKeys, "address", "gateway", "netmask", "static_routes") {
+				// IPv4Option nested in NetworkInterface (Cobbler 4.0.0+)
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "address", "default_gateway", "mtu", "prefix", "secondaries", "static_routes") {
+				// IPv6Option nested in NetworkInterface (Cobbler 4.0.0+)
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "cnames", "name") {
+				// DNSInterfaceOption nested in NetworkInterface (Cobbler 4.0.0+)
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "name_servers", "name_servers_search") {
+				// DNSOptions nested in Profile/System (distinct from the network-interface-level
+				// DNSInterfaceOption above, which uses "cnames"/"name" instead)
 				return data, nil
 			}
 			for _, key := range mapKeys {
@@ -521,6 +587,20 @@ func decodeCobblerItem(raw interface{}, result interface{}) (interface{}, error)
 	return result, nil
 }
 
+// isOptionStructType reports whether fieldType is one of the nested "option"
+// structs (mirroring cobbler.items.options.*.ItemOption subclasses). Cobbler
+// 4.0.0 serializes and accepts these as a nested object rather than flat
+// fields, so modify_<what> must be called with a two-segment attribute path
+// (e.g. []string{"virt", "cpus"}) instead of a single one.
+func isOptionStructType(fieldType string) bool {
+	switch fieldType {
+	case "VirtOptions", "PowerOptions", "DNSOptions", "TFTPOptions", "APTOptions",
+		"IPv4Option", "IPv6Option", "DNSInterfaceOption", "URIOption":
+		return true
+	}
+	return false
+}
+
 // updateCobblerFields updates all fields in a Cobbler Item structure.
 func (c *Client) updateCobblerFields(what string, item reflect.Value, id string) error {
 	if err := c.setCachedVersion(); err != nil {
@@ -528,29 +608,6 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 	}
 
 	method := fmt.Sprintf("modify_%s", what)
-	typeOfT := item.Type()
-
-	// Update embedded Item struct
-	for i := 0; i < item.NumField(); i++ {
-		v := item.Field(i)
-		fieldType := v.Type().Name()
-
-		if fieldType == "Item" {
-			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
-			if err != nil {
-				return err
-			}
-			break
-		}
-
-		if fieldType == "Resource" {
-			err := c.updateCobblerFields(what, reflect.ValueOf(v.Interface()), id)
-			if err != nil {
-				return err
-			}
-			break
-		}
-	}
 
 	// Fields that can inherit from other items can only be set after the parent is set.
 	// Fields that inherit from settings can be modified without this constraint.
@@ -558,21 +615,21 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		// In Cobbler v3.3.0, if profile name isn't created first, an empty child gets written to the distro, which
 		// causes a ValueError: "calling find with no arguments"
 		nameField := item.FieldByName("Name")
-		_, err := c.Call(method, id, "name", nameField.String(), c.Token)
+		_, err := c.Call(method, id, []string{"name"}, nameField.String(), c.Token)
 		if err != nil {
 			return err
 		}
 
 		parentField := item.FieldByName("Parent")
 		if parentField != (reflect.Value{}) {
-			err = c.updateSingleField(method, id, "parent", parentField.String(), "")
+			err = c.updateSingleField(method, id, []string{"parent"}, parentField.String(), "")
 			if err != nil {
 				return err
 			}
 		}
 		distroField := item.FieldByName("Distro")
 		if distroField != (reflect.Value{}) {
-			err = c.updateSingleField(method, id, "distro", distroField.String(), "")
+			err = c.updateSingleField(method, id, []string{"distro"}, distroField.String(), "")
 			if err != nil {
 				return err
 			}
@@ -581,26 +638,36 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 	if method == "modify_system" {
 		profileField := item.FieldByName("Profile")
 		if profileField != (reflect.Value{}) {
-			err := c.updateSingleField(method, id, "profile", profileField.String(), "")
+			err := c.updateSingleField(method, id, []string{"profile"}, profileField.String(), "")
 			if err != nil {
 				return err
 			}
 		}
 		imageField := item.FieldByName("Image")
 		if imageField != (reflect.Value{}) {
-			err := c.updateSingleField(method, id, "image", imageField.String(), "")
+			err := c.updateSingleField(method, id, []string{"image"}, imageField.String(), "")
 			if err != nil {
 				return err
 			}
 		}
-		interfaceField := item.FieldByName("Interfaces")
-		if interfaceField != (reflect.Value{}) {
-			err := c.updateInterfaces(id, interfaceField.Interface())
-			if err != nil {
-				return err
-			}
-		}
+		// Interface updates are no longer pushed through modify_system in
+		// Cobbler 4.0.0. The Interfaces field is marked noupdate; callers
+		// manage interfaces via Client.{Create,Update,Delete}NetworkInterface.
 	}
+
+	return c.updateFields(method, id, nil, item)
+}
+
+// updateFields walks item's fields and pushes each one to the server via
+// modify_<what>. pathPrefix is the attribute path accumulated so far (nil at
+// the top level). Fields embedding Item/Group are squashed onto the same
+// wire object as their parent, so they recurse without extending the path.
+// Fields whose type is a nested "option" struct (see isOptionStructType)
+// recurse with their own mapstructure tag appended to pathPrefix, matching
+// the nested attribute paths Cobbler 4.0.0 expects, e.g.
+// modify_profile(id, []string{"virt", "cpus"}, ...).
+func (c *Client) updateFields(method, id string, pathPrefix []string, item reflect.Value) error {
+	typeOfT := item.Type()
 
 	for i := 0; i < item.NumField(); i++ {
 		v := item.Field(i)
@@ -609,24 +676,45 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		field := tag.Get("mapstructure")
 		cobblerTag := tag.Get("cobbler")
 
-		if cobblerTag == "noupdate" || fieldType == "Item" || fieldType == "Resource" || fieldType == "Meta" {
+		if cobblerTag == "noupdate" || fieldType == "Meta" {
 			continue
 		}
 
-		if field == "" || field == "parent" || field == "distro" || field == "profile" || field == "image" || field == "interfaces" {
-			// Skip fields that are empty or have been set previously
+		if fieldType == "Item" || fieldType == "Group" {
+			if err := c.updateFields(method, id, pathPrefix, v); err != nil {
+				return err
+			}
 			continue
 		}
 
-		if method == "modify_profile" && field == "name" {
-			// Field set above
+		if field == "" {
 			continue
+		}
+
+		if isOptionStructType(fieldType) {
+			nestedPath := append(append([]string{}, pathPrefix...), field)
+			if err := c.updateFields(method, id, nestedPath, v); err != nil {
+				return err
+			}
+			continue
+		}
+
+		if len(pathPrefix) == 0 {
+			if field == "parent" || field == "distro" || field == "profile" || field == "image" || field == "interfaces" {
+				// Skip fields that are empty or have been set previously
+				continue
+			}
+
+			if method == "modify_profile" && field == "name" {
+				// Field set above
+				continue
+			}
 		}
 
 		fieldValue := v.Interface()
 		if strings.HasPrefix(fieldType, "Value") {
 			if v.FieldByName("IsInherited").Bool() {
-				if minVer := typeOfT.Field(i).Tag.Get("cobbler_min_inherit"); minVer != "" {
+				if minVer := tag.Get("cobbler_min_inherit"); minVer != "" {
 					required, err := parseCobblerVersion(minVer)
 					if err != nil {
 						return fmt.Errorf("invalid cobbler_min_inherit tag on field %s: %w", field, err)
@@ -645,15 +733,15 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 			}
 		}
 
-		err := c.updateSingleField(method, id, field, fieldValue, cobblerTag)
-		if err != nil {
+		path := append(append([]string{}, pathPrefix...), field)
+		if err := c.updateSingleField(method, id, path, fieldValue, cobblerTag); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *Client) updateSingleField(method, id, field string, fieldValue interface{}, cobblerTag string) error {
+func (c *Client) updateSingleField(method, id string, field []string, fieldValue interface{}, cobblerTag string) error {
 	if result, err := c.Call(method, id, field, fieldValue, c.Token); err != nil {
 		return err
 	} else {
@@ -663,21 +751,6 @@ func (c *Client) updateSingleField(method, id, field string, fieldValue interfac
 				return nil
 			}
 			return fmt.Errorf("error updating field \"%s\" to \"%s\"", field, fieldValue)
-		}
-	}
-	return nil
-}
-
-// updateInterfaces takes care of pushing interface modifications. Since interfaces don't have unique identifiers in
-// Cobbler 3.3.x. As such no reliable tracking of operations can be done when interfaces are renamed. As such this only
-// handles modification and creation of interfaces.
-func (c *Client) updateInterfaces(systemId string, interfaceData interface{}) error {
-	interfaceMap := interfaceData.(Interfaces)
-	for name, iface := range interfaceMap {
-		res := makeInterfaceOptionsMap(name, iface)
-		err := c.ModifyInterface(systemId, res)
-		if err != nil {
-			return err
 		}
 	}
 	return nil

@@ -17,7 +17,7 @@ func TestBackgroundSync(t *testing.T) {
 
 	res, err := c.BackgroundSync(BackgroundSyncOptions{Dhcp: false, Dns: false, Verbose: false})
 	FailOnError(t, err)
-	if res != "2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29" {
+	if res != "2000-01-01_000000_Sync_00000000000000000000000000000001" {
 		t.Errorf("Problem with event id return")
 	}
 }
@@ -27,14 +27,23 @@ func TestBackgroundSyncSystems(t *testing.T) {
 
 	res, err := c.BackgroundSyncSystems(BackgroundSyncSystemsOptions{Systems: []string{"", ""}, Verbose: false})
 	FailOnError(t, err)
-	if res != "2022-09-30_151856_Syncsystems_76d70bd7f48642f7b4cb5a0b0dcc93a5" {
+	if res != "2000-01-01_000000_Syncsystems_00000000000000000000000000000002" {
 		t.Errorf("Problem with event id return")
 	}
 }
 
 func TestCheck(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "check")
-	expected := []string{"reposync not installed, install yum-utils"}
+	expected := []string{
+		"The 'server' field in /etc/cobbler/settings.yaml must be set to something other than localhost, or automatic installation features will not work.  This should be a resolvable hostname or IP for the boot server as reachable by all machines that will use it.",
+		"For PXE to be functional, the 'next_server_v4' field in /etc/cobbler/settings.yaml must be set to something other than 127.0.0.1, and should match the IP of the boot server on the PXE network.",
+		"For PXE to be functional, the 'next_server_v6' field in /etc/cobbler/settings.yaml must be set to something other than ::1, and should match the IP of the boot server on the PXE network.",
+		"some network boot-loaders are missing from /var/lib/cobbler/loaders. If you only want to handle x86/x86_64 netbooting, you may ensure that you have installed a *recent* version of the syslinux package installed and can ignore this message entirely. Files in this directory, should you want to support all architectures, should include pxelinux.0, andmenu.c32.",
+		"enable and start rsyncd.service with systemctl",
+		"reposync is not installed, install yum-utils or dnf-plugins-core",
+		"yumdownloader is not installed, install yum-utils or dnf-plugins-core",
+		"The default password used by the sample templates for newly installed machines (default_password_crypted in /etc/cobbler/settings.yaml) is still set to 'cobbler' and should be changed, try: \"openssl passwd -1 -salt 'random-phrase-here' 'your-password-here'\" to generate new one",
+	}
 
 	result, err := c.Check()
 	var resolvedResult = *result
@@ -49,19 +58,21 @@ func TestBackgroundBuildiso(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "background-buildiso")
 
 	res, err := c.BackgroundBuildiso(BuildisoOptions{
-		Iso:           "",
-		Profiles:      nil,
-		Systems:       nil,
-		BuildisoDir:   "",
-		Distro:        "",
-		Standalone:    false,
-		Airgapped:     false,
-		Source:        "",
-		ExcludeDns:    false,
-		XorrisofsOpts: "",
+		Iso:            "",
+		Profiles:       nil,
+		Systems:        nil,
+		BuildisoDir:    "",
+		Distro:         "",
+		Standalone:     false,
+		Airgapped:      false,
+		Source:         "",
+		ExcludeDns:     false,
+		ExcludeSystems: false,
+		XorrisofsOpts:  "",
+		Esp:            "",
 	})
 	FailOnError(t, err)
-	if res != "2023-01-24_083001_Build Iso_20fa7d4256fc4f61a2b9c2237c80fb41" {
+	if res != "2000-01-01_000000_Build Iso_00000000000000000000000000000003" {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }
@@ -71,7 +82,7 @@ func TestBackgroundHardlink(t *testing.T) {
 
 	res, err := c.BackgroundHardlink()
 	FailOnError(t, err)
-	if res != "2022-09-30_203004_Hardlink_800c38f4e0424187aed6a6ffb6553ef8" {
+	if res != "2000-01-01_000000_Hardlink_00000000000000000000000000000004" {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }
@@ -84,7 +95,7 @@ func TestValidateAutoinstallFiles(t *testing.T) {
 
 	res, err := c.BackgroundValidateAutoinstallFiles()
 	FailOnError(t, err)
-	if res != "2022-09-30_203505_Automated installation files validation_487b1a5d1d914c62834126391ac2b601" {
+	if res != "2000-01-01_000000_Automated installation files validation_00000000000000000000000000000005" {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }
@@ -93,23 +104,20 @@ func TestBackgroundReplicate(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "background-replicate")
 
 	res, err := c.BackgroundReplicate(ReplicateOptions{
-		Master:            "",
-		Port:              "",
-		DistroPatterns:    "",
-		ProfilePatterns:   "",
-		SystemPatterns:    "",
-		RepoPatterns:      "",
-		Imagepatterns:     "",
-		MgmtclassPatterns: "",
-		PackagePatterns:   "",
-		FilePatterns:      "",
-		Prune:             false,
-		OmitData:          false,
-		SyncAll:           false,
-		UseSsl:            false,
+		Master:          "",
+		Port:            "",
+		DistroPatterns:  "",
+		ProfilePatterns: "",
+		SystemPatterns:  "",
+		RepoPatterns:    "",
+		Imagepatterns:   "",
+		Prune:           false,
+		OmitData:        false,
+		SyncAll:         false,
+		UseSsl:          false,
 	})
 	FailOnError(t, err)
-	if res != "2023-01-24_075801_Replicate_ea7a003a81264039b4277ac55664661a" {
+	if res != "2000-01-01_000000_Replicate_00000000000000000000000000000006" {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }
@@ -123,7 +131,7 @@ func TestBackgroundAclSetup(t *testing.T) {
 		RemoveUser:  "",
 		RemoveGroup: "",
 	})
-	if res != "2023-01-24_083137_(CLI) ACL Configuration_334327920d2946fda3ac95dbf457e76d" {
+	if res != "2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007" {
 		t.Errorf("Event-ID was malformed")
 	}
 	FailOnError(t, err)
@@ -143,7 +151,7 @@ func TestBackgroundImport(t *testing.T) {
 		OsVersion:       "",
 	})
 	FailOnError(t, err)
-	if res != "2023-01-24_103639_Media import_dd297121f7bc412e9ce4d80f05de4b3f" {
+	if res != "2000-01-01_000000_Media import_00000000000000000000000000000008" {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }
@@ -158,7 +166,7 @@ func TestBackgroundReposync(t *testing.T) {
 		Tries:  0,
 	})
 	FailOnError(t, err)
-	if res != "2023-01-24_103758_Reposync_3478fd19fd5f48bf8b40c728ad247348" {
+	if res != "2000-01-01_000000_Reposync_00000000000000000000000000000009" {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }
@@ -168,7 +176,7 @@ func TestBackgroundMkLoaders(t *testing.T) {
 
 	res, err := c.BackgroundMkLoaders()
 	FailOnError(t, err)
-	if res != "2022-09-30_203957_Create bootable bootloader images_9c809af4d6f148e49b071fac84f9a664" {
+	if res != "2000-01-01_000000_Create bootable bootloader images_0000000000000000000000000000000a" {
 		t.Fatalf("Expected a different Event-ID!")
 	}
 }
@@ -181,17 +189,20 @@ func TestBackgroundPowerSystem(t *testing.T) {
 		Power:   "off",
 	})
 	FailOnError(t, err)
-	if result != "2024-08-06_072956_Power management ()_1a44f162efa74806b16d055dfad0fc04" {
+	if result != "2000-01-01_000000_Power management ()_0000000000000000000000000000000b" {
 		t.Errorf("Event-ID was malformed")
 	}
 }
 
 func TestPowerSystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "power-system")
+	expected := `Fault(1): <class 'cobbler.cexceptions.CX'>:'command failed (rc=1), please validate the physical setup and cobbler config'`
 
-	result, err := c.PowerSystem("system::testsys1", "status")
-	FailOnError(t, err)
-	if !result {
-		t.Errorf("Expected power operation not to fail!")
+	result, err := c.PowerSystem("0000000000000000000000000000001b", "status")
+	if result {
+		t.Errorf("Expected power operation to fail!")
+	}
+	if err == nil || err.Error() != expected {
+		t.Errorf("%s expected; got %s", expected, err)
 	}
 }

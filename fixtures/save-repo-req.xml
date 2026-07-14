@@ -4,17 +4,27 @@
     <params>
         <param>
             <value>
-                <string>repo::testrepo</string>
+                <string>000000000000000000000000000000cb</string>
             </value>
         </param>
         <param>
             <value>
-                <string>securetoken99</string>
+                <boolean>1</boolean>
+            </value>
+        </param>
+        <param>
+            <value>
+                <boolean>1</boolean>
             </value>
         </param>
         <param>
             <value>
                 <string>bypass</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
             </value>
         </param>
     </params>

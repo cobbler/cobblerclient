@@ -30,32 +30,25 @@ type Profile struct {
 	// These are internal fields and cannot be modified.
 	ReposEnabled bool `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	Autoinstall         string          `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
-	BootLoaders         Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
-	DHCPTag             string          `mapstructure:"dhcp_tag" json:"dhcp_tag" yaml:"dhcp_tag"`
-	Distro              string          `mapstructure:"distro" json:"distro" yaml:"distro"`
-	EnableIPXE          Value[bool]     `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe" cobbler_min_inherit:"3.3.5"`
-	EnableMenu          Value[bool]     `mapstructure:"enable_menu" json:"enable_menu" yaml:"enable_menu" cobbler_min_inherit:"3.3.5"`
-	Filename            string          `mapstructure:"filename" json:"filename" yaml:"filename"`
-	Menu                string          `mapstructure:"menu" json:"menu" yaml:"menu"`
-	NameServers         Value[[]string] `mapstructure:"name_servers" json:"name_servers" yaml:"name_servers"`
-	NameServersSearch   Value[[]string] `mapstructure:"name_servers_search" json:"name_servers_search" yaml:"name_servers_search"`
-	NextServerv4        string          `mapstructure:"next_server_v4" json:"next_server_v4" yaml:"next_server_v4"`
-	NextServerv6        string          `mapstructure:"next_server_v6" json:"next_server_v6" yaml:"next_server_v6"`
-	Proxy               string          `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
-	RedhatManagementKey string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
-	Repos               []string        `mapstructure:"repos" json:"repos" yaml:"repos"`
-	Server              string          `mapstructure:"server" json:"server" yaml:"server"`
-	VirtAutoBoot        Value[bool]     `mapstructure:"virt_auto_boot" json:"virt_auto_boot" yaml:"virt_auto_boot"`
-	VirtBridge          string          `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
-	VirtCPUs            int             `mapstructure:"virt_cpus" json:"virt_cpus" yaml:"virt_cpus"`
-	VirtDiskDriver      string          `mapstructure:"virt_disk_driver" json:"virt_disk_driver" yaml:"virt_disk_driver"`
-	VirtFileSize        Value[float64]  `mapstructure:"virt_file_size" json:"virt_file_size" yaml:"virt_file_size"`
-	VirtPath            string          `mapstructure:"virt_path" json:"virt_path" yaml:"virt_path"`
-	VirtRAM             Value[int]      `mapstructure:"virt_ram" json:"virt_ram" yaml:"virt_ram"`
-	VirtType            string          `mapstructure:"virt_type" json:"virt_type" yaml:"virt_type"`
-
-	Client
+	Autoinstall              string          `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	BootLoaders              Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	DHCPTag                  string          `mapstructure:"dhcp_tag" json:"dhcp_tag" yaml:"dhcp_tag"`
+	Distro                   string          `mapstructure:"distro" json:"distro" yaml:"distro"`
+	DNS                      DNSOptions      `mapstructure:"dns" json:"dns" yaml:"dns"`
+	EnableIPXE               Value[bool]     `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe" cobbler_min_inherit:"3.3.5"`
+	EnableMenu               Value[bool]     `mapstructure:"enable_menu" json:"enable_menu" yaml:"enable_menu" cobbler_min_inherit:"3.3.5"`
+	Filename                 string          `mapstructure:"filename" json:"filename" yaml:"filename"`
+	Menu                     string          `mapstructure:"menu" json:"menu" yaml:"menu"`
+	Proxy                    string          `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
+	RedhatManagementKey      string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	RedhatManagementOrg      string          `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
+	RedhatManagementUser     string          `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
+	RedhatManagementPassword string          `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
+	Repos                    []string        `mapstructure:"repos" json:"repos" yaml:"repos"`
+	Server                   string          `mapstructure:"server" json:"server" yaml:"server"`
+	TFTP                     TFTPOptions     `mapstructure:"tftp" json:"tftp" yaml:"tftp"`
+	Virt                     VirtOptions     `mapstructure:"virt" json:"virt" yaml:"virt"`
+	VirtBridge               string          `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
 }
 
 func NewProfile() Profile {
@@ -73,41 +66,19 @@ func NewProfile() Profile {
 		EnableMenu: Value[bool]{
 			IsInherited: true,
 		},
-		NameServers: Value[[]string]{
-			Data:        make([]string, 0),
-			IsInherited: true,
-		},
-		NameServersSearch: Value[[]string]{
-			Data:        make([]string, 0),
-			IsInherited: true,
-		},
-		NextServerv4:        inherit,
-		NextServerv6:        inherit,
-		Proxy:               inherit,
-		RedhatManagementKey: inherit,
-		Repos:               make([]string, 0),
-		Server:              inherit,
-		VirtAutoBoot: Value[bool]{
-			IsInherited: true,
-		},
-		VirtBridge:     inherit,
-		VirtCPUs:       1,
-		VirtDiskDriver: inherit,
-		VirtFileSize: Value[float64]{
-			IsInherited: true,
-		},
-		VirtRAM: Value[int]{
-			IsInherited: true,
-		},
-		VirtType: inherit,
+		DNS:                      newDNSOptions(),
+		Proxy:                    inherit,
+		RedhatManagementKey:      inherit,
+		RedhatManagementOrg:      inherit,
+		RedhatManagementUser:     inherit,
+		RedhatManagementPassword: inherit,
+		Repos:                    make([]string, 0),
+		Server:                   inherit,
+		TFTP:                     newTFTPOptions(),
+		Virt:                     newVirtOptions(),
+		VirtBridge:               inherit,
 	}
 	// Overwrite Item defaults
-	profile.BootFiles = Value[map[string]interface{}]{
-		IsInherited: true,
-	}
-	profile.FetchableFiles = Value[map[string]interface{}]{
-		IsInherited: true,
-	}
 	profile.AutoinstallMeta = Value[map[string]interface{}]{
 		IsInherited: true,
 	}
@@ -115,9 +86,6 @@ func NewProfile() Profile {
 		IsInherited: true,
 	}
 	profile.KernelOptionsPost = Value[map[string]interface{}]{
-		IsInherited: true,
-	}
-	profile.MgmtClasses = Value[[]string]{
 		IsInherited: true,
 	}
 	return profile
@@ -149,27 +117,7 @@ func convertRawProfile(name string, xmlrpcResult interface{}) (*Profile, error) 
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedProfile.FetchableFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedProfile.BootFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedProfile.TemplateFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedProfile.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedProfile.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedProfile.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}
@@ -177,11 +125,7 @@ func convertRawProfile(name string, xmlrpcResult interface{}) (*Profile, error) 
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueSliceStruct(&decodedProfile.NameServers)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedProfile.NameServersSearch)
+	err = sanitizeValueSliceStruct(&decodedProfile.DNS.NameServers)
 	if err != nil {
 		return nil, err
 	}
@@ -239,7 +183,9 @@ func (c *Client) GetProfile(name string, flattened, resolved bool) (*Profile, er
 // It ensures that a Distro is set and then sets other default values.
 func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	// Check if a profile with the same name already exists
-	if _, err := c.GetProfile(profile.Name, false, false); err == nil {
+	if exists, err := c.HasItem("profile", profile.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a profile with the name %s already exists", profile.Name)
 	}
 
@@ -247,11 +193,11 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 		return nil, fmt.Errorf("a profile must have a distro set")
 	}
 
-	if profile.VirtType == "" {
-		profile.VirtType = inherit
+	if profile.Virt.Type == "" {
+		profile.Virt.Type = inherit
 	}
-	if profile.VirtDiskDriver == "" {
-		profile.VirtDiskDriver = inherit
+	if profile.Virt.DiskDriver == "" {
+		profile.Virt.DiskDriver = inherit
 	}
 
 	// To create a profile via the Cobbler API, first call new_profile to obtain an ID
@@ -267,7 +213,7 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	}
 
 	// Save the final profile
-	err = c.SaveProfile(newID, "bypass")
+	err = c.SaveProfile(newID, true, true, "bypass")
 	if err != nil {
 		return nil, err
 	}
@@ -288,12 +234,12 @@ func (c *Client) UpdateProfile(profile *Profile) error {
 		return err
 	}
 
-	return c.SaveProfile(id, "bypass")
+	return c.SaveProfile(id, true, true, "bypass")
 }
 
 // SaveProfile saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveProfile(objectId, editmode string) error {
-	_, err := c.Call("save_profile", objectId, c.Token, editmode)
+func (c *Client) SaveProfile(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_profile", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 
@@ -320,8 +266,8 @@ func (c *Client) ListProfileNames() ([]string, error) {
 }
 
 // FindProfile searches for one or more profiles by any of its attributes.
-func (c *Client) FindProfile(criteria map[string]interface{}) ([]*Profile, error) {
-	result, err := c.Call("find_profile", criteria, true, c.Token)
+func (c *Client) FindProfile(criteria map[string]interface{}, resolved bool) ([]*Profile, error) {
+	result, err := c.Call("find_profile", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -330,7 +276,7 @@ func (c *Client) FindProfile(criteria map[string]interface{}) ([]*Profile, error
 
 // FindProfileNames searches for one or more profiles by any of its attributes.
 func (c *Client) FindProfileNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_profile", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_profile", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
@@ -352,7 +298,7 @@ func (c *Client) RenameProfile(objectId, newName string) error {
 
 // GetProfileHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetProfileHandle(name string) (string, error) {
-	res, err := c.Call("get_profile_handle", name, c.Token)
+	res, err := c.Call("get_profile_handle", name)
 	return returnString(res, err)
 }
 

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>get_system</methodName>
+    <methodName>has_item</methodName>
     <params>
         <param>
             <value>
-                <string>mytestsystem</string>
+                <string>system</string>
             </value>
         </param>
         <param>
             <value>
-                <boolean>0</boolean>
+                <string>mytestsystem</string>
             </value>
         </param>
         <param>

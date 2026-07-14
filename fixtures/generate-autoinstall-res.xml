@@ -3,8 +3,9 @@
     <params>
         <param>
             <value>
-                <string># This automatic OS installation file had errors that prevented it from being rendered correctly.
-# The cobbler.log should have information relating to this failure.</string>
+                <string># this file intentionally left blank
+# admins:  edit it as you like, or leave it blank for non-interactive install
+</string>
             </value>
         </param>
     </params>

@@ -28,17 +28,20 @@ type Distro struct {
 	Item `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
-	SourceRepos         []string        `mapstructure:"source_repos"   cobbler:"noupdate" json:"source_repos" yaml:"source_repos"`
-	TreeBuildTime       string          `mapstructure:"tree_build_time" cobbler:"noupdate" json:"tree_build_time" yaml:"tree_build_time"`
-	Arch                string          `mapstructure:"arch" json:"arch" yaml:"arch"`
-	BootLoaders         Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
-	Breed               string          `mapstructure:"breed" json:"breed" yaml:"breed"`
-	Initrd              string          `mapstructure:"initrd" json:"initrd" yaml:"initrd"`
-	RemoteBootInitrd    string          `mapstructure:"remote_boot_initrd" json:"remote_boot_initrd" yaml:"remote_boot_initrd"`
-	Kernel              string          `mapstructure:"kernel" json:"kernel" yaml:"kernel"`
-	RemoteBootKernel    string          `mapstructure:"remote_boot_kernel" json:"remote_boot_kernel" yaml:"remote_boot_kernel"`
-	RedhatManagementKey string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
-	OSVersion           string          `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
+	SourceRepos              []string        `mapstructure:"source_repos"   cobbler:"noupdate" json:"source_repos" yaml:"source_repos"`
+	TreeBuildTime            string          `mapstructure:"tree_build_time" cobbler:"noupdate" json:"tree_build_time" yaml:"tree_build_time"`
+	Arch                     string          `mapstructure:"arch" json:"arch" yaml:"arch"`
+	BootLoaders              Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	Breed                    string          `mapstructure:"breed" json:"breed" yaml:"breed"`
+	Initrd                   string          `mapstructure:"initrd" json:"initrd" yaml:"initrd"`
+	RemoteBootInitrd         string          `mapstructure:"remote_boot_initrd" json:"remote_boot_initrd" yaml:"remote_boot_initrd"`
+	Kernel                   string          `mapstructure:"kernel" json:"kernel" yaml:"kernel"`
+	RemoteBootKernel         string          `mapstructure:"remote_boot_kernel" json:"remote_boot_kernel" yaml:"remote_boot_kernel"`
+	RedhatManagementKey      string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	RedhatManagementOrg      string          `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
+	RedhatManagementUser     string          `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
+	RedhatManagementPassword string          `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
+	OSVersion                string          `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
 }
 
 func NewDistro() Distro {
@@ -49,7 +52,10 @@ func NewDistro() Distro {
 			Data:        make([]string, 0),
 			IsInherited: true,
 		},
-		RedhatManagementKey: inherit,
+		RedhatManagementKey:      inherit,
+		RedhatManagementOrg:      inherit,
+		RedhatManagementUser:     inherit,
+		RedhatManagementPassword: inherit,
 	}
 }
 
@@ -80,27 +86,7 @@ func convertRawDistro(name string, xmlrpcResult interface{}) (*Distro, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedDistro.FetchableFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedDistro.BootFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedDistro.TemplateFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedDistro.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedDistro.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedDistro.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +203,9 @@ func (c *Client) GetDistro(name string, flattened, resolved bool) (*Distro, erro
 // CreateDistro creates a distro.
 func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 	// Make sure a distro with the same name does not already exist
-	if _, err := c.GetDistro(distro.Name, false, false); err == nil {
+	if exists, err := c.HasItem("distro", distro.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a Distro with the name %s already exists", distro.Name)
 	}
 
@@ -232,7 +220,7 @@ func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 		return nil, err
 	}
 
-	if _, err := c.Call("save_distro", newID, c.Token); err != nil {
+	if err := c.SaveDistro(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -251,7 +239,7 @@ func (c *Client) UpdateDistro(distro *Distro) error {
 		return err
 	}
 
-	if _, err := c.Call("save_distro", id, c.Token); err != nil {
+	if err := c.SaveDistro(id, true, true, "bypass"); err != nil {
 		return err
 	}
 
@@ -259,8 +247,8 @@ func (c *Client) UpdateDistro(distro *Distro) error {
 }
 
 // SaveDistro saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveDistro(objectId, editmode string) error {
-	_, err := c.Call("save_distro", objectId, c.Token, editmode)
+func (c *Client) SaveDistro(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_distro", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 
@@ -309,10 +297,10 @@ func (c *Client) GetDistrosSince(mtime time.Time) ([]*Distro, error) {
 }
 
 // FindDistro searches for one or more distros by any of its attributes.
-func (c *Client) FindDistro(criteria map[string]interface{}) ([]*Distro, error) {
+func (c *Client) FindDistro(criteria map[string]interface{}, resolved bool) ([]*Distro, error) {
 	var distros []*Distro
 
-	result, err := c.Call("find_distro", criteria, true, c.Token)
+	result, err := c.Call("find_distro", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -332,7 +320,7 @@ func (c *Client) FindDistro(criteria map[string]interface{}) ([]*Distro, error) 
 
 // FindDistroNames searches for one or more distros by any of its attributes.
 func (c *Client) FindDistroNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_distro", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_distro", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
@@ -344,7 +332,7 @@ func (c *Client) RenameDistro(objectId, newName string) error {
 
 // GetDistroHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetDistroHandle(name string) (string, error) {
-	res, err := c.Call("get_distro_handle", name, c.Token)
+	res, err := c.Call("get_distro_handle", name)
 	return returnString(res, err)
 }
 

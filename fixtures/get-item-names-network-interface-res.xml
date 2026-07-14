@@ -1,0 +1,25 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <array>
+                    <data>
+                        <value>
+                            <string>eth0-server1</string>
+                        </value>
+                        <value>
+                            <string>default</string>
+                        </value>
+                        <value>
+                            <string>eth0-mytestsystem</string>
+                        </value>
+                        <value>
+                            <string>eth2-server1</string>
+                        </value>
+                    </data>
+                </array>
+            </value>
+        </param>
+    </params>
+</methodResponse>

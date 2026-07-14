@@ -2,8 +2,24 @@
 <methodResponse>
     <params>
         <param>
-            <value><array><data>
-            </data></array></value>
+            <value>
+                <array>
+                    <data>
+                        <value>
+                            <string>test</string>
+                        </value>
+                        <value>
+                            <string>testrepo</string>
+                        </value>
+                        <value>
+                            <string>rhel-7-x86_64</string>
+                        </value>
+                        <value>
+                            <string>testrepo1</string>
+                        </value>
+                    </data>
+                </array>
+            </value>
         </param>
     </params>
 </methodResponse>

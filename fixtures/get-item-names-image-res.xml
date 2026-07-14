@@ -6,7 +6,13 @@
                 <array>
                     <data>
                         <value>
+                            <string>test</string>
+                        </value>
+                        <value>
                             <string>testimage</string>
+                        </value>
+                        <value>
+                            <string>testimage1</string>
                         </value>
                     </data>
                 </array>

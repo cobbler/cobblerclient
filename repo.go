@@ -30,8 +30,7 @@ type Repo struct {
 	// These are internal fields and cannot be modified.
 	TreeBuildTime string `mapstructure:"tree_build_time" cobbler:"noupdate"`
 
-	AptComponents   []string          `mapstructure:"apt_components" json:"apt_components" yaml:"apt_components"`
-	AptDists        []string          `mapstructure:"apt_dists" json:"apt_dists" yaml:"apt_dists"`
+	Apt             APTOptions        `mapstructure:"apt" json:"apt" yaml:"apt"`
 	Arch            string            `mapstructure:"arch" json:"arch" yaml:"arch"`
 	Breed           string            `mapstructure:"breed" json:"breed" yaml:"breed"`
 	CreateRepoFlags Value[string]     `mapstructure:"createrepo_flags" json:"createrepo_flags" yaml:"createrepo_flags"`
@@ -42,18 +41,17 @@ type Repo struct {
 	MirrorType      string            `mapstructure:"mirror_type" json:"mirror_type" yaml:"mirror_type"`
 	Priority        int               `mapstructure:"priority" json:"priority" yaml:"priority"`
 	Proxy           Value[string]     `mapstructure:"proxy" cobbler:"newfield" json:"proxy" yaml:"proxy"`
-	RsyncOpts       map[string]string `mapstructure:"rsyncopts" json:"rsync_opts" yaml:"rsync_opts"`
+	RsyncOpts       map[string]string `mapstructure:"rsyncopts" json:"rsyncopts" yaml:"rsyncopts"`
 	RpmList         []string          `mapstructure:"rpm_list" json:"rpm_list" yaml:"rpm_list"`
-	YumOpts         map[string]string `mapstructure:"yumopts" json:"yum_opts" yaml:"yum_opts"`
+	YumOpts         map[string]string `mapstructure:"yumopts" json:"yumopts" yaml:"yumopts"`
 }
 
 func NewRepo() Repo {
 	return Repo{
-		Item:          NewItem(),
-		AptComponents: make([]string, 0),
-		AptDists:      make([]string, 0),
-		Arch:          none,
-		Breed:         none,
+		Item:  NewItem(),
+		Apt:   newAPTOptions(),
+		Arch:  none,
+		Breed: none,
 		CreateRepoFlags: Value[string]{
 			IsInherited: true,
 		},
@@ -94,27 +92,7 @@ func convertRawRepo(name string, xmlrpcResult interface{}) (*Repo, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedRepo.FetchableFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedRepo.BootFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedRepo.TemplateFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedRepo.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedRepo.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedRepo.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +148,9 @@ func (c *Client) GetRepo(name string, flattened, resolved bool) (*Repo, error) {
 // CreateRepo creates a repo.
 func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 	// Make sure a repo with the same name does not already exist
-	if _, err := c.GetRepo(repo.Name, false, false); err == nil {
+	if exists, err := c.HasItem("repo", repo.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a Repo with the name %s already exists", repo.Name)
 	}
 
@@ -185,7 +165,7 @@ func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 		return nil, err
 	}
 
-	if err := c.SaveRepo(newID, "new"); err != nil {
+	if err := c.SaveRepo(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -204,12 +184,12 @@ func (c *Client) UpdateRepo(repo *Repo) error {
 		return err
 	}
 
-	return c.SaveRepo(id, "bypass")
+	return c.SaveRepo(id, true, true, "bypass")
 }
 
 // SaveRepo saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveRepo(objectId, editmode string) error {
-	_, err := c.Call("save_repo", objectId, c.Token, editmode)
+func (c *Client) SaveRepo(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_repo", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 
@@ -236,8 +216,8 @@ func (c *Client) ListRepoNames() ([]string, error) {
 }
 
 // FindRepo searches for one or more repositories by any of its attributes.
-func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
-	result, err := c.Call("find_repo", criteria, true, c.Token)
+func (c *Client) FindRepo(criteria map[string]interface{}, resolved bool) ([]*Repo, error) {
+	result, err := c.Call("find_repo", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +226,7 @@ func (c *Client) FindRepo(criteria map[string]interface{}) ([]*Repo, error) {
 
 // FindRepoNames searches for one or more repositories by any of its attributes.
 func (c *Client) FindRepoNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_repo", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_repo", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
@@ -267,7 +247,7 @@ func (c *Client) RenameRepo(objectId, newName string) error {
 
 // GetRepoHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetRepoHandle(name string) (string, error) {
-	res, err := c.Call("get_repo_handle", name, c.Token)
+	res, err := c.Call("get_repo_handle", name)
 	return returnString(res, err)
 }
 

@@ -6,85 +6,67 @@
             <value>
                 <struct>
                     <member>
-                        <name>Master</name>
+                        <name>distro_patterns</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Port</name>
+                        <name>image_patterns</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>DistroPatterns</name>
+                        <name>master</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>ProfilePatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>SystemPatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>RepoPatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Imagepatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>MgmtclassPatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>PackagePatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>FilePatterns</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Prune</name>
+                        <name>omit_data</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>OmitData</name>
+                        <name>port</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>profile_patterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>prune</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>SyncAll</name>
+                        <name>repo_patterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>sync_all</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>UseSsl</name>
+                        <name>system_patterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>use_ssl</name>
                         <value>
                             <boolean>0</boolean>
                         </value>

@@ -47,27 +47,7 @@ func convertRawMenu(name string, xmlrpcResult interface{}) (*Menu, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedMenu.FetchableFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedMenu.BootFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedMenu.TemplateFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedMenu.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedMenu.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedMenu.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +103,9 @@ func (c *Client) GetMenu(name string, flattened, resolved bool) (*Menu, error) {
 // CreateMenu creates a menu.
 func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 	// Make sure a menu with the same name does not already exist
-	if _, err := c.GetMenu(menu.Name, false, false); err == nil {
+	if exists, err := c.HasItem("menu", menu.Name); err != nil {
+		return nil, err
+	} else if exists {
 		return nil, fmt.Errorf("a Menu with the name %s already exists", menu.Name)
 	}
 
@@ -138,7 +120,7 @@ func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 		return nil, err
 	}
 
-	if err = c.SaveMenu(newID, "new"); err != nil {
+	if err = c.SaveMenu(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -157,7 +139,7 @@ func (c *Client) UpdateMenu(menu *Menu) error {
 		return err
 	}
 
-	if err = c.SaveMenu(id, "bypass"); err != nil {
+	if err = c.SaveMenu(id, true, true, "bypass"); err != nil {
 		return err
 	}
 
@@ -181,10 +163,10 @@ func (c *Client) ListMenuNames() ([]string, error) {
 }
 
 // FindMenu searches for one or more menus by any of its attributes.
-func (c *Client) FindMenu(criteria map[string]interface{}) ([]*Menu, error) {
+func (c *Client) FindMenu(criteria map[string]interface{}, resolved bool) ([]*Menu, error) {
 	var menus []*Menu
 
-	result, err := c.Call("find_menu", criteria, true, c.Token)
+	result, err := c.Call("find_menu", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -204,13 +186,13 @@ func (c *Client) FindMenu(criteria map[string]interface{}) ([]*Menu, error) {
 
 // FindMenuNames searches for one or more menus by any of its attributes.
 func (c *Client) FindMenuNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_menu", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_menu", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetMenuHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetMenuHandle(name string) (string, error) {
-	result, err := c.Call("get_menu_handle", name, c.Token)
+	result, err := c.Call("get_menu_handle", name)
 	if err != nil {
 		return "", err
 	}
@@ -243,8 +225,8 @@ func (c *Client) GetMenuAsRendered(name string) (map[string]interface{}, error) 
 }
 
 // SaveMenu saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveMenu(objectId, editmode string) error {
-	_, err := c.Call("save_menu", objectId, c.Token, editmode)
+func (c *Client) SaveMenu(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_menu", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

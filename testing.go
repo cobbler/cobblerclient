@@ -122,6 +122,7 @@ func createStubHTTPClient(t *testing.T, fixtures []string) Client {
 
 	c := NewClient(hc, config)
 	c.Token = "securetoken99"
+	c.CachedVersion = CobblerVersion{Major: 4, Minor: 0, Patch: 0}
 	return c
 }
 

@@ -37,6 +37,8 @@ func (c *Client) GetAuthnModuleName() (string, error) {
 }
 
 // Login performs a login request to Cobbler using the credentials provided in the configuration in the initializer.
+// It also verifies that the server runs Cobbler 4.0.0 or later; an [UnsupportedServerVersionError] is returned
+// otherwise.
 func (c *Client) Login() (bool, error) {
 	result, err := c.Call("login", c.config.Username, c.config.Password)
 	if err != nil {
@@ -44,6 +46,9 @@ func (c *Client) Login() (bool, error) {
 	}
 
 	c.Token = result.(string)
+	if err := c.setCachedVersion(); err != nil {
+		return false, err
+	}
 	return true, nil
 }
 

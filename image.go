@@ -145,49 +145,29 @@ func (v VirtDiskDriver) String() string {
 type Image struct {
 	Item `mapstructure:",squash" yaml:",inline"`
 
-	// Image specific fields
-	// Arch                 Architecture
-	// ImageType            ImageType      `mapstructure:"image_type"`
-	// VirtDiskDriver       VirtDiskDriver `mapstructure:"virt_disk_driver"`
-	// VirtType             VirtType `mapstructure:"virt_type"`
-	Arch                 string         `mapstructure:"arch" json:"arch" yaml:"arch"`
-	Autoinstall          string         `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
-	Breed                string         `mapstructure:"breed" json:"breed" yaml:"breed"`
-	File                 string         `mapstructure:"file" json:"file" yaml:"file"`
-	ImageType            string         `mapstructure:"image_type" json:"image_type" yaml:"image_type"`
-	NetworkCount         int            `mapstructure:"network_count" json:"network_count" yaml:"network_count"`
-	OsVersion            string         `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
-	BootLoaders          []string       `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
-	Menu                 string         `mapstructure:"menu" json:"menu" yaml:"menu"`
-	VirtAutoBoot         bool           `mapstructure:"virt_auto_boot" json:"virt_auto_boot" yaml:"virt_auto_boot"`
-	VirtBridge           string         `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
-	VirtCpus             int            `mapstructure:"virt_cpus" json:"virt_cpus" yaml:"virt_cpus"`
-	VirtDiskDriver       string         `mapstructure:"virt_disk_driver" json:"virt_disk_driver" yaml:"virt_disk_driver"`
-	VirtFileSize         Value[float64] `mapstructure:"virt_file_size" json:"virt_file_size" yaml:"virt_file_size"`
-	VirtPath             string         `mapstructure:"virt_path" json:"virt_path" yaml:"virt_path"`
-	VirtRam              Value[int]     `mapstructure:"virt_ram" json:"virt_ram" yaml:"virt_ram"`
-	VirtType             string         `mapstructure:"virt_type" json:"virt_type" yaml:"virt_type"`
-	SupportedBootLoaders []string       `mapstructure:"supported_boot_loaders" cobbler:"noupdate" json:"supported_boot_loaders" yaml:"supported_boot_loaders"`
-
-	Client
+	Arch                 string      `mapstructure:"arch" json:"arch" yaml:"arch"`
+	Autoinstall          string      `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	Breed                string      `mapstructure:"breed" json:"breed" yaml:"breed"`
+	File                 string      `mapstructure:"file" json:"file" yaml:"file"`
+	ImageType            string      `mapstructure:"image_type" json:"image_type" yaml:"image_type"`
+	NetworkCount         int         `mapstructure:"network_count" json:"network_count" yaml:"network_count"`
+	OsVersion            string      `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
+	BootLoaders          []string    `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	Menu                 string      `mapstructure:"menu" json:"menu" yaml:"menu"`
+	Virt                 VirtOptions `mapstructure:"virt" json:"virt" yaml:"virt"`
+	VirtBridge           string      `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
+	SupportedBootLoaders []string    `mapstructure:"supported_boot_loaders" cobbler:"noupdate" json:"supported_boot_loaders" yaml:"supported_boot_loaders"`
 }
 
 func NewImage() Image {
 	return Image{
-		Item:           NewItem(),
-		Arch:           "x86_64",
-		Autoinstall:    inherit,
-		BootLoaders:    make([]string, 0),
-		ImageType:      "direct",
-		VirtCpus:       1,
-		VirtDiskDriver: "raw",
-		VirtFileSize: Value[float64]{
-			IsInherited: true,
-		},
-		VirtRam: Value[int]{
-			IsInherited: true,
-		},
-		VirtType:             inherit,
+		Item:                 NewItem(),
+		Arch:                 "x86_64",
+		Autoinstall:          inherit,
+		BootLoaders:          make([]string, 0),
+		ImageType:            "direct",
+		Virt:                 newVirtOptions(),
+		VirtBridge:           inherit,
 		SupportedBootLoaders: make([]string, 0),
 	}
 }
@@ -218,27 +198,7 @@ func convertRawImage(name string, xmlrpcResult interface{}) (*Image, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = sanitizeValueMapStruct(&decodedImage.FetchableFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedImage.BootFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedImage.TemplateFiles)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueMapStruct(&decodedImage.MgmtParameters)
-	if err != nil {
-		return nil, err
-	}
 	err = sanitizeValueSliceStruct(&decodedImage.Owners)
-	if err != nil {
-		return nil, err
-	}
-	err = sanitizeValueSliceStruct(&decodedImage.MgmtClasses)
 	if err != nil {
 		return nil, err
 	}
@@ -298,6 +258,13 @@ func (c *Client) GetImage(name string, flattened, resolved bool) (*Image, error)
 
 // CreateImage creates an image.
 func (c *Client) CreateImage(image Image) (*Image, error) {
+	// Make sure an image with the same name does not already exist
+	if exists, err := c.HasItem("image", image.Name); err != nil {
+		return nil, err
+	} else if exists {
+		return nil, fmt.Errorf("an Image with the name %s already exists", image.Name)
+	}
+
 	// To create an image via the Cobbler API, first call new_image to obtain an ID
 	result, err := c.Call("new_image", c.Token)
 	if err != nil {
@@ -311,7 +278,7 @@ func (c *Client) CreateImage(image Image) (*Image, error) {
 	}
 
 	// Save the final image
-	if err = c.SaveImage(newID, "new"); err != nil {
+	if err = c.SaveImage(newID, true, true, "new"); err != nil {
 		return nil, err
 	}
 
@@ -332,7 +299,7 @@ func (c *Client) UpdateImage(image *Image) error {
 	}
 
 	// Save the final image
-	if err := c.SaveImage(id, "bypass"); err != nil {
+	if err := c.SaveImage(id, true, true, "bypass"); err != nil {
 		return err
 	}
 
@@ -351,8 +318,8 @@ func (c *Client) DeleteImageRecursive(name string, recursive bool) error {
 }
 
 // FindImage searches for one or more images by any of its attributes.
-func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
-	result, err := c.Call("find_image", criteria, true, c.Token)
+func (c *Client) FindImage(criteria map[string]interface{}, resolved bool) ([]*Image, error) {
+	result, err := c.Call("find_image", criteria, true, resolved, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -362,13 +329,13 @@ func (c *Client) FindImage(criteria map[string]interface{}) ([]*Image, error) {
 
 // FindImageNames searches for one or more distros by any of its attributes.
 func (c *Client) FindImageNames(criteria map[string]interface{}) ([]string, error) {
-	resultUnmarshalled, err := c.Call("find_image", criteria, false, c.Token)
+	resultUnmarshalled, err := c.Call("find_image", criteria, false, false, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetImageHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetImageHandle(name string) (string, error) {
-	res, err := c.Call("get_image_handle", name, c.Token)
+	res, err := c.Call("get_image_handle", name)
 	return returnString(res, err)
 }
 
@@ -404,8 +371,8 @@ func (c *Client) GetImageAsRendered(name string) (map[string]interface{}, error)
 }
 
 // SaveImage saves all changes performed via XML-RPC to disk on the server side.
-func (c *Client) SaveImage(objectId, editmode string) error {
-	_, err := c.Call("save_image", objectId, c.Token, editmode)
+func (c *Client) SaveImage(objectId string, withTriggers, withSync bool, editmode string) error {
+	_, err := c.Call("save_image", objectId, withTriggers, withSync, editmode, c.Token)
 	return err
 }
 

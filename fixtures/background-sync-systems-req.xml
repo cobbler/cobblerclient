@@ -6,7 +6,7 @@
             <value>
                 <struct>
                     <member>
-                        <name>Systems</name>
+                        <name>systems</name>
                         <value>
                             <array>
                                 <data>
@@ -21,7 +21,7 @@
                         </value>
                     </member>
                     <member>
-                        <name>Verbose</name>
+                        <name>verbose</name>
                         <value>
                             <boolean>0</boolean>
                         </value>

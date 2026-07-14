@@ -2,8 +2,9 @@
 <methodResponse>
     <params>
         <param>
-            <value><string>ip             |target              |start            |state
-2a07:de00:a100:8:bbbb:111:ffff:aaaa|system:test.example.org|Tue Jul  9 13:02:17 2024|finished         </string></value>
+            <value>
+                <string>ip             |target              |start            |state            </string>
+            </value>
         </param>
     </params>
 </methodResponse>

@@ -3,14 +3,7 @@
     <params>
         <param>
             <value>
-                <string># Start preseed_early_default
-# This script is not run in the chroot /target by default
-
-wget "http://192.168.1.1/cblr/svc/op/trig/mode/pre/profile/testprof" -O
-/dev/null
-
-# End preseed_early_default
-</string>
+                <string># script template &#34;preseed_early_default&#34; not found</string>
             </value>
         </param>
     </params>

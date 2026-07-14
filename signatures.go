@@ -124,3 +124,10 @@ func (c *Client) BackgroundSignatureUpdate() (string, error) {
 	res, err := c.Call("background_signature_update", map[string]string{}, c.Token)
 	return returnString(res, err)
 }
+
+// BackgroundSignatureReload reloads the OS detection signatures from disk in the background.
+// Returns the event ID for the background task.
+func (c *Client) BackgroundSignatureReload() (string, error) {
+	res, err := c.Call("background_signature_reload", map[string]string{}, c.Token)
+	return returnString(res, err)
+}

@@ -1,6 +1,7 @@
 package cobblerclient
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -36,7 +37,8 @@ func TestGetAuthnModuleName(t *testing.T) {
 }
 
 func TestLogin(t *testing.T) {
-	c := createStubHTTPClientSingle(t, "login")
+	c := createStubHTTPClient(t, []string{"login", "extended-version"})
+	c.CachedVersion = CobblerVersion{} // allow Login to fetch and validate the server version
 	ok, err := c.Login()
 	FailOnError(t, err)
 
@@ -44,15 +46,16 @@ func TestLogin(t *testing.T) {
 		t.Errorf("true expected; got false")
 	}
 
-	expected := "sa/1EWr40BWU+Pq3VEOOpD4cQtxkeMuFUw=="
-	if c.Token != expected {
-		t.Errorf(`"%s" expected; got "%s"`, expected, c.Token)
+	if c.Token != "securetoken99" {
+		t.Errorf(`"securetoken99" expected; got "%s"`, c.Token)
 	}
 }
 
 func TestLoginWithError(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "login-err")
-	expected := `Fault(1): <class 'cobbler.cexceptions.CX'>:'login failed (cobbler)'`
+	c.config.Username = "wrong"
+	c.config.Password = "wrong"
+	expected := `Fault(1): <class 'ValueError'>:login failed (wrong)`
 
 	ok, err := c.Login()
 	if ok {
@@ -64,9 +67,26 @@ func TestLoginWithError(t *testing.T) {
 	}
 }
 
+func TestLoginWithOldServerVersion(t *testing.T) {
+	c := createStubHTTPClient(t, []string{"login", "extended-version-old"})
+	c.CachedVersion = CobblerVersion{} // allow Login to fetch and validate the server version
+
+	ok, err := c.Login()
+	if ok {
+		t.Errorf("false expected; got true")
+	}
+	if err == nil {
+		t.Fatal("expected an error for server version < 4, got nil")
+	}
+	var versionErr *UnsupportedServerVersionError
+	if !errors.As(err, &versionErr) {
+		t.Errorf("expected UnsupportedServerVersionError, got %T: %v", err, err)
+	}
+}
+
 func TestLogout(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "logout")
-	var expected = false
+	var expected = true
 
 	res, err := c.Logout()
 	FailOnError(t, err)
@@ -81,14 +101,14 @@ func TestTokenCheck(t *testing.T) {
 
 	res, err := c.TokenCheck("my_fake_token")
 	FailOnError(t, err)
-	if res == expected {
+	if res != expected {
 		t.Errorf(`"%t" expected; got "%t"`, expected, res)
 	}
 }
 
 func TestGetUserFromToken(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-user-from-token")
-	var expected = "testuser"
+	var expected = "cobbler"
 
 	res, err := c.GetUserFromToken("securetoken99")
 	FailOnError(t, err)

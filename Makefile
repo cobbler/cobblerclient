@@ -16,5 +16,8 @@
 build:
 	@go build .
 
+fixture-refresh:
+	@go run cmd/main.go
+
 test:
 	@go test -v .

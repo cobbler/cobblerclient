@@ -1,6 +1,25 @@
 package cobblerclient
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
+
+// ErrItemNotFound is returned by [Client.GetItem] when no item with the given name exists.
+var ErrItemNotFound = errors.New("cobblerclient: item not found")
+
+// UnsupportedServerVersionError is returned when the connected Cobbler server reports a
+// version older than the minimum supported by this client (4.0.0).
+type UnsupportedServerVersionError struct {
+	ServerVersion CobblerVersion
+}
+
+func (e *UnsupportedServerVersionError) Error() string {
+	return fmt.Sprintf(
+		"cobbler server version %s is not supported; this client requires Cobbler 4.0.0 or later",
+		e.ServerVersion.String(),
+	)
+}
 
 // InheritanceUnsupportedError is returned when a field is set to IsInherited=true but the
 // connected Cobbler server is older than the version that added inheritance support for it.

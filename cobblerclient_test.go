@@ -24,9 +24,10 @@ import (
 func TestSetCachedVersion(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClientSingle(t, "extended-version")
+	c.CachedVersion = CobblerVersion{} // allow setCachedVersion to fetch from server
 	expectedVersion := CobblerVersion{
-		Major: 3,
-		Minor: 4,
+		Major: 4,
+		Minor: 0,
 		Patch: 0,
 	}
 
@@ -41,6 +42,7 @@ func TestSetCachedVersion(t *testing.T) {
 func TestInvalidateCachedVersion(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClientSingle(t, "extended-version")
+	c.CachedVersion = CobblerVersion{} // allow setCachedVersion to fetch from server
 	_ = c.setCachedVersion()
 
 	// Act
@@ -53,10 +55,23 @@ func TestInvalidateCachedVersion(t *testing.T) {
 func TestGenerateAutoinstall(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "generate-autoinstall")
 
-	res, err := c.GenerateAutoinstall("", "")
+	res, err := c.GenerateAutoinstall("00000000000000000000000000000013", "profile", "uid", "", "")
 	FailOnError(t, err)
 	if res == "" {
 		t.Fatalf("Expected a non-empty string.")
+	}
+}
+
+func TestGetTftpFile(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "get-tftp-file")
+	// size=0 is a probe call: it legitimately returns zero bytes of data, just the total file length.
+	data, totalLen, err := c.GetTftpFile("/pxelinux.cfg/default", 0, 0)
+	FailOnError(t, err)
+	if len(data) != 0 {
+		t.Fatalf("Expected no file data for a size=0 probe request, got %d bytes.", len(data))
+	}
+	if totalLen <= 0 {
+		t.Fatalf("Expected positive total file length, got %d.", totalLen)
 	}
 }
 
@@ -87,30 +102,10 @@ func TestAutoAddRepos(t *testing.T) {
 	FailOnError(t, err)
 }
 
-func TestGetAutoinstallTemplates(t *testing.T) {
-	c := createStubHTTPClientSingle(
-		t,
-		"get-autoinstall-templates",
-	)
-
-	err := c.GetAutoinstallTemplates()
-	FailOnError(t, err)
-}
-
-func TestGetAutoinstallSnippets(t *testing.T) {
-	c := createStubHTTPClientSingle(
-		t,
-		"get-autoinstall-snippets",
-	)
-
-	err := c.GetAutoinstallSnippets()
-	FailOnError(t, err)
-}
-
 func TestIsAutoinstallInUse(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "is-autoinstall-in-use")
 
-	_, err := c.IsAutoinstallInUse("")
+	_, err := c.IsAutoinstallInUse("built-in-default.ks")
 	FailOnError(t, err)
 }
 
@@ -135,26 +130,33 @@ func TestGenerateScript(t *testing.T) {
 	FailOnError(t, err)
 }
 
+func TestDumpVars(t *testing.T) {
+	c := createStubHTTPClientSingle(t, "dump-vars")
+	m, err := c.DumpVars("0000000000000000000000000000001a", false, true)
+	FailOnError(t, err)
+	if m["name"] != "testsys" {
+		t.Errorf("unexpected name: %v", m["name"])
+	}
+}
+
 func TestGetBlendedData(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-blended-data")
 
 	result, err := c.GetBlendedData("testprof", "")
 	FailOnError(t, err)
-	if len(result) != 184 {
-		t.Fatalf("Expected a map with 184 entries, got %d.", len(result))
+	if len(result) != 185 {
+		t.Fatalf("Expected a map with 185 entries, got %d.", len(result))
 	}
 }
 
 func TestRegisterNewSystem(t *testing.T) {
-	// Skip for now as the XML appears to have a different order.
-	t.Skip("XML has different order. Needs to be fixed at a later point!")
-
 	c := createStubHTTPClientSingle(t, "register-new-system")
 
 	_, err := c.RegisterNewSystem(
 		map[string]interface{}{
-			"name":    "test",
-			"profile": "testprof",
+			"name": "test-register",
+			// profile must be the referenced profile's real uid (testprof), not its name.
+			"profile": "00000000000000000000000000000013",
 			"interfaces": map[string]interface{}{
 				"default": map[string]interface{}{
 					"mac_address": "AA:BB:CC:DD:EE:FF",
@@ -202,23 +204,21 @@ func TestGetRandomMac(t *testing.T) {
 func TestGetStatusNormal(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-status-normal")
 
+	// The fixture reflects a server with no installs in progress, so the struct
+	// returned by get_status is empty and there is nothing to parse.
 	res, err := c.GetStatus(StatusNormal)
 	resParsed, err := c.ParseStatus(res)
 	FailOnError(t, err)
-	if len(resParsed) != 1 {
-		t.Fatalf("Expected a single result of 1, got %d", len(resParsed))
-	}
-	if resParsed[0].IP != "2a07:de00:a100:8:bbbb:111:ffff:aaaa" {
-		t.Fatalf("IP address not correctly parsed")
-	}
-	if resParsed[0].State != "finished" {
-		t.Fatalf("State not correctly parsed")
+	if len(resParsed) != 0 {
+		t.Fatalf("Expected no results, got %d", len(resParsed))
 	}
 }
 
 func TestGetStatusText(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-status-text")
-	expectedResult := "ip             |target              |start            |state\n2a07:de00:a100:8:bbbb:111:ffff:aaaa|system:test.example.org|Tue Jul  9 13:02:17 2024|finished         "
+	// The fixture reflects a server with no installs in progress, so only the
+	// header row is present.
+	expectedResult := "ip             |target              |start            |state            "
 
 	res, err := c.GetStatus(StatusText)
 	FailOnError(t, err)

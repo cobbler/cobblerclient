@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<methodCall>
+    <methodName>input_string_or_dict_no_inherit</methodName>
+    <params>
+        <param>
+            <value>
+                <string>k1=v1 k2=v2</string>
+            </value>
+        </param>
+    </params>
+</methodCall>

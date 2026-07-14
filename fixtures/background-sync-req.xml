@@ -6,19 +6,19 @@
             <value>
                 <struct>
                     <member>
-                        <name>Dhcp</name>
+                        <name>dhcp</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>Dns</name>
+                        <name>dns</name>
                         <value>
                             <boolean>0</boolean>
                         </value>
                     </member>
                     <member>
-                        <name>Verbose</name>
+                        <name>verbose</name>
                         <value>
                             <boolean>0</boolean>
                         </value>

@@ -2,35 +2,97 @@
 <methodResponse>
     <params>
         <param>
-            <value><string>[2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,744 - INFO | start_task(sync); event_id(2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29)
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,744 - INFO | syncing all
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,745 - INFO | copying: /var/lib/cobbler/misc/anamon.init -&gt; /srv/www/cobbler/misc
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,745 - INFO | copying: /var/lib/cobbler/misc/anamon -&gt; /srv/www/cobbler/misc
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,745 - INFO | running pre-sync triggers
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | cleaning trees
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/pxelinux.cfg
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/grub
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/images
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/ipxe
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,746 - INFO | removing: /srv/tftpboot/esxi
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,747 - INFO | removing: /srv/www/cobbler/rendered
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,747 - INFO | copying bootloaders
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,747 - INFO | running: ['rsync', '-rpt', '--copy-links', '--exclude=.cobbler_postun_cleanup', '/var/lib/cobbler/loaders/', '/srv/tftpboot']
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,936 - INFO | received on stdout:
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,936 - INFO | running: ['rsync', '-rpt', '--copy-links', '--exclude=README.grubconfig', '/var/lib/cobbler/grub_config/', '/srv/tftpboot']
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,942 - INFO | received on stdout:
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,942 - INFO | copying distros to tftpboot
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,943 - INFO | copying images
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,943 - INFO | generating PXE configuration files
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,943 - INFO | generating PXE menu structure
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,945 - INFO | rendering DHCP files
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,945 - INFO | generating /etc/dhcpd.conf
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,962 - INFO | cleaning link caches
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,962 - INFO | running post-sync triggers
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:24,962 - INFO | running: ['dhcpd', '-t', '-q']
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:25,002 - INFO | received on stdout:
-                [2022-09-30_145124_Sync_2cabdc4eddfa4731b45f145d7b625e29] 2022-09-30 14:51:26,044 - INFO | ### TASK COMPLETE ###
-            </string></value>
+            <value>
+                <string>[2000-01-01_000000_Build Iso_00000000000000000000000000000003] 2026-07-09 17:09:52,494 - INFO | copying syslinux files
+[2000-01-01_000000_Replicate_00000000000000000000000000000006] 2026-07-09 17:09:52,510 - INFO | Exception Info:
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/utils/__init__.py&#34;, line 92, in die
+    raise CX(msg)
+
+[2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007] 2026-07-09 17:09:52,520 - INFO | start_task(aclsetup); event_id(2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007)
+[2000-01-01_000000_Automated installation files validation_00000000000000000000000000000005] 2026-07-09 17:09:52,523 - INFO | ----------------------------
+[2000-01-01_000000_Build Iso_00000000000000000000000000000003] 2026-07-09 17:09:52,523 - INFO | copying: /usr/share/syslinux/isolinux.bin -&gt; /var/cache/cobbler/buildiso/isolinux/isolinux.bin
+[2000-01-01_000000_Replicate_00000000000000000000000000000006] 2026-07-09 17:09:52,524 - INFO | Exception occurred: &lt;class &#39;cobbler.cexceptions.CX&#39;&gt;
+[2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007] 2026-07-09 17:09:52,524 - INFO | Exception occurred: &lt;class &#39;cobbler.cexceptions.CX&#39;&gt;
+[Thread-489 (process_request_thread)] 2026-07-09 17:09:52,535 - INFO | REMOTE create_task(Media import); event_id(2000-01-01_000000_Media import_00000000000000000000000000000008); user(?)
+[2000-01-01_000000_Automated installation files validation_00000000000000000000000000000005] 2026-07-09 17:09:52,541 - INFO | *** all automatic installation files seem to be ok ***
+[2000-01-01_000000_Replicate_00000000000000000000000000000006] 2026-07-09 17:09:52,541 - INFO | Exception value: &#39;No Cobbler master specified, try --master.&#39;
+[2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007] 2026-07-09 17:09:52,541 - INFO | Exception value: &#39;no arguments specified, nothing to do&#39;
+[2000-01-01_000000_Build Iso_00000000000000000000000000000003] 2026-07-09 17:09:52,541 - INFO | copying: /usr/share/syslinux/menu.c32 -&gt; /var/cache/cobbler/buildiso/isolinux/menu.c32
+[2000-01-01_000000_Automated installation files validation_00000000000000000000000000000005] 2026-07-09 17:09:52,542 - INFO | ### TASK COMPLETE ###
+[2000-01-01_000000_Media import_00000000000000000000000000000008] 2026-07-09 17:09:52,542 - INFO | start_task(import); event_id(2000-01-01_000000_Media import_00000000000000000000000000000008)
+[2000-01-01_000000_Media import_00000000000000000000000000000008] 2026-07-09 17:09:52,543 - INFO | import_tree; [None, None, None, None, None]
+[Thread-490 (process_request_thread)] 2026-07-09 17:09:52,544 - INFO | REMOTE create_task(Reposync); event_id(2000-01-01_000000_Reposync_00000000000000000000000000000009); user(?)
+[2000-01-01_000000_Media import_00000000000000000000000000000008] 2026-07-09 17:09:52,544 - INFO | import failed.  no --path specified
+[2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007] 2026-07-09 17:09:52,544 - INFO | Exception Info:
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/utils/thread.py&#34;, line 105, in run
+    return_code = self._run(self)
+
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/remote.py&#34;, line 303, in runner
+    self.remote.api.acl_config(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.options.get(&#34;adduser&#34;, None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...&lt;2 lines&gt;...
+        self.options.get(&#34;removegroup&#34;, None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/api.py&#34;, line 2842, in acl_config
+    action_acl.run(
+    ~~~~~~~~~~~~~~^
+        adduser=adduser,
+        ^^^^^^^^^^^^^^^^
+    ...&lt;2 lines&gt;...
+        removegroup=removegroup,
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/actions/acl.py&#34;, line 70, in run
+    raise CX(&#34;no arguments specified, nothing to do&#34;)
+
+[2000-01-01_000000_Reposync_00000000000000000000000000000009] 2026-07-09 17:09:52,545 - INFO | start_task(reposync); event_id(2000-01-01_000000_Reposync_00000000000000000000000000000009)
+[2000-01-01_000000_Replicate_00000000000000000000000000000006] 2026-07-09 17:09:52,545 - INFO | Exception Info:
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/utils/thread.py&#34;, line 105, in run
+    return_code = self._run(self)
+
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/remote.py&#34;, line 402, in runner
+    self.remote.api.replicate(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.options.get(&#34;master&#34;, None),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...&lt;9 lines&gt;...
+        self.options.get(&#34;use_ssl&#34;, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/api.py&#34;, line 3058, in replicate
+    replicator.run(
+    ~~~~~~~~~~~~~~^
+        cobbler_master=cobbler_master,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...&lt;9 lines&gt;...
+        use_ssl=use_ssl,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/actions/replicate.py&#34;, line 440, in run
+    utils.die(&#34;No Cobbler master specified, try --master.&#34;)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+  File &#34;/usr/local/lib/python3.13/site-packages/cobbler/utils/__init__.py&#34;, line 97, in die
+    raise CX(msg)
+
+[2000-01-01_000000_Media import_00000000000000000000000000000008] 2026-07-09 17:09:52,545 - INFO | ### TASK COMPLETE ###
+[2000-01-01_000000_Build Iso_00000000000000000000000000000003] 2026-07-09 17:09:52,545 - INFO | copying: /usr/share/syslinux/chain.c32 -&gt; /var/cache/cobbler/buildiso/isolinux/chain.c32
+[2000-01-01_000000_(CLI) ACL Configuration_00000000000000000000000000000007] 2026-07-09 17:09:52,546 - ERROR | ### TASK FAILED ###
+[2000-01-01_000000_Reposync_00000000000000000000000000000009] 2026-07-09 17:09:52,546 - INFO | reposync; [None]
+[Thread-491 (process_request_thread)] 2026-07-09 17:09:52,546 - INFO | REMOTE create_task(Create bootable bootloader images); event_id(2000-01-01_000000_Create bootable bootloader images_0000000000000000000000000000000a); user(?)
+</string>
+            </value>
         </param>
     </params>
 </methodResponse>

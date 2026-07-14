@@ -6,13 +6,49 @@
             <value>
                 <struct>
                     <member>
-                        <name>Iso</name>
+                        <name>airgapped</name>
+                        <value>
+                            <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>buildisodir</name>
                         <value>
                             <string></string>
                         </value>
                     </member>
                     <member>
-                        <name>Profiles</name>
+                        <name>distro</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>exclude_dns</name>
+                        <value>
+                            <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>exclude_systems</name>
+                        <value>
+                            <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>esp</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>iso</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>profiles</name>
                         <value>
                             <array>
                                 <data></data>
@@ -20,7 +56,19 @@
                         </value>
                     </member>
                     <member>
-                        <name>Systems</name>
+                        <name>source</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>standalone</name>
+                        <value>
+                            <boolean>0</boolean>
+                        </value>
+                    </member>
+                    <member>
+                        <name>systems</name>
                         <value>
                             <array>
                                 <data></data>
@@ -28,43 +76,7 @@
                         </value>
                     </member>
                     <member>
-                        <name>BuildisoDir</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Distro</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Standalone</name>
-                        <value>
-                            <boolean>0</boolean>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Airgapped</name>
-                        <value>
-                            <boolean>0</boolean>
-                        </value>
-                    </member>
-                    <member>
-                        <name>Source</name>
-                        <value>
-                            <string></string>
-                        </value>
-                    </member>
-                    <member>
-                        <name>ExcludeDns</name>
-                        <value>
-                            <boolean>0</boolean>
-                        </value>
-                    </member>
-                    <member>
-                        <name>XorrisofsOpts</name>
+                        <name>xorrisofs_opts</name>
                         <value>
                             <string></string>
                         </value>

@@ -4,17 +4,27 @@
     <params>
         <param>
             <value>
-                <string>___NEW___system::abc123==</string>
+                <string>00000000000000000000000000000019</string>
             </value>
         </param>
         <param>
             <value>
-                <string>securetoken99</string>
+                <boolean>1</boolean>
+            </value>
+        </param>
+        <param>
+            <value>
+                <boolean>1</boolean>
             </value>
         </param>
         <param>
             <value>
                 <string>new</string>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>securetoken99</string>
             </value>
         </param>
     </params>

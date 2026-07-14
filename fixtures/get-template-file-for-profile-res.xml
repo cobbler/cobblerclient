@@ -1,0 +1,10 @@
+<?xml version='1.0'?>
+<methodResponse>
+    <params>
+        <param>
+            <value>
+                <string># template path not found for specified profile</string>
+            </value>
+        </param>
+    </params>
+</methodResponse>

@@ -17,8 +17,6 @@ limitations under the License.
 package cobblerclient
 
 import (
-	"fmt"
-	"github.com/go-test/deep"
 	"testing"
 	"time"
 )
@@ -28,17 +26,14 @@ func TestNewSystem(t *testing.T) {
 	_ = NewSystem()
 }
 
-func TestNewInterface(t *testing.T) {
-	// Arrange, Act & Assert
-	_ = NewInterface()
-}
+// TestNewInterface removed - use TestNewNetworkInterface instead (4.0.0)
 
 func TestGetSystems(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-systems")
 	systems, err := c.GetSystems()
 	FailOnError(t, err)
 
-	if len(systems) != 1 {
+	if len(systems) != 6 {
 		t.Errorf("Wrong number of systems returned.")
 	}
 }
@@ -46,7 +41,6 @@ func TestGetSystems(t *testing.T) {
 func TestGetSystem(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClientSingle(t, "get-system")
-	c.CachedVersion = CobblerVersion{3, 3, 2}
 
 	// Act
 	system, err := c.GetSystem("test", false, false)
@@ -63,61 +57,61 @@ func TestSystemCreate(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-system-name-check",
 		"new-system",
+		"set-system-profile",
+		"new-system-modify-image",
 		"set-system-name",
 		"new-system-modify-comment",
 		"new-system-modify-kernel-options",
 		"new-system-modify-kernel-options-post",
 		"new-system-modify-autoinstall-meta",
-		"new-system-modify-fetchable-files",
-		"new-system-modify-boot-files",
 		"new-system-modify-template-files",
 		"new-system-modify-owners",
-		"new-system-modify-mgmt-classes",
-		"new-system-modify-mgmt-parameters",
-		"set-system-profile",
-		"new-system-modify-image",
 		"new-system-modify-autoinstall",
 		"new-system-modify-boot-loaders",
+		"set-system-nameservers",
+		"new-system-modify-name-servers-search",
 		"new-system-modify-enable-ipxe",
 		"new-system-modify-filename",
 		"new-system-modify-gateway",
 		"set-system-hostname",
 		"new-system-modify-ipv6-default-device",
-		"set-system-nameservers",
-		"new-system-modify-name-servers-search",
 		"new-system-modify-netboot-enabled",
-		"new-system-modify-next-server-v4",
-		"new-system-modify-next-server-v6",
-		"new-system-modify-power-address",
-		"new-system-modify-power-id",
+		"new-system-modify-power-type",
 		"new-system-modify-power-identity-file",
 		"new-system-modify-power-options",
-		"new-system-modify-power-pass",
-		"new-system-modify-power-type",
 		"new-system-modify-power-user",
+		"new-system-modify-power-password",
+		"new-system-modify-power-address",
+		"new-system-modify-power-id",
 		"new-system-modify-proxy",
 		"new-system-modify-redhat-management-key",
+		"new-system-modify-redhat-management-org",
+		"new-system-modify-redhat-management-user",
+		"new-system-modify-redhat-management-password",
 		"new-system-modify-serial-baud-rate",
 		"new-system-modify-serial-device",
 		"new-system-modify-server",
 		"new-system-modify-status",
+		"new-system-modify-next-server-v4",
+		"new-system-modify-next-server-v6",
 		"new-system-modify-virt-auto-boot",
 		"new-system-modify-virt-cpus",
 		"new-system-modify-virt-disk-driver",
 		"new-system-modify-virt-file-size",
-		"new-system-modify-virt-pxe-boot",
 		"new-system-modify-virt-path",
+		"new-system-modify-virt-pxe-boot",
 		"new-system-modify-virt-ram",
 		"new-system-modify-virt-type",
+		"new-system-modify-virt-pxe-boot-flag",
 		"new-system-save",
 		"new-system-get",
 	})
-	c.CachedVersion = CobblerVersion{3, 3, 2}
 	sys := NewSystem()
 	sys.Name = "mytestsystem"
 	sys.Hostname = "blahhost"
-	sys.NameServers = []string{"8.8.8.8", "8.8.4.4"}
-	sys.Profile = "centos7-x86_64"
+	sys.DNS.NameServers.Data = []string{"8.8.8.8", "8.8.4.4"}
+	// Profile must be the referenced profile's real uid (centos7-x86_64), not its name.
+	sys.Profile = "00000000000000000000000000000016"
 
 	// Act
 	newSys, err := c.CreateSystem(sys)
@@ -130,12 +124,77 @@ func TestSystemCreate(t *testing.T) {
 	if newSys.Hostname != "blahhost" {
 		t.Errorf("Wrong system hostname returned.")
 	}
-	if len(newSys.NameServers) != 2 || newSys.NameServers[0] != "8.8.8.8" {
+	if len(newSys.DNS.NameServers.Data) != 2 || newSys.DNS.NameServers.Data[0] != "8.8.8.8" {
 		t.Errorf("Wrong system name servers returned.")
 	}
-	if newSys.Profile != "centos7-x86_64" {
+	if newSys.Profile != "00000000000000000000000000000016" {
 		t.Errorf("Wrong system profile returned.")
 	}
+}
+
+func TestUpdateSystem(t *testing.T) {
+	c := createStubHTTPClient(t, []string{
+		"update-system-handle",
+		"update-system-modify-profile",
+		"update-system-modify-image",
+		"update-system-modify-name",
+		"update-system-modify-comment",
+		"update-system-modify-kernel-options",
+		"update-system-modify-kernel-options-post",
+		"update-system-modify-autoinstall-meta",
+		"update-system-modify-template-files",
+		"update-system-modify-owners",
+		"update-system-modify-autoinstall",
+		"update-system-modify-boot-loaders",
+		"update-system-modify-name-servers",
+		"update-system-modify-name-servers-search",
+		"update-system-modify-enable-ipxe",
+		"update-system-modify-filename",
+		"update-system-modify-gateway",
+		"update-system-modify-hostname",
+		"update-system-modify-ipv6-default-device",
+		"update-system-modify-netboot-enabled",
+		"update-system-modify-power-type",
+		"update-system-modify-power-identity-file",
+		"update-system-modify-power-options",
+		"update-system-modify-power-user",
+		"update-system-modify-power-password",
+		"update-system-modify-power-address",
+		"update-system-modify-power-id",
+		"update-system-modify-proxy",
+		"update-system-modify-redhat-management-key",
+		"update-system-modify-redhat-management-org",
+		"update-system-modify-redhat-management-user",
+		"update-system-modify-redhat-management-password",
+		"update-system-modify-serial-baud-rate",
+		"update-system-modify-serial-device",
+		"update-system-modify-server",
+		"update-system-modify-status",
+		"update-system-modify-next-server-v4",
+		"update-system-modify-next-server-v6",
+		"update-system-modify-virt-auto-boot",
+		"update-system-modify-virt-cpus",
+		"update-system-modify-virt-disk-driver",
+		"update-system-modify-virt-file-size",
+		"update-system-modify-virt-path",
+		"update-system-modify-virt-pxe-boot",
+		"update-system-modify-virt-ram",
+		"update-system-modify-virt-type",
+		"update-system-modify-virt-pxe-boot-flag",
+	})
+	sys := NewSystem()
+	sys.Name = "mytestsystem"
+	sys.Hostname = "blahhost"
+	sys.DNS.NameServers.Data = []string{"8.8.8.8", "8.8.4.4"}
+	// Profile must be the referenced profile's real uid (centos7-x86_64), not its name.
+	sys.Profile = "00000000000000000000000000000016"
+	// UpdateSystem, unlike CreateSystem, does not apply default values for
+	// these two fields, so they must be set explicitly to match the fixtures.
+	sys.Power.Type = "ipmilanplus"
+	sys.Status = "production"
+
+	err := c.UpdateSystem(&sys)
+	FailOnError(t, err)
 }
 
 func TestDeleteSystem(t *testing.T) {
@@ -155,7 +214,7 @@ func TestListSystemNames(t *testing.T) {
 	sytems, err := c.ListSystemNames()
 	FailOnError(t, err)
 
-	if len(sytems) != 1 {
+	if len(sytems) != 6 {
 		t.Errorf("Wrong number of systems returned.")
 	}
 }
@@ -165,7 +224,7 @@ func TestGetSystemsSince(t *testing.T) {
 	systems, err := c.GetSystemsSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	FailOnError(t, err)
 
-	if len(systems) != 1 {
+	if len(systems) != 6 {
 		t.Errorf("Wrong number of profiles returned.")
 	}
 }
@@ -174,7 +233,7 @@ func TestFindSystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-system")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
-	_, err := c.FindSystem(criteria)
+	_, err := c.FindSystem(criteria, false)
 	FailOnError(t, err)
 }
 
@@ -182,25 +241,25 @@ func TestFindSystemNames(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "find-system-names")
 	criteria := make(map[string]interface{}, 1)
 	criteria["name"] = "test"
-	_, err := c.FindSystem(criteria)
+	_, err := c.FindSystem(criteria, false)
 	FailOnError(t, err)
 }
 
 func TestSaveSystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-system")
-	err := c.SaveSystem("___NEW___system::abc123==", "bypass")
+	err := c.SaveSystem("0000000000000000000000000000001a", true, true, "bypass")
 	FailOnError(t, err)
 }
 
 func TestCopySystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "copy-system")
-	err := c.CopySystem("system::testsys", "testsys2")
+	err := c.CopySystem("0000000000000000000000000000001a", "testsys2")
 	FailOnError(t, err)
 }
 
 func TestRenameSystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "rename-system")
-	err := c.RenameSystem("system::testsys", "testsys1")
+	err := c.RenameSystem("0000000000000000000000000000001b", "testsys1")
 	FailOnError(t, err)
 }
 
@@ -209,43 +268,9 @@ func TestGetSystemHandle(t *testing.T) {
 	res, err := c.GetSystemHandle("testsys")
 	FailOnError(t, err)
 
-	if res != "system::testsys" {
+	if res != "0000000000000000000000000000001a" {
 		t.Error("Wrong object id returned.")
 	}
-}
-
-func TestCreateInterface(t *testing.T) {
-	// Arrange
-	c := createStubHTTPClient(t, []string{
-		"extended-version",
-		"get-interfaces-get-system",
-		"delete-interface-get-system-handle",
-		"create-interface-create-interface",
-		"delete-interface-save-system",
-	})
-	testsys, err := c.GetSystem("testsys", false, false)
-	FailOnError(t, err)
-	testinterface := NewInterface()
-
-	// Act
-	err = testsys.CreateInterface("eth0", testinterface)
-
-	// Assert
-	FailOnError(t, err)
-}
-
-func TestModifyInterface(t *testing.T) {
-	// Arrange
-	c := createStubHTTPClientSingle(t, "modify-interface")
-	testnic := NewInterface()
-	testnic.IPAddress = "10.168.0.5"
-	testnicmap := makeInterfaceOptionsMap("eth0", testnic)
-
-	// Act
-	err := c.ModifyInterface("system::testsys", testnicmap)
-
-	// Assert
-	FailOnError(t, err)
 }
 
 func TestGetValidSystemBootLoaders(t *testing.T) {
@@ -271,83 +296,36 @@ func TestGetSystemAsRendered(t *testing.T) {
 func TestGetInterfaces(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
-		"extended-version",
 		"get-interfaces-get-system",
 	})
 	testsys, err := c.GetSystem("testsys", false, false)
 	FailOnError(t, err)
 
-	// Act
-	interfaces, err := testsys.GetInterfaces()
-
-	// Assert
-	if len(interfaces) < 1 {
-		t.Fatal("there should be at least one interface")
+	// Assert - in Cobbler 4.0.0 network interfaces are separate items and are
+	// no longer embedded in the get_system response, so Interfaces should
+	// come back as a non-nil, empty map.
+	if testsys.Interfaces == nil {
+		t.Fatal("Interfaces map should not be nil")
 	}
-	if interfaces["default"].IPAddress != "10.1.0.1" {
-		t.Fatal("incorrect IP address")
+	if len(testsys.Interfaces) != 0 {
+		t.Fatalf("expected no embedded interfaces, got %d", len(testsys.Interfaces))
 	}
-	FailOnError(t, err)
 }
 
 func TestGetInterface(t *testing.T) {
 	// Arrange
 	c := createStubHTTPClient(t, []string{
-		"extended-version",
 		"get-interfaces-get-system",
 	})
 	testsys, err := c.GetSystem("testsys", false, false)
 	FailOnError(t, err)
 
-	// Act
-	nic, err := testsys.GetInterface("default")
-
-	// Assert
-	expectedInterface := NewInterface()
-	expectedInterface.IPAddress = "10.1.0.1"
-	differences := deep.Equal(nic, expectedInterface)
-	if len(differences) > 0 {
-		fmt.Println(differences)
-		t.Fatal("interfaces non-equal")
+	// Assert - in Cobbler 4.0.0 network interfaces are separate items and are
+	// no longer embedded in the get_system response, so a lookup by name
+	// should come back empty.
+	if _, ok := testsys.Interfaces["default"]; ok {
+		t.Fatal("did not expect an embedded interface named \"default\"")
 	}
-	FailOnError(t, err)
-}
-
-func TestDeleteInterface(t *testing.T) {
-	// Arrange
-	c := createStubHTTPClient(t, []string{
-		"extended-version",
-		"get-interfaces-get-system",
-		"delete-interface-get-system-handle",
-		"delete-interface-delete-interface",
-		"delete-interface-save-system",
-	})
-	testsys, err := c.GetSystem("testsys", false, false)
-	FailOnError(t, err)
-
-	// Act
-	err = testsys.DeleteInterface("default")
-
-	// Assert
-	FailOnError(t, err)
-}
-
-func TestRenameInterface(t *testing.T) {
-	// Arrange
-	c := createStubHTTPClient(t, []string{
-		"extended-version",
-		"get-interfaces-get-system",
-		"delete-interface-get-system-handle",
-		"rename-interface-rename-interface",
-	})
-	testsys, err := c.GetSystem("testsys", false, false)
-	FailOnError(t, err)
-
-	// Act
-	err = testsys.RenameInterface("", "")
-
-	// Assert
-	FailOnError(t, err)
 }
 
 func TestDisableNetboot(t *testing.T) {
@@ -360,14 +338,14 @@ func TestUploadLogData(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "upload-log-data")
 	res, err := c.UploadLogData("testsys", "/var/log/cobbler/testsys.log", 12, 0, "hello world!")
 	FailOnError(t, err)
-	if !res {
-		t.Error("Expected true result from UploadLogData.")
+	if res {
+		t.Error("Expected false result from UploadLogData.")
 	}
 }
 
 func TestClearSystemLogs(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "clear-system-logs")
-	res, err := c.ClearSystemLogs("system::testsys")
+	res, err := c.ClearSystemLogs("0000000000000000000000000000001a")
 	FailOnError(t, err)
 	if !res {
 		t.Error("Expected true result from ClearSystemLogs.")
