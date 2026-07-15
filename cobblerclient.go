@@ -525,7 +525,7 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				return data, nil
 			}
 			// Legacy flat Interface detection removed - 4.0.0+ uses NetworkInterface with nested structs
-			if matchesKeySet(mapKeys, "address", "gateway", "netmask", "static_routes") {
+			if matchesKeySet(mapKeys, "address", "mtu", "netmask", "static_routes") {
 				// IPv4Option nested in NetworkInterface (Cobbler 4.0.0+)
 				return data, nil
 			}

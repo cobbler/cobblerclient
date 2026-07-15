@@ -40,6 +40,7 @@ const (
 // (cobbler/items/network_interface.py: if_gateway).
 type IPv4Option struct {
 	Address      string   `mapstructure:"address" json:"address" yaml:"address"`
+	MTU          string   `mapstructure:"mtu" json:"mtu" yaml:"mtu"`
 	Netmask      string   `mapstructure:"netmask" json:"netmask" yaml:"netmask"`
 	StaticRoutes []string `mapstructure:"static_routes" json:"static_routes" yaml:"static_routes"`
 }

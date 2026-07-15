@@ -151,6 +151,7 @@ func TestCreateNetworkInterface(t *testing.T) {
 		"new-network-interface-modify-ipv6-static-routes",
 		"new-network-interface-modify-virt-bridge",
 		"new-network-interface-modify-ipv4-address",
+		"new-network-interface-modify-ipv4-mtu",
 		"new-network-interface-modify-ipv4-netmask",
 		"new-network-interface-modify-ipv4-static-routes",
 		"new-network-interface-modify-ipv6-address",
