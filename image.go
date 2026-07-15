@@ -160,7 +160,7 @@ type Image struct {
 }
 
 func NewImage() Image {
-	return Image{
+	image := Image{
 		Item:                 NewItem(),
 		Arch:                 "x86_64",
 		Autoinstall:          inherit,
@@ -170,6 +170,11 @@ func NewImage() Image {
 		VirtBridge:           inherit,
 		SupportedBootLoaders: make([]string, 0),
 	}
+	// Cpus can't default to inherited like the other virt fields: unlike them, Cobbler has no
+	// "default_virt_cpus" settings-level fallback, so a parentless image fails server-side as
+	// soon as anything resolves it. 0 is a valid concrete value (koan/libvirt treat it as "auto").
+	image.Virt.Cpus = Value[int]{Data: 0}
+	return image
 }
 
 func convertRawImage(name string, xmlrpcResult interface{}) (*Image, error) {

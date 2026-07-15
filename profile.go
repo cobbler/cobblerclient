@@ -78,6 +78,10 @@ func NewProfile() Profile {
 		Virt:                     newVirtOptions(),
 		VirtBridge:               inherit,
 	}
+	// Cpus can't default to inherited like the other virt fields: unlike them, Cobbler has no
+	// "default_virt_cpus" settings-level fallback, so a parentless profile fails server-side as
+	// soon as anything resolves it. 0 is a valid concrete value (koan/libvirt treat it as "auto").
+	profile.Virt.Cpus = Value[int]{Data: 0}
 	// Overwrite Item defaults
 	profile.AutoinstallMeta = Value[map[string]interface{}]{
 		IsInherited: true,
