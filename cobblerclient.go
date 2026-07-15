@@ -498,8 +498,16 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 			valueStruct.RawData = data
 			return valueStruct, nil
 		case reflect.Slice:
-			// Slice that may or may not be inherited
+			// Slice that may or may not be inherited. Unlike a plain string field (see the
+			// reflect.String case above), Cobbler represents an inherited list-typed field (e.g. a
+			// distro's boot_loaders) as a one-element array containing the literal "<<inherit>>"
+			// sentinel rather than a bare string, so it needs its own check here.
 			valueStruct := Value[[]interface{}]{}
+			if dataVal.Len() == 1 {
+				if s, ok := dataVal.Index(0).Interface().(string); ok && s == inherit {
+					valueStruct.IsInherited = true
+				}
+			}
 			valueStruct.RawData = data
 			return valueStruct, nil
 		case reflect.Map:
