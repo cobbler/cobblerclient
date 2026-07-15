@@ -473,6 +473,18 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 		return convertXmlRpcBool(dataVal.Interface())
 	}
 
+	if fromType == reflect.Map && targetType == reflect.String {
+		// A profile/system/image's "autoinstall" field is a plain template name/filename on
+		// the way in, but Cobbler 4.0.0 resolves it to the full linked Template object (with its
+		// own "uid"/"uri"/"tags"/...) on the way out. Reduce it back down to just the name so it
+		// still fits the plain string field these types expose.
+		if m, ok := data.(map[string]interface{}); ok {
+			if name, ok := m["name"].(string); ok {
+				return name, nil
+			}
+		}
+	}
+
 	if targetType == reflect.Struct {
 		// This must be a value that may or may not be inherited or flattened (dual-homed types)
 
