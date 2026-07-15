@@ -15,7 +15,7 @@
                             <string>dns</string>
                         </value>
                         <value>
-                            <string>cnames</string>
+                            <string>common_names</string>
                         </value>
                     </data>
                 </array>

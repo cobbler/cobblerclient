@@ -533,7 +533,7 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				// IPv6Option nested in NetworkInterface (Cobbler 4.0.0+)
 				return data, nil
 			}
-			if matchesKeySet(mapKeys, "cnames", "name") {
+			if matchesKeySet(mapKeys, "common_names", "name") {
 				// DNSInterfaceOption nested in NetworkInterface (Cobbler 4.0.0+)
 				return data, nil
 			}
