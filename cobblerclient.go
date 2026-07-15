@@ -558,7 +558,7 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				// APTOptions nested in Repo
 				return data, nil
 			}
-			if matchesKeySet(mapKeys, "path", "schema") {
+			if matchesKeySet(mapKeys, "authority", "fragment", "path", "query", "schema") {
 				// URIOption nested in Template
 				return data, nil
 			}
