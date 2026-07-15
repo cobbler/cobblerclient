@@ -522,6 +522,26 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				// DNSInterfaceOption above, which uses "cnames"/"name" instead)
 				return data, nil
 			}
+			if matchesKeySet(mapKeys, "auto_boot", "cpus", "disk_driver", "file_size", "path", "pxe_boot", "ram", "type") {
+				// VirtOptions nested in Image/Profile/System
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "address", "id", "identity_file", "options", "password", "type", "user") {
+				// PowerOptions nested in System
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "next_server_v4", "next_server_v6") {
+				// TFTPOptions nested in Profile/System
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "components", "dists") {
+				// APTOptions nested in Repo
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "path", "schema") {
+				// URIOption nested in Template
+				return data, nil
+			}
 			for _, key := range mapKeys {
 				// If the uid key is in the map then it is the top level Map
 				if key.String() == "uid" {
