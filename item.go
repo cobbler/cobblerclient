@@ -183,7 +183,10 @@ func (c *Client) getConcreteItem(method, name string, flattened, resolved bool) 
 // FindItems searches for one or more items by any of its attributes.
 func (c *Client) FindItems(what string, criteria map[string]interface{}, sortField string, expand bool) ([]interface{}, error) {
 	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, expand, false, c.Token)
-	return unmarshalledResult.([]interface{}), err
+	if err != nil {
+		return nil, err
+	}
+	return unmarshalledResult.([]interface{}), nil
 }
 
 func (c *Client) FindItemNames(what string, criteria map[string]interface{}, sortField string) ([]string, error) {
@@ -226,7 +229,10 @@ func (c *Client) FindItemsPaged(what string, criteria map[string]interface{}, so
 // HasItem checks if an item with the given name exists.
 func (c *Client) HasItem(what string, name string) (bool, error) {
 	result, err := c.Call("has_item", what, name, c.Token)
-	return result.(bool), err
+	if err != nil {
+		return false, err
+	}
+	return result.(bool), nil
 }
 
 // GetItemHandle gets the internal ID of a Cobbler item.
