@@ -36,6 +36,11 @@ type Item struct {
 	Meta ItemMeta `cobbler:"noupdate" json:"meta" yaml:"meta"`
 
 	// Item fields
+	// Parent holds the UID of the parent item, not its name (Cobbler 4.0.0's modify_* setters for
+	// this field do a strict uid-keyed lookup server-side, e.g. cobbler/items/abstract/inheritable_item.py's
+	// parent.setter). Only Profile currently pushes this field through modify_profile (see
+	// updateCobblerFields); other item types embedding Item cannot write it at all today (a separate,
+	// pre-existing gap unrelated to name/uid semantics).
 	Parent            string                        `mapstructure:"parent" json:"parent" yaml:"parent"`
 	Depth             int                           `mapstructure:"depth" cobbler:"noupdate" json:"depth" yaml:"depth"`
 	Children          []string                      `mapstructure:"children"       cobbler:"noupdate" json:"children" yaml:"children"`
@@ -183,7 +188,10 @@ func (c *Client) getConcreteItem(method, name string, flattened, resolved bool) 
 // FindItems searches for one or more items by any of its attributes.
 func (c *Client) FindItems(what string, criteria map[string]interface{}, sortField string, expand bool) ([]interface{}, error) {
 	unmarshalledResult, err := c.Call("find_items", what, criteria, sortField, expand, false, c.Token)
-	return unmarshalledResult.([]interface{}), err
+	if err != nil {
+		return nil, err
+	}
+	return unmarshalledResult.([]interface{}), nil
 }
 
 func (c *Client) FindItemNames(what string, criteria map[string]interface{}, sortField string) ([]string, error) {
@@ -226,7 +234,10 @@ func (c *Client) FindItemsPaged(what string, criteria map[string]interface{}, so
 // HasItem checks if an item with the given name exists.
 func (c *Client) HasItem(what string, name string) (bool, error) {
 	result, err := c.Call("has_item", what, name, c.Token)
-	return result.(bool), err
+	if err != nil {
+		return false, err
+	}
+	return result.(bool), nil
 }
 
 // GetItemHandle gets the internal ID of a Cobbler item.

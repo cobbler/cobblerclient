@@ -43,6 +43,13 @@ Cobbler 3.3.x should stay on the v0.5.x line, which continues to receive bug fix
   `FindSystemByDnsName`, `GetRandomMac`, `GetItemResolvedValue`.
 * `getConcreteItem` no longer branches on `CachedVersion` for the `resolved`
   parameter — the post-3.3.3 wire shape is always used.
+* **Breaking:** `Profile.Distro`, `Profile.Parent`, `Profile.Menu`,
+  `System.Profile`, `System.Image`, and `Image.Menu` now hold the referenced
+  item's Cobbler UID, not its name. Cobbler 4.0.0's setters for these fields
+  do a strict uid-keyed lookup server-side with no name fallback (see the
+  field doc comments), so this client no longer resolves names to UIDs on
+  write or back to names on read — callers must look up the UID themselves
+  (e.g. via `Client.GetDistro(name, ...).Uid`) before assigning these fields.
 
 ### Removed
 

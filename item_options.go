@@ -36,9 +36,11 @@ func newVirtOptions() VirtOptions {
 		Cpus:       Value[int]{IsInherited: true},
 		DiskDriver: inherit,
 		FileSize:   Value[float64]{IsInherited: true},
-		Path:       inherit,
-		Ram:        Value[int]{IsInherited: true},
-		Type:       inherit,
+		// Path can't be "<<inherit>>" for profiles/images (Cobbler rejects it server-side);
+		// for systems an empty string is normalized to inherited server-side anyway.
+		Path: "",
+		Ram:  Value[int]{IsInherited: true},
+		Type: inherit,
 	}
 }
 

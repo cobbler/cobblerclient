@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>modify_system</methodName>
+    <methodName>modify_network_interface</methodName>
     <params>
         <param>
             <value>
-                <string>00000000000000000000000000000019</string>
+                <string>000000000000000000000000000000d5</string>
             </value>
         </param>
         <param>
@@ -12,10 +12,10 @@
                 <array>
                     <data>
                         <value>
-                            <string>virt</string>
+                            <string>ipv4</string>
                         </value>
                         <value>
-                            <string>path</string>
+                            <string>mtu</string>
                         </value>
                     </data>
                 </array>

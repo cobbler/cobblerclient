@@ -28,33 +28,37 @@ type System struct {
 	Item `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
-	IPv6Autoconfiguration    bool                         `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate" json:"ipv6_autoconfiguration" yaml:"ipv6_autoconfiguration"`
-	ReposEnabled             bool                         `mapstructure:"repos_enabled"          cobbler:"noupdate" json:"repos_enabled" yaml:"repos_enabled"`
-	Autoinstall              string                       `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
-	BootLoaders              Value[[]string]              `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
-	DNS                      DNSOptions                   `mapstructure:"dns" json:"dns" yaml:"dns"`
-	EnableIPXE               Value[bool]                  `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe"`
-	Filename                 string                       `mapstructure:"filename" json:"filename" yaml:"filename"`
-	Gateway                  string                       `mapstructure:"gateway" json:"gateway" yaml:"gateway"`
-	Hostname                 string                       `mapstructure:"hostname" json:"hostname" yaml:"hostname"`
-	IPv6DefaultDevice        string                       `mapstructure:"ipv6_default_device" json:"ipv6_default_device" yaml:"ipv6_default_device"`
-	Image                    string                       `mapstructure:"image" json:"image" yaml:"image"`
-	Interfaces               map[string]*NetworkInterface `mapstructure:"interfaces" cobbler:"noupdate" json:"interfaces" yaml:"interfaces"`
-	NetbootEnabled           bool                         `mapstructure:"netboot_enabled" json:"netboot_enabled" yaml:"netboot_enabled"`
-	Power                    PowerOptions                 `mapstructure:"power" json:"power" yaml:"power"`
-	Profile                  string                       `mapstructure:"profile" json:"profile" yaml:"profile"`
-	Proxy                    string                       `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
-	RedhatManagementKey      string                       `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
-	RedhatManagementOrg      string                       `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
-	RedhatManagementUser     string                       `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
-	RedhatManagementPassword string                       `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
-	SerialBaudRate           int                          `mapstructure:"serial_baud_rate" json:"serial_baud_rate" yaml:"serial_baud_rate"`
-	SerialDevice             int                          `mapstructure:"serial_device" json:"serial_device" yaml:"serial_device"`
-	Server                   string                       `mapstructure:"server" json:"server" yaml:"server"`
-	Status                   string                       `mapstructure:"status" json:"status" yaml:"status"`
-	TFTP                     TFTPOptions                  `mapstructure:"tftp" json:"tftp" yaml:"tftp"`
-	Virt                     VirtOptions                  `mapstructure:"virt" json:"virt" yaml:"virt"`
-	VirtPXEBoot              bool                         `mapstructure:"virt_pxe_boot" json:"virt_pxe_boot" yaml:"virt_pxe_boot"`
+	IPv6Autoconfiguration bool            `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate" json:"ipv6_autoconfiguration" yaml:"ipv6_autoconfiguration"`
+	ReposEnabled          bool            `mapstructure:"repos_enabled"          cobbler:"noupdate" json:"repos_enabled" yaml:"repos_enabled"`
+	Autoinstall           string          `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	BootLoaders           Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	DNS                   DNSOptions      `mapstructure:"dns" json:"dns" yaml:"dns"`
+	EnableIPXE            Value[bool]     `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe"`
+	Filename              string          `mapstructure:"filename" json:"filename" yaml:"filename"`
+	Gateway               string          `mapstructure:"gateway" json:"gateway" yaml:"gateway"`
+	Hostname              string          `mapstructure:"hostname" json:"hostname" yaml:"hostname"`
+	IPv6DefaultDevice     string          `mapstructure:"ipv6_default_device" json:"ipv6_default_device" yaml:"ipv6_default_device"`
+	// Image holds the parent Image's UID, not its name (cobbler/items/system.py's image.setter does a
+	// strict uid-keyed lookup server-side; passing a name raises an error). Mutually exclusive with Profile.
+	Image          string                       `mapstructure:"image" json:"image" yaml:"image"`
+	Interfaces     map[string]*NetworkInterface `mapstructure:"interfaces" cobbler:"noupdate" json:"interfaces" yaml:"interfaces"`
+	NetbootEnabled bool                         `mapstructure:"netboot_enabled" json:"netboot_enabled" yaml:"netboot_enabled"`
+	Power          PowerOptions                 `mapstructure:"power" json:"power" yaml:"power"`
+	// Profile holds the parent Profile's UID, not its name (cobbler/items/system.py's profile.setter
+	// does a strict uid-keyed lookup server-side; passing a name raises an error). Mutually exclusive with Image.
+	Profile                  string      `mapstructure:"profile" json:"profile" yaml:"profile"`
+	Proxy                    string      `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
+	RedhatManagementKey      string      `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	RedhatManagementOrg      string      `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
+	RedhatManagementUser     string      `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
+	RedhatManagementPassword string      `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
+	SerialBaudRate           int         `mapstructure:"serial_baud_rate" json:"serial_baud_rate" yaml:"serial_baud_rate"`
+	SerialDevice             int         `mapstructure:"serial_device" json:"serial_device" yaml:"serial_device"`
+	Server                   string      `mapstructure:"server" json:"server" yaml:"server"`
+	Status                   string      `mapstructure:"status" json:"status" yaml:"status"`
+	TFTP                     TFTPOptions `mapstructure:"tftp" json:"tftp" yaml:"tftp"`
+	Virt                     VirtOptions `mapstructure:"virt" json:"virt" yaml:"virt"`
+	VirtPXEBoot              bool        `mapstructure:"virt_pxe_boot" json:"virt_pxe_boot" yaml:"virt_pxe_boot"`
 }
 
 // Interface type removed in 4.0.0 - network interfaces are now first-class items.

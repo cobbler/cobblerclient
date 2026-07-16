@@ -40,6 +40,7 @@ const (
 // (cobbler/items/network_interface.py: if_gateway).
 type IPv4Option struct {
 	Address      string   `mapstructure:"address" json:"address" yaml:"address"`
+	MTU          string   `mapstructure:"mtu" json:"mtu" yaml:"mtu"`
 	Netmask      string   `mapstructure:"netmask" json:"netmask" yaml:"netmask"`
 	StaticRoutes []string `mapstructure:"static_routes" json:"static_routes" yaml:"static_routes"`
 }
@@ -56,8 +57,10 @@ type IPv6Option struct {
 	StaticRoutes []string `mapstructure:"static_routes" json:"static_routes" yaml:"static_routes"`
 }
 
-// DNSInterfaceOption models the per-interface DNS configuration.
+// DNSInterfaceOption models the per-interface DNS configuration. The wire key is "common_names"
+// (cobbler/items/options/dns.py: DNSInterfaceOption._common_names) even though the Go field (and the
+// Terraform-facing attribute) is called CNames/"cnames".
 type DNSInterfaceOption struct {
 	Name   string   `mapstructure:"name" json:"name" yaml:"name"`
-	CNames []string `mapstructure:"cnames" json:"cnames" yaml:"cnames"`
+	CNames []string `mapstructure:"common_names" json:"cnames" yaml:"cnames"`
 }

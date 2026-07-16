@@ -152,6 +152,9 @@ func TestCreateProfile(t *testing.T) {
 	p := NewProfile()
 	p.Name = "Ubuntu-20.04-x86_64"
 	p.Distro = "0000000000000000000000000000000e"
+	// Menu must be the referenced menu's real uid, not its name - see the doc comment on
+	// Profile.Menu.
+	p.Menu = "00000000000000000000000000000020"
 	p.Virt.Path = "/var/lib/libvirt/images"
 	p.Virt.Cpus = Value[int]{Data: 2}
 
@@ -160,6 +163,9 @@ func TestCreateProfile(t *testing.T) {
 
 	if newProfile.Name != "Ubuntu-20.04-x86_64" {
 		t.Errorf("Wrong profile name returned.")
+	}
+	if newProfile.Menu != "00000000000000000000000000000020" {
+		t.Errorf("Menu uid was not passed through unmodified, got %q.", newProfile.Menu)
 	}
 }
 

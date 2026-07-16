@@ -30,25 +30,29 @@ type Profile struct {
 	// These are internal fields and cannot be modified.
 	ReposEnabled bool `mapstructure:"repos_enabled"          cobbler:"noupdate"`
 
-	Autoinstall              string          `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
-	BootLoaders              Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
-	DHCPTag                  string          `mapstructure:"dhcp_tag" json:"dhcp_tag" yaml:"dhcp_tag"`
-	Distro                   string          `mapstructure:"distro" json:"distro" yaml:"distro"`
-	DNS                      DNSOptions      `mapstructure:"dns" json:"dns" yaml:"dns"`
-	EnableIPXE               Value[bool]     `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe" cobbler_min_inherit:"3.3.5"`
-	EnableMenu               Value[bool]     `mapstructure:"enable_menu" json:"enable_menu" yaml:"enable_menu" cobbler_min_inherit:"3.3.5"`
-	Filename                 string          `mapstructure:"filename" json:"filename" yaml:"filename"`
-	Menu                     string          `mapstructure:"menu" json:"menu" yaml:"menu"`
-	Proxy                    string          `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
-	RedhatManagementKey      string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
-	RedhatManagementOrg      string          `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
-	RedhatManagementUser     string          `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
-	RedhatManagementPassword string          `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
-	Repos                    []string        `mapstructure:"repos" json:"repos" yaml:"repos"`
-	Server                   string          `mapstructure:"server" json:"server" yaml:"server"`
-	TFTP                     TFTPOptions     `mapstructure:"tftp" json:"tftp" yaml:"tftp"`
-	Virt                     VirtOptions     `mapstructure:"virt" json:"virt" yaml:"virt"`
-	VirtBridge               string          `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
+	Autoinstall string          `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	BootLoaders Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	DHCPTag     string          `mapstructure:"dhcp_tag" json:"dhcp_tag" yaml:"dhcp_tag"`
+	// Distro holds the parent Distro's UID, not its name (cobbler/items/profile.py's distro.setter
+	// does a strict uid-keyed lookup server-side; passing a name raises an error).
+	Distro     string      `mapstructure:"distro" json:"distro" yaml:"distro"`
+	DNS        DNSOptions  `mapstructure:"dns" json:"dns" yaml:"dns"`
+	EnableIPXE Value[bool] `mapstructure:"enable_ipxe" json:"enable_ipxe" yaml:"enable_ipxe" cobbler_min_inherit:"3.3.5"`
+	EnableMenu Value[bool] `mapstructure:"enable_menu" json:"enable_menu" yaml:"enable_menu" cobbler_min_inherit:"3.3.5"`
+	Filename   string      `mapstructure:"filename" json:"filename" yaml:"filename"`
+	// Menu holds the parent Menu's UID, not its name (cobbler/items/profile.py's menu.setter does a
+	// strict uid-keyed lookup server-side).
+	Menu                     string      `mapstructure:"menu" json:"menu" yaml:"menu"`
+	Proxy                    string      `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
+	RedhatManagementKey      string      `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
+	RedhatManagementOrg      string      `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
+	RedhatManagementUser     string      `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
+	RedhatManagementPassword string      `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
+	Repos                    []string    `mapstructure:"repos" json:"repos" yaml:"repos"`
+	Server                   string      `mapstructure:"server" json:"server" yaml:"server"`
+	TFTP                     TFTPOptions `mapstructure:"tftp" json:"tftp" yaml:"tftp"`
+	Virt                     VirtOptions `mapstructure:"virt" json:"virt" yaml:"virt"`
+	VirtBridge               string      `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
 }
 
 func NewProfile() Profile {
@@ -78,6 +82,10 @@ func NewProfile() Profile {
 		Virt:                     newVirtOptions(),
 		VirtBridge:               inherit,
 	}
+	// Cpus can't default to inherited like the other virt fields: unlike them, Cobbler has no
+	// "default_virt_cpus" settings-level fallback, so a parentless profile fails server-side as
+	// soon as anything resolves it. 0 is a valid concrete value (koan/libvirt treat it as "auto").
+	profile.Virt.Cpus = Value[int]{Data: 0}
 	// Overwrite Item defaults
 	profile.AutoinstallMeta = Value[map[string]interface{}]{
 		IsInherited: true,

@@ -473,6 +473,18 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 		return convertXmlRpcBool(dataVal.Interface())
 	}
 
+	if fromType == reflect.Map && targetType == reflect.String {
+		// A profile/system/image's "autoinstall" field is a plain template name/filename on
+		// the way in, but Cobbler 4.0.0 resolves it to the full linked Template object (with its
+		// own "uid"/"uri"/"tags"/...) on the way out. Reduce it back down to just the name so it
+		// still fits the plain string field these types expose.
+		if m, ok := data.(map[string]interface{}); ok {
+			if name, ok := m["name"].(string); ok {
+				return name, nil
+			}
+		}
+	}
+
 	if targetType == reflect.Struct {
 		// This must be a value that may or may not be inherited or flattened (dual-homed types)
 
@@ -486,8 +498,16 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 			valueStruct.RawData = data
 			return valueStruct, nil
 		case reflect.Slice:
-			// Slice that may or may not be inherited
+			// Slice that may or may not be inherited. Unlike a plain string field (see the
+			// reflect.String case above), Cobbler represents an inherited list-typed field (e.g. a
+			// distro's boot_loaders) as a one-element array containing the literal "<<inherit>>"
+			// sentinel rather than a bare string, so it needs its own check here.
 			valueStruct := Value[[]interface{}]{}
+			if dataVal.Len() == 1 {
+				if s, ok := dataVal.Index(0).Interface().(string); ok && s == inherit {
+					valueStruct.IsInherited = true
+				}
+			}
 			valueStruct.RawData = data
 			return valueStruct, nil
 		case reflect.Map:
@@ -505,7 +525,7 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				return data, nil
 			}
 			// Legacy flat Interface detection removed - 4.0.0+ uses NetworkInterface with nested structs
-			if matchesKeySet(mapKeys, "address", "gateway", "netmask", "static_routes") {
+			if matchesKeySet(mapKeys, "address", "mtu", "netmask", "static_routes") {
 				// IPv4Option nested in NetworkInterface (Cobbler 4.0.0+)
 				return data, nil
 			}
@@ -513,13 +533,33 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				// IPv6Option nested in NetworkInterface (Cobbler 4.0.0+)
 				return data, nil
 			}
-			if matchesKeySet(mapKeys, "cnames", "name") {
+			if matchesKeySet(mapKeys, "common_names", "name") {
 				// DNSInterfaceOption nested in NetworkInterface (Cobbler 4.0.0+)
 				return data, nil
 			}
 			if matchesKeySet(mapKeys, "name_servers", "name_servers_search") {
 				// DNSOptions nested in Profile/System (distinct from the network-interface-level
 				// DNSInterfaceOption above, which uses "cnames"/"name" instead)
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "auto_boot", "cpus", "disk_driver", "file_size", "path", "pxe_boot", "ram", "type") {
+				// VirtOptions nested in Image/Profile/System
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "address", "id", "identity_file", "options", "password", "type", "user") {
+				// PowerOptions nested in System
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "next_server_v4", "next_server_v6") {
+				// TFTPOptions nested in Profile/System
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "components", "dists") {
+				// APTOptions nested in Repo
+				return data, nil
+			}
+			if matchesKeySet(mapKeys, "authority", "fragment", "path", "query", "schema") {
+				// URIOption nested in Template
 				return data, nil
 			}
 			for _, key := range mapKeys {
