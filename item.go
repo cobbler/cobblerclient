@@ -36,6 +36,11 @@ type Item struct {
 	Meta ItemMeta `cobbler:"noupdate" json:"meta" yaml:"meta"`
 
 	// Item fields
+	// Parent holds the UID of the parent item, not its name (Cobbler 4.0.0's modify_* setters for
+	// this field do a strict uid-keyed lookup server-side, e.g. cobbler/items/abstract/inheritable_item.py's
+	// parent.setter). Only Profile currently pushes this field through modify_profile (see
+	// updateCobblerFields); other item types embedding Item cannot write it at all today (a separate,
+	// pre-existing gap unrelated to name/uid semantics).
 	Parent            string                        `mapstructure:"parent" json:"parent" yaml:"parent"`
 	Depth             int                           `mapstructure:"depth" cobbler:"noupdate" json:"depth" yaml:"depth"`
 	Children          []string                      `mapstructure:"children"       cobbler:"noupdate" json:"children" yaml:"children"`

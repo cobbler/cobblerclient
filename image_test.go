@@ -168,6 +168,9 @@ func TestCreateImage(t *testing.T) {
 	})
 	image := NewImage()
 	image.Name = "testimage"
+	// Menu must be the referenced menu's real uid, not its name - see the doc comment on
+	// Image.Menu.
+	image.Menu = "00000000000000000000000000000020"
 	image.Virt.Path = "/var/lib/libvirt/images"
 	image.Virt.Cpus = Value[int]{Data: 2}
 
@@ -175,6 +178,9 @@ func TestCreateImage(t *testing.T) {
 	FailOnError(t, err)
 	if result.Name != "testimage" {
 		t.Errorf("Wrong image name returned: %v", result.Name)
+	}
+	if result.Menu != "00000000000000000000000000000020" {
+		t.Errorf("Menu uid was not passed through unmodified, got %q.", result.Menu)
 	}
 }
 

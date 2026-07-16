@@ -145,14 +145,16 @@ func (v VirtDiskDriver) String() string {
 type Image struct {
 	Item `mapstructure:",squash" yaml:",inline"`
 
-	Arch                 string      `mapstructure:"arch" json:"arch" yaml:"arch"`
-	Autoinstall          string      `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
-	Breed                string      `mapstructure:"breed" json:"breed" yaml:"breed"`
-	File                 string      `mapstructure:"file" json:"file" yaml:"file"`
-	ImageType            string      `mapstructure:"image_type" json:"image_type" yaml:"image_type"`
-	NetworkCount         int         `mapstructure:"network_count" json:"network_count" yaml:"network_count"`
-	OsVersion            string      `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
-	BootLoaders          []string    `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	Arch         string   `mapstructure:"arch" json:"arch" yaml:"arch"`
+	Autoinstall  string   `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
+	Breed        string   `mapstructure:"breed" json:"breed" yaml:"breed"`
+	File         string   `mapstructure:"file" json:"file" yaml:"file"`
+	ImageType    string   `mapstructure:"image_type" json:"image_type" yaml:"image_type"`
+	NetworkCount int      `mapstructure:"network_count" json:"network_count" yaml:"network_count"`
+	OsVersion    string   `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
+	BootLoaders  []string `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`
+	// Menu holds the parent Menu's UID, not its name (cobbler/items/image.py's menu.setter does a
+	// strict uid-keyed lookup server-side despite its docstring saying otherwise).
 	Menu                 string      `mapstructure:"menu" json:"menu" yaml:"menu"`
 	Virt                 VirtOptions `mapstructure:"virt" json:"virt" yaml:"virt"`
 	VirtBridge           string      `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
