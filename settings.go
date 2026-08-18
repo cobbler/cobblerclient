@@ -25,6 +25,7 @@ type Settings struct {
 	AutoMigrateSettings               bool                                  `json:"auto_migrate_settings" mapstructure:"auto_migrate_settings"`
 	Autoinstall                       string                                `json:"autoinstall" mapstructure:"autoinstall"`
 	AutoinstallSnippetsDirectory      string                                `json:"autoinstall_snippets_dir" mapstructure:"autoinstall_snippets_dir"`
+	AutoinstallTemplatesAllowNewFiles bool                                  `json:"autoinstall_templates_allow_new_files" mapstructure:"autoinstall_templates_allow_new_files"`
 	AutoinstallTemplatesDirectory     string                                `json:"autoinstall_templates_dir" mapstructure:"autoinstall_templates_dir"`
 	BUildReportingIgnorelist          []string                              `json:"build_reporting_ignorelist" mapstructure:"build_reporting_ignorelist"`
 	BindChrootPath                    string                                `json:"bind_chroot_path" mapstructure:"bind_chroot_path"`
@@ -143,6 +144,8 @@ type Settings struct {
 	WebDirectoryWhitelist             []string                              `json:"webdir_whitelist" mapstructure:"webdir_whitelist"`
 	WindowsEnabled                    bool                                  `json:"windows_enabled" mapstructure:"windows_enabled"`
 	WindowsTemplateDirectory          string                                `json:"windows_template_dir" mapstructure:"windows_template_dir"`
+	XmlrpcBindAddress                 string                                `json:"xmlrpc_bind_address" mapstructure:"xmlrpc_bind_address"`
+	XmlrpcHost                        string                                `json:"xmlrpc_host" mapstructure:"xmlrpc_host"`
 	XmlrpcPort                        int                                   `json:"xmlrpc_port" mapstructure:"xmlrpc_port"`
 	YumDistroPriority                 int                                   `json:"yum_distro_priority" mapstructure:"yum_distro_priority"`
 	YumDownloaderFlags                string                                `json:"yumdownloader_flags" mapstructure:"yumdownloader_flags"`

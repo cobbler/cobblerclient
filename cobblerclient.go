@@ -542,7 +542,7 @@ func cobblerDataHacks(fromType, targetType reflect.Kind, data interface{}) (inte
 				// DNSInterfaceOption above, which uses "cnames"/"name" instead)
 				return data, nil
 			}
-			if matchesKeySet(mapKeys, "auto_boot", "cpus", "disk_driver", "file_size", "path", "pxe_boot", "ram", "type") {
+			if matchesKeySet(mapKeys, "auto_boot", "cpus", "disk_driver", "file_size", "path", "pxe_boot", "ram", "type", "uefi") {
 				// VirtOptions nested in Image/Profile/System
 				return data, nil
 			}

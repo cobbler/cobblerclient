@@ -28,6 +28,13 @@ Cobbler 3.3.x should stay on the v0.5.x line, which continues to receive bug fix
   as `[]string` and returns the resolved value.
 * `GetRandomMacFor(virtType)` overload (the bare `GetRandomMac()` now pins
   `virt_type=kvm` per the 4.0.0 backend default).
+* `VirtOptions.UEFI` (Cobbler 4.0.0a8+) — whether the VM should boot via
+  UEFI firmware instead of legacy BIOS.
+* `Distro.SourceTreePath` (Cobbler 4.0.0a5+) — the original on-disk location
+  of the distro's source tree, for use by the optional `dynamic_httpd`
+  manager.
+* `Settings.XmlrpcBindAddress`, `Settings.XmlrpcHost`,
+  `Settings.AutoinstallTemplatesAllowNewFiles` (Cobbler 4.0.0b1+).
 
 ### Changed
 

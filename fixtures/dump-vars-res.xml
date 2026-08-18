@@ -2549,6 +2549,12 @@
                                         <string>kvm</string>
                                     </value>
                                 </member>
+                                <member>
+                                    <name>uefi</name>
+                                    <value>
+                                        <boolean>0</boolean>
+                                    </value>
+                                </member>
                             </struct>
                         </value>
                     </member>

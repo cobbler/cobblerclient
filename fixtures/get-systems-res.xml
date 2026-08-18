@@ -386,6 +386,12 @@
                                                     <string>&lt;&lt;inherit&gt;&gt;</string>
                                                 </value>
                                             </member>
+                                            <member>
+                                                <name>uefi</name>
+                                                <value>
+                                                    <boolean>0</boolean>
+                                                </value>
+                                            </member>
                                         </struct>
                                     </value>
                                 </member>
@@ -770,6 +776,12 @@
                                                 <name>type</name>
                                                 <value>
                                                     <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>uefi</name>
+                                                <value>
+                                                    <boolean>0</boolean>
                                                 </value>
                                             </member>
                                         </struct>
@@ -1158,6 +1170,12 @@
                                                     <string>&lt;&lt;inherit&gt;&gt;</string>
                                                 </value>
                                             </member>
+                                            <member>
+                                                <name>uefi</name>
+                                                <value>
+                                                    <boolean>0</boolean>
+                                                </value>
+                                            </member>
                                         </struct>
                                     </value>
                                 </member>
@@ -1542,6 +1560,12 @@
                                                 <name>type</name>
                                                 <value>
                                                     <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>uefi</name>
+                                                <value>
+                                                    <boolean>0</boolean>
                                                 </value>
                                             </member>
                                         </struct>
@@ -1937,6 +1961,12 @@
                                                     <string>&lt;&lt;inherit&gt;&gt;</string>
                                                 </value>
                                             </member>
+                                            <member>
+                                                <name>uefi</name>
+                                                <value>
+                                                    <boolean>0</boolean>
+                                                </value>
+                                            </member>
                                         </struct>
                                     </value>
                                 </member>
@@ -2321,6 +2351,12 @@
                                                 <name>type</name>
                                                 <value>
                                                     <string>&lt;&lt;inherit&gt;&gt;</string>
+                                                </value>
+                                            </member>
+                                            <member>
+                                                <name>uefi</name>
+                                                <value>
+                                                    <boolean>0</boolean>
                                                 </value>
                                             </member>
                                         </struct>

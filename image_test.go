@@ -162,6 +162,7 @@ func TestCreateImage(t *testing.T) {
 		"new-image-modify-virt-pxe-boot",
 		"new-image-modify-virt-ram",
 		"new-image-modify-virt-type",
+		"new-image-modify-virt-uefi",
 		"new-image-modify-virt-bridge",
 		"new-image-save",
 		"new-image-get",
@@ -211,6 +212,7 @@ func TestUpdateImage(t *testing.T) {
 		"update-image-modify-virt-pxe-boot",
 		"update-image-modify-virt-ram",
 		"update-image-modify-virt-type",
+		"update-image-modify-virt-uefi",
 		"update-image-modify-virt-bridge",
 		"update-image-save",
 	})
