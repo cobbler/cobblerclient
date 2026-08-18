@@ -40,7 +40,7 @@ type Repo struct {
 	MirrorLocally   bool              `mapstructure:"mirror_locally" json:"mirror_locally" yaml:"mirror_locally"`
 	MirrorType      string            `mapstructure:"mirror_type" json:"mirror_type" yaml:"mirror_type"`
 	Priority        int               `mapstructure:"priority" json:"priority" yaml:"priority"`
-	Proxy           Value[string]     `mapstructure:"proxy" cobbler:"newfield" json:"proxy" yaml:"proxy"`
+	Proxy           Value[string]     `mapstructure:"proxy" json:"proxy" yaml:"proxy"`
 	RsyncOpts       map[string]string `mapstructure:"rsyncopts" json:"rsyncopts" yaml:"rsyncopts"`
 	RpmList         []string          `mapstructure:"rpm_list" json:"rpm_list" yaml:"rpm_list"`
 	YumOpts         map[string]string `mapstructure:"yumopts" json:"yumopts" yaml:"yumopts"`
