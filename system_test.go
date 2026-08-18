@@ -102,6 +102,7 @@ func TestSystemCreate(t *testing.T) {
 		"new-system-modify-virt-pxe-boot",
 		"new-system-modify-virt-ram",
 		"new-system-modify-virt-type",
+		"new-system-modify-virt-uefi",
 		"new-system-modify-virt-pxe-boot-flag",
 		"new-system-save",
 		"new-system-get",
@@ -180,6 +181,7 @@ func TestUpdateSystem(t *testing.T) {
 		"update-system-modify-virt-pxe-boot",
 		"update-system-modify-virt-ram",
 		"update-system-modify-virt-type",
+		"update-system-modify-virt-uefi",
 		"update-system-modify-virt-pxe-boot-flag",
 	})
 	sys := NewSystem()

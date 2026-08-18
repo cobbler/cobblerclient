@@ -28,6 +28,8 @@ type VirtOptions struct {
 	PxeBoot bool       `mapstructure:"pxe_boot" json:"pxe_boot" yaml:"pxe_boot"`
 	Ram     Value[int] `mapstructure:"ram" json:"ram" yaml:"ram"`
 	Type    string     `mapstructure:"type" json:"type" yaml:"type"`
+	// UEFI is not inheritable in Cobbler (plain property, not InheritableProperty). New in Cobbler 4.0.0a8.
+	UEFI bool `mapstructure:"uefi" json:"uefi" yaml:"uefi"`
 }
 
 func newVirtOptions() VirtOptions {

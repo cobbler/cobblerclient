@@ -145,6 +145,7 @@ func TestCreateProfile(t *testing.T) {
 		"new-profile-modify-virt-pxe-boot",
 		"new-profile-modify-virt-ram",
 		"new-profile-modify-virt-type",
+		"new-profile-modify-virt-uefi",
 		"new-profile-modify-virt-bridge",
 		"new-profile-save",
 		"new-profile-get",
@@ -207,6 +208,7 @@ func TestUpdateProfile(t *testing.T) {
 		"update-profile-modify-virt-pxe-boot",
 		"update-profile-modify-virt-ram",
 		"update-profile-modify-virt-type",
+		"update-profile-modify-virt-uefi",
 		"update-profile-modify-virt-bridge",
 		"update-profile-save",
 	})

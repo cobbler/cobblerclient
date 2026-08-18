@@ -42,6 +42,8 @@ type Distro struct {
 	RedhatManagementUser     string          `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
 	RedhatManagementPassword string          `mapstructure:"redhat_management_password" json:"redhat_management_password" yaml:"redhat_management_password"`
 	OSVersion                string          `mapstructure:"os_version" json:"os_version" yaml:"os_version"`
+	// SourceTreePath is new in Cobbler 4.0.0a5.
+	SourceTreePath string `mapstructure:"source_tree_path" json:"source_tree_path" yaml:"source_tree_path"`
 }
 
 func NewDistro() Distro {

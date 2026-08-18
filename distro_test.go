@@ -125,6 +125,7 @@ func TestCreateDistro(t *testing.T) {
 		"new-distro-modify-redhat-management-user",
 		"new-distro-modify-redhat-management-password",
 		"new-distro-modify-os-version",
+		"new-distro-modify-source-tree-path",
 		"new-distro-save",
 		"new-distro-get",
 	})
@@ -163,6 +164,7 @@ func TestUpdateDistro(t *testing.T) {
 		"update-distro-modify-redhat-management-user",
 		"update-distro-modify-redhat-management-password",
 		"update-distro-modify-os-version",
+		"update-distro-modify-source-tree-path",
 		"update-distro-save",
 	})
 	d := NewDistro()
