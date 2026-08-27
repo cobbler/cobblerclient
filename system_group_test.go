@@ -30,7 +30,7 @@ func TestNewSystemGroup(t *testing.T) {
 
 func TestGetSystemGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-system-group")
-	g, err := c.GetSystemGroup("webservers", false, false)
+	g, err := c.GetSystemGroup("000000000000000000000000000000dd", false, false)
 	FailOnError(t, err)
 	if g.Name != "webservers" {
 		t.Errorf("wrong name %q", g.Name)
@@ -57,13 +57,13 @@ func TestListSystemGroupNames(t *testing.T) {
 
 func TestDeleteSystemGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-system-group")
-	err := c.DeleteSystemGroup("webservers")
+	err := c.DeleteSystemGroup("000000000000000000000000000000dd")
 	FailOnError(t, err)
 }
 
 func TestDeleteSystemGroupRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-system-group")
-	err := c.DeleteSystemGroupRecursive("webservers", false)
+	err := c.DeleteSystemGroupRecursive("000000000000000000000000000000dd", false)
 	FailOnError(t, err)
 }
 

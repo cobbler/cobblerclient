@@ -41,7 +41,7 @@ func TestGetMenu(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-menu")
 
 	// Act
-	menu, err := c.GetMenu("testmenu", false, false)
+	menu, err := c.GetMenu("00000000000000000000000000000080", false, false)
 
 	// Assert
 	FailOnError(t, err)
@@ -52,13 +52,13 @@ func TestGetMenu(t *testing.T) {
 
 func TestDeleteMenu(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-menu")
-	err := c.DeleteMenu("test")
+	err := c.DeleteMenu("00000000000000000000000000000081")
 	FailOnError(t, err)
 }
 
 func TestDeleteMenuRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-menu")
-	err := c.DeleteMenuRecursive("test", false)
+	err := c.DeleteMenuRecursive("00000000000000000000000000000081", false)
 	FailOnError(t, err)
 }
 

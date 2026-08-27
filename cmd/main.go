@@ -944,13 +944,21 @@ func main() {
 	// rename_distro resolves object_id via a uid lookup, so the copy's real handle must be fetched first.
 	// silentLookup is reused for the same purpose by every other Rename* call below.
 	silentLookup := newSilentClient(c.Token, c.CachedVersion)
+	// get_item/get_<type> and remove_item/remove_<type> are uid-only as of Cobbler 4.0.0b4; resolveHandle
+	// resolves a name to its uid via a non-recording lookup (no fixture slot consumed) for every ad-hoc
+	// Get*/Delete* call below that doesn't already have a handle variable in scope to reuse.
+	resolveHandle := func(what, name string) string {
+		uid, err := silentLookup.GetItemHandle(what, name)
+		warn(err)
+		return uid
+	}
 	test2Handle, err := silentLookup.GetDistroHandle("test2")
 	warn(err)
 	err = c.RenameDistro(test2Handle, "test1")
 	warn(err)
 	_, err = c.GetDistros()
 	warn(err)
-	_, err = c.GetDistro("Ubuntu-20.04-x86_64", false, false)
+	_, err = c.GetDistro(resolveHandle("distro", "Ubuntu-20.04-x86_64"), false, false)
 	warn(err)
 	_, err = c.ListDistroNames()
 	warn(err)
@@ -1092,7 +1100,7 @@ func main() {
 	warn(err)
 	_, err = c.GetProfiles()
 	warn(err)
-	_, err = c.GetProfile("Ubuntu-20.04-x86_64", false, false)
+	_, err = c.GetProfile(resolveHandle("profile", "Ubuntu-20.04-x86_64"), false, false)
 	warn(err)
 	_, err = c.ListProfileNames()
 	warn(err)
@@ -1279,7 +1287,7 @@ func main() {
 	warn(err)
 	_, err = c.GetSystems()
 	warn(err)
-	_, err = c.GetSystem("test", false, false)
+	_, err = c.GetSystem(resolveHandle("system", "test"), false, false)
 	warn(err)
 	_, err = c.ListSystemNames()
 	warn(err)
@@ -1289,7 +1297,7 @@ func main() {
 	warn(err)
 	_, err = c.GetSystemAsRendered("test")
 	warn(err)
-	_, err = c.GetSystem("testsys", false, false) // get-interfaces-get-system
+	_, err = c.GetSystem(systemHandle, false, false) // get-interfaces-get-system
 	warn(err)
 	err = c.DisableNetboot("testsys")
 	warn(err)
@@ -1311,11 +1319,11 @@ func main() {
 	warn(err)
 	_, err = c.PowerSystem(testsys1Handle, "status")
 	warn(err)
-	err = c.DeleteSystem("test")
+	err = c.DeleteSystem(resolveHandle("system", "test"))
 	warn(err)
-	err = c.DeleteProfile("test")
+	err = c.DeleteProfile(resolveHandle("profile", "test"))
 	warn(err)
-	err = c.DeleteDistro("test")
+	err = c.DeleteDistro(resolveHandle("distro", "test"))
 	warn(err)
 
 	// ── TEMPLATES ─────────────────────────────────────────────────────────
@@ -1405,7 +1413,7 @@ func main() {
 	warn(err)
 	_, err = c.GetTemplates()
 	warn(err)
-	_, err = c.GetTemplate("testtemplate", false, false)
+	_, err = c.GetTemplate(tplHandle, false, false)
 	warn(err)
 	_, err = c.GetTemplatesSince(time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC))
 	warn(err)
@@ -1421,7 +1429,7 @@ func main() {
 	warn(err)
 	_, err = c.FindTemplateNames(map[string]interface{}{"name": "testtemplate"})
 	warn(err)
-	err = c.DeleteTemplate("testtemplate")
+	err = c.DeleteTemplate(tplHandle)
 	warn(err)
 
 	// ── REPOS ─────────────────────────────────────────────────────────────
@@ -1513,9 +1521,9 @@ func main() {
 	warn(err)
 	_, err = c.GetRepos()
 	warn(err)
-	_, err = c.GetRepo("rhel-7-x86_64", false, false) // get-repo fixture
+	_, err = c.GetRepo(resolveHandle("repo", "rhel-7-x86_64"), false, false) // get-repo fixture
 	warn(err)
-	_, err = c.GetRepo("rhel-7-x86_64", false, false) // get-repo-explicit-string fixture
+	_, err = c.GetRepo(resolveHandle("repo", "rhel-7-x86_64"), false, false) // get-repo-explicit-string fixture
 	warn(err)
 	_, err = c.ListRepoNames()
 	warn(err)
@@ -1531,7 +1539,7 @@ func main() {
 	warn(err)
 	_, err = c.FindRepoNames(map[string]interface{}{"name": "test"})
 	warn(err)
-	err = c.DeleteRepo("test")
+	err = c.DeleteRepo(resolveHandle("repo", "test"))
 	warn(err)
 
 	// ── IMAGES ────────────────────────────────────────────────────────────
@@ -1632,7 +1640,7 @@ func main() {
 	warn(err)
 	_, err = c.GetImages()
 	warn(err)
-	_, err = c.GetImage("testimage", false, false)
+	_, err = c.GetImage(imageHandle, false, false)
 	warn(err)
 	_, err = c.ListImageNames()
 	warn(err)
@@ -1642,7 +1650,7 @@ func main() {
 	warn(err)
 	_, err = c.FindImageNames(map[string]interface{}{"name": "testimage"})
 	warn(err)
-	err = c.DeleteImage("test")
+	err = c.DeleteImage(resolveHandle("image", "test"))
 	warn(err)
 
 	// ── MENUS ─────────────────────────────────────────────────────────────
@@ -1706,7 +1714,7 @@ func main() {
 	warn(err)
 	_, err = c.GetMenus()
 	warn(err)
-	_, err = c.GetMenu("testmenu", false, false)
+	_, err = c.GetMenu(menuHandle, false, false)
 	warn(err)
 	_, err = c.ListMenuNames()
 	warn(err)
@@ -1718,7 +1726,7 @@ func main() {
 	warn(err)
 	_, err = c.FindMenuNames(map[string]interface{}{"name": "testmenu"})
 	warn(err)
-	err = c.DeleteMenu("test")
+	err = c.DeleteMenu(resolveHandle("menu", "test"))
 	warn(err)
 
 	// ── NETWORK INTERFACES ────────────────────────────────────────────────
@@ -1836,7 +1844,7 @@ func main() {
 	warn(err)
 	err = c.RenameNetworkInterface(eth1Handle, "eth2-server1")
 	warn(err)
-	_, err = c.GetNetworkInterface("eth0-server1", false, false)
+	_, err = c.GetNetworkInterface(niHandle, false, false)
 	warn(err)
 	_, err = c.GetNetworkInterfaces()
 	warn(err)
@@ -1848,7 +1856,7 @@ func main() {
 	warn(err)
 	_, err = c.FindNetworkInterfaceNames(map[string]interface{}{"mac_address": "00:11:22:33:44:55"})
 	warn(err)
-	err = c.DeleteNetworkInterface("eth0-server1")
+	err = c.DeleteNetworkInterface(niHandle)
 	warn(err)
 
 	// ── DISTRO GROUP ──────────────────────────────────────────────────────
@@ -1911,7 +1919,7 @@ func main() {
 	warn(err)
 	err = c.RenameDistroGroup(dgWebservers2Handle, "webservers-new")
 	warn(err)
-	_, err = c.GetDistroGroup("webservers", false, false)
+	_, err = c.GetDistroGroup(dgh, false, false)
 	warn(err)
 	_, err = c.GetDistroGroups()
 	warn(err)
@@ -1923,7 +1931,7 @@ func main() {
 	warn(err)
 	_, err = c.FindDistroGroup(map[string]interface{}{"name": "webservers"}, false)
 	warn(err)
-	err = c.DeleteDistroGroup("webservers")
+	err = c.DeleteDistroGroup(dgh)
 	warn(err)
 
 	// ── PROFILE GROUP ─────────────────────────────────────────────────────
@@ -1986,7 +1994,7 @@ func main() {
 	warn(err)
 	err = c.RenameProfileGroup(pgWebservers2Handle, "webservers-new")
 	warn(err)
-	_, err = c.GetProfileGroup("webservers", false, false)
+	_, err = c.GetProfileGroup(pgh, false, false)
 	warn(err)
 	_, err = c.GetProfileGroups()
 	warn(err)
@@ -1998,7 +2006,7 @@ func main() {
 	warn(err)
 	_, err = c.FindProfileGroup(map[string]interface{}{"name": "webservers"}, false)
 	warn(err)
-	err = c.DeleteProfileGroup("webservers")
+	err = c.DeleteProfileGroup(pgh)
 	warn(err)
 
 	// ── SYSTEM GROUP ──────────────────────────────────────────────────────
@@ -2061,7 +2069,7 @@ func main() {
 	warn(err)
 	err = c.RenameSystemGroup(sgWebservers2Handle, "webservers-new")
 	warn(err)
-	_, err = c.GetSystemGroup("webservers", false, false)
+	_, err = c.GetSystemGroup(sgh, false, false)
 	warn(err)
 	_, err = c.GetSystemGroups()
 	warn(err)
@@ -2073,7 +2081,7 @@ func main() {
 	warn(err)
 	_, err = c.FindSystemGroup(map[string]interface{}{"name": "webservers"}, false)
 	warn(err)
-	err = c.DeleteSystemGroup("webservers")
+	err = c.DeleteSystemGroup(sgh)
 	warn(err)
 
 	// Recreate the distro_group deleted above, silently (no fixture slot consumed), so that ModifyItemInPlace and
@@ -2097,11 +2105,11 @@ func main() {
 	fmt.Println("=== items generic ===")
 	_, err = c.FindItemsPaged("menu", map[string]interface{}{"display_name": ""}, "", 1, 5)
 	warn(err)
-	_, err = c.GetItem("system", "test", false, false)
+	_, err = c.GetItem("system", resolveHandle("system", "test"), false, false)
 	warn(err)
-	_, err = c.GetItem("system", "testsys", true, false)
+	_, err = c.GetItem("system", systemHandle, true, false)
 	warn(err)
-	_, err = c.GetItem("system", "testsys", false, true)
+	_, err = c.GetItem("system", systemHandle, false, true)
 	warn(err)
 	_, err = c.FindItems("profile", map[string]interface{}{"name": "test*"}, "name", false)
 	warn(err)

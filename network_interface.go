@@ -113,13 +113,13 @@ func (c *Client) GetNetworkInterfaces() ([]*NetworkInterface, error) {
 	return convertRawNetworkInterfacesList(result)
 }
 
-// GetNetworkInterface returns a single network interface by name.
-func (c *Client) GetNetworkInterface(name string, flattened, resolved bool) (*NetworkInterface, error) {
-	result, err := c.getConcreteItem("get_network_interface", name, flattened, resolved)
+// GetNetworkInterface returns a single network interface by its uid.
+func (c *Client) GetNetworkInterface(uid string, flattened, resolved bool) (*NetworkInterface, error) {
+	result, err := c.getConcreteItem("get_network_interface", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
-	return convertRawNetworkInterface(name, result)
+	return convertRawNetworkInterface(uid, result)
 }
 
 // GetNetworkInterfaceHandle returns the in-memory handle for a network interface.
@@ -182,7 +182,7 @@ func (c *Client) CreateNetworkInterface(systemUid string, iface NetworkInterface
 	if err := c.SaveNetworkInterface(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
-	return c.GetNetworkInterface(iface.Name, false, false)
+	return c.GetNetworkInterface(objectID, false, false)
 }
 
 // UpdateNetworkInterface persists changes to an existing network interface.
@@ -209,15 +209,15 @@ func (c *Client) CopyNetworkInterface(objectId, newName string) error {
 	return err
 }
 
-// DeleteNetworkInterface removes a network interface by name.
-func (c *Client) DeleteNetworkInterface(name string) error {
-	_, err := c.Call("remove_network_interface", name, c.Token, false)
+// DeleteNetworkInterface removes a network interface by its uid.
+func (c *Client) DeleteNetworkInterface(uid string) error {
+	_, err := c.Call("remove_network_interface", uid, c.Token, false)
 	return err
 }
 
-// DeleteNetworkInterfaceRecursive removes a network interface, optionally cascading.
-func (c *Client) DeleteNetworkInterfaceRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_network_interface", name, c.Token, recursive)
+// DeleteNetworkInterfaceRecursive removes a network interface by its uid, optionally cascading.
+func (c *Client) DeleteNetworkInterfaceRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_network_interface", uid, c.Token, recursive)
 	return err
 }
 

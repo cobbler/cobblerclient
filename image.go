@@ -245,14 +245,14 @@ func (c *Client) ListImageNames() ([]string, error) {
 	return c.GetItemNames("image")
 }
 
-// GetImage returns a single image obtained by its name.
-func (c *Client) GetImage(name string, flattened, resolved bool) (*Image, error) {
-	result, err := c.getConcreteItem("get_image", name, flattened, resolved)
+// GetImage returns a single image obtained by its uid.
+func (c *Client) GetImage(uid string, flattened, resolved bool) (*Image, error) {
+	result, err := c.getConcreteItem("get_image", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	image, err := convertRawImage(name, result)
+	image, err := convertRawImage(uid, result)
 	if err != nil {
 		return nil, err
 	}
@@ -290,7 +290,7 @@ func (c *Client) CreateImage(image Image) (*Image, error) {
 	}
 
 	// Return a clean copy of the image
-	return c.GetImage(image.Name, false, false)
+	return c.GetImage(newID, false, false)
 }
 
 // UpdateImage updates a single image.

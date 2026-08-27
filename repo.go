@@ -127,14 +127,14 @@ func (c *Client) GetRepos() ([]*Repo, error) {
 	return convertRawReposList(result)
 }
 
-// GetRepo returns a single repo obtained by its name.
-func (c *Client) GetRepo(name string, flattened, resolved bool) (*Repo, error) {
-	result, err := c.getConcreteItem("get_repo", name, flattened, resolved)
+// GetRepo returns a single repo obtained by its uid.
+func (c *Client) GetRepo(uid string, flattened, resolved bool) (*Repo, error) {
+	result, err := c.getConcreteItem("get_repo", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	repo, err := convertRawRepo(name, result)
+	repo, err := convertRawRepo(uid, result)
 	if err != nil {
 		return nil, err
 	}
@@ -169,7 +169,7 @@ func (c *Client) CreateRepo(repo Repo) (*Repo, error) {
 		return nil, err
 	}
 
-	return c.GetRepo(repo.Name, false, false)
+	return c.GetRepo(newID, false, false)
 }
 
 // UpdateRepo updates a single repo.
@@ -199,14 +199,14 @@ func (c *Client) CopyRepo(objectId, newName string) error {
 	return err
 }
 
-// DeleteRepo deletes a single Repo by its name.
-func (c *Client) DeleteRepo(name string) error {
-	return c.DeleteRepoRecursive(name, false)
+// DeleteRepo deletes a single Repo by its uid.
+func (c *Client) DeleteRepo(uid string) error {
+	return c.DeleteRepoRecursive(uid, false)
 }
 
-// DeleteRepoRecursive deletes a single Repo by its name with the option to do so recursively.
-func (c *Client) DeleteRepoRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_repo", name, c.Token, recursive)
+// DeleteRepoRecursive deletes a single Repo by its uid with the option to do so recursively.
+func (c *Client) DeleteRepoRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_repo", uid, c.Token, recursive)
 	return err
 }
 

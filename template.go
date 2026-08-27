@@ -80,12 +80,13 @@ func (c *Client) GetTemplates() ([]*Template, error) {
 	return convertRawTemplatesList(result)
 }
 
-func (c *Client) GetTemplate(name string, flattened, resolved bool) (*Template, error) {
-	result, err := c.getConcreteItem("get_template", name, flattened, resolved)
+// GetTemplate returns a single template obtained by its uid.
+func (c *Client) GetTemplate(uid string, flattened, resolved bool) (*Template, error) {
+	result, err := c.getConcreteItem("get_template", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
-	return convertRawTemplate(name, result)
+	return convertRawTemplate(uid, result)
 }
 
 func (c *Client) GetTemplateHandle(name string) (string, error) {
@@ -142,7 +143,7 @@ func (c *Client) CreateTemplate(tpl Template) (*Template, error) {
 	if err := c.SaveTemplate(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
-	return c.GetTemplate(tpl.Name, false, false)
+	return c.GetTemplate(objectID, false, false)
 }
 
 func (c *Client) UpdateTemplate(tpl *Template) error {
@@ -167,12 +168,14 @@ func (c *Client) CopyTemplate(objectId, newName string) error {
 	return err
 }
 
-func (c *Client) DeleteTemplate(name string) error {
-	return c.DeleteTemplateRecursive(name, false)
+// DeleteTemplate deletes a single Template by its uid.
+func (c *Client) DeleteTemplate(uid string) error {
+	return c.DeleteTemplateRecursive(uid, false)
 }
 
-func (c *Client) DeleteTemplateRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_template", name, c.Token, recursive)
+// DeleteTemplateRecursive deletes a single Template by its uid with the option to do so recursively.
+func (c *Client) DeleteTemplateRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_template", uid, c.Token, recursive)
 	return err
 }
 

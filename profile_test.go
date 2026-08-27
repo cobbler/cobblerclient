@@ -41,7 +41,7 @@ func TestGetProfile(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-profile")
 
 	// Act
-	profile, err := c.GetProfile("Ubuntu-20.04-x86_64", false, false)
+	profile, err := c.GetProfile("00000000000000000000000000000050", false, false)
 
 	// Assert
 	FailOnError(t, err)
@@ -52,13 +52,13 @@ func TestGetProfile(t *testing.T) {
 
 func TestDeleteProfile(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-profile")
-	err := c.DeleteProfile("test")
+	err := c.DeleteProfile("00000000000000000000000000000051")
 	FailOnError(t, err)
 }
 
 func TestDeleteProfileRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-profile")
-	err := c.DeleteProfileRecursive("test", false)
+	err := c.DeleteProfileRecursive("00000000000000000000000000000051", false)
 	FailOnError(t, err)
 }
 

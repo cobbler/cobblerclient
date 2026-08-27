@@ -38,7 +38,7 @@ func TestGetDistros(t *testing.T) {
 
 func TestGetDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distro")
-	distro, err := c.GetDistro("Ubuntu-20.04-x86_64", false, false)
+	distro, err := c.GetDistro("00000000000000000000000000000070", false, false)
 	FailOnError(t, err)
 
 	if distro.Name != "Ubuntu-20.04-x86_64" {
@@ -48,13 +48,13 @@ func TestGetDistro(t *testing.T) {
 
 func TestDeleteDistro(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-distro")
-	err := c.DeleteDistro("test")
+	err := c.DeleteDistro("00000000000000000000000000000071")
 	FailOnError(t, err)
 }
 
 func TestDeleteDistroRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-distro")
-	err := c.DeleteDistroRecursive("test", false)
+	err := c.DeleteDistroRecursive("00000000000000000000000000000071", false)
 	FailOnError(t, err)
 }
 

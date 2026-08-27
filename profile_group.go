@@ -45,13 +45,14 @@ func (c *Client) GetProfileGroups() ([]*ProfileGroup, error) {
 	return out, nil
 }
 
-func (c *Client) GetProfileGroup(name string, flattened, resolved bool) (*ProfileGroup, error) {
-	result, err := c.getConcreteItem("get_profile_group", name, flattened, resolved)
+// GetProfileGroup returns a single profile group obtained by its uid.
+func (c *Client) GetProfileGroup(uid string, flattened, resolved bool) (*ProfileGroup, error) {
+	result, err := c.getConcreteItem("get_profile_group", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 	var g ProfileGroup
-	if err := convertRawGroup("profile_group", name, result, &g); err != nil {
+	if err := convertRawGroup("profile_group", uid, result, &g); err != nil {
 		return nil, err
 	}
 	return &g, nil
@@ -76,7 +77,7 @@ func (c *Client) CreateProfileGroup(g ProfileGroup) (*ProfileGroup, error) {
 	if err := c.SaveProfileGroup(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
-	return c.GetProfileGroup(g.Name, false, false)
+	return c.GetProfileGroup(objectID, false, false)
 }
 
 func (c *Client) UpdateProfileGroup(g *ProfileGroup) error {
@@ -96,12 +97,15 @@ func (c *Client) SaveProfileGroup(objectId string, withTriggers, withSync bool, 
 	return err
 }
 
-func (c *Client) DeleteProfileGroup(name string) error {
-	_, err := c.Call("remove_profile_group", name, c.Token, false)
+// DeleteProfileGroup deletes a single ProfileGroup by its uid.
+func (c *Client) DeleteProfileGroup(uid string) error {
+	_, err := c.Call("remove_profile_group", uid, c.Token, false)
 	return err
 }
-func (c *Client) DeleteProfileGroupRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_profile_group", name, c.Token, recursive)
+
+// DeleteProfileGroupRecursive deletes a single ProfileGroup by its uid with the option to do so recursively.
+func (c *Client) DeleteProfileGroupRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_profile_group", uid, c.Token, recursive)
 	return err
 }
 func (c *Client) RenameProfileGroup(objectId, newName string) error {

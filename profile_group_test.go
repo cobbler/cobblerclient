@@ -30,7 +30,7 @@ func TestNewProfileGroup(t *testing.T) {
 
 func TestGetProfileGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-profile-group")
-	g, err := c.GetProfileGroup("webservers", false, false)
+	g, err := c.GetProfileGroup("000000000000000000000000000000db", false, false)
 	FailOnError(t, err)
 	if g.Name != "webservers" {
 		t.Errorf("wrong name %q", g.Name)
@@ -57,13 +57,13 @@ func TestListProfileGroupNames(t *testing.T) {
 
 func TestDeleteProfileGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-profile-group")
-	err := c.DeleteProfileGroup("webservers")
+	err := c.DeleteProfileGroup("000000000000000000000000000000db")
 	FailOnError(t, err)
 }
 
 func TestDeleteProfileGroupRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-profile-group")
-	err := c.DeleteProfileGroupRecursive("webservers", false)
+	err := c.DeleteProfileGroupRecursive("000000000000000000000000000000db", false)
 	FailOnError(t, err)
 }
 

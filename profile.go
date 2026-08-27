@@ -168,15 +168,15 @@ func (c *Client) GetProfiles() ([]*Profile, error) {
 	return convertRawProfilesList(result)
 }
 
-// GetProfile returns a single profile obtained by its name.
-func (c *Client) GetProfile(name string, flattened, resolved bool) (*Profile, error) {
-	result, err := c.getConcreteItem("get_profile", name, flattened, resolved)
+// GetProfile returns a single profile obtained by its uid.
+func (c *Client) GetProfile(uid string, flattened, resolved bool) (*Profile, error) {
+	result, err := c.getConcreteItem("get_profile", uid, flattened, resolved)
 
 	if err != nil {
 		return nil, err
 	}
 
-	profile, err := convertRawProfile(name, result)
+	profile, err := convertRawProfile(uid, result)
 	if err != nil {
 		return nil, err
 	}
@@ -227,7 +227,7 @@ func (c *Client) CreateProfile(profile Profile) (*Profile, error) {
 	}
 
 	// Return a clean copy of the profile
-	return c.GetProfile(profile.Name, false, false)
+	return c.GetProfile(newID, false, false)
 }
 
 // UpdateProfile updates a single profile.
@@ -257,14 +257,14 @@ func (c *Client) CopyProfile(objectId, newName string) error {
 	return err
 }
 
-// DeleteProfile deletes a single profile by its name.
-func (c *Client) DeleteProfile(name string) error {
-	return c.DeleteProfileRecursive(name, false)
+// DeleteProfile deletes a single profile by its uid.
+func (c *Client) DeleteProfile(uid string) error {
+	return c.DeleteProfileRecursive(uid, false)
 }
 
-// DeleteProfileRecursive deletes a single profile by its name.
-func (c *Client) DeleteProfileRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_profile", name, c.Token, recursive)
+// DeleteProfileRecursive deletes a single profile by its uid.
+func (c *Client) DeleteProfileRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_profile", uid, c.Token, recursive)
 	return err
 }
 

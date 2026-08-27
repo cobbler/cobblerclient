@@ -30,7 +30,7 @@ func TestNewDistroGroup(t *testing.T) {
 
 func TestGetDistroGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-distro-group")
-	g, err := c.GetDistroGroup("webservers", false, false)
+	g, err := c.GetDistroGroup("000000000000000000000000000000d9", false, false)
 	FailOnError(t, err)
 	if g.Name != "webservers" {
 		t.Errorf("wrong name %q", g.Name)
@@ -60,13 +60,13 @@ func TestListDistroGroupNames(t *testing.T) {
 
 func TestDeleteDistroGroup(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-distro-group")
-	err := c.DeleteDistroGroup("webservers")
+	err := c.DeleteDistroGroup("000000000000000000000000000000d9")
 	FailOnError(t, err)
 }
 
 func TestDeleteDistroGroupRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-distro-group")
-	err := c.DeleteDistroGroupRecursive("webservers", false)
+	err := c.DeleteDistroGroupRecursive("000000000000000000000000000000d9", false)
 	FailOnError(t, err)
 }
 
