@@ -45,13 +45,14 @@ func (c *Client) GetSystemGroups() ([]*SystemGroup, error) {
 	return out, nil
 }
 
-func (c *Client) GetSystemGroup(name string, flattened, resolved bool) (*SystemGroup, error) {
-	result, err := c.getConcreteItem("get_system_group", name, flattened, resolved)
+// GetSystemGroup returns a single system group obtained by its uid.
+func (c *Client) GetSystemGroup(uid string, flattened, resolved bool) (*SystemGroup, error) {
+	result, err := c.getConcreteItem("get_system_group", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 	var g SystemGroup
-	if err := convertRawGroup("system_group", name, result, &g); err != nil {
+	if err := convertRawGroup("system_group", uid, result, &g); err != nil {
 		return nil, err
 	}
 	return &g, nil
@@ -76,7 +77,7 @@ func (c *Client) CreateSystemGroup(g SystemGroup) (*SystemGroup, error) {
 	if err := c.SaveSystemGroup(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
-	return c.GetSystemGroup(g.Name, false, false)
+	return c.GetSystemGroup(objectID, false, false)
 }
 
 func (c *Client) UpdateSystemGroup(g *SystemGroup) error {
@@ -96,12 +97,15 @@ func (c *Client) SaveSystemGroup(objectId string, withTriggers, withSync bool, e
 	return err
 }
 
-func (c *Client) DeleteSystemGroup(name string) error {
-	_, err := c.Call("remove_system_group", name, c.Token, false)
+// DeleteSystemGroup deletes a single SystemGroup by its uid.
+func (c *Client) DeleteSystemGroup(uid string) error {
+	_, err := c.Call("remove_system_group", uid, c.Token, false)
 	return err
 }
-func (c *Client) DeleteSystemGroupRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_system_group", name, c.Token, recursive)
+
+// DeleteSystemGroupRecursive deletes a single SystemGroup by its uid with the option to do so recursively.
+func (c *Client) DeleteSystemGroupRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_system_group", uid, c.Token, recursive)
 	return err
 }
 func (c *Client) RenameSystemGroup(objectId, newName string) error {

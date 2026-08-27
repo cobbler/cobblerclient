@@ -42,7 +42,7 @@ func TestNewNetworkInterface(t *testing.T) {
 
 func TestGetNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-network-interface")
-	ni, err := c.GetNetworkInterface("eth0-server1", false, false)
+	ni, err := c.GetNetworkInterface("000000000000000000000000000000d6", false, false)
 	FailOnError(t, err)
 
 	if ni.Name != "eth0-server1" {
@@ -189,13 +189,13 @@ func TestCopyNetworkInterface(t *testing.T) {
 
 func TestDeleteNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-network-interface")
-	err := c.DeleteNetworkInterface("eth0-server1")
+	err := c.DeleteNetworkInterface("000000000000000000000000000000d6")
 	FailOnError(t, err)
 }
 
 func TestDeleteNetworkInterfaceRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-network-interface")
-	err := c.DeleteNetworkInterfaceRecursive("eth0-server1", false)
+	err := c.DeleteNetworkInterfaceRecursive("000000000000000000000000000000d6", false)
 	FailOnError(t, err)
 }
 

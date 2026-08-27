@@ -82,14 +82,14 @@ func (c *Client) GetMenus() ([]*Menu, error) {
 	return convertRawMenusList(result)
 }
 
-// GetMenu returns a single menu obtained by its name.
-func (c *Client) GetMenu(name string, flattened, resolved bool) (*Menu, error) {
-	result, err := c.getConcreteItem("get_menu", name, flattened, resolved)
+// GetMenu returns a single menu obtained by its uid.
+func (c *Client) GetMenu(uid string, flattened, resolved bool) (*Menu, error) {
+	result, err := c.getConcreteItem("get_menu", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	menu, err := convertRawMenu(name, result)
+	menu, err := convertRawMenu(uid, result)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func (c *Client) CreateMenu(menu Menu) (*Menu, error) {
 		return nil, err
 	}
 
-	return c.GetMenu(menu.Name, false, false)
+	return c.GetMenu(newID, false, false)
 }
 
 // UpdateMenu updates a single menu.
@@ -146,14 +146,14 @@ func (c *Client) UpdateMenu(menu *Menu) error {
 	return nil
 }
 
-// DeleteMenu deletes a single Menu by its name.
-func (c *Client) DeleteMenu(name string) error {
-	return c.DeleteMenuRecursive(name, false)
+// DeleteMenu deletes a single Menu by its uid.
+func (c *Client) DeleteMenu(uid string) error {
+	return c.DeleteMenuRecursive(uid, false)
 }
 
-// DeleteMenuRecursive deletes a single Menu by its name with the option to do so recursively.
-func (c *Client) DeleteMenuRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_menu", name, c.Token, recursive)
+// DeleteMenuRecursive deletes a single Menu by its uid with the option to do so recursively.
+func (c *Client) DeleteMenuRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_menu", uid, c.Token, recursive)
 	return err
 }
 

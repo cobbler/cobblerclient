@@ -183,14 +183,14 @@ func (c *Client) GetSystems() ([]*System, error) {
 	return c.convertRawSystemsList(result)
 }
 
-// GetSystem returns a single system obtained by its name.
-func (c *Client) GetSystem(name string, flattened, resolved bool) (*System, error) {
-	result, err := c.getConcreteItem("get_system", name, flattened, resolved)
+// GetSystem returns a single system obtained by its uid.
+func (c *Client) GetSystem(uid string, flattened, resolved bool) (*System, error) {
+	result, err := c.getConcreteItem("get_system", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	system, err := c.convertRawSystem(name, result)
+	system, err := c.convertRawSystem(uid, result)
 	if err != nil {
 		return nil, err
 	}
@@ -259,7 +259,7 @@ func (c *Client) CreateSystem(system System) (*System, error) {
 	}
 
 	// Return a clean copy of the system
-	return c.GetSystem(system.Name, false, false)
+	return c.GetSystem(newID, false, false)
 }
 
 // UpdateSystem updates a single system.
@@ -284,14 +284,14 @@ func (c *Client) CopySystem(objectId, newName string) error {
 	return err
 }
 
-// DeleteSystem deletes a single System by its name.
-func (c *Client) DeleteSystem(name string) error {
-	return c.DeleteSystemRecursive(name, false)
+// DeleteSystem deletes a single System by its uid.
+func (c *Client) DeleteSystem(uid string) error {
+	return c.DeleteSystemRecursive(uid, false)
 }
 
-// DeleteSystemRecursive deletes a single System by its name with the option to do so recursively.
-func (c *Client) DeleteSystemRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_system", name, c.Token, recursive)
+// DeleteSystemRecursive deletes a single System by its uid with the option to do so recursively.
+func (c *Client) DeleteSystemRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_system", uid, c.Token, recursive)
 	return err
 }
 

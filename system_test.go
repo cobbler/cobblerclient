@@ -43,7 +43,7 @@ func TestGetSystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-system")
 
 	// Act
-	system, err := c.GetSystem("test", false, false)
+	system, err := c.GetSystem("00000000000000000000000000000060", false, false)
 
 	// Assert
 	FailOnError(t, err)
@@ -201,13 +201,13 @@ func TestUpdateSystem(t *testing.T) {
 
 func TestDeleteSystem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-system")
-	err := c.DeleteSystem("test")
+	err := c.DeleteSystem("00000000000000000000000000000061")
 	FailOnError(t, err)
 }
 
 func TestDeleteSystemRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-system")
-	err := c.DeleteSystemRecursive("test", false)
+	err := c.DeleteSystemRecursive("00000000000000000000000000000061", false)
 	FailOnError(t, err)
 }
 
@@ -300,7 +300,7 @@ func TestGetInterfaces(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"get-interfaces-get-system",
 	})
-	testsys, err := c.GetSystem("testsys", false, false)
+	testsys, err := c.GetSystem("0000000000000000000000000000001a", false, false)
 	FailOnError(t, err)
 
 	// Assert - in Cobbler 4.0.0 network interfaces are separate items and are
@@ -319,7 +319,7 @@ func TestGetInterface(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"get-interfaces-get-system",
 	})
-	testsys, err := c.GetSystem("testsys", false, false)
+	testsys, err := c.GetSystem("0000000000000000000000000000001a", false, false)
 	FailOnError(t, err)
 
 	// Assert - in Cobbler 4.0.0 network interfaces are separate items and are

@@ -184,14 +184,14 @@ func (c *Client) GetDistros() ([]*Distro, error) {
 	return convertRawDistrosList(result)
 }
 
-// GetDistro returns a single distro obtained by its name.
-func (c *Client) GetDistro(name string, flattened, resolved bool) (*Distro, error) {
-	result, err := c.getConcreteItem("get_distro", name, flattened, resolved)
+// GetDistro returns a single distro obtained by its uid.
+func (c *Client) GetDistro(uid string, flattened, resolved bool) (*Distro, error) {
+	result, err := c.getConcreteItem("get_distro", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 
-	distro, err := convertRawDistro(name, result)
+	distro, err := convertRawDistro(uid, result)
 	if err != nil {
 		return nil, err
 	}
@@ -226,7 +226,7 @@ func (c *Client) CreateDistro(distro Distro) (*Distro, error) {
 		return nil, err
 	}
 
-	return c.GetDistro(distro.Name, false, false)
+	return c.GetDistro(newID, false, false)
 }
 
 // UpdateDistro updates a single distro.
@@ -260,14 +260,14 @@ func (c *Client) CopyDistro(objectId, newName string) error {
 	return err
 }
 
-// DeleteDistro deletes a single Distro by its name.
-func (c *Client) DeleteDistro(name string) error {
-	return c.DeleteDistroRecursive(name, false)
+// DeleteDistro deletes a single Distro by its uid.
+func (c *Client) DeleteDistro(uid string) error {
+	return c.DeleteDistroRecursive(uid, false)
 }
 
-// DeleteDistroRecursive deletes a single Distro by its name with the option to do so recursively.
-func (c *Client) DeleteDistroRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_distro", name, c.Token, recursive)
+// DeleteDistroRecursive deletes a single Distro by its uid with the option to do so recursively.
+func (c *Client) DeleteDistroRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_distro", uid, c.Token, recursive)
 	return err
 }
 

@@ -41,7 +41,7 @@ func TestGetImage(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-image")
 
 	// Act
-	image, err := c.GetImage("testimage", false, false)
+	image, err := c.GetImage("00000000000000000000000000000040", false, false)
 
 	// Assert
 	FailOnError(t, err)
@@ -52,13 +52,13 @@ func TestGetImage(t *testing.T) {
 
 func TestDeleteImage(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-image")
-	err := c.DeleteImage("test")
+	err := c.DeleteImage("00000000000000000000000000000041")
 	FailOnError(t, err)
 }
 
 func TestDeleteImageRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-image")
-	err := c.DeleteImageRecursive("test", false)
+	err := c.DeleteImageRecursive("00000000000000000000000000000041", false)
 	FailOnError(t, err)
 }
 

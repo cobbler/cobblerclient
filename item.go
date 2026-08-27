@@ -88,8 +88,9 @@ func (c *Client) ModifyItem(what, objectId string, attribute []string, arg inter
 }
 
 // ModifyItemInPlace attempts to recreate the functionality of the "in_place" parameter for the "xapi_object_edit"
-// XML-RPC method.
-func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[string]interface{}) error {
+// XML-RPC method. uid must be a resolved item handle/uid, not a name — names aren't guaranteed unique
+// for every item type (e.g. NetworkInterface names are only unique per-system).
+func (c *Client) ModifyItemInPlace(what, uid, attribute string, value map[string]interface{}) error {
 	itemKey := []string{
 		"autoinstall_meta",
 		"kernel_options",
@@ -100,7 +101,7 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 	if !stringInSlice(attribute, itemKey) {
 		return errors.New("invalid attribute for in-place modification")
 	}
-	rawItem, err := c.GetItem(what, name, false, false)
+	rawItem, err := c.GetItem(what, uid, false, false)
 	if err != nil {
 		return err
 	}
@@ -123,15 +124,11 @@ func (c *Client) ModifyItemInPlace(what, name, attribute string, value map[strin
 			newMap[key] = mapValue
 		}
 	}
-	itemHandle, err := c.GetItemHandle(what, name)
+	err = c.ModifyItem(what, uid, []string{attribute}, newMap)
 	if err != nil {
 		return err
 	}
-	err = c.ModifyItem(what, itemHandle, []string{attribute}, newMap)
-	if err != nil {
-		return err
-	}
-	return c.SaveItem(what, itemHandle, true, true, "bypass")
+	return c.SaveItem(what, uid, true, true, "bypass")
 }
 
 // GetItemNames returns the list of names for a specified object type present inside Cobbler.
@@ -157,9 +154,9 @@ func (c *Client) SetItemResolvedValue(itemUuid string, attribute []string, value
 }
 
 // GetItem retrieves a single item from the database. Returns ErrItemNotFound if no item
-// with the given name exists.
-func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[string]interface{}, error) {
-	unmarshalledResult, err := c.Call("get_item", what, name, flatten, resolved)
+// with the given uid exists.
+func (c *Client) GetItem(what string, uid string, flatten, resolved bool) (map[string]interface{}, error) {
+	unmarshalledResult, err := c.Call("get_item", what, uid, flatten, resolved)
 	if err != nil {
 		return nil, err
 	}
@@ -181,8 +178,8 @@ func (c *Client) GetItem(what string, name string, flatten, resolved bool) (map[
 // 4.0.0+ only and so always sends it. The CachedVersion field on Client is
 // kept around for compatibility with [Client.ExtendedVersion] consumers but
 // no longer gates parameter shape.
-func (c *Client) getConcreteItem(method, name string, flattened, resolved bool) (interface{}, error) {
-	return c.Call(method, name, flattened, resolved, c.Token)
+func (c *Client) getConcreteItem(method, uid string, flattened, resolved bool) (interface{}, error) {
+	return c.Call(method, uid, flattened, resolved, c.Token)
 }
 
 // FindItems searches for one or more items by any of its attributes.
@@ -269,8 +266,8 @@ func (c *Client) SaveItem(what, objectId string, withTriggers, withSync bool, ed
 }
 
 // RemoveItem deletes an item from the Cobbler database.
-func (c *Client) RemoveItem(what, name string, recursive bool) error {
-	_, err := c.Call("remove_item", what, name, c.Token, recursive)
+func (c *Client) RemoveItem(what, uid string, recursive bool) error {
+	_, err := c.Call("remove_item", what, uid, c.Token, recursive)
 	return err
 }
 

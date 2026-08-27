@@ -81,7 +81,7 @@ func TestGetTemplates(t *testing.T) {
 
 func TestGetTemplate(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-template")
-	tpl, err := c.GetTemplate("testtemplate", false, false)
+	tpl, err := c.GetTemplate("0000000000000000000000000000001f", false, false)
 	FailOnError(t, err)
 	if tpl.Name != "testtemplate" {
 		t.Errorf("Wrong template name returned: %v", tpl.Name)
@@ -176,13 +176,13 @@ func TestCopyTemplate(t *testing.T) {
 
 func TestDeleteTemplate(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-template")
-	err := c.DeleteTemplate("testtemplate")
+	err := c.DeleteTemplate("0000000000000000000000000000001f")
 	FailOnError(t, err)
 }
 
 func TestDeleteTemplateRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-template")
-	err := c.DeleteTemplateRecursive("testtemplate", false)
+	err := c.DeleteTemplateRecursive("0000000000000000000000000000001f", false)
 	FailOnError(t, err)
 }
 

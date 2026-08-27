@@ -94,10 +94,10 @@ func TestFindItemsPaged(t *testing.T) {
 
 func TestGetItem(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-item")
-	// The fixture reflects a get_item call for a system named "test" that does not
-	// exist on the server; Cobbler returns the "~" not-found marker, which GetItem
-	// translates into ErrItemNotFound.
-	res, err := c.GetItem("system", "test", false, false)
+	// The fixture reflects a get_item call for a system uid that does not exist on the
+	// server; Cobbler returns the "~" not-found marker, which GetItem translates into
+	// ErrItemNotFound.
+	res, err := c.GetItem("system", "00000000000000000000000000000099", false, false)
 	if !errors.Is(err, ErrItemNotFound) {
 		t.Fatalf("expected ErrItemNotFound, got %v", err)
 	}
@@ -108,7 +108,7 @@ func TestGetItem(t *testing.T) {
 
 func TestGetItemFlattened(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-item-flattened")
-	res, err := c.GetItem("system", "testsys", true, false)
+	res, err := c.GetItem("system", "0000000000000000000000000000001a", true, false)
 	FailOnError(t, err)
 	if res["profile"] != "00000000000000000000000000000013" {
 		t.Error("expected a different profile")
@@ -120,7 +120,7 @@ func TestGetItemFlattened(t *testing.T) {
 
 func TestGetItemResolved(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-item-resolved")
-	res, err := c.GetItem("system", "testsys", false, true)
+	res, err := c.GetItem("system", "0000000000000000000000000000001a", false, true)
 	FailOnError(t, err)
 	if res["profile"] != "00000000000000000000000000000013" {
 		t.Error("expected a different profile")
@@ -167,11 +167,10 @@ func TestModifyItem(t *testing.T) {
 func TestModifyItemInPlace(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"modify-item-in-place-get",
-		"modify-item-in-place-handle",
 		"modify-item-in-place-modify",
 		"modify-item-in-place-save",
 	})
-	err := c.ModifyItemInPlace("profile", "testprof", "kernel_options", map[string]interface{}{"test": "1"})
+	err := c.ModifyItemInPlace("profile", "00000000000000000000000000000013", "kernel_options", map[string]interface{}{"test": "1"})
 	FailOnError(t, err)
 }
 

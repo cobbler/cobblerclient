@@ -4,7 +4,7 @@
     <params>
         <param>
             <value>
-                <string>rhel-7-x86_64</string>
+                <string>00000000000000000000000000000030</string>
             </value>
         </param>
         <param>

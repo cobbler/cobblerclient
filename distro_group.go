@@ -45,13 +45,14 @@ func (c *Client) GetDistroGroups() ([]*DistroGroup, error) {
 	return out, nil
 }
 
-func (c *Client) GetDistroGroup(name string, flattened, resolved bool) (*DistroGroup, error) {
-	result, err := c.getConcreteItem("get_distro_group", name, flattened, resolved)
+// GetDistroGroup returns a single distro group obtained by its uid.
+func (c *Client) GetDistroGroup(uid string, flattened, resolved bool) (*DistroGroup, error) {
+	result, err := c.getConcreteItem("get_distro_group", uid, flattened, resolved)
 	if err != nil {
 		return nil, err
 	}
 	var g DistroGroup
-	if err := convertRawGroup("distro_group", name, result, &g); err != nil {
+	if err := convertRawGroup("distro_group", uid, result, &g); err != nil {
 		return nil, err
 	}
 	return &g, nil
@@ -76,7 +77,7 @@ func (c *Client) CreateDistroGroup(g DistroGroup) (*DistroGroup, error) {
 	if err := c.SaveDistroGroup(objectID, true, true, "new"); err != nil {
 		return nil, err
 	}
-	return c.GetDistroGroup(g.Name, false, false)
+	return c.GetDistroGroup(objectID, false, false)
 }
 
 func (c *Client) UpdateDistroGroup(g *DistroGroup) error {
@@ -97,12 +98,15 @@ func (c *Client) SaveDistroGroup(objectId string, withTriggers, withSync bool, e
 	return err
 }
 
-func (c *Client) DeleteDistroGroup(name string) error {
-	_, err := c.Call("remove_distro_group", name, c.Token, false)
+// DeleteDistroGroup deletes a single DistroGroup by its uid.
+func (c *Client) DeleteDistroGroup(uid string) error {
+	_, err := c.Call("remove_distro_group", uid, c.Token, false)
 	return err
 }
-func (c *Client) DeleteDistroGroupRecursive(name string, recursive bool) error {
-	_, err := c.Call("remove_distro_group", name, c.Token, recursive)
+
+// DeleteDistroGroupRecursive deletes a single DistroGroup by its uid with the option to do so recursively.
+func (c *Client) DeleteDistroGroupRecursive(uid string, recursive bool) error {
+	_, err := c.Call("remove_distro_group", uid, c.Token, recursive)
 	return err
 }
 func (c *Client) RenameDistroGroup(objectId, newName string) error {

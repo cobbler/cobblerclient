@@ -40,7 +40,7 @@ func TestGetRepo(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-repo")
 
 	// Act
-	repo, err := c.GetRepo("rhel-7-x86_64", false, false)
+	repo, err := c.GetRepo("00000000000000000000000000000030", false, false)
 
 	// Assert
 	FailOnError(t, err)
@@ -68,7 +68,7 @@ func TestGetRepoExplicitStringValue(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "get-repo-explicit-string")
 
 	// Act
-	repo, err := c.GetRepo("rhel-7-x86_64", false, false)
+	repo, err := c.GetRepo("00000000000000000000000000000030", false, false)
 
 	// Assert
 	FailOnError(t, err)
@@ -82,13 +82,13 @@ func TestGetRepoExplicitStringValue(t *testing.T) {
 
 func TestDeleteRepo(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-repo")
-	err := c.DeleteRepo("test")
+	err := c.DeleteRepo("00000000000000000000000000000031")
 	FailOnError(t, err)
 }
 
 func TestDeleteRepoRecursive(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "delete-repo")
-	err := c.DeleteRepoRecursive("test", false)
+	err := c.DeleteRepoRecursive("00000000000000000000000000000031", false)
 	FailOnError(t, err)
 }
 
