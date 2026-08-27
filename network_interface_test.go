@@ -127,7 +127,6 @@ func TestFindNetworkInterfaceNames(t *testing.T) {
 
 func TestCreateNetworkInterface(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
-		"create-network-interface-name-check",
 		"new-network-interface",
 		"new-network-interface-modify-name",
 		"new-network-interface-modify-comment",

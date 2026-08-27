@@ -161,12 +161,9 @@ func (c *Client) FindNetworkInterfaceNames(criteria map[string]interface{}) ([]s
 // CreateNetworkInterface creates a new network interface attached to systemUid
 // and persists the field values supplied via iface.
 func (c *Client) CreateNetworkInterface(systemUid string, iface NetworkInterface) (*NetworkInterface, error) {
-	// Make sure a network interface with the same name does not already exist
-	if exists, err := c.HasItem("network_interface", iface.Name); err != nil {
-		return nil, err
-	} else if exists {
-		return nil, fmt.Errorf("a NetworkInterface with the name %s already exists", iface.Name)
-	}
+	// Unlike other item types, NetworkInterface names are only unique per-system, not
+	// globally - a HasItem("network_interface", iface.Name) pre-check here would
+	// incorrectly reject a same-named interface on a different system, so none is done.
 
 	id, err := c.Call("new_network_interface", systemUid, c.Token)
 	if err != nil {
