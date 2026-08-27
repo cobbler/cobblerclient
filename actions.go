@@ -26,6 +26,9 @@ func (c *Client) BackgroundSyncSystems(options BackgroundSyncSystemsOptions) (st
 func (c *Client) Check() (*[]string, error) {
 	var checks []string
 	result, err := c.Call("check", c.Token)
+	if err != nil {
+		return &checks, err
+	}
 
 	for _, check := range result.([]interface{}) {
 		checks = append(checks, check.(string))
