@@ -369,8 +369,12 @@ func (c *Client) GetImagesSince(mtime time.Time) ([]*Image, error) {
 }
 
 // GetImageAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
-func (c *Client) GetImageAsRendered(name string) (map[string]interface{}, error) {
-	result, err := c.Call("get_image_as_rendered", name, c.Token)
+//
+// uid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_image_as_rendered does a strict uid-keyed lookup server-side; an
+// unresolvable uid silently returns an empty map, not an error).
+func (c *Client) GetImageAsRendered(uid string) (map[string]interface{}, error) {
+	result, err := c.Call("get_image_as_rendered", uid, c.Token)
 	if err != nil {
 		return nil, err
 	}
@@ -384,7 +388,12 @@ func (c *Client) SaveImage(objectId string, withTriggers, withSync bool, editmod
 }
 
 // GetValidImageBootLoaders retrieves the list of bootloaders that can be assigned to an image.
-func (c *Client) GetValidImageBootLoaders(imageName string) ([]string, error) {
-	resultUnmarshalled, err := c.Call("get_valid_image_boot_loaders", imageName, c.Token)
+//
+// imageUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_valid_image_boot_loaders does a strict uid-keyed lookup server-side;
+// an unresolvable uid returns a single-element error-message slice, not an
+// RPC fault).
+func (c *Client) GetValidImageBootLoaders(imageUid string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_image_boot_loaders", imageUid, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }

@@ -117,6 +117,48 @@ result; they now return `(T, error)`. Update call sites accordingly:
 default flipped from `qemu` to `kvm`. Use `GetRandomMacFor(virtType)` to pin
 a different value.
 
+### background_* options now require UIDs (Cobbler 4.0.0b6+)
+
+`BackgroundReposyncOptions.Repos`/`.Only`, `BuildisoOptions.Profiles`/`.Systems`/`.Distro`,
+`BackgroundSyncSystemsOptions.Systems`, and `BackgroundPowerSystemOptions.Systems` must now hold
+the target items' UIDs, not their names. The corresponding server-side actions
+(`background_reposync`, `background_buildiso`, `background_syncsystems`,
+`background_power_system`) do a strict uid-keyed lookup; passing a name is not an error you'll
+see immediately — the entry is silently skipped and logged as a warning server-side, except for
+`BuildisoOptions.Distro`, where an unresolvable value raises a hard error and aborts the task.
+
+Resolve names to UIDs yourself before calling these, e.g. via `Client.GetSystemHandle(name)` /
+`Client.GetItemHandle("repo", name)`, the same pattern already required for `System.Profile`,
+`System.Image`, `Profile.Distro`, etc.
+
+### More methods now require UIDs (Cobbler 4.0.0b6+)
+
+A second batch of methods, previously overlooked when the above `background_*` batch was fixed,
+also requires the target item's UID instead of its name as of Cobbler 4.0.0b6:
+
+- `GetDistroAsRendered`, `GetProfileAsRendered`, `GetSystemAsRendered`, `GetRepoAsRendered`,
+  `GetImageAsRendered`, `GetMenuAsRendered`, `GetDistroGroupAsRendered`,
+  `GetProfileGroupAsRendered`, `GetSystemGroupAsRendered` — an unresolvable uid silently returns
+  an empty map, not an error.
+- `GetValidDistroBootLoaders`, `GetValidImageBootLoaders`, `GetValidProfileBootLoaders`,
+  `GetValidSystemBootLoaders` — an unresolvable uid returns a single-element error-message
+  slice, not an RPC fault.
+- `GetBlendedData`, `IsAutoinstallInUse` — an unresolvable uid raises a hard server-side error.
+  `IsAutoinstallInUse`'s parameter is, and always was, an autoinstall *template* UID, not a
+  system name as its old parameter name implied.
+- `GetReposCompatibleWithProfile`, `DisableNetboot` — an unresolvable uid silently returns an
+  empty result (`[]`) or `false`, respectively, not an error.
+- `GetRepoConfigForProfile`, `GetRepoConfigForSystem`, `GetTemplateFileForProfile`,
+  `GetTemplateFileForSystem` — an unresolvable uid returns a `"# object not found: ..."` comment
+  string, not an error. These are normally reached anonymously via the `/cblr/svc/...` HTTP
+  endpoints, which resolve a name to a uid server-side; direct callers of these Go wrappers must
+  resolve the uid themselves.
+- `GenerateIPxe`, `GenerateBootCfg`, `GenerateScript` — an unresolvable uid for any of
+  `profileUid`/`imageUid`/`systemUid` is treated as if that argument were empty/unset.
+
+As with the `background_*` batch, resolve names to UIDs yourself first, e.g. via
+`Client.GetSystemHandle(name)` / `Client.GetItemHandle("<type>", name)`.
+
 ### Deprecated but kept
 
 - `GetBlendedData` — use `DumpVars(itemUuid, formattedOutput, removeDicts)`

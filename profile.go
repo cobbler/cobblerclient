@@ -311,14 +311,23 @@ func (c *Client) GetProfileHandle(name string) (string, error) {
 }
 
 // GetValidProfileBootLoaders retrieves the list of bootloaders that can be assigned to a profile.
-func (c *Client) GetValidProfileBootLoaders(profileName string) ([]string, error) {
-	resultUnmarshalled, err := c.Call("get_valid_profile_boot_loaders", profileName, c.Token)
+//
+// profileUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_valid_profile_boot_loaders does a strict uid-keyed lookup server-side;
+// an unresolvable uid returns a single-element error-message slice, not an
+// RPC fault).
+func (c *Client) GetValidProfileBootLoaders(profileUid string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_profile_boot_loaders", profileUid, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetProfileAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
-func (c *Client) GetProfileAsRendered(name string) (map[string]interface{}, error) {
-	result, err := c.Call("get_profile_as_rendered", name, c.Token)
+//
+// uid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_profile_as_rendered does a strict uid-keyed lookup server-side; an
+// unresolvable uid silently returns an empty map, not an error).
+func (c *Client) GetProfileAsRendered(uid string) (map[string]interface{}, error) {
+	result, err := c.Call("get_profile_as_rendered", uid, c.Token)
 	if err != nil {
 		return nil, err
 	}

@@ -2,18 +2,25 @@ package cobblerclient
 
 // BuildisoOptions is a struct which describes the options one can set for the buildiso action of Cobbler.
 type BuildisoOptions struct {
-	Iso            string   `mapstructure:"iso" xmlrpc:"iso"`
-	Profiles       []string `mapstructure:"profiles" xmlrpc:"profiles"`
-	Systems        []string `mapstructure:"systems" xmlrpc:"systems"`
-	BuildisoDir    string   `mapstructure:"buildisodir" xmlrpc:"buildisodir"`
-	Distro         string   `mapstructure:"distro" xmlrpc:"distro"`
-	Standalone     bool     `mapstructure:"standalone" xmlrpc:"standalone"`
-	Airgapped      bool     `mapstructure:"airgapped" xmlrpc:"airgapped"`
-	Source         string   `mapstructure:"source" xmlrpc:"source"`
-	ExcludeDns     bool     `mapstructure:"exclude_dns" xmlrpc:"exclude_dns"`
-	ExcludeSystems bool     `mapstructure:"exclude_systems" xmlrpc:"exclude_systems"`
-	XorrisofsOpts  string   `mapstructure:"xorrisofs_opts" xmlrpc:"xorrisofs_opts"`
-	Esp            string   `mapstructure:"esp" xmlrpc:"esp"`
+	Iso string `mapstructure:"iso" xmlrpc:"iso"`
+	// Profiles must hold Profile UIDs, not names (Cobbler >=4.0.0b6's background_buildiso does a
+	// strict uid-keyed lookup server-side; an unresolvable entry is silently skipped, not an error).
+	Profiles []string `mapstructure:"profiles" xmlrpc:"profiles"`
+	// Systems must hold System UIDs, not names (Cobbler >=4.0.0b6's background_buildiso does a
+	// strict uid-keyed lookup server-side; an unresolvable entry is silently skipped, not an error).
+	Systems     []string `mapstructure:"systems" xmlrpc:"systems"`
+	BuildisoDir string   `mapstructure:"buildisodir" xmlrpc:"buildisodir"`
+	// Distro must hold the Distro's UID, not its name (Cobbler >=4.0.0b6's background_buildiso does a
+	// strict uid-keyed lookup server-side; unlike Profiles/Systems, an unresolvable Distro uid raises
+	// a hard server-side error and aborts the task).
+	Distro         string `mapstructure:"distro" xmlrpc:"distro"`
+	Standalone     bool   `mapstructure:"standalone" xmlrpc:"standalone"`
+	Airgapped      bool   `mapstructure:"airgapped" xmlrpc:"airgapped"`
+	Source         string `mapstructure:"source" xmlrpc:"source"`
+	ExcludeDns     bool   `mapstructure:"exclude_dns" xmlrpc:"exclude_dns"`
+	ExcludeSystems bool   `mapstructure:"exclude_systems" xmlrpc:"exclude_systems"`
+	XorrisofsOpts  string `mapstructure:"xorrisofs_opts" xmlrpc:"xorrisofs_opts"`
+	Esp            string `mapstructure:"esp" xmlrpc:"esp"`
 }
 
 // AclSetupOptions is a struct which describes the options one can set for the actlsetup action of Cobbler.
@@ -46,6 +53,8 @@ type BackgroundSyncOptions struct {
 }
 
 type BackgroundSyncSystemsOptions struct {
+	// Systems must hold System UIDs, not names (Cobbler >=4.0.0b6's background_syncsystems does a
+	// strict uid-keyed lookup server-side; an unresolvable entry is silently skipped, not an error).
 	Systems []string `mapstructure:"systems" xmlrpc:"systems"`
 	Verbose bool     `mapstructure:"verbose" xmlrpc:"verbose"`
 }
@@ -62,13 +71,19 @@ type BackgroundImportOptions struct {
 }
 
 type BackgroundReposyncOptions struct {
-	Repos  []string `mapstructure:"repos" xmlrpc:"repos"`
-	Only   string   `mapstructure:"only" xmlrpc:"only"`
-	Nofail bool     `mapstructure:"nofail" xmlrpc:"nofail"`
-	Tries  int      `mapstructure:"tries" xmlrpc:"tries"`
+	// Repos must hold Repo UIDs, not names (Cobbler >=4.0.0b6's background_reposync does a
+	// strict uid-keyed lookup server-side; an unresolvable entry is silently skipped, not an error).
+	Repos []string `mapstructure:"repos" xmlrpc:"repos"`
+	// Only must hold a single Repo UID, not a name (same uid-keyed lookup as Repos above). It takes
+	// precedence over Repos if set.
+	Only   string `mapstructure:"only" xmlrpc:"only"`
+	Nofail bool   `mapstructure:"nofail" xmlrpc:"nofail"`
+	Tries  int    `mapstructure:"tries" xmlrpc:"tries"`
 }
 
 type BackgroundPowerSystemOptions struct {
+	// Systems must hold System UIDs, not names (Cobbler >=4.0.0b6's background_power_system does a
+	// strict uid-keyed lookup server-side; an unresolvable entry is silently skipped, not an error).
 	Systems []string `mapstructure:"systems" xmlrpc:"systems"`
 	Power   string   `mapstructure:"power" xmlrpc:"power"`
 }
