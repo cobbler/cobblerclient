@@ -57,6 +57,26 @@ Cobbler 3.3.x should stay on the v0.5.x line, which continues to receive bug fix
   field doc comments), so this client no longer resolves names to UIDs on
   write or back to names on read — callers must look up the UID themselves
   (e.g. via `Client.GetDistro(name, ...).Uid`) before assigning these fields.
+* **Breaking (Cobbler 4.0.0b6+):** `BackgroundReposyncOptions.Repos`/`.Only`,
+  `BuildisoOptions.Profiles`/`.Systems`/`.Distro`, `BackgroundSyncSystemsOptions.Systems`,
+  and `BackgroundPowerSystemOptions.Systems` must now hold UIDs, not names.
+  `background_reposync`, `background_buildiso`, `background_syncsystems`, and
+  `background_power_system` do a strict uid-keyed lookup server-side; an unresolvable
+  entry in any of these fields is silently skipped (logged as a server-side warning)
+  except for `BuildisoOptions.Distro`, where an unresolvable UID raises a hard error and
+  aborts the task. As with the UID fields above, this client does not resolve names to
+  UIDs for you — look them up first (e.g. via `Client.GetSystemHandle`/`GetItemHandle`).
+* **Breaking (Cobbler 4.0.0b6+):** `GetDistroAsRendered`, `GetProfileAsRendered`,
+  `GetSystemAsRendered`, `GetRepoAsRendered`, `GetImageAsRendered`, `GetMenuAsRendered`,
+  `GetDistroGroupAsRendered`, `GetProfileGroupAsRendered`, `GetSystemGroupAsRendered`,
+  `GetValidDistroBootLoaders`, `GetValidImageBootLoaders`, `GetValidProfileBootLoaders`,
+  `GetValidSystemBootLoaders`, `GetBlendedData`, `GetReposCompatibleWithProfile`,
+  `IsAutoinstallInUse`, `GetRepoConfigForProfile`, `GetRepoConfigForSystem`,
+  `GetTemplateFileForProfile`, `GetTemplateFileForSystem`, `DisableNetboot`,
+  `GenerateIPxe`, `GenerateBootCfg`, and `GenerateScript` now take UIDs, not names, for their
+  item-identifying parameters. This client does not resolve names to UIDs for you — look them
+  up first (e.g. via `Client.GetSystemHandle`/`GetItemHandle`). See MIGRATION.md for the
+  per-method failure mode of an unresolvable UID (some fail silently, some raise a hard error).
 
 ### Removed
 

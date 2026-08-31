@@ -252,20 +252,38 @@ func (c *Client) GetRepoHandle(name string) (string, error) {
 }
 
 // GetRepoConfigForProfile returns the rendered repository configuration for a profile.
-func (c *Client) GetRepoConfigForProfile(profileName string) (string, error) {
-	result, err := c.Call("get_repo_config_for_profile", profileName)
+//
+// profileUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_repo_config_for_profile does a strict uid-keyed lookup server-side; an
+// unresolvable uid returns a "# object not found" comment string, not an
+// error). Normally reached anonymously via the /cblr/svc/op/yum HTTP
+// endpoint, which resolves a name to a uid server-side before calling this
+// RPC — direct callers of this wrapper must resolve the uid themselves.
+func (c *Client) GetRepoConfigForProfile(profileUid string) (string, error) {
+	result, err := c.Call("get_repo_config_for_profile", profileUid)
 	return returnString(result, err)
 }
 
 // GetRepoConfigForSystem returns the rendered repository configuration for a system.
-func (c *Client) GetRepoConfigForSystem(systemName string) (string, error) {
-	result, err := c.Call("get_repo_config_for_system", systemName)
+//
+// systemUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_repo_config_for_system does a strict uid-keyed lookup server-side; an
+// unresolvable uid returns a "# object not found" comment string, not an
+// error). Normally reached anonymously via the /cblr/svc/op/yum HTTP
+// endpoint, which resolves a name to a uid server-side before calling this
+// RPC — direct callers of this wrapper must resolve the uid themselves.
+func (c *Client) GetRepoConfigForSystem(systemUid string) (string, error) {
+	result, err := c.Call("get_repo_config_for_system", systemUid)
 	return returnString(result, err)
 }
 
 // GetRepoAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
-func (c *Client) GetRepoAsRendered(name string) (map[string]interface{}, error) {
-	result, err := c.Call("get_repo_as_rendered", name, c.Token)
+//
+// uid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_repo_as_rendered does a strict uid-keyed lookup server-side; an
+// unresolvable uid silently returns an empty map, not an error).
+func (c *Client) GetRepoAsRendered(uid string) (map[string]interface{}, error) {
+	result, err := c.Call("get_repo_as_rendered", uid, c.Token)
 	if err != nil {
 		return nil, err
 	}

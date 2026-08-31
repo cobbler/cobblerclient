@@ -339,14 +339,23 @@ func (c *Client) GetDistroHandle(name string) (string, error) {
 }
 
 // GetValidDistroBootLoaders retrieves the list of bootloaders that can be assigned to a distro.
-func (c *Client) GetValidDistroBootLoaders(distroName string) ([]string, error) {
-	resultUnmarshalled, err := c.Call("get_valid_distro_boot_loaders", distroName, c.Token)
+//
+// distroUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_valid_distro_boot_loaders does a strict uid-keyed lookup server-side;
+// an unresolvable uid returns a single-element error-message slice, not an
+// RPC fault).
+func (c *Client) GetValidDistroBootLoaders(distroUid string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_distro_boot_loaders", distroUid, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetDistroAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
-func (c *Client) GetDistroAsRendered(name string) (map[string]interface{}, error) {
-	result, err := c.Call("get_distro_as_rendered", name, c.Token)
+//
+// uid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_distro_as_rendered does a strict uid-keyed lookup server-side; an
+// unresolvable uid silently returns an empty map, not an error).
+func (c *Client) GetDistroAsRendered(uid string) (map[string]interface{}, error) {
+	result, err := c.Call("get_distro_as_rendered", uid, c.Token)
 	if err != nil {
 		return nil, err
 	}

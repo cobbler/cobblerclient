@@ -216,8 +216,12 @@ func (c *Client) GetMenusSince(mtime time.Time) ([]*Menu, error) {
 }
 
 // GetMenuAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
-func (c *Client) GetMenuAsRendered(name string) (map[string]interface{}, error) {
-	result, err := c.Call("get_menu_as_rendered", name, c.Token)
+//
+// uid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_menu_as_rendered does a strict uid-keyed lookup server-side; an
+// unresolvable uid silently returns an empty map, not an error).
+func (c *Client) GetMenuAsRendered(uid string) (map[string]interface{}, error) {
+	result, err := c.Call("get_menu_as_rendered", uid, c.Token)
 	if err != nil {
 		return nil, err
 	}

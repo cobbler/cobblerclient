@@ -342,9 +342,13 @@ func (c *Client) GetSystemHandle(name string) (string, error) {
 	return returnString(res, err)
 }
 
-// DisableNetboot disables PXE booting for the named system (pxe_just_once feature).
-func (c *Client) DisableNetboot(name string) error {
-	_, err := c.Call("disable_netboot", name, c.Token)
+// DisableNetboot disables PXE booting for the given system (pxe_just_once feature).
+//
+// uid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's disable_netboot
+// does a strict uid-keyed lookup server-side; an unresolvable uid returns
+// false, not an error).
+func (c *Client) DisableNetboot(uid string) error {
+	_, err := c.Call("disable_netboot", uid, c.Token)
 	return err
 }
 
@@ -361,14 +365,23 @@ func (c *Client) ClearSystemLogs(objectId string) (bool, error) {
 }
 
 // GetValidSystemBootLoaders retrieves the list of bootloaders that can be assigned to a system.
-func (c *Client) GetValidSystemBootLoaders(systemName string) ([]string, error) {
-	resultUnmarshalled, err := c.Call("get_valid_system_boot_loaders", systemName, c.Token)
+//
+// systemUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_valid_system_boot_loaders does a strict uid-keyed lookup server-side;
+// an unresolvable uid returns a single-element error-message slice, not an
+// RPC fault).
+func (c *Client) GetValidSystemBootLoaders(systemUid string) ([]string, error) {
+	resultUnmarshalled, err := c.Call("get_valid_system_boot_loaders", systemUid, c.Token)
 	return returnStringSlice(resultUnmarshalled, err)
 }
 
 // GetSystemAsRendered returns the datastructure after it has passed through Cobblers inheritance structure.
-func (c *Client) GetSystemAsRendered(name string) (map[string]interface{}, error) {
-	result, err := c.Call("get_system_as_rendered", name, c.Token)
+//
+// uid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_system_as_rendered does a strict uid-keyed lookup server-side; an
+// unresolvable uid silently returns an empty map, not an error).
+func (c *Client) GetSystemAsRendered(uid string) (map[string]interface{}, error) {
+	result, err := c.Call("get_system_as_rendered", uid, c.Token)
 	if err != nil {
 		return nil, err
 	}

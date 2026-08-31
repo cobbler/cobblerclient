@@ -205,9 +205,15 @@ func (c *Client) AutoAddRepos() (bool, error) {
 	return result.(bool), nil
 }
 
-// IsAutoinstallInUse reports whether the named system is currently installing.
-func (c *Client) IsAutoinstallInUse(name string) (bool, error) {
-	result, err := c.Call("is_autoinstall_in_use", name, c.Token)
+// IsAutoinstallInUse reports whether the autoinstall template identified by
+// templateUid is currently referenced by at least one Profile or System (not,
+// despite the older parameter name, whether a system is currently installing).
+//
+// templateUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// is_autoinstall_in_use does a strict uid-keyed lookup server-side; an
+// unresolvable uid raises a hard server-side error).
+func (c *Client) IsAutoinstallInUse(templateUid string) (bool, error) {
+	result, err := c.Call("is_autoinstall_in_use", templateUid, c.Token)
 	if err != nil {
 		return false, err
 	}
@@ -215,32 +221,49 @@ func (c *Client) IsAutoinstallInUse(name string) (bool, error) {
 }
 
 // GenerateIPxe generates the iPXE (formerly gPXE) configuration data.
-func (c *Client) GenerateIPxe(profile, image, system string) error {
-	_, err := c.Call("generate_ipxe", profile, image, system)
+//
+// profileUid, imageUid, and systemUid must be Cobbler UIDs, not names (Cobbler
+// >=4.0.0b6's generate_ipxe does a strict uid-keyed lookup server-side for
+// whichever of the three is non-empty; an unresolvable uid is treated as if it
+// were empty, silently omitting that part of the configuration).
+func (c *Client) GenerateIPxe(profileUid, imageUid, systemUid string) error {
+	_, err := c.Call("generate_ipxe", profileUid, imageUid, systemUid)
 	return err
 }
 
 // GenerateBootCfg generates the bootcfg for a given MS Windows profile or system.
-func (c *Client) GenerateBootCfg(profile, system string) error {
-	_, err := c.Call("generate_bootcfg", profile, system)
+//
+// profileUid and systemUid must be Cobbler UIDs, not names (Cobbler
+// >=4.0.0b6's generate_bootcfg does a strict uid-keyed lookup server-side for
+// whichever is non-empty; an unresolvable uid is treated as if it were empty).
+func (c *Client) GenerateBootCfg(profileUid, systemUid string) error {
+	_, err := c.Call("generate_bootcfg", profileUid, systemUid)
 	return err
 }
 
 // GenerateScript generates for either a profile or sytem the requested script.
-func (c *Client) GenerateScript(profile, system, name string) error {
-	_, err := c.Call("generate_script", profile, system, name)
+//
+// profileUid and systemUid must be Cobbler UIDs, not names (Cobbler
+// >=4.0.0b6's generate_script does a strict uid-keyed lookup server-side for
+// whichever is non-empty; an unresolvable uid is treated as if it were empty).
+func (c *Client) GenerateScript(profileUid, systemUid, name string) error {
+	_, err := c.Call("generate_script", profileUid, systemUid, name)
 	return err
 }
 
 // GetBlendedData passes a profile or system through Cobbler's inheritance
 // chain and returns the result.
 //
+// profileUid and systemUid must be Cobbler UIDs, not names (Cobbler
+// >=4.0.0b6's get_blended_data does a strict uid-keyed lookup server-side;
+// an unresolvable uid raises a hard server-side error).
+//
 // Deprecated: get_blended_data is soft-deprecated in the Cobbler backend as
 // of 4.0.0 in favor of dump_vars, but remains available server-side. This
 // wrapper is kept for transitional callers but will be removed in a future
 // release. Use [Client.DumpVars] instead.
-func (c *Client) GetBlendedData(profile, system string) (map[string]interface{}, error) {
-	result, err := c.Call("get_blended_data", profile, system)
+func (c *Client) GetBlendedData(profileUid, systemUid string) (map[string]interface{}, error) {
+	result, err := c.Call("get_blended_data", profileUid, systemUid)
 	if err != nil {
 		return nil, err
 	}
@@ -286,9 +309,14 @@ func (c *Client) RunInstallTriggers(mode, objtype, name, ip string) (bool, error
 }
 
 // GetReposCompatibleWithProfile returns all repositories that can be assigned
-// to the named profile (filtered by arch compatibility with the profile's distro).
-func (c *Client) GetReposCompatibleWithProfile(profileName string) ([]map[string]interface{}, error) {
-	result, err := c.Call("get_repos_compatible_with_profile", profileName, c.Token)
+// to the given profile (filtered by arch compatibility with the profile's distro).
+//
+// profileUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_repos_compatible_with_profile does a strict uid-keyed lookup
+// server-side; an unresolvable uid is silently treated as no matches, not an
+// error).
+func (c *Client) GetReposCompatibleWithProfile(profileUid string) ([]map[string]interface{}, error) {
+	result, err := c.Call("get_repos_compatible_with_profile", profileUid, c.Token)
 	if err != nil {
 		return nil, err
 	}

@@ -219,13 +219,27 @@ func (c *Client) BackgroundTemplatesRefreshContent(objects []string) (string, er
 }
 
 // GetTemplateFileForProfile returns the rendered template file content for a profile.
-func (c *Client) GetTemplateFileForProfile(profileName, path string) (string, error) {
-	result, err := c.Call("get_template_file_for_profile", profileName, path)
+//
+// profileUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_template_file_for_profile does a strict uid-keyed lookup server-side;
+// an unresolvable uid returns a "# object not found" comment string, not an
+// error). Normally reached anonymously via the /cblr/svc/op/template HTTP
+// endpoint, which resolves a name to a uid server-side before calling this
+// RPC — direct callers of this wrapper must resolve the uid themselves.
+func (c *Client) GetTemplateFileForProfile(profileUid, path string) (string, error) {
+	result, err := c.Call("get_template_file_for_profile", profileUid, path)
 	return returnString(result, err)
 }
 
 // GetTemplateFileForSystem returns the rendered template file content for a system.
-func (c *Client) GetTemplateFileForSystem(systemName, path string) (string, error) {
-	result, err := c.Call("get_template_file_for_system", systemName, path)
+//
+// systemUid must be a Cobbler UID, not a name (Cobbler >=4.0.0b6's
+// get_template_file_for_system does a strict uid-keyed lookup server-side;
+// an unresolvable uid returns a "# object not found" comment string, not an
+// error). Normally reached anonymously via the /cblr/svc/op/template HTTP
+// endpoint, which resolves a name to a uid server-side before calling this
+// RPC — direct callers of this wrapper must resolve the uid themselves.
+func (c *Client) GetTemplateFileForSystem(systemUid, path string) (string, error) {
+	result, err := c.Call("get_template_file_for_system", systemUid, path)
 	return returnString(result, err)
 }
