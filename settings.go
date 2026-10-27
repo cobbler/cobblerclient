@@ -13,6 +13,14 @@ type BootloaderFormatSettings struct {
 	ModuleDirectory string   `json:"mod_dir" mapstructure:"mod_dir"`
 }
 
+// ConvertServerToIPSettings controls whether and how the "server" setting is resolved to an
+// IP address before being embedded in generated autoinstall URLs (Cobbler 4.0.0b7+; replaces
+// the previous bare boolean).
+type ConvertServerToIPSettings struct {
+	Enabled  bool   `json:"enabled" mapstructure:"enabled"`
+	Protocol string `json:"protocol" mapstructure:"protocol"`
+}
+
 type Settings struct {
 	AllowDuplicateHostnames           bool                                  `json:"allow_duplicate_hostnames" mapstructure:"allow_duplicate_hostnames"`
 	AllowDuplicateIPs                 bool                                  `json:"allow_duplicate_ips" mapstructure:"allow_duplicate_ips"`
@@ -50,7 +58,7 @@ type Settings struct {
 	ClientUseHttps                    bool                                  `json:"client_use_https" mapstructure:"client_use_https"`
 	ClientUseLocalhost                bool                                  `json:"client_use_localhost" mapstructure:"client_use_localhost"`
 	CobblerMaster                     string                                `json:"cobbler_master" mapstructure:"cobbler_master"`
-	ConvertServerToIp                 bool                                  `json:"convert_server_to_ip" mapstructure:"convert_server_to_ip"`
+	ConvertServerToIp                 ConvertServerToIPSettings             `json:"convert_server_to_ip" mapstructure:"convert_server_to_ip"`
 	CreaterepoFlags                   string                                `json:"createrepo_flags" mapstructure:"createrepo_flags"`
 	DefaultNameServers                []string                              `json:"default_name_servers" mapstructure:"default_name_servers"`
 	DefaultNameServersSearch          []string                              `json:"default_name_servers_search" mapstructure:"default_name_servers_search"`
@@ -144,7 +152,8 @@ type Settings struct {
 	WebDirectoryWhitelist             []string                              `json:"webdir_whitelist" mapstructure:"webdir_whitelist"`
 	WindowsEnabled                    bool                                  `json:"windows_enabled" mapstructure:"windows_enabled"`
 	WindowsTemplateDirectory          string                                `json:"windows_template_dir" mapstructure:"windows_template_dir"`
-	XmlrpcBindAddress                 string                                `json:"xmlrpc_bind_address" mapstructure:"xmlrpc_bind_address"`
+	XmlrpcBindAddressV4               string                                `json:"xmlrpc_bind_address_v4" mapstructure:"xmlrpc_bind_address_v4"`
+	XmlrpcBindAddressV6               string                                `json:"xmlrpc_bind_address_v6" mapstructure:"xmlrpc_bind_address_v6"`
 	XmlrpcHost                        string                                `json:"xmlrpc_host" mapstructure:"xmlrpc_host"`
 	XmlrpcPort                        int                                   `json:"xmlrpc_port" mapstructure:"xmlrpc_port"`
 	YumDistroPriority                 int                                   `json:"yum_distro_priority" mapstructure:"yum_distro_priority"`

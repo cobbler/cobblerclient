@@ -78,6 +78,16 @@ Cobbler 3.3.x should stay on the v0.5.x line, which continues to receive bug fix
   up first (e.g. via `Client.GetSystemHandle`/`GetItemHandle`). See MIGRATION.md for the
   per-method failure mode of an unresolvable UID (some fail silently, some raise a hard error).
 
+* **Breaking (Cobbler 4.0.0b7+):** `Settings.ConvertServerToIp` changed from `bool` to
+  `ConvertServerToIPSettings` (`{Enabled bool; Protocol string}`), matching the server's new
+  support for resolving the `server` setting to an IPv6 address, not just IPv4. Decoding a
+  4.0.0b7+ server's settings with the old `bool` field would fail outright (the server now
+  always returns an object here), so this is not optional for b7+ compatibility.
+* `Settings.XmlrpcBindAddress` renamed to `Settings.XmlrpcBindAddressV4`, and
+  `Settings.XmlrpcBindAddressV6` added, matching the server-side split of the
+  `xmlrpc_bind_address` setting into `xmlrpc_bind_address_v4`/`_v6` (Cobbler 4.0.0b7+) so
+  cobblerd can also listen on the IPv6 loopback address.
+
 ### Removed
 
 * `MgmtClass`, `LinuxPackage`, `File`, `Snippet`, `TemplateFile` item types
