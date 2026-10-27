@@ -584,7 +584,20 @@
                     <member>
                         <name>convert_server_to_ip</name>
                         <value>
-                            <boolean>0</boolean>
+                            <struct>
+                                <member>
+                                    <name>enabled</name>
+                                    <value>
+                                        <boolean>0</boolean>
+                                    </value>
+                                </member>
+                                <member>
+                                    <name>protocol</name>
+                                    <value>
+                                        <string>ipv4</string>
+                                    </value>
+                                </member>
+                            </struct>
                         </value>
                     </member>
                     <member>
