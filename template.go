@@ -137,7 +137,27 @@ func (c *Client) CreateTemplate(tpl Template) (*Template, error) {
 	if !ok {
 		return nil, fmt.Errorf("new_template returned %T, want string", id)
 	}
-	if err := c.updateCobblerFields("template", reflect.ValueOf(&tpl).Elem(), objectID); err != nil {
+	if err := c.setCachedVersion(); err != nil {
+		return nil, err
+	}
+	// Unlike every other field, Content is only pushed here when the caller
+	// actually set it. Cobbler's Template.content setter writes whatever value
+	// it's given straight to the file at uri.path, so unconditionally pushing
+	// a zero-value Content (as updateCobblerFields' generic full-struct push
+	// otherwise would, via the modify_template RPC) would clobber a
+	// URI-sourced template's real, pre-existing on-disk content with an empty
+	// string -- before the server gets a chance to populate it itself.
+	// Leaving Content unset here lets Cobbler's own post-save refresh
+	// (the templates collection's add_quick_pxe_sync -> Template.refresh_content())
+	// read the real file instead. "modify_template" has no other per-type setup
+	// in updateCobblerFields (unlike modify_profile/modify_system), so calling
+	// updateFields directly here is equivalent to that call minus this one
+	// Template-create-specific exception.
+	var skipFields map[string]bool
+	if tpl.Content == "" {
+		skipFields = map[string]bool{"content": true}
+	}
+	if err := c.updateFields("modify_template", objectID, nil, reflect.ValueOf(&tpl).Elem(), skipFields); err != nil {
 		return nil, err
 	}
 	if err := c.SaveTemplate(objectID, true, true, "new"); err != nil {

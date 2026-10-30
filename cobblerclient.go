@@ -734,7 +734,17 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 // recurse with their own mapstructure tag appended to pathPrefix, matching
 // the nested attribute paths Cobbler 4.0.0 expects, e.g.
 // modify_profile(id, []string{"virt", "cpus"}, ...).
-func (c *Client) updateFields(method, id string, pathPrefix []string, item reflect.Value) error {
+//
+// skipFields is optional (variadic so every existing caller is unaffected)
+// and names mapstructure field tags to exclude from the push entirely for
+// this call. It exists for CreateTemplate, which uses it to avoid
+// unconditionally pushing an unset Content field (see CreateTemplate for
+// why); every other caller omits it, leaving their behavior unchanged.
+func (c *Client) updateFields(method, id string, pathPrefix []string, item reflect.Value, skipFields ...map[string]bool) error {
+	var skip map[string]bool
+	if len(skipFields) > 0 {
+		skip = skipFields[0]
+	}
 	typeOfT := item.Type()
 
 	for i := 0; i < item.NumField(); i++ {
@@ -749,7 +759,7 @@ func (c *Client) updateFields(method, id string, pathPrefix []string, item refle
 		}
 
 		if fieldType == "Item" || fieldType == "Group" {
-			if err := c.updateFields(method, id, pathPrefix, v); err != nil {
+			if err := c.updateFields(method, id, pathPrefix, v, skip); err != nil {
 				return err
 			}
 			continue
@@ -759,9 +769,13 @@ func (c *Client) updateFields(method, id string, pathPrefix []string, item refle
 			continue
 		}
 
+		if skip[field] {
+			continue
+		}
+
 		if isOptionStructType(fieldType) {
 			nestedPath := append(append([]string{}, pathPrefix...), field)
-			if err := c.updateFields(method, id, nestedPath, v); err != nil {
+			if err := c.updateFields(method, id, nestedPath, v, skip); err != nil {
 				return err
 			}
 			continue

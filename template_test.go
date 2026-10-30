@@ -195,6 +195,10 @@ func TestRenameTemplate(t *testing.T) {
 }
 
 func TestCreateTemplate(t *testing.T) {
+	// No "new-template-modify-content" fixture: tpl.Content is left at its
+	// NewTemplate() zero value ("") below, and CreateTemplate now skips
+	// pushing Content on create when it's unset (see CreateTemplate), so
+	// modify_template is never called for "content" in this scenario.
 	c := createStubHTTPClient(t, []string{
 		"create-template-name-check",
 		"new-template",
@@ -209,7 +213,6 @@ func TestCreateTemplate(t *testing.T) {
 		"new-template-modify-uri-schema",
 		"new-template-modify-uri-path",
 		"new-template-modify-tags",
-		"new-template-modify-content",
 		"new-template-save",
 		"new-template-get",
 	})
