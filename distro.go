@@ -37,6 +37,7 @@ type Distro struct {
 	RemoteBootInitrd         string          `mapstructure:"remote_boot_initrd" json:"remote_boot_initrd" yaml:"remote_boot_initrd"`
 	Kernel                   string          `mapstructure:"kernel" json:"kernel" yaml:"kernel"`
 	RemoteBootKernel         string          `mapstructure:"remote_boot_kernel" json:"remote_boot_kernel" yaml:"remote_boot_kernel"`
+	RemoteBootIso            string          `mapstructure:"remote_boot_iso" json:"remote_boot_iso" yaml:"remote_boot_iso"`
 	RedhatManagementKey      string          `mapstructure:"redhat_management_key" json:"redhat_management_key" yaml:"redhat_management_key"`
 	RedhatManagementOrg      string          `mapstructure:"redhat_management_org" json:"redhat_management_org" yaml:"redhat_management_org"`
 	RedhatManagementUser     string          `mapstructure:"redhat_management_user" json:"redhat_management_user" yaml:"redhat_management_user"`
