@@ -119,7 +119,7 @@ func (c *Client) ListSystemGroupNames() ([]string, error) {
 	return c.GetItemNames("system_group")
 }
 func (c *Client) GetSystemGroupHandle(name string) (string, error) {
-	result, err := c.Call("get_system_group_handle", name)
+	result, err := c.Call("get_system_group_handle", name, c.Token)
 	if err != nil {
 		return "", err
 	}
