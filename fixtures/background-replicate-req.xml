@@ -6,6 +6,12 @@
             <value>
                 <struct>
                     <member>
+                        <name>distro_group_patterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
                         <name>distro_patterns</name>
                         <value>
                             <string></string>
@@ -24,6 +30,18 @@
                         </value>
                     </member>
                     <member>
+                        <name>menu_patterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>network_interface_patterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
                         <name>omit_data</name>
                         <value>
                             <boolean>0</boolean>
@@ -31,6 +49,12 @@
                     </member>
                     <member>
                         <name>port</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>profile_group_patterns</name>
                         <value>
                             <string></string>
                         </value>
@@ -60,7 +84,19 @@
                         </value>
                     </member>
                     <member>
+                        <name>system_group_patterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
                         <name>system_patterns</name>
+                        <value>
+                            <string></string>
+                        </value>
+                    </member>
+                    <member>
+                        <name>template_patterns</name>
                         <value>
                             <string></string>
                         </value>

@@ -33,17 +33,23 @@ type AclSetupOptions struct {
 
 // ReplicateOptions is a struct which descibres the options one can set for the replicate action of Cobbler.
 type ReplicateOptions struct {
-	Master          string `mapstructure:"master" xmlrpc:"master"`
-	Port            string `mapstructure:"port" xmlrpc:"port"`
-	DistroPatterns  string `mapstructure:"distro_patterns" xmlrpc:"distro_patterns"`
-	ProfilePatterns string `mapstructure:"profile_patterns" xmlrpc:"profile_patterns"`
-	SystemPatterns  string `mapstructure:"system_patterns" xmlrpc:"system_patterns"`
-	RepoPatterns    string `mapstructure:"repo_patterns" xmlrpc:"repo_patterns"`
-	Imagepatterns   string `mapstructure:"image_patterns" xmlrpc:"image_patterns"`
-	Prune           bool   `mapstructure:"prune" xmlrpc:"prune"`
-	OmitData        bool   `mapstructure:"omit_data" xmlrpc:"omit_data"`
-	SyncAll         bool   `mapstructure:"sync_all" xmlrpc:"sync_all"`
-	UseSsl          bool   `mapstructure:"use_ssl" xmlrpc:"use_ssl"`
+	Master                   string `mapstructure:"master" xmlrpc:"master"`
+	Port                     string `mapstructure:"port" xmlrpc:"port"`
+	DistroPatterns           string `mapstructure:"distro_patterns" xmlrpc:"distro_patterns"`
+	ProfilePatterns          string `mapstructure:"profile_patterns" xmlrpc:"profile_patterns"`
+	SystemPatterns           string `mapstructure:"system_patterns" xmlrpc:"system_patterns"`
+	RepoPatterns             string `mapstructure:"repo_patterns" xmlrpc:"repo_patterns"`
+	Imagepatterns            string `mapstructure:"image_patterns" xmlrpc:"image_patterns"`
+	MenuPatterns             string `mapstructure:"menu_patterns" xmlrpc:"menu_patterns"`
+	TemplatePatterns         string `mapstructure:"template_patterns" xmlrpc:"template_patterns"`
+	NetworkInterfacePatterns string `mapstructure:"network_interface_patterns" xmlrpc:"network_interface_patterns"`
+	DistroGroupPatterns      string `mapstructure:"distro_group_patterns" xmlrpc:"distro_group_patterns"`
+	ProfileGroupPatterns     string `mapstructure:"profile_group_patterns" xmlrpc:"profile_group_patterns"`
+	SystemGroupPatterns      string `mapstructure:"system_group_patterns" xmlrpc:"system_group_patterns"`
+	Prune                    bool   `mapstructure:"prune" xmlrpc:"prune"`
+	OmitData                 bool   `mapstructure:"omit_data" xmlrpc:"omit_data"`
+	SyncAll                  bool   `mapstructure:"sync_all" xmlrpc:"sync_all"`
+	UseSsl                   bool   `mapstructure:"use_ssl" xmlrpc:"use_ssl"`
 }
 
 type BackgroundSyncOptions struct {

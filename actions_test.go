@@ -104,17 +104,23 @@ func TestBackgroundReplicate(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "background-replicate")
 
 	res, err := c.BackgroundReplicate(ReplicateOptions{
-		Master:          "",
-		Port:            "",
-		DistroPatterns:  "",
-		ProfilePatterns: "",
-		SystemPatterns:  "",
-		RepoPatterns:    "",
-		Imagepatterns:   "",
-		Prune:           false,
-		OmitData:        false,
-		SyncAll:         false,
-		UseSsl:          false,
+		Master:                   "",
+		Port:                     "",
+		DistroPatterns:           "",
+		ProfilePatterns:          "",
+		SystemPatterns:           "",
+		RepoPatterns:             "",
+		Imagepatterns:            "",
+		MenuPatterns:             "",
+		TemplatePatterns:         "",
+		NetworkInterfacePatterns: "",
+		DistroGroupPatterns:      "",
+		ProfileGroupPatterns:     "",
+		SystemGroupPatterns:      "",
+		Prune:                    false,
+		OmitData:                 false,
+		SyncAll:                  false,
+		UseSsl:                   false,
 	})
 	FailOnError(t, err)
 	if res != "2000-01-01_000000_Replicate_00000000000000000000000000000006" {
