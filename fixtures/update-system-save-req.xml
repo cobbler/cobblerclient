@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>modify_system</methodName>
+    <methodName>save_system</methodName>
     <params>
         <param>
             <value>
@@ -9,18 +9,17 @@
         </param>
         <param>
             <value>
-                <array>
-                    <data>
-                        <value>
-                            <string>virt_pxe_boot</string>
-                        </value>
-                    </data>
-                </array>
+                <boolean>1</boolean>
             </value>
         </param>
         <param>
             <value>
-                <boolean>0</boolean>
+                <boolean>1</boolean>
+            </value>
+        </param>
+        <param>
+            <value>
+                <string>bypass</string>
             </value>
         </param>
         <param>

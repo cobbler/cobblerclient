@@ -58,7 +58,6 @@ type System struct {
 	Status                   string      `mapstructure:"status" json:"status" yaml:"status"`
 	TFTP                     TFTPOptions `mapstructure:"tftp" json:"tftp" yaml:"tftp"`
 	Virt                     VirtOptions `mapstructure:"virt" json:"virt" yaml:"virt"`
-	VirtPXEBoot              bool        `mapstructure:"virt_pxe_boot" json:"virt_pxe_boot" yaml:"virt_pxe_boot"`
 }
 
 // Interface type removed in 4.0.0 - network interfaces are now first-class items.
@@ -269,7 +268,12 @@ func (c *Client) UpdateSystem(system *System) error {
 	if err != nil {
 		return err
 	}
-	return c.updateCobblerFields("system", item, id)
+
+	if err := c.updateCobblerFields("system", item, id); err != nil {
+		return err
+	}
+
+	return c.SaveSystem(id, true, true, "bypass")
 }
 
 // SaveSystem saves all changes performed via XML-RPC to disk on the server side.
@@ -338,7 +342,7 @@ func (c *Client) RenameSystem(objectId, newName string) error {
 
 // GetSystemHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetSystemHandle(name string) (string, error) {
-	res, err := c.Call("get_system_handle", name)
+	res, err := c.Call("get_system_handle", name, c.Token)
 	return returnString(res, err)
 }
 

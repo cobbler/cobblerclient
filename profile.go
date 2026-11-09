@@ -306,7 +306,7 @@ func (c *Client) RenameProfile(objectId, newName string) error {
 
 // GetProfileHandle gets the internal ID of a Cobbler item.
 func (c *Client) GetProfileHandle(name string) (string, error) {
-	res, err := c.Call("get_profile_handle", name)
+	res, err := c.Call("get_profile_handle", name, c.Token)
 	return returnString(res, err)
 }
 

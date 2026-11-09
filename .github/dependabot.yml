@@ -12,3 +12,7 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    commit-message:
+      prefix: "build"
+      prefix-development: "chore"
+      include: "scope"

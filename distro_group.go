@@ -81,11 +81,10 @@ func (c *Client) CreateDistroGroup(g DistroGroup) (*DistroGroup, error) {
 }
 
 func (c *Client) UpdateDistroGroup(g *DistroGroup) error {
-	result, err := c.Call("get_distro_group_handle", g.Name)
+	objectID, err := c.GetDistroGroupHandle(g.Name)
 	if err != nil {
 		return err
 	}
-	objectID := result.(string)
 	if err := c.updateCobblerFields("distro_group", reflect.ValueOf(g).Elem(), objectID); err != nil {
 		return err
 	}

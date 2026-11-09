@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>modify_system</methodName>
+    <methodName>modify_distro</methodName>
     <params>
         <param>
             <value>
-                <string>00000000000000000000000000000019</string>
+                <string>0000000000000000000000000000000e</string>
             </value>
         </param>
         <param>
@@ -12,7 +12,7 @@
                 <array>
                     <data>
                         <value>
-                            <string>virt_pxe_boot</string>
+                            <string>remote_boot_iso</string>
                         </value>
                     </data>
                 </array>
@@ -20,7 +20,7 @@
         </param>
         <param>
             <value>
-                <boolean>0</boolean>
+                <string></string>
             </value>
         </param>
         <param>

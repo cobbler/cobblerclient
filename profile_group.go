@@ -120,7 +120,7 @@ func (c *Client) ListProfileGroupNames() ([]string, error) {
 	return c.GetItemNames("profile_group")
 }
 func (c *Client) GetProfileGroupHandle(name string) (string, error) {
-	result, err := c.Call("get_profile_group_handle", name)
+	result, err := c.Call("get_profile_group_handle", name, c.Token)
 	if err != nil {
 		return "", err
 	}
