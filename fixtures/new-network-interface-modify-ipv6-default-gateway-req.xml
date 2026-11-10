@@ -12,7 +12,10 @@
                 <array>
                     <data>
                         <value>
-                            <string>ipv6_default_gateway</string>
+                            <string>ipv6</string>
+                        </value>
+                        <value>
+                            <string>default_gateway</string>
                         </value>
                     </data>
                 </array>

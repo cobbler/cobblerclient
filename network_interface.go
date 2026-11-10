@@ -42,15 +42,13 @@ type NetworkInterface struct {
 	Management      bool                 `mapstructure:"management" structs:"management" json:"management" yaml:"management"`
 	Static          bool                 `mapstructure:"static" structs:"static" json:"static" yaml:"static"`
 	DHCPTag         string               `mapstructure:"dhcp_tag" json:"dhcp_tag" yaml:"dhcp_tag"`
-	IfGateway       string               `mapstructure:"if_gateway" json:"if_gateway" yaml:"if_gateway"`
 	MTU             string               `mapstructure:"mtu" json:"mtu" yaml:"mtu"`
 
-	// These live top-level on NetworkInterface in Python (not nested under
-	// IPv6), backed by their own private attributes independent of
-	// IPv6Option.StaticRoutes. See cobbler/items/network_interface.py:
-	// ipv6_default_gateway, ipv6_static_routes.
-	Ipv6DefaultGateway string   `mapstructure:"ipv6_default_gateway" json:"ipv6_default_gateway" yaml:"ipv6_default_gateway"`
-	Ipv6StaticRoutes   []string `mapstructure:"ipv6_static_routes" json:"ipv6_static_routes" yaml:"ipv6_static_routes"`
+	// Lives top-level on NetworkInterface in Python (not nested under IPv6), backed by its own
+	// private attribute independent of IPv6Option.StaticRoutes. See
+	// cobbler/items/network_interface.py: ipv6_static_routes. The per-address-family default
+	// gateway lives on IPv4Option.DefaultGateway/IPv6Option.DefaultGateway instead.
+	Ipv6StaticRoutes []string `mapstructure:"ipv6_static_routes" json:"ipv6_static_routes" yaml:"ipv6_static_routes"`
 
 	// Inheritable
 	VirtBridge Value[string] `mapstructure:"virt_bridge" json:"virt_bridge" yaml:"virt_bridge"`
