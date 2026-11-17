@@ -57,6 +57,7 @@ func TestSystemCreate(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-system-name-check",
 		"new-system",
+		"new-system-modify-parent",
 		"set-system-profile",
 		"new-system-modify-image",
 		"set-system-name",
@@ -135,6 +136,7 @@ func TestSystemCreate(t *testing.T) {
 func TestUpdateSystem(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"update-system-handle",
+		"update-system-modify-parent",
 		"update-system-modify-profile",
 		"update-system-modify-image",
 		"update-system-modify-name",

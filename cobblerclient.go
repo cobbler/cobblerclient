@@ -687,18 +687,28 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		if err != nil {
 			return err
 		}
+	}
 
+	// Parent is defined on the shared Item struct, but only Distro/Profile/System/Image/Menu
+	// actually have a parent property server-side (they're the only item types deriving from
+	// InheritableItem whose client structs embed Item directly for this purpose); other Item
+	// embedders such as Template and NetworkInterface do not support it. Push it here,
+	// unconditionally for these five types, before any field that may depend on inherited
+	// values, rather than per-method below or in the generic updateFields loop.
+	switch method {
+	case "modify_distro", "modify_profile", "modify_system", "modify_image", "modify_menu":
 		parentField := item.FieldByName("Parent")
 		if parentField != (reflect.Value{}) {
-			err = c.updateSingleField(method, id, []string{"parent"}, parentField.String(), "")
-			if err != nil {
+			if err := c.updateSingleField(method, id, []string{"parent"}, parentField.String(), ""); err != nil {
 				return err
 			}
 		}
+	}
+
+	if method == "modify_profile" {
 		distroField := item.FieldByName("Distro")
 		if distroField != (reflect.Value{}) {
-			err = c.updateSingleField(method, id, []string{"distro"}, distroField.String(), "")
-			if err != nil {
+			if err := c.updateSingleField(method, id, []string{"distro"}, distroField.String(), ""); err != nil {
 				return err
 			}
 		}

@@ -148,6 +148,7 @@ func TestCreateMenu(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-menu-name-check",
 		"new-menu",
+		"new-menu-modify-parent",
 		"new-menu-modify-name",
 		"new-menu-modify-comment",
 		"new-menu-modify-kernel-options",
@@ -172,6 +173,7 @@ func TestCreateMenu(t *testing.T) {
 func TestUpdateMenu(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"update-menu-handle",
+		"update-menu-modify-parent",
 		"update-menu-modify-name",
 		"update-menu-modify-comment",
 		"update-menu-modify-kernel-options",

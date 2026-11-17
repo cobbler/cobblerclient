@@ -4,12 +4,18 @@
     <params>
         <param>
             <value>
-                <string>___NEW___system::abc123==</string>
+                <string>00000000000000000000000000000019</string>
             </value>
         </param>
         <param>
             <value>
-                <string>parent</string>
+                <array>
+                    <data>
+                        <value>
+                            <string>parent</string>
+                        </value>
+                    </data>
+                </array>
             </value>
         </param>
         <param>

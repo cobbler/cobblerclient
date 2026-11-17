@@ -138,6 +138,7 @@ func TestCreateImage(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-image-name-check",
 		"new-image",
+		"new-image-modify-parent",
 		"new-image-modify-name",
 		"new-image-modify-comment",
 		"new-image-modify-kernel-options",
@@ -188,6 +189,7 @@ func TestCreateImage(t *testing.T) {
 func TestUpdateImage(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"update-image-handle",
+		"update-image-modify-parent",
 		"update-image-modify-name",
 		"update-image-modify-comment",
 		"update-image-modify-kernel-options",

@@ -106,6 +106,7 @@ func TestCreateDistro(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-distro-name-check",
 		"new-distro",
+		"new-distro-modify-parent",
 		"new-distro-modify-name",
 		"new-distro-modify-comment",
 		"new-distro-modify-kernel-options",
@@ -146,6 +147,7 @@ func TestCreateDistro(t *testing.T) {
 func TestUpdateDistro(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"update-distro-handle",
+		"update-distro-modify-parent",
 		"update-distro-modify-name",
 		"update-distro-modify-comment",
 		"update-distro-modify-kernel-options",
