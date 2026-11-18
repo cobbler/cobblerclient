@@ -25,7 +25,7 @@ import (
 // System is a created system.
 // Get the fields from cobbler/items/system.py
 type System struct {
-	Item `mapstructure:",squash" yaml:",inline"`
+	BootableItemFields `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
 	IPv6Autoconfiguration bool            `mapstructure:"ipv6_autoconfiguration" cobbler:"noupdate" json:"ipv6_autoconfiguration" yaml:"ipv6_autoconfiguration"`
@@ -66,8 +66,8 @@ type System struct {
 
 func NewSystem() System {
 	system := System{
-		Item:        NewItem(),
-		Autoinstall: inherit,
+		BootableItemFields: NewBootableItemFields(),
+		Autoinstall:        inherit,
 		BootLoaders: Value[[]string]{
 			IsInherited: true,
 		},

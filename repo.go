@@ -25,7 +25,7 @@ import (
 // Repo is a created repo.
 // Get the fileds from cobbler/items/repo.py
 type Repo struct {
-	Item `mapstructure:",squash" yaml:",inline"`
+	BootableItemFields `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
 	TreeBuildTime string `mapstructure:"tree_build_time" cobbler:"noupdate"`
@@ -48,10 +48,10 @@ type Repo struct {
 
 func NewRepo() Repo {
 	return Repo{
-		Item:  NewItem(),
-		Apt:   newAPTOptions(),
-		Arch:  none,
-		Breed: none,
+		BootableItemFields: NewBootableItemFields(),
+		Apt:                newAPTOptions(),
+		Arch:               none,
+		Breed:              none,
 		CreateRepoFlags: Value[string]{
 			IsInherited: true,
 		},

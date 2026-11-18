@@ -25,7 +25,7 @@ import (
 // Template is a Cobbler 4.0.0 first-class item type representing an
 // autoinstall template (Jinja2, Cheetah, etc.). See cobbler/items/template.py.
 type Template struct {
-	Item `mapstructure:",squash" yaml:",inline"`
+	BaseItemFields `mapstructure:",squash" yaml:",inline"`
 
 	TemplateType string    `mapstructure:"template_type" json:"template_type" yaml:"template_type"`
 	URI          URIOption `mapstructure:"uri" json:"uri" yaml:"uri"`
@@ -37,10 +37,10 @@ type Template struct {
 // NewTemplate returns a zero-valued Template with sensible defaults.
 func NewTemplate() Template {
 	return Template{
-		Item:         NewItem(),
-		TemplateType: "jinja",
-		URI:          URIOption{Schema: TemplateSchemaFile},
-		Tags:         []string{},
+		BaseItemFields: NewBaseItemFields(),
+		TemplateType:   "jinja",
+		URI:            URIOption{Schema: TemplateSchemaFile},
+		Tags:           []string{},
 	}
 }
 

@@ -25,12 +25,12 @@ import (
 // `mapstructure:",squash"` so callers see typed signatures while the wire
 // representation stays uniform.
 type Group struct {
-	Item    `mapstructure:",squash" yaml:",inline"`
-	Members []string `mapstructure:"members" json:"members" yaml:"members"`
+	InheritableItemFields `mapstructure:",squash" yaml:",inline"`
+	Members               []string `mapstructure:"members" json:"members" yaml:"members"`
 }
 
 func newGroup() Group {
-	return Group{Item: NewItem(), Members: []string{}}
+	return Group{InheritableItemFields: NewInheritableItemFields(), Members: []string{}}
 }
 
 func convertRawGroup(what, name string, xmlrpcResult interface{}, dest interface{}) error {

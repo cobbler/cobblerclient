@@ -30,51 +30,78 @@ type ItemMeta struct {
 	IsDirty bool `json:"is_dirty" yaml:"is_dirty"`
 }
 
-// Item general fields
-type Item struct {
+// BaseItemFields mirrors cobbler/items/abstract/base_item.py.
+type BaseItemFields struct {
 	// Meta information about an item
 	Meta ItemMeta `cobbler:"noupdate" json:"meta" yaml:"meta"`
 
-	// Item fields
-	// Parent holds the UID of the parent item, not its name (Cobbler 4.0.0's modify_* setters for
-	// this field do a strict uid-keyed lookup server-side, e.g. cobbler/items/abstract/inheritable_item.py's
-	// parent.setter). Distro, Profile, System, Image, and Menu push this field identically through
-	// their respective modify_* call (see updateCobblerFields); other item types embedding Item
-	// (Template, NetworkInterface) don't have a parent property server-side and never push it.
-	Parent            string                        `mapstructure:"parent" json:"parent" yaml:"parent"`
-	Depth             int                           `mapstructure:"depth" cobbler:"noupdate" json:"depth" yaml:"depth"`
-	Children          []string                      `mapstructure:"children"       cobbler:"noupdate" json:"children" yaml:"children"`
-	CTime             float64                       `mapstructure:"ctime"          cobbler:"noupdate" json:"ctime" yaml:"ctime"`
-	MTime             float64                       `mapstructure:"mtime"          cobbler:"noupdate" json:"mtime" yaml:"mtime"`
-	Uid               string                        `mapstructure:"uid"            cobbler:"noupdate" json:"uid" yaml:"uid"`
-	Name              string                        `mapstructure:"name" json:"name" yaml:"name"`
-	Comment           string                        `mapstructure:"comment" json:"comment" yaml:"comment"`
+	CTime   float64         `mapstructure:"ctime" cobbler:"noupdate" json:"ctime" yaml:"ctime"`
+	MTime   float64         `mapstructure:"mtime" cobbler:"noupdate" json:"mtime" yaml:"mtime"`
+	Uid     string          `mapstructure:"uid" cobbler:"noupdate" json:"uid" yaml:"uid"`
+	Name    string          `mapstructure:"name" json:"name" yaml:"name"`
+	Comment string          `mapstructure:"comment" json:"comment" yaml:"comment"`
+	Owners  Value[[]string] `mapstructure:"owners" json:"owners" yaml:"owners"`
+}
+
+// InheritableItemFields mirrors cobbler/items/abstract/inheritable_item.py. Embedded
+// (directly, or via BootableItemFields) by Distro/Profile/System/Image/Repo/Menu and the
+// Group types; Template/NetworkInterface derive from BaseItem directly and don't embed it.
+type InheritableItemFields struct {
+	BaseItemFields `mapstructure:",squash" yaml:",inline"`
+
+	// Parent holds the UID of the parent item, not its name (Cobbler 4.0.0's modify_*
+	// setters do a strict uid-keyed lookup server-side, e.g. inheritable_item.py's
+	// parent.setter). See updateCobblerFields for how it's pushed.
+	Parent   string   `mapstructure:"parent" json:"parent" yaml:"parent"`
+	Depth    int      `mapstructure:"depth" cobbler:"noupdate" json:"depth" yaml:"depth"`
+	Children []string `mapstructure:"children" cobbler:"noupdate" json:"children" yaml:"children"`
+}
+
+// BootableItemFields mirrors cobbler/items/abstract/bootable_item.py. Embedded by
+// Distro/Profile/System/Image/Repo/Menu.
+type BootableItemFields struct {
+	InheritableItemFields `mapstructure:",squash" yaml:",inline"`
+
 	KernelOptions     Value[map[string]interface{}] `mapstructure:"kernel_options" json:"kernel_options" yaml:"kernel_options"`
 	KernelOptionsPost Value[map[string]interface{}] `mapstructure:"kernel_options_post" json:"kernel_options_post" yaml:"kernel_options_post"`
 	AutoinstallMeta   Value[map[string]interface{}] `mapstructure:"autoinstall_meta" json:"autoinstall_meta" yaml:"autoinstall_meta"`
 	// TemplateFiles is not inheritable (cobbler/items/abstract/bootable_item.py: template_files is a plain
 	// @LazyProperty, unlike kernel_options/kernel_options_post/autoinstall_meta).
 	TemplateFiles map[string]string `mapstructure:"template_files" json:"template_files" yaml:"template_files"`
-	Owners        Value[[]string]   `mapstructure:"owners" json:"owners" yaml:"owners"`
 }
 
-// NewItem is a method to initialize the struct with the values that the server-side would internally use. Using this is
-// important since the client overwrites all fields with those chosen locally inside the item.
-func NewItem() Item {
-	return Item{
+// NewBaseItemFields initializes the fields every item type has, with the same defaults the
+// server-side would internally use. Using this is important since the client overwrites all
+// fields with those chosen locally inside the item.
+func NewBaseItemFields() BaseItemFields {
+	return BaseItemFields{
+		Owners: Value[[]string]{
+			Data:        make([]string, 0),
+			IsInherited: true,
+		},
+	}
+}
+
+// NewInheritableItemFields composes NewBaseItemFields with InheritableItem's own defaults.
+func NewInheritableItemFields() InheritableItemFields {
+	return InheritableItemFields{
+		BaseItemFields: NewBaseItemFields(),
+		Children:       make([]string, 0),
+	}
+}
+
+// NewBootableItemFields composes NewInheritableItemFields with BootableItem's own defaults.
+func NewBootableItemFields() BootableItemFields {
+	return BootableItemFields{
+		InheritableItemFields: NewInheritableItemFields(),
 		AutoinstallMeta: Value[map[string]interface{}]{
 			Data: make(map[string]interface{}),
 		},
-		Children: make([]string, 0),
 		KernelOptions: Value[map[string]interface{}]{
 			Data: make(map[string]interface{}),
 		},
 		KernelOptionsPost: Value[map[string]interface{}]{
 			Data: make(map[string]interface{}),
-		},
-		Owners: Value[[]string]{
-			Data:        make([]string, 0),
-			IsInherited: true,
 		},
 		TemplateFiles: make(map[string]string),
 	}

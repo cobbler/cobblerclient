@@ -689,19 +689,13 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		}
 	}
 
-	// Parent is defined on the shared Item struct, but only Distro/Profile/System/Image/Menu
-	// actually have a parent property server-side (they're the only item types deriving from
-	// InheritableItem whose client structs embed Item directly for this purpose); other Item
-	// embedders such as Template and NetworkInterface do not support it. Push it here,
-	// unconditionally for these five types, before any field that may depend on inherited
-	// values, rather than per-method below or in the generic updateFields loop.
-	switch method {
-	case "modify_distro", "modify_profile", "modify_system", "modify_image", "modify_menu":
-		parentField := item.FieldByName("Parent")
-		if parentField != (reflect.Value{}) {
-			if err := c.updateSingleField(method, id, []string{"parent"}, parentField.String(), ""); err != nil {
-				return err
-			}
+	// Types embedding only BaseItemFields (Template, NetworkInterface) have no Parent
+	// field, so this is a no-op for them. Must run before fields that may depend on
+	// inherited values.
+	parentField := item.FieldByName("Parent")
+	if parentField != (reflect.Value{}) {
+		if err := c.updateSingleField(method, id, []string{"parent"}, parentField.String(), ""); err != nil {
+			return err
 		}
 	}
 
@@ -768,7 +762,7 @@ func (c *Client) updateFields(method, id string, pathPrefix []string, item refle
 			continue
 		}
 
-		if fieldType == "Item" || fieldType == "Group" {
+		if fieldType == "BaseItemFields" || fieldType == "InheritableItemFields" || fieldType == "BootableItemFields" || fieldType == "Group" {
 			if err := c.updateFields(method, id, pathPrefix, v, skip); err != nil {
 				return err
 			}
