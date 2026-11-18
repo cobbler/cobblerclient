@@ -26,7 +26,7 @@ import (
 // network interface attached to a System. Get the fields from
 // cobbler/items/network_interface.py.
 type NetworkInterface struct {
-	Item `mapstructure:",squash" yaml:",inline"`
+	BaseItemFields `mapstructure:",squash" yaml:",inline"`
 
 	// Parent system reference. Set at creation time via new_network_interface(system_uid, token).
 	SystemUid  string `mapstructure:"system_uid" cobbler:"noupdate" json:"system_uid" yaml:"system_uid"`
@@ -62,7 +62,7 @@ type NetworkInterface struct {
 // NewNetworkInterface returns a zero-valued NetworkInterface with sensible defaults.
 func NewNetworkInterface() NetworkInterface {
 	return NetworkInterface{
-		Item:             NewItem(),
+		BaseItemFields:   NewBaseItemFields(),
 		InterfaceType:    NetworkInterfaceTypeNA,
 		IPv4:             IPv4Option{StaticRoutes: []string{}},
 		IPv6:             IPv6Option{Secondaries: []string{}, StaticRoutes: []string{}},

@@ -127,12 +127,9 @@ func TestCreateSystemGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-system-group-name-check",
 		"new-system-group",
+		"new-system-group-modify-parent",
 		"new-system-group-modify-name",
 		"new-system-group-modify-comment",
-		"new-system-group-modify-kernel-options",
-		"new-system-group-modify-kernel-options-post",
-		"new-system-group-modify-autoinstall-meta",
-		"new-system-group-modify-template-files",
 		"new-system-group-modify-owners",
 		"new-system-group-modify-items",
 		"new-system-group-save",
@@ -151,12 +148,9 @@ func TestCreateSystemGroup(t *testing.T) {
 func TestUpdateSystemGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"update-system-group-handle",
+		"update-system-group-modify-parent",
 		"update-system-group-modify-name",
 		"update-system-group-modify-comment",
-		"update-system-group-modify-kernel-options",
-		"update-system-group-modify-kernel-options-post",
-		"update-system-group-modify-autoinstall-meta",
-		"update-system-group-modify-template-files",
 		"update-system-group-modify-owners",
 		"update-system-group-modify-items",
 		"update-system-group-save",

@@ -25,7 +25,7 @@ import (
 // Distro is a created distro.
 // Get the fields from cobbler/items/distro.py
 type Distro struct {
-	Item `mapstructure:",squash" yaml:",inline"`
+	BootableItemFields `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
 	SourceRepos              []string        `mapstructure:"source_repos"   cobbler:"noupdate" json:"source_repos" yaml:"source_repos"`
@@ -49,8 +49,8 @@ type Distro struct {
 
 func NewDistro() Distro {
 	return Distro{
-		Item: NewItem(),
-		Arch: "x86_64",
+		BootableItemFields: NewBootableItemFields(),
+		Arch:               "x86_64",
 		BootLoaders: Value[[]string]{
 			Data:        make([]string, 0),
 			IsInherited: true,

@@ -130,12 +130,9 @@ func TestCreateDistroGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-distro-group-name-check",
 		"new-distro-group",
+		"new-distro-group-modify-parent",
 		"new-distro-group-modify-name",
 		"new-distro-group-modify-comment",
-		"new-distro-group-modify-kernel-options",
-		"new-distro-group-modify-kernel-options-post",
-		"new-distro-group-modify-autoinstall-meta",
-		"new-distro-group-modify-template-files",
 		"new-distro-group-modify-owners",
 		"new-distro-group-modify-items",
 		"new-distro-group-save",
@@ -154,12 +151,9 @@ func TestCreateDistroGroup(t *testing.T) {
 func TestUpdateDistroGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"update-distro-group-handle",
+		"update-distro-group-modify-parent",
 		"update-distro-group-modify-name",
 		"update-distro-group-modify-comment",
-		"update-distro-group-modify-kernel-options",
-		"update-distro-group-modify-kernel-options-post",
-		"update-distro-group-modify-autoinstall-meta",
-		"update-distro-group-modify-template-files",
 		"update-distro-group-modify-owners",
 		"update-distro-group-modify-items",
 		"update-distro-group-save",

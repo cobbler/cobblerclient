@@ -143,7 +143,7 @@ func (v VirtDiskDriver) String() string {
 // Image is a created image.
 // Get the fields from cobbler/items/image.py
 type Image struct {
-	Item `mapstructure:",squash" yaml:",inline"`
+	BootableItemFields `mapstructure:",squash" yaml:",inline"`
 
 	Arch         string   `mapstructure:"arch" json:"arch" yaml:"arch"`
 	Autoinstall  string   `mapstructure:"autoinstall" json:"autoinstall" yaml:"autoinstall"`
@@ -163,7 +163,7 @@ type Image struct {
 
 func NewImage() Image {
 	image := Image{
-		Item:                 NewItem(),
+		BootableItemFields:   NewBootableItemFields(),
 		Arch:                 "x86_64",
 		Autoinstall:          inherit,
 		BootLoaders:          make([]string, 0),

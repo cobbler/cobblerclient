@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>modify_profile_group</methodName>
+    <methodName>modify_image</methodName>
     <params>
         <param>
             <value>
-                <string>000000000000000000000000000000db</string>
+                <string>000000000000000000000000000000ce</string>
             </value>
         </param>
         <param>
@@ -12,7 +12,7 @@
                 <array>
                     <data>
                         <value>
-                            <string>kernel_options</string>
+                            <string>parent</string>
                         </value>
                     </data>
                 </array>
@@ -20,7 +20,7 @@
         </param>
         <param>
             <value>
-                <struct></struct>
+                <string></string>
             </value>
         </param>
         <param>

@@ -687,18 +687,22 @@ func (c *Client) updateCobblerFields(what string, item reflect.Value, id string)
 		if err != nil {
 			return err
 		}
+	}
 
-		parentField := item.FieldByName("Parent")
-		if parentField != (reflect.Value{}) {
-			err = c.updateSingleField(method, id, []string{"parent"}, parentField.String(), "")
-			if err != nil {
-				return err
-			}
+	// Types embedding only BaseItemFields (Template, NetworkInterface) have no Parent
+	// field, so this is a no-op for them. Must run before fields that may depend on
+	// inherited values.
+	parentField := item.FieldByName("Parent")
+	if parentField != (reflect.Value{}) {
+		if err := c.updateSingleField(method, id, []string{"parent"}, parentField.String(), ""); err != nil {
+			return err
 		}
+	}
+
+	if method == "modify_profile" {
 		distroField := item.FieldByName("Distro")
 		if distroField != (reflect.Value{}) {
-			err = c.updateSingleField(method, id, []string{"distro"}, distroField.String(), "")
-			if err != nil {
+			if err := c.updateSingleField(method, id, []string{"distro"}, distroField.String(), ""); err != nil {
 				return err
 			}
 		}
@@ -758,7 +762,7 @@ func (c *Client) updateFields(method, id string, pathPrefix []string, item refle
 			continue
 		}
 
-		if fieldType == "Item" || fieldType == "Group" {
+		if fieldType == "BaseItemFields" || fieldType == "InheritableItemFields" || fieldType == "BootableItemFields" || fieldType == "Group" {
 			if err := c.updateFields(method, id, pathPrefix, v, skip); err != nil {
 				return err
 			}

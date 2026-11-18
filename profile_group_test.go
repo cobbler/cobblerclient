@@ -127,12 +127,9 @@ func TestCreateProfileGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"create-profile-group-name-check",
 		"new-profile-group",
+		"new-profile-group-modify-parent",
 		"new-profile-group-modify-name",
 		"new-profile-group-modify-comment",
-		"new-profile-group-modify-kernel-options",
-		"new-profile-group-modify-kernel-options-post",
-		"new-profile-group-modify-autoinstall-meta",
-		"new-profile-group-modify-template-files",
 		"new-profile-group-modify-owners",
 		"new-profile-group-modify-items",
 		"new-profile-group-save",
@@ -151,12 +148,9 @@ func TestCreateProfileGroup(t *testing.T) {
 func TestUpdateProfileGroup(t *testing.T) {
 	c := createStubHTTPClient(t, []string{
 		"update-profile-group-handle",
+		"update-profile-group-modify-parent",
 		"update-profile-group-modify-name",
 		"update-profile-group-modify-comment",
-		"update-profile-group-modify-kernel-options",
-		"update-profile-group-modify-kernel-options-post",
-		"update-profile-group-modify-autoinstall-meta",
-		"update-profile-group-modify-template-files",
 		"update-profile-group-modify-owners",
 		"update-profile-group-modify-items",
 		"update-profile-group-save",

@@ -9,7 +9,7 @@ import (
 // Menu is a created menu.
 // Get the fields from cobbler/items/menu.py
 type Menu struct {
-	Item `mapstructure:",squash" yaml:",inline"`
+	BootableItemFields `mapstructure:",squash" yaml:",inline"`
 
 	// Menu specific fields
 	DisplayName string `mapstructure:"display_name" json:"display_name" yaml:"display_name"`
@@ -17,7 +17,7 @@ type Menu struct {
 
 func NewMenu() Menu {
 	return Menu{
-		Item: NewItem(),
+		BootableItemFields: NewBootableItemFields(),
 	}
 }
 

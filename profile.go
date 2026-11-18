@@ -25,7 +25,7 @@ import (
 // Profile is a created profile.
 // Get the fields from cobbler/items/profile.py
 type Profile struct {
-	Item `mapstructure:",squash" yaml:",inline"`
+	BootableItemFields `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
 	ReposEnabled bool `mapstructure:"repos_enabled"          cobbler:"noupdate"`
@@ -57,9 +57,9 @@ type Profile struct {
 
 func NewProfile() Profile {
 	profile := Profile{
-		Item:         NewItem(),
-		ReposEnabled: false,
-		Autoinstall:  inherit,
+		BootableItemFields: NewBootableItemFields(),
+		ReposEnabled:       false,
+		Autoinstall:        inherit,
 		BootLoaders: Value[[]string]{
 			Data:        make([]string, 0),
 			IsInherited: true,
