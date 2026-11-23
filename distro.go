@@ -28,7 +28,7 @@ type Distro struct {
 	BootableItemFields `mapstructure:",squash" yaml:",inline"`
 
 	// These are internal fields and cannot be modified.
-	SourceRepos              []string        `mapstructure:"source_repos"   cobbler:"noupdate" json:"source_repos" yaml:"source_repos"`
+	SourceRepos              [][]string      `mapstructure:"source_repos"   cobbler:"noupdate" json:"source_repos" yaml:"source_repos"`
 	TreeBuildTime            string          `mapstructure:"tree_build_time" cobbler:"noupdate" json:"tree_build_time" yaml:"tree_build_time"`
 	Arch                     string          `mapstructure:"arch" json:"arch" yaml:"arch"`
 	BootLoaders              Value[[]string] `mapstructure:"boot_loaders" json:"boot_loaders" yaml:"boot_loaders"`

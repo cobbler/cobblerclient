@@ -178,7 +178,32 @@
                         <name>source_repos</name>
                         <value>
                             <array>
-                                <data></data>
+                                <data>
+                                    <value>
+                                        <array>
+                                            <data>
+                                                <value>
+                                                    <string>http://example.com/repo1.repo</string>
+                                                </value>
+                                                <value>
+                                                    <string>http://example.com/repo1</string>
+                                                </value>
+                                            </data>
+                                        </array>
+                                    </value>
+                                    <value>
+                                        <array>
+                                            <data>
+                                                <value>
+                                                    <string>http://example.com/repo2.repo</string>
+                                                </value>
+                                                <value>
+                                                    <string>http://example.com/repo2</string>
+                                                </value>
+                                            </data>
+                                        </array>
+                                    </value>
+                                </data>
                             </array>
                         </value>
                     </member>

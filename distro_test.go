@@ -17,6 +17,7 @@ limitations under the License.
 package cobblerclient
 
 import (
+	"reflect"
 	"testing"
 	"time"
 )
@@ -43,6 +44,16 @@ func TestGetDistro(t *testing.T) {
 
 	if distro.Name != "Ubuntu-20.04-x86_64" {
 		t.Errorf("Wrong distro returned.")
+	}
+
+	// source_repos is a list of (config_url, baseurl) pairs - Cobbler serializes it as a
+	// nested array-of-2-element-arrays over XML-RPC, not a flat array of strings.
+	expectedSourceRepos := [][]string{
+		{"http://example.com/repo1.repo", "http://example.com/repo1"},
+		{"http://example.com/repo2.repo", "http://example.com/repo2"},
+	}
+	if !reflect.DeepEqual(distro.SourceRepos, expectedSourceRepos) {
+		t.Errorf("Wrong source_repos returned. Got %#v, want %#v", distro.SourceRepos, expectedSourceRepos)
 	}
 }
 
