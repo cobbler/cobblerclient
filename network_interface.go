@@ -181,10 +181,19 @@ func (c *Client) CreateNetworkInterface(systemUid string, iface NetworkInterface
 }
 
 // UpdateNetworkInterface persists changes to an existing network interface.
+//
+// NetworkInterface names are only unique per-system, not globally (see
+// CreateNetworkInterface), so resolving by iface.Name alone can be ambiguous across
+// systems. iface.Uid, already set by any prior Get/Find/Create, is used directly when
+// present; the name-based lookup is only a fallback for a hand-built struct with no uid.
 func (c *Client) UpdateNetworkInterface(iface *NetworkInterface) error {
-	objectID, err := c.GetNetworkInterfaceHandle(iface.Name)
-	if err != nil {
-		return err
+	objectID := iface.Uid
+	if objectID == "" {
+		var err error
+		objectID, err = c.GetNetworkInterfaceHandle(iface.Name)
+		if err != nil {
+			return err
+		}
 	}
 	if err := c.updateCobblerFields("network_interface", reflect.ValueOf(iface).Elem(), objectID); err != nil {
 		return err

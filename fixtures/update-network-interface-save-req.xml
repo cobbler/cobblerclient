@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <methodCall>
-    <methodName>save_item</methodName>
+    <methodName>save_network_interface</methodName>
     <params>
-        <param>
-            <value>
-                <string>network_interface</string>
-            </value>
-        </param>
         <param>
             <value>
                 <string>000000000000000000000000000000d5</string>

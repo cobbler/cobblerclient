@@ -170,6 +170,74 @@ func TestCreateNetworkInterface(t *testing.T) {
 	}
 }
 
+// networkInterfaceUpdateModifyFixtures lists the "update-network-interface-modify-*" and
+// save fixtures in the order UpdateNetworkInterface's field walk issues them (same order
+// as TestCreateNetworkInterface). Recorded for name "eth0-niupdate" / uid
+// "000000000000000000000000000000d5", which newTestUpdateNetworkInterface must match.
+var networkInterfaceUpdateModifyFixtures = []string{
+	"update-network-interface-modify-name",
+	"update-network-interface-modify-comment",
+	"update-network-interface-modify-owners",
+	"update-network-interface-modify-mac-address",
+	"update-network-interface-modify-interface-type",
+	"update-network-interface-modify-interface-master",
+	"update-network-interface-modify-bonding-opts",
+	"update-network-interface-modify-bridge-opts",
+	"update-network-interface-modify-connected-mode",
+	"update-network-interface-modify-management",
+	"update-network-interface-modify-static",
+	"update-network-interface-modify-dhcp-tag",
+	"update-network-interface-modify-mtu",
+	"update-network-interface-modify-ipv6-static-routes",
+	"update-network-interface-modify-virt-bridge",
+	"update-network-interface-modify-ipv4-address",
+	"update-network-interface-modify-ipv4-default-gateway",
+	"update-network-interface-modify-ipv4-mtu",
+	"update-network-interface-modify-ipv4-netmask",
+	"update-network-interface-modify-ipv4-static-routes",
+	"update-network-interface-modify-ipv6-address",
+	"update-network-interface-modify-ipv6-default-gateway",
+	"update-network-interface-modify-ipv6-prefix",
+	"update-network-interface-modify-ipv6-secondaries",
+	"update-network-interface-modify-ipv6-mtu",
+	"update-network-interface-modify-ipv6-option-static-routes",
+	"update-network-interface-modify-dns-name",
+	"update-network-interface-modify-dns-cnames",
+	"update-network-interface-save",
+}
+
+func newTestUpdateNetworkInterface() NetworkInterface {
+	ni := NewNetworkInterface()
+	ni.Name = "eth0-niupdate"
+	ni.MacAddress = "aa:bb:cc:dd:ee:f0"
+	return ni
+}
+
+// TestUpdateNetworkInterface_WithUid asserts that when iface.Uid is already known,
+// UpdateNetworkInterface uses it directly and never calls get_item_handle: the fixture
+// sequence omits "update-network-interface-handle", so the test fails if that path is
+// ever reached.
+func TestUpdateNetworkInterface_WithUid(t *testing.T) {
+	c := createStubHTTPClient(t, networkInterfaceUpdateModifyFixtures)
+	ni := newTestUpdateNetworkInterface()
+	ni.Uid = "000000000000000000000000000000d5"
+
+	err := c.UpdateNetworkInterface(&ni)
+	FailOnError(t, err)
+}
+
+// TestUpdateNetworkInterface_FallbackByName covers a hand-built NetworkInterface with no
+// uid yet: UpdateNetworkInterface falls back to resolving the handle by name, which only
+// works when the name is globally unique.
+func TestUpdateNetworkInterface_FallbackByName(t *testing.T) {
+	fixtures := append([]string{"update-network-interface-handle"}, networkInterfaceUpdateModifyFixtures...)
+	c := createStubHTTPClient(t, fixtures)
+	ni := newTestUpdateNetworkInterface()
+
+	err := c.UpdateNetworkInterface(&ni)
+	FailOnError(t, err)
+}
+
 func TestSaveNetworkInterface(t *testing.T) {
 	c := createStubHTTPClientSingle(t, "save-network-interface")
 	err := c.SaveNetworkInterface("000000000000000000000000000000d6", true, true, "bypass")
